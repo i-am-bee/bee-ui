@@ -18,6 +18,9 @@ import { LoginError, SignIn } from '@/modules/auth/SignIn';
 import { isAbsoluteUrl } from '@/utils/url';
 import { useMemo } from 'react';
 import { signIn } from './actions';
+import { redirect } from 'next/navigation';
+
+const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
 interface PageProps {
   searchParams: Record<string, string | string[] | undefined>;
@@ -34,6 +37,12 @@ export default function SignInPage({ searchParams }: PageProps) {
   const errorCode = Array.isArray(searchParams.error)
     ? searchParams.error[0]
     : (searchParams.error ?? null);
+
+  if (DUMMY_JWT_TOKEN)
+    // user shouldn't be here, let's redirect him to the error page
+    redirect(
+      `/auth/unauthorized?${new URLSearchParams({ error: errorCode ?? '' }).toString()}`,
+    );
 
   const error: LoginError | null = useMemo(() => {
     switch (errorCode) {
