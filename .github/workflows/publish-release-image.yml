@@ -6,22 +6,26 @@ on:
     types: [released, prereleased]
 
 jobs:
-  docker:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Build and push
+
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build and push bee-ui local image
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
@@ -31,4 +35,8 @@ jobs:
             NEXT_PUBLIC_FEATURE_FLAGS='{ "Knowledge": false, "Files": true, "FunctionTools": true, "Observe": true }'
             NEXT_PUBLIC_ORGANIZATION_ID_DEFAULT=org_670cc04869ddffe24f4fd70d
             NEXT_PUBLIC_PROJECT_ID_DEFAULT=proj_670cc04869ddffe24f4fd70f
-          tags: iambeeagent/bee-ui-local:${{ github.event.release.tag_name }}
+          tags: |
+            iambeeagent/bee-ui-local:latest
+            iambeeagent/bee-ui-local:${{ steps.get_version.outputs.VERSION }}
+          cache-from: type=registry,ref=iambeeagent/bee-ui-local:buildcache
+          cache-to: type=registry,ref=iambeeagent/bee-ui-local:buildcache,mode=max
