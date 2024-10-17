@@ -26,9 +26,9 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args:
-            NEXT_PUBLIC_APP_NAME: "Bee"
-            NEXT_PUBLIC_FEATURE_FLAGS: '{ "Knowledge": false, "Files": true, "FunctionTools": true, "Observe": true }'
-            NEXT_PUBLIC_ORGANIZATION_ID_DEFAULT: "org_670cc04869ddffe24f4fd70d"
-            NEXT_PUBLIC_PROJECT_ID_DEFAULT: "proj_670cc04869ddffe24f4fd70f"
+          build-args: |
+            NEXT_PUBLIC_APP_NAME=Bee
+            NEXT_PUBLIC_FEATURE_FLAGS={ "Knowledge": false, "Files": true, "FunctionTools": true, "Observe": true }
+            NEXT_PUBLIC_ORGANIZATION_ID_DEFAULT=org_670cc04869ddffe24f4fd70d
+            NEXT_PUBLIC_PROJECT_ID_DEFAULT=proj_670cc04869ddffe24f4fd70f
           tags: iambeeagent/bee-ui-local:${{ github.event.release.tag_name }}
