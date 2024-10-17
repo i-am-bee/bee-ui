@@ -37,3 +37,6 @@ next-env.d.ts
 
 # vscode
 .vscode
+
+# IDEA
+.idea
