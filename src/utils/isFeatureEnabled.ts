@@ -20,6 +20,7 @@ export const isFeatureEnabled = (() => {
     return (feature: FeatureName) =>
       feature in allFeatures ? !!allFeatures[feature] : false;
   } catch (err) {
+    console.warn('Unable to parse feature flags!', err)
     return (_: string) => false;
   }
 })();
