@@ -21,6 +21,11 @@ import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAuto
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { AssistantBaseIcon } from '@/modules/assistants/icons/AssistantBaseIcon';
 import { lastAssistantsQuery } from '@/modules/assistants/library/queries';
+import {
+  dispatchChangeEventOnFormInputs,
+  submitFormOnEnter,
+} from '@/utils/formUtils';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { Send, StopOutlineFilled, WarningFilled } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
@@ -34,7 +39,6 @@ import { useFilesUpload } from '../providers/FilesUploadProvider';
 import { FilesMenu } from './FilesMenu';
 import classes from './InputBar.module.scss';
 import { ThreadSettings } from './ThreadSettings';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
 interface Props {
   onMessageSubmit?: () => void;
@@ -68,14 +72,7 @@ export const InputBar = memo(function InputBar({
 
       formElem.reset();
 
-      // Manually trigger the 'change' event on each form element to correctly resize TextAreaAutoHeight
-      const inputs = formElem.querySelectorAll('input, textarea');
-
-      inputs.forEach((input) => {
-        const event = new Event('change', { bubbles: true });
-
-        input.dispatchEvent(event);
-      });
+      dispatchChangeEventOnFormInputs(formElem);
     }
   }, []);
 
@@ -159,13 +156,7 @@ export const InputBar = memo(function InputBar({
             placeholder="Type your question or drag a document…"
             autoFocus
             {...register('input', { required: true })}
-            onKeyDown={(e) => {
-              // Submit form on enter, shit+enter for a new line (default behaviour)
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                e.currentTarget.closest('form')?.requestSubmit();
-              }
-            }}
+            onKeyDown={submitFormOnEnter}
           />
           <div className={classes.submitBtnContainer}>
             {!isPending ? (
