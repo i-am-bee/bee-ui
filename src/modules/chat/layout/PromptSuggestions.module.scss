@@ -1,0 +1,87 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@use 'styles/common' as *;
+
+.ref {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.root {
+  z-index: z('modal') - 1;
+  padding: 0 !important;
+}
+
+.content {
+  background-color: $layer;
+  border-radius: $spacing-03;
+  box-shadow: $box-shadow;
+  padding: $spacing-06;
+  display: flex;
+  flex-direction: column;
+  row-gap: $spacing-05;
+}
+
+.heading {
+  @include type-style(label-02);
+  line-height: (22 / 14);
+  color: $text-secondary;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  row-gap: rem(9px);
+}
+
+.item {
+  position: relative;
+  + .item {
+    &::before {
+      content: '';
+      position: absolute;
+      block-size: 1px;
+      background-color: $border-subtle-01;
+      inset-inline: $spacing-03;
+      inset-block-start: rem(-5px);
+    }
+  }
+}
+
+.button {
+  @include type-style(label-02);
+  background-color: transparent;
+  border: 0;
+  padding: $spacing-03;
+  text-align: start;
+  color: $text-primary;
+  transition: background-color $duration-fast-02;
+  border-radius: $spacing-03;
+  inline-size: 100%;
+  cursor: pointer;
+  display: flex;
+  &:hover {
+    background-color: $border-subtle-01;
+  }
+  &:focus-visible {
+    @include focus-outline('outline');
+  }
+  > span {
+    @include truncateMultiline(2);
+  }
+}
