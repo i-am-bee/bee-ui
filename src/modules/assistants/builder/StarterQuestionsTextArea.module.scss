@@ -22,17 +22,25 @@
   }
 }
 
+.addHolder {
+  display: flex;
+  align-items: stretch;
+}
+
 .textarea {
+  position: relative;
+  flex-grow: 1;
+  z-index: 1;
+  min-inline-size: 0;
   &::after,
   > textarea {
     @include type-style(body-01);
-    padding: rem(13px) rem(63px) rem(13px) rem(15px);
+    padding: rem(13px) rem(15px);
     border-radius: $spacing-03;
-    border: 1px solid $border-subtle-00;
+    min-inline-size: 0;
   }
   > textarea {
     color: $text-primary;
-    background-color: transparent;
     &::placeholder {
       color: $text-placeholder;
     }
@@ -40,5 +48,81 @@
     &:focus {
       @include focus-outline('outline');
     }
+  }
+}
+
+.addTextarea {
+  &::after,
+  > textarea {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+    border: 1px solid $border-subtle-00;
+  }
+  > textarea {
+    background-color: transparent;
+  }
+}
+
+.button {
+  :global(.#{$prefix}--tooltip-trigger__wrapper) {
+    block-size: 100%;
+  }
+  :global(.#{$prefix}--btn) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    block-size: 100%;
+    padding-block: rem(15px);
+    > svg {
+      margin: 0;
+    }
+  }
+}
+
+.addButton {
+  :global(.#{$prefix}--btn) {
+    border-inline-start: 0;
+    border-color: $border-subtle-00;
+    align-items: flex-end;
+    color: $text-dark;
+    &:hover {
+      background-color: $border-subtle-00;
+      color: $text-muted;
+    }
+    &:disabled {
+      color: $border-disabled;
+    }
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  row-gap: $spacing-03;
+  .addHolder + & {
+    margin-block-start: $spacing-03;
+  }
+}
+
+.item {
+  position: relative;
+}
+
+.itemTextarea {
+  &::after,
+  > textarea {
+    border: 1px solid $border-subtle-01;
+    padding-inline-end: rem(47px);
+  }
+  > textarea {
+    background-color: $border-subtle-01;
+  }
+}
+
+.removeButton {
+  &:global(.#{$prefix}--popover-container) {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
   }
 }

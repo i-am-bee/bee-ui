@@ -16,11 +16,13 @@
 
 import { AssistantResult } from '@/app/api/assistants/types';
 import {
-  AssitantIconName,
   AssistantIconColor,
+  AssitantIconName,
 } from './icons/AssistantBaseIcon';
 
-export interface AssistantMetadata {
+export const STARTER_QUESTION_KEY_PREFIX = 'starterQuestion_';
+
+export interface AssistantMetadata extends StarterQuestionsMetadata {
   icon?: AssitantIconName;
   color?: AssistantIconColor;
 }
@@ -28,3 +30,7 @@ export interface AssistantMetadata {
 export type Assistant = Omit<AssistantResult, 'metadata'> & {
   metadata: AssistantMetadata;
 };
+
+export interface StarterQuestionsMetadata {
+  [key: `${typeof STARTER_QUESTION_KEY_PREFIX}${string}`]: string;
+}

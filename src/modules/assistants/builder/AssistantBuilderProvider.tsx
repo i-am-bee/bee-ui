@@ -41,7 +41,11 @@ import {
 } from '../icons/AssistantBaseIcon';
 import { readAssistantQuery } from '../queries';
 import { Assistant, AssistantMetadata } from '../types';
-import { getAssistantFromAssistantResult } from '../utils';
+import {
+  decodeStarterQuestionsMetadata,
+  encodeStarterQuestionsMetadata,
+  getAssistantFromAssistantResult,
+} from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
 
 export type AssistantFormValues = {
@@ -55,7 +59,10 @@ export type AssistantFormValues = {
   tools: { type: ToolType; id: string }[];
   vectorStoreId?: string;
   model?: AssistantModel;
+  starterQuestions?: StarterQuestion[];
 };
+
+export type StarterQuestion = { id: string; question: string };
 
 export interface AssistantBuilderContextValue {
   assistant: Assistant | null;
@@ -173,6 +180,7 @@ export function AssistantBuilderProvider({
       icon,
       vectorStoreId,
       model,
+      starterQuestions,
     }: AssistantFormValues) => {
       const tools: AssistantTools = toolsValue
         .map(({ type, id }) => {
@@ -201,6 +209,9 @@ export function AssistantBuilderProvider({
           metadata: encodeMetadata<AssistantMetadata>({
             icon: icon.name,
             color: icon.color,
+            ...(starterQuestions
+              ? encodeStarterQuestionsMetadata(starterQuestions)
+              : {}),
           }),
           model,
         },
@@ -293,6 +304,7 @@ function formValuesFromAssistant(
     vectorStoreId:
       assistant?.tool_resources?.file_search?.vector_store_ids?.at(0),
     model: assistant?.model as AssistantModel,
+    starterQuestions: decodeStarterQuestionsMetadata(assistant?.metadata),
   };
 }
 

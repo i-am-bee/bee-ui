@@ -16,7 +16,13 @@
 
 import { AssistantResult } from '@/app/api/assistants/types';
 import { decodeMetadata } from '@/app/api/utils';
-import { Assistant, AssistantMetadata } from './types';
+import { StarterQuestion } from './builder/AssistantBuilderProvider';
+import {
+  Assistant,
+  AssistantMetadata,
+  STARTER_QUESTION_KEY_PREFIX,
+  StarterQuestionsMetadata,
+} from './types';
 
 export function getAssistantFromAssistantResult(
   data: AssistantResult,
@@ -25,4 +31,30 @@ export function getAssistantFromAssistantResult(
     ...data,
     metadata: decodeMetadata<AssistantMetadata>(data?.metadata),
   };
+}
+
+export function encodeStarterQuestionsMetadata(
+  questions: StarterQuestion[] = [],
+): StarterQuestionsMetadata {
+  return questions.reduce((starterQuestions, { id, question }) => {
+    if (question !== '') {
+      starterQuestions[`${STARTER_QUESTION_KEY_PREFIX}${id}`] = question;
+    }
+    return starterQuestions;
+  }, {} as StarterQuestionsMetadata);
+}
+
+export function decodeStarterQuestionsMetadata(
+  metadata: StarterQuestionsMetadata = {},
+): StarterQuestion[] {
+  return Object.entries(metadata).reduce((starterQuestions, [key, value]) => {
+    if (key.startsWith(STARTER_QUESTION_KEY_PREFIX)) {
+      starterQuestions.push({
+        id: key.replace(STARTER_QUESTION_KEY_PREFIX, ''),
+        question: value,
+      });
+    }
+
+    return starterQuestions;
+  }, [] as StarterQuestion[]);
 }

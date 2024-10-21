@@ -71,7 +71,7 @@ export const EmptyChatView = memo(function EmptyChatView({
         </div>
 
         <div>
-          <InputBar onMessageSent={onMessageSent} />
+          <InputBar onMessageSent={onMessageSent} showSuggestions />
         </div>
       </Container>
 
