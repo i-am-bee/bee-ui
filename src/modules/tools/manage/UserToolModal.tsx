@@ -22,6 +22,7 @@ import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGr
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
 import {
   Button,
+  FormLabel,
   InlineLoading,
   ModalBody,
   ModalFooter,
@@ -32,7 +33,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toolsQuery } from '../queries';
-import classes from './ToolEditModal.module.scss';
+import classes from './UserToolModal.module.scss';
 import { Project } from '@/app/api/projects/types';
 
 const EXAMPLE_SOURCE_CODE = `import requests
@@ -60,7 +61,7 @@ interface Props extends ModalProps {
   onSaveSuccess?: (tool: Tool) => void;
 }
 
-export function ToolEditModal({
+export function UserToolModal({
   tool,
   project,
   onDeleteSuccess,
@@ -137,7 +138,12 @@ export function ToolEditModal({
   );
 
   return (
-    <Modal {...props} preventCloseOnClickOutside className={classes.modal}>
+    <Modal
+      {...props}
+      size="lg"
+      preventCloseOnClickOutside
+      className={classes.modal}
+    >
       <ModalHeader>
         <h2>{editMode ? 'Edit tool' : 'Create a new tool'}</h2>
       </ModalHeader>
@@ -167,7 +173,7 @@ export function ToolEditModal({
               render={({ field }) => (
                 <EditableSyntaxHighlighter
                   id={`${id}:code`}
-                  labelText="Code"
+                  labelText="Python code"
                   value={field.value}
                   onChange={field.onChange}
                   required
@@ -179,6 +185,7 @@ export function ToolEditModal({
           </SettingsFormGroup>
         </form>
       </ModalBody>
+
       <ModalFooter>
         <div className={classes.actions}>
           {editMode ? (
@@ -234,3 +241,45 @@ function createSaveToolBody({ name, sourceCode }: FormValues): ToolsCreateBody {
     source_code: sourceCode,
   };
 }
+
+UserToolModal.View = function ViewUserToolModal({
+  tool,
+  ...props
+}: {
+  tool: Tool;
+} & ModalProps) {
+  const id = useId();
+  return (
+    <Modal {...props} size="lg" className={classes.modal}>
+      <ModalHeader>
+        <h2>{tool.name}</h2>
+      </ModalHeader>
+      <ModalBody className={classes.viewContent}>
+        <dl>
+          <div>
+            <dd>
+              <FormLabel>Type</FormLabel>
+            </dd>
+            <dt>Python function</dt>
+          </div>
+
+          <div>
+            <dd>
+              <FormLabel>Description</FormLabel>
+            </dd>
+            <dt>{tool.description}</dt>
+          </div>
+        </dl>
+
+        <EditableSyntaxHighlighter
+          id={`${id}:code`}
+          labelText="Python code"
+          value={tool.source_code ?? ''}
+          required
+          readOnly
+          rows={16}
+        />
+      </ModalBody>
+    </Modal>
+  );
+};

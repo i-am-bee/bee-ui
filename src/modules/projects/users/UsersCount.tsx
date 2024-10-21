@@ -18,6 +18,7 @@ import { Project } from '@/app/api/projects/types';
 import classes from './UsersCount.module.scss';
 import { SkeletonText } from '@carbon/react';
 import { useProjectUsersCount } from './useProjectUsersCount';
+import pluralize from 'pluralize';
 
 interface Props {
   project: Project;
@@ -26,14 +27,15 @@ interface Props {
 export function UsersCount({ project }: Props) {
   const { totalCount, isLoading } = useProjectUsersCount(project);
 
-  const total = (totalCount ?? 1) - 1;
-
   return (
     <div className={classes.root}>
       {isLoading ? (
         <SkeletonText className={classes.skeleton} />
-      ) : total ? (
-        <>Shared with {total > 99 ? '99+' : total}</>
+      ) : totalCount && totalCount > 1 ? (
+        <>
+          {totalCount > 99 ? '99+' : totalCount}{' '}
+          {pluralize('collaborator', totalCount)}
+        </>
       ) : null}
     </div>
   );

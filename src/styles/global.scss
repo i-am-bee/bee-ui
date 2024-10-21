@@ -251,7 +251,11 @@ h1 {
     color: $text-on-color;
   }
 }
-
+.#{$prefix}--overflow-menu__wrapper {
+  .#{$prefix}--popover {
+    display: none;
+  }
+}
 .#{$prefix}--toggle {
   --cds-support-success: #{$text-primary};
   --cds-icon-on-color: #{$background};

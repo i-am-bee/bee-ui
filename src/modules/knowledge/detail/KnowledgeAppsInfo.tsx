@@ -16,7 +16,7 @@
 
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { assistantsQuery } from '@/modules/assistants/library/queries';
-import { SkeletonText } from '@carbon/react';
+import { FormLabel, SkeletonText } from '@carbon/react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import classes from './KnowledgeAppsInfo.module.scss';
 import { useMemo } from 'react';
@@ -61,7 +61,9 @@ export function KnowledgeAppsInfo({ vectorStore }: Props) {
           </span>
         )}
       </div>
-      <span>used by {pluralize('bee', assistants.length, true)}</span>
+      <span className={classes.usedBy}>
+        used by {pluralize('bee', assistants.length, true)}
+      </span>
     </div>
   );
 }

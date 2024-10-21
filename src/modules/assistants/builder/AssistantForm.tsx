@@ -19,7 +19,7 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { InstructionsTextArea } from '@/modules/assistants/builder/InstructionsTextArea';
 import { prelistVectorStores } from '@/modules/knowledge/queries';
-import { ToolEditModal } from '@/modules/tools/manage/ToolEditModal';
+import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { prelistTools } from '@/modules/tools/queries';
 import { isNotNull } from '@/utils/helpers';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
@@ -83,7 +83,7 @@ export function AssistantForm() {
                   renderIcon={Add}
                   onClick={() =>
                     openModal((props) => (
-                      <ToolEditModal project={project} {...props} />
+                      <UserToolModal project={project} {...props} />
                     ))
                   }
                   disabled={isProjectReadOnly}

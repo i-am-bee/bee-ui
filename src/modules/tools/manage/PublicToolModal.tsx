@@ -18,7 +18,7 @@ import { Tool } from '@/app/api/tools/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ModalBody, ModalHeader } from '@carbon/react';
-import classes from './ToolDetailModal.module.scss';
+import classes from './PublicToolModal.module.scss';
 import { ToolIcon } from '../ToolCard';
 import { ToolExternalTag } from '@/modules/assistants/tools/ToolToggle';
 import { isExternalTool } from '../utils';
@@ -27,7 +27,7 @@ interface Props extends ModalProps {
   tool: Tool;
 }
 
-export function ToolDetailModal({ tool, ...props }: Props) {
+export function PublicToolModal({ tool, ...props }: Props) {
   return (
     <Modal {...props}>
       <ModalHeader />

@@ -68,6 +68,7 @@ export function ProjectHome({ section, children }: Props) {
                   <Button
                     renderIcon={Add}
                     kind="tertiary"
+                    size="md"
                     onClick={() => setUsersModalOpened(true)}
                   >
                     Share
@@ -75,11 +76,7 @@ export function ProjectHome({ section, children }: Props) {
                 </>
               )}
               {role === 'admin' && (
-                <OverflowMenu
-                  aria-label="Options"
-                  size="lg"
-                  className={classes.actions}
-                >
+                <OverflowMenu size="md">
                   <OverflowMenuItem
                     itemText="Rename"
                     onClick={() =>

@@ -61,3 +61,12 @@
     font-size: inherit;
   }
 }
+
+.viewContent {
+  dl {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-06;
+    margin-block-end: $spacing-06;
+  }
+}

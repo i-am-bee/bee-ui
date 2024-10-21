@@ -37,7 +37,7 @@ import { ToolCard } from './ToolCard';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useDebounceValue } from 'usehooks-ts';
-import { ToolEditModal } from './manage/ToolEditModal';
+import { UserToolModal } from './manage/UserToolModal';
 
 interface Props {
   type: 'user' | 'public';
@@ -132,7 +132,7 @@ export function ToolsList({ type }: Props) {
               title: 'New tool',
               onClick: () =>
                 openModal((props) => (
-                  <ToolEditModal
+                  <UserToolModal
                     {...props}
                     project={project}
                     onSaveSuccess={handleCreateSuccess}

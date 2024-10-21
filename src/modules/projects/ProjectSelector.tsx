@@ -57,7 +57,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
         ? data?.projects.map((project, index) => {
             const projectUser = queries.at(index)?.data;
             return projectUser
-              ? { ...project, isReadOnly: projectUser.role === 'reader' }
+              ? { ...project, readOnly: projectUser.role === 'reader' }
               : project;
           })
         : data?.projects,
@@ -85,7 +85,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
               <span className={classes.option}>
                 <span className={classes.optionContent}>
                   <span>{project.name}</span>
-                  {project.isReadOnly && <ViewOnlyTag />}
+                  {project.readOnly && <ViewOnlyTag />}
                 </span>
               </span>
             )}
@@ -130,7 +130,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
 type Option = Project | 'new';
 
 type ProjectOption = Project & {
-  isReadOnly?: boolean;
+  readOnly?: boolean;
 };
 
 export const PROJECTS_QUERY_PARAMS: ProjectsListQuery = {

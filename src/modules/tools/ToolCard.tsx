@@ -24,9 +24,9 @@ import { useDeleteTool } from './hooks/useDeleteTool';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolExternalTag } from '../assistants/tools/ToolToggle';
 import { getToolIcon, getToolReference, isExternalTool } from './utils';
-import { ArrowUpRight, Edit } from '@carbon/react/icons';
-import { ToolEditModal } from './manage/ToolEditModal';
-import { ToolDetailModal } from './manage/ToolDetailModal';
+import { ArrowRight, ArrowUpRight, Edit, View } from '@carbon/react/icons';
+import { UserToolModal } from './manage/UserToolModal';
+import { PublicToolModal } from './manage/PublicToolModal';
 
 interface Props {
   tool: Tool;
@@ -55,22 +55,29 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
         onClick={() =>
           openModal((props) =>
             tool.type === 'user' ? (
-              <ToolEditModal
-                {...props}
-                project={project}
-                tool={tool}
-                onDeleteSuccess={onDeleteSuccess}
-                onSaveSuccess={onSaveSuccess}
-              />
+              isProjectReadOnly ? (
+                <UserToolModal.View tool={tool} {...props} />
+              ) : (
+                <UserToolModal
+                  {...props}
+                  project={project}
+                  tool={tool}
+                  onDeleteSuccess={onDeleteSuccess}
+                  onSaveSuccess={onSaveSuccess}
+                />
+              )
             ) : (
-              <ToolDetailModal {...props} tool={tool} />
+              <PublicToolModal {...props} tool={tool} />
             ),
           )
         }
         isDeletePending={isDeletePending}
         cta={
           tool.type === 'user'
-            ? { title: 'Edit tool', icon: Edit }
+            ? {
+                title: isProjectReadOnly ? 'View details' : 'Edit tool',
+                icon: isProjectReadOnly ? ArrowRight : Edit,
+              }
             : { title: 'View details', icon: ArrowUpRight }
         }
         actions={

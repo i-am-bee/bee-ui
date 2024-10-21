@@ -73,3 +73,9 @@
   flex-direction: column;
   gap: $spacing-08;
 }
+
+.actions {
+  :global(.#{$prefix}--popover) {
+    display: none;
+  }
+}

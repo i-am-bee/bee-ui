@@ -119,8 +119,9 @@ interface Props
   id: string;
   labelText: ReactNode;
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   invalid?: boolean;
+  readOnly?: boolean;
 }
 
 export function EditableSyntaxHighlighter({
@@ -129,6 +130,7 @@ export function EditableSyntaxHighlighter({
   value,
   onChange,
   invalid,
+  readOnly,
   ...props
 }: Props) {
   return (
@@ -140,15 +142,17 @@ export function EditableSyntaxHighlighter({
           {value.at(-1) === '\n' ? `${value} ` : value}
         </SyntaxHighlighter>
 
-        <textarea
-          {...props}
-          id={id}
-          className={classes.textarea}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          spellCheck="false"
-          aria-invalid={invalid || undefined}
-        />
+        {!readOnly && (
+          <textarea
+            {...props}
+            id={id}
+            className={classes.textarea}
+            value={value}
+            onChange={(event) => onChange?.(event.target.value)}
+            spellCheck="false"
+            aria-invalid={invalid || undefined}
+          />
+        )}
 
         {invalid && <WarningFilled className={classes.invalidIcon} />}
       </div>

@@ -19,7 +19,7 @@ import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolDisableModal } from '@/modules/tools/manage/ToolDisableModal';
-import { ToolEditModal } from '@/modules/tools/manage/ToolEditModal';
+import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { TOOLS_DEFAULT_PAGE_SIZE, toolsQuery } from '@/modules/tools/queries';
 import { getToolReference } from '@/modules/tools/utils';
 import { Button, InlineLoading } from '@carbon/react';
@@ -120,7 +120,7 @@ export function ToolsList({ enableFetch }: Props) {
             )}
             onEditClick={() =>
               openModal((props) => (
-                <ToolEditModal
+                <UserToolModal
                   {...props}
                   project={project}
                   tool={tool}

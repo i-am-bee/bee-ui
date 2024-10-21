@@ -20,7 +20,9 @@ import {
   ComponentProps,
   PropsWithChildren,
   ReactElement,
+  useEffect,
   useId,
+  useRef,
   useState,
 } from 'react';
 import classes from './CardsList.module.scss';
@@ -75,8 +77,8 @@ export function CardsList<T extends OrderBy>({
   onSearchChange,
   children,
 }: PropsWithChildren<Props<T>>) {
-  const id = useId();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string | null>(null);
+  const isEmpty = useRef(false);
 
   const { ref: fetchMoreAnchorRef } = useFetchNextPageInView({
     onFetchNextPage,
@@ -85,18 +87,22 @@ export function CardsList<T extends OrderBy>({
   });
 
   const noResults = totalCount === 0 && !isFetching;
-  const isEmpty = noResults && !search;
+
+  if (noResults && search == null) isEmpty.current = true;
+
+  const showBarWithNewButton =
+    (onSearchChange || newButtonProps) && !isEmpty.current;
 
   return (
     <section className={classes.root}>
       {(onSearchChange || heading || orderByProps || newButtonProps) && (
         <header className={classes.header}>
-          {(onSearchChange || newButtonProps) && (
+          {showBarWithNewButton && (
             <div className={classes.searchBar}>
               {onSearchChange && (
                 <SearchInput
                   placeholder={searchPlaceholder}
-                  value={search}
+                  value={search ?? ''}
                   onChange={({ target: { value } }) => {
                     setSearch(value);
                     onSearchChange(value);
@@ -111,7 +117,7 @@ export function CardsList<T extends OrderBy>({
             <div className={classes.heading}>
               {heading && <h2>{heading}</h2>}
 
-              {orderByProps && !isEmpty && (
+              {orderByProps && !isEmpty.current && (
                 <div className={classes.order}>
                   <OrderBySelect<T> {...orderByProps} />
                 </div>
@@ -121,9 +127,9 @@ export function CardsList<T extends OrderBy>({
         </header>
       )}
 
-      {noResults && !error && (
+      {!error && (isEmpty.current || noResults) && (
         <div className={classes.empty}>
-          {!search ? (
+          {isEmpty.current ? (
             <>
               <p>{noItemsText}</p>
               {noItemsDescr && (
