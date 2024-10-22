@@ -18,42 +18,29 @@ import {
   MessageFeedback,
   MessageFeedbackCategories,
 } from '@/app/api/threads-messages/types';
-import { fadeProps } from '@/utils/fadeProps';
+import { useToast } from '@/layout/providers/ToastProvider';
 import { Button, IconButton, Tag, TextArea, usePrefix } from '@carbon/react';
 import { Close } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { AnimatePresence, motion } from 'framer-motion';
-import {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-} from 'react';
+import { PropsWithChildren, useCallback, useId, useMemo } from 'react';
 import { ControllerProps, useController } from 'react-hook-form';
 import { useMessageFeedback } from '../../providers/MessageFeedbackProvider';
 import classes from './MessageFeedbackForm.module.scss';
-import { useToast } from '@/layout/providers/ToastProvider';
 
 export function MessageFeedbackForm() {
-  const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   const { addToast } = useToast();
 
   const {
     form,
-    formOpen,
     closeForm,
     onSubmit,
     formState: { isSubmitting },
   } = useMessageFeedback();
 
   const handleSubmit = form.handleSubmit(
-    async ({ vote, contact_consent, categories, comment }) => {
-      await onSubmit({ vote, contact_consent, categories, comment }, () =>
-        closeForm(),
-      );
+    async ({ vote, categories, comment }) => {
+      await onSubmit({ vote, categories, comment }, () => closeForm());
     },
     (errors) => {
       const errorMessages = Object.values(errors).map(({ message }) => message);
@@ -64,94 +51,66 @@ export function MessageFeedbackForm() {
     },
   );
 
-  useEffect(() => {
-    if (!ref.current) return;
-
-    const handleClose = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as HTMLElement)) {
-        closeForm();
-      }
-    };
-
-    document.removeEventListener('click', handleClose);
-
-    if (formOpen) {
-      document.addEventListener('click', handleClose);
-    }
-    return () => document.removeEventListener('click', handleClose);
-  }, [formOpen, closeForm]);
-
   return (
-    <AnimatePresence>
-      {formOpen && (
-        <motion.div
-          {...fadeProps()}
-          key={`${id}:root`}
-          ref={ref}
-          className={classes.root}
+    <>
+      <header className={classes.header}>
+        <IconButton
+          kind="ghost"
+          wrapperClasses={classes.closeButton}
+          label="Close"
+          onClick={() => closeForm()}
+          size="sm"
         >
-          <>
-            <header className={classes.header}>
-              <IconButton
-                kind="ghost"
-                wrapperClasses={classes.closeButton}
-                label="Close"
-                onClick={() => closeForm()}
-                size="sm"
+          <Close />
+        </IconButton>
+
+        <h3 className={classes.heading}>What went wrong?</h3>
+      </header>
+
+      <form onSubmit={handleSubmit}>
+        <ul className={classes.list}>
+          {CATEGORIES.map(({ id, label }) => {
+            return (
+              <Item
+                key={id}
+                value={id}
+                controllerProps={{
+                  control: form.control,
+                  name: 'categories',
+                }}
               >
-                <Close />
-              </IconButton>
+                {label}
+              </Item>
+            );
+          })}
+        </ul>
 
-              <h3 className={classes.heading}>What went wrong?</h3>
-            </header>
+        <TextArea
+          className={classes.comment}
+          id={`${id}:comment`}
+          labelText="Comments (optional)"
+          placeholder="Add more details on what went wrong and how the answer could be improved"
+          rows={4}
+          {...form.register('comment', {
+            maxLength: {
+              value: COMMENT_MAX_LENGTH,
+              message: `Comments field can have maximum length of ${COMMENT_MAX_LENGTH} characters`,
+            },
+          })}
+        />
 
-            <form onSubmit={handleSubmit}>
-              <ul className={classes.list}>
-                {CATEGORIES.map(({ id, label }) => {
-                  return (
-                    <Item
-                      key={id}
-                      value={id}
-                      controllerProps={{
-                        control: form.control,
-                        name: 'categories',
-                      }}
-                    >
-                      {label}
-                    </Item>
-                  );
-                })}
-              </ul>
-
-              <TextArea
-                className={classes.comment}
-                id={`${id}:comment`}
-                labelText="Comments (optional)"
-                placeholder="Add more details on what went wrong and how the answer could be improved"
-                rows={4}
-                {...form.register('comment', {
-                  maxLength: {
-                    value: COMMENT_MAX_LENGTH,
-                    message: `Comments field can have maximum length of ${COMMENT_MAX_LENGTH} characters`,
-                  },
-                })}
-              />
-
-              <div className={classes.submit}>
-                <Button
-                  type="submit"
-                  size="md"
-                  kind="secondary"
-                  disabled={isSubmitting}
-                >
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        <div className={classes.submit}>
+          <Button
+            type="submit"
+            size="md"
+            kind="secondary"
+            disabled={isSubmitting}
+          >
+            Submit
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }
 

@@ -62,6 +62,5 @@ export type MessageFeedbackCategories =
 export type MessageFeedback = {
   categories?: MessageFeedbackCategories[];
   comment?: string;
-  contact_consent?: boolean;
   vote?: 'up' | 'down';
 };

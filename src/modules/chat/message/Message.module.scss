@@ -154,21 +154,3 @@
     inline-size: rem(24px);
   }
 }
-
-.feedbackFormWrapper {
-  position: absolute;
-  inset-inline: $grid-margin;
-  inset-block: rem(-16px) 0;
-  pointer-events: none;
-}
-
-.feedbackFormContainer {
-  inline-size: calc((100vw - 100%) / 2);
-  max-inline-size: calc(#{rem(288px)} + (2 * #{$grid-margin}));
-  min-inline-size: rem(232px);
-  margin-inline-start: 100%;
-  padding: 0 $grid-margin $spacing-06;
-  min-block-size: 100%;
-  position: absolute;
-  inset-block-end: 0;
-}

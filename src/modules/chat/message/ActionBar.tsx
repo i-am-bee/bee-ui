@@ -19,12 +19,13 @@ import { CopyButton, IconButton, InlineLoading } from '@carbon/react';
 import { Reset } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useId } from 'react';
+import { useEffect, useId } from 'react';
 import { useRetry } from '../hooks/useRetry';
 import { useChat } from '../providers/ChatProvider';
+import { useMessageFeedback } from '../providers/MessageFeedbackProvider';
 import { ChatMessage } from '../types';
 import classes from './ActionBar.module.scss';
-import { MessageFeedbackTrigger } from './feedback/MessageFeedbackTrigger';
+import { MessageFeedback } from './feedback/MessageFeedback';
 
 interface Props {
   message: ChatMessage;
@@ -38,6 +39,14 @@ export function ActionBar({ message, visible, isPast, className }: Props) {
   const { pending, retry, isDeleting } = useRetry(message);
   const { assistant } = useChat();
 
+  const { closeForm } = useMessageFeedback();
+
+  useEffect(() => {
+    if (!visible) {
+      closeForm();
+    }
+  }, [visible, closeForm]);
+
   return (
     <AnimatePresence>
       {visible && (
@@ -48,7 +57,8 @@ export function ActionBar({ message, visible, isPast, className }: Props) {
           className={clsx(className, classes.root)}
         >
           <>
-            <MessageFeedbackTrigger btnWrapperClasses={classes.btnWrapper} />
+            <MessageFeedback btnWrapperClasses={classes.btnWrapper} />
+
             <div className={classes.btnWrapper}>
               <CopyButton
                 kind="ghost"
@@ -59,6 +69,7 @@ export function ActionBar({ message, visible, isPast, className }: Props) {
                 }}
               />
             </div>
+
             {!isPast && (
               <div className={classes.btnWrapper}>
                 <IconButton
