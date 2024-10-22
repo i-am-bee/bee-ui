@@ -16,11 +16,11 @@
 
 import { ApiError } from '@/app/api/errors';
 import {
-  getThread,
   listMessagesWithFiles,
   listRuns,
   MESSAGES_PAGE_SIZE,
   readAssistant,
+  readThread,
 } from '@/app/api/rsc';
 import { ThreadMetadata } from '@/app/api/threads/types';
 import { decodeMetadata } from '@/app/api/utils';
@@ -46,7 +46,7 @@ export default async function ThreadPage({
 }: Props) {
   let thread, assistantResult;
   try {
-    thread = await getThread(projectId, threadId);
+    thread = await readThread(projectId, threadId);
     if (!thread) notFound();
   } catch (e) {
     const apiError = handleApiError(e);

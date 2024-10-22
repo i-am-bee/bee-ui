@@ -56,6 +56,8 @@
   flex-shrink: 0;
   display: flex;
   margin-block: rem(10px);
+  z-index: 1;
+  position: relative;
   svg {
     fill: currentColor;
   }

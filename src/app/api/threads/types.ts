@@ -26,6 +26,7 @@ export interface ThreadMetadata {
   assistantName?: string;
   assistantId?: string;
   title?: string;
+  approvedTools?: string[];
 }
 
 export type ThreadsListResponse =

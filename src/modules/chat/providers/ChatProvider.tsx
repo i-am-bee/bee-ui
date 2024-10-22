@@ -15,16 +15,10 @@
  */
 
 'use client';
-import { createThread, updateThread } from '@/app/api/threads';
 import { createMessage } from '@/app/api/threads-messages';
 import { cancelRun } from '@/app/api/threads-runs';
 import { RunsListResponse, ToolApprovals } from '@/app/api/threads-runs/types';
-import {
-  Thread,
-  ThreadCreateBody,
-  ThreadMetadata,
-  ThreadUpdateBody,
-} from '@/app/api/threads/types';
+import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
 import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
 import { useLatestRef } from '@/hooks';
@@ -52,6 +46,7 @@ import truncate from 'lodash/truncate';
 import {
   createContext,
   Dispatch,
+  MutableRefObject,
   PropsWithChildren,
   SetStateAction,
   use,
@@ -69,12 +64,15 @@ import {
   ChatMessage,
   MessageWithFiles,
   ThreadAssistant,
+  ToolApprovalValue,
   UserChatMessage,
 } from '../types';
 import { getThreadVectorStoreId, isBotMessage } from '../utils';
 import { AssistantModalProvider } from './AssistantModalProvider';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
+import { useThreadApi } from '../hooks/useThreadApi';
+import { useStateWithRef } from '@/hooks/useStateWithRef';
 
 interface CancelRunParams {
   threadId: string;
@@ -109,7 +107,7 @@ export function ChatProvider({
     CHAT_CONTROLLER_DEFAULT,
   );
   const controllerRef = useLatestRef(controller);
-  const [thread, setThread] = useState(initialThread || null);
+  const [thread, setThread, threadRef] = useStateWithRef(initialThread || null);
   const [disabledTools, setDisabledTools] = useState<ToolsUsage>([]);
   const {
     files,
@@ -136,33 +134,10 @@ export function ChatProvider({
       cancelRun(project.id, threadId, runId),
   });
 
-  const { mutateAsync: mutateCreateThread } = useMutation({
-    mutationFn: (body: ThreadCreateBody) => createThread(project.id, body),
-    meta: {
-      errorToast: {
-        title: 'Failed to create session',
-        includeErrorMessage: true,
-      },
-    },
-  });
-
-  // const { mutate: mutateDeleteThread } = useMutation({
-  //   mutationFn: (id: string) => deleteThread(project.id, id),
-  //   meta: {
-  //     errorToast: false,
-  //   },
-  // });
-
-  const { mutateAsync: mutateUpdateThread } = useMutation({
-    mutationFn: (params: ThreadUpdateBody) =>
-      updateThread(project.id, thread?.id ?? '', params),
-    meta: {
-      errorToast: {
-        title: 'Failed to update the session',
-        includeErrorMessage: true,
-      },
-    },
-  });
+  const {
+    updateMutation: { mutateAsync: mutateUpdateThread },
+    createMutation: { mutateAsync: mutateCreateThread },
+  } = useThreadApi(thread);
 
   // const { data: runs } = useQuery({
   //   ...runsQuery(project.id, thread!.id, { limit: 100 }),
@@ -240,7 +215,7 @@ export function ChatProvider({
       setThread(null);
       resetFiles();
     },
-    [controllerRef, resetFiles, setMessages],
+    [controllerRef, resetFiles, setMessages, setThread],
   );
 
   const clear = useCallback(() => reset([]), [reset]);
@@ -294,7 +269,15 @@ export function ChatProvider({
 
       return createdThread;
     },
-    [assistant, mutateCreateThread, mutateUpdateThread, thread, vectorStoreId],
+    [
+      assistant?.id,
+      assistant?.name,
+      mutateCreateThread,
+      mutateUpdateThread,
+      setThread,
+      thread,
+      vectorStoreId,
+    ],
   );
 
   ensureThreadRef.current = ensureThread;
@@ -331,6 +314,28 @@ export function ChatProvider({
   const setStatus = (status: ChatStatus) => {
     setController((controller) => ({ ...controller, status }));
   };
+
+  const getToolApprovals = useCallback(() => {
+    const approvedTools = decodeMetadata<ThreadMetadata>(
+      threadRef.current?.metadata,
+    ).approvedTools;
+    const tools = getUsedTools();
+    return tools.reduce((toolApprovals, tool) => {
+      const toolId = getToolUsageId(tool);
+
+      if (isNotNull(toolId) && isExternalTool(tool.type, toolId)) {
+        toolApprovals[toolId] = {
+          require: approvedTools?.includes(toolId) ? 'never' : 'always',
+        };
+      }
+
+      return toolApprovals;
+    }, {} as NonNullable<ToolApprovals>);
+  }, [getUsedTools, threadRef]);
+
+  const handleToolApprovalRef = useRef<
+    ((value: ToolApprovalValue) => void) | null
+  >(null);
 
   const handleError = useHandleError();
   const sendMessage = useCallback(
@@ -455,18 +460,21 @@ export function ChatProvider({
           setMessagesWithFilesQueryData(thread.id, newMessage);
         }
 
+        const approvedTools = decodeMetadata<ThreadMetadata>(
+          thread?.metadata,
+        ).approvedTools;
         const tools = getUsedTools();
-        // const toolApprovals = tools.reduce((toolApprovals, tool) => {
-        //   const toolId = getToolUsageId(tool);
+        const toolApprovals = tools.reduce((toolApprovals, tool) => {
+          const toolId = getToolUsageId(tool);
 
-        //   if (isNotNull(toolId) && isExternalTool(tool.type, toolId)) {
-        //     toolApprovals[toolId] = {
-        //       require: 'always',
-        //     };
-        //   }
+          if (isNotNull(toolId) && isExternalTool(tool.type, toolId)) {
+            toolApprovals[toolId] = {
+              require: approvedTools?.includes(toolId) ? 'never' : 'always',
+            };
+          }
 
-        //   return toolApprovals;
-        // }, {} as NonNullable<ToolApprovals>);
+          return toolApprovals;
+        }, {} as NonNullable<ToolApprovals>);
 
         await chatStream({
           projectId: project.id,
@@ -475,8 +483,9 @@ export function ChatProvider({
           body: {
             assistant_id: assistant.id,
             tools,
-            // tool_approvals: toolApprovals,
+            tool_approvals: toolApprovals,
           },
+          onToolApprovalSubmitRef: handleToolApprovalRef,
           abortController,
           setStatus,
           setMessages,
@@ -559,6 +568,7 @@ export function ChatProvider({
       setThread,
       setDisabledTools,
       getThreadTools,
+      onToolApprovalSubmitRef: handleToolApprovalRef,
       thread,
       assistant: {
         ...threadAssistant,
@@ -577,7 +587,7 @@ export function ChatProvider({
       reset,
       setMessages,
       sendMessage,
-      setDisabledTools,
+      setThread,
       getThreadTools,
       thread,
       threadAssistant,
@@ -621,6 +631,9 @@ type ChatContextValue = {
   disabledTools: ToolsUsage;
   setDisabledTools: Dispatch<SetStateAction<ToolsUsage>>;
   getThreadTools: () => ToolsUsage;
+  onToolApprovalSubmitRef: MutableRefObject<
+    ((value: ToolApprovalValue) => void) | null
+  >;
 };
 
 const ChatContext = createContext<ChatContextValue>(

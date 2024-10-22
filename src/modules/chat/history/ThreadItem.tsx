@@ -57,6 +57,7 @@ import {
 } from './useGetThreadAssistant';
 import truncate from 'lodash/truncate';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useThreadApi } from '../hooks/useThreadApi';
 
 interface Props {
   thread: Thread;
@@ -136,35 +137,9 @@ export function ThreadItem({ thread }: Props) {
       },
     });
 
-  const { mutateAsync: mutateUpdateThread } = useMutation({
-    mutationFn: (body: ThreadUpdateBody) =>
-      updateThread(project.id, thread.id, body),
-    onSuccess: (data) => {
-      queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-        threadsQuery(project.id).queryKey,
-        produce((draft) => {
-          if (!draft?.pages) return null;
-          for (const page of draft.pages) {
-            const index = page.data.findIndex((item) => item.id === thread.id);
-
-            if (index >= 0 && data) {
-              page?.data.splice(index, 1, data);
-            }
-          }
-        }),
-      );
-
-      queryClient.invalidateQueries({
-        queryKey: threadsQuery(project.id).queryKey,
-      });
-    },
-    meta: {
-      errorToast: {
-        title: 'Failed to update session',
-        includeErrorMessage: true,
-      },
-    },
-  });
+  const {
+    updateMutation: { mutateAsync: mutateUpdateThread },
+  } = useThreadApi(thread);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (values) => {
@@ -183,7 +158,7 @@ export function ThreadItem({ thread }: Props) {
         }),
       });
     },
-    [reset, mutateUpdateThread, metadata, title],
+    [title, mutateUpdateThread, metadata, reset],
   );
 
   const heading =

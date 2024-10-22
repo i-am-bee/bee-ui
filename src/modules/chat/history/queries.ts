@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-import { listThreads } from '@/app/api/threads';
+import { listThreads, readThread } from '@/app/api/threads';
 import { ThreadMetadata } from '@/app/api/threads/types';
 import { decodeMetadata } from '@/app/api/utils';
 import { isNotNull } from '@/utils/helpers';
-import { QueryClient, infiniteQueryOptions } from '@tanstack/react-query';
+import {
+  QueryClient,
+  infiniteQueryOptions,
+  queryOptions,
+} from '@tanstack/react-query';
 
 export const PAGE_SIZE = 20;
 
@@ -72,4 +76,17 @@ export function lastThreadQuery(projectId: string) {
       },
     },
   };
+}
+
+export function threadQuery(projectId: string, threadId: string) {
+  return queryOptions({
+    queryKey: ['thread', projectId, threadId],
+    queryFn: () => readThread(projectId, threadId),
+    meta: {
+      errorToast: {
+        title: 'Failed to load thread',
+        includeErrorMessage: true,
+      },
+    },
+  });
 }

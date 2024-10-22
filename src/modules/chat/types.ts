@@ -50,3 +50,5 @@ export type BotChatMessage = ChatMessageBase & {
 };
 
 export type ChatMessage = UserChatMessage | BotChatMessage;
+
+export type ToolApprovalValue = 'always' | 'once' | 'decline';

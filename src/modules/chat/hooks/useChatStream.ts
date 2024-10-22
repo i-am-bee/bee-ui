@@ -26,12 +26,17 @@ import {
   isMessageCompletedEventResponse,
   isMessageCreatedEventResponse,
   isMessageDeltaEventResponse,
+  isRequiredActionToolApprovals,
   isRequiredActionToolOutput,
   isRunEventResponse,
   isStepDeltaEventResponse,
   isStepEventResponse,
 } from '@/app/api/threads-runs/utils';
-import { SubmitToolOutput, SubmitToolOutputsBody } from '@/app/api/tools/types';
+import {
+  SubmitToolApprovalsBody,
+  SubmitToolOutput,
+  SubmitToolOutputsBody,
+} from '@/app/api/tools/types';
 import {
   getProjectHeaders,
   handleFailedResponse,
@@ -46,14 +51,16 @@ import {
   EventStreamContentType,
   fetchEventSource,
 } from '@ai-zen/node-fetch-event-source';
-import { MutableRefObject } from 'react';
+import { MutableRefObject, RefObject } from 'react';
 import {
   updatePlanWithRunStep,
   updatePlanWithRunStepDelta,
 } from '../assistant-plan/utils';
 import { ChatStatus } from '../providers/ChatProvider';
-import { ChatMessage } from '../types';
+import { ChatMessage, ToolApprovalValue } from '../types';
 import { isBotMessage } from '../utils';
+import { useQueryClient } from '@tanstack/react-query';
+import { readRunQuery } from '../queries';
 
 interface ChatStreamParams {
   projectId: string;
@@ -61,23 +68,29 @@ interface ChatStreamParams {
   runIdRef: MutableRefObject<string | null>;
   body: RunsCreateBody | SubmitToolOutputsBody;
   abortController: AbortController;
+  onToolApprovalSubmitRef: MutableRefObject<
+    ((value: ToolApprovalValue) => void) | null
+  >;
   setStatus: (status: ChatStatus) => void;
   setMessages: Updater<ChatMessage[]>;
   onMessageCompleted: (response: MessageCompletedEventResponse) => void;
 }
 
 export function useChatStream() {
+  const queryClient = useQueryClient();
+
   async function chatStream({
     projectId,
     threadId,
     runIdRef,
     body,
     abortController,
+    onToolApprovalSubmitRef,
     setStatus,
     setMessages,
     onMessageCompleted,
   }: ChatStreamParams) {
-    let callsQueue: Promise<void>[] = [
+    const callsQueue: Promise<void>[] = [
       fetchEventStream({
         url: `/api/v1/threads/${threadId}/runs`,
         projectId,
@@ -127,46 +140,43 @@ export function useChatStream() {
       });
     };
 
-    // const processToolApprovals = async (
-    //   runId: string,
-    //   action: RequiredActionToolApprovals,
-    // ) => {
-    //   setStatus('waiting');
+    const processToolApprovals = async (
+      runId: string,
+      action: RequiredActionToolApprovals,
+    ) => {
+      setStatus('waiting');
 
-    //   console.log(action);
+      queryClient.invalidateQueries({
+        queryKey: readRunQuery(projectId, threadId, runId).queryKey,
+      });
 
-    //   const functionToolCalls = action.submit_tool_outputs.tool_calls.filter(
-    //     (toolCall) => toolCall.type === 'function',
-    //   );
+      const toolCallId = action.submit_tool_approvals.tool_calls.at(0)?.id;
+      if (!toolCallId) return;
 
-    //   const outputs: SubmitToolOutput[] = await Promise.all(
-    //     functionToolCalls?.map(async (toolCall) => {
-    //       let output = '';
+      const waitForApproval = new Promise<ToolApprovalValue>((resolve) => {
+        onToolApprovalSubmitRef.current = resolve;
+      });
 
-    //       if (toolCall.function.name === FunctionTool.UserCoordinates) {
-    //         output = await getUserLocation();
-    //       }
+      const result = await waitForApproval;
 
-    //       return {
-    //         tool_call_id: toolCall.id,
-    //         output,
-    //       };
-    //     }) ?? [],
-    //   );
+      setStatus('fetching');
 
-    //   setStatus('fetching');
-
-    //   await fetchEventStream({
-    //     url: `/api/v1/threads/${threadId}/runs/${runId}/submit_tool_approvals`,
-    //     body: {
-    //       tool_approvals: [],
-    //     },
-    //     projectId,
-    //     abortController,
-    //     setMessages,
-    //     handleRunEventResponse,
-    //   });
-    // };
+      await fetchEventStream({
+        url: `/api/v1/threads/${threadId}/runs/${runId}/submit_tool_approvals`,
+        body: {
+          tool_approvals: [
+            {
+              tool_call_id: toolCallId,
+              approve: result !== 'decline',
+            },
+          ],
+        },
+        projectId,
+        abortController,
+        setMessages,
+        handleRunEventResponse,
+      });
+    };
 
     async function handleRunEventResponse(response: RunsCreateResponse) {
       if (response.event === 'thread.run.created') {
@@ -233,6 +243,15 @@ export function useChatStream() {
         callsQueue.push(
           processToolOutput(response.data.id, response.data.required_action),
         );
+      } else if (
+        isRunEventResponse(response) &&
+        response.event === 'thread.run.requires_action' &&
+        response.data &&
+        isRequiredActionToolApprovals(response.data?.required_action)
+      ) {
+        callsQueue.push(
+          processToolApprovals(response.data.id, response.data.required_action),
+        );
       }
     }
 
@@ -258,7 +277,7 @@ async function fetchEventStream({
   projectId: string;
   url: string;
   handleRunEventResponse: (response: RunsCreateResponse) => void;
-  body: RunsCreateBody | SubmitToolOutputsBody;
+  body: RunsCreateBody | SubmitToolOutputsBody | SubmitToolApprovalsBody;
   abortController: AbortController;
   setMessages: Updater<ChatMessage[]>;
 }) {

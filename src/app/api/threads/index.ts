@@ -29,7 +29,7 @@ export async function listThreads(projectId: string, query: ThreadsListQuery) {
   return res.data;
 }
 
-export async function getThread(projectId: string, id: string) {
+export async function readThread(projectId: string, id: string) {
   const res = await client.GET('/v1/threads/{thread_id}', {
     params: {
       path: {

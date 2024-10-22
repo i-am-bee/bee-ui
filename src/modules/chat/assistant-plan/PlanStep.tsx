@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { AssistantPlanStep, StepToolCall } from '@/app/api/threads-runs/types';
+import {
+  AssistantPlanStep,
+  StepToolCall,
+  ThreadRun,
+} from '@/app/api/threads-runs/types';
 import { ExpandPanel } from '@/components/ExpandPanel/ExpandPanel';
 import { ExpandPanelButton } from '@/components/ExpandPanelButton/ExpandPanelButton';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
@@ -25,14 +29,17 @@ import {
   getToolIcon,
   getToolName,
 } from '@/modules/tools/utils';
+import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
 import { Button } from '@carbon/react';
 import {
+  CarbonIconType,
   CheckmarkFilled,
+  ErrorFilled,
   ErrorOutline,
   WarningFilled,
 } from '@carbon/react/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import JSON5 from 'json5';
 import {
@@ -53,6 +60,13 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import classes from './PlanStep.module.scss';
 import { toolQuery } from './queries';
+import { ToolApprovalValue } from '../types';
+import { readRunQuery } from '../queries';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useThreadApi } from '../hooks/useThreadApi';
+import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
+import { ThreadMetadata } from '@/app/api/threads/types';
 
 interface Props {
   step: AssistantPlanStep;
@@ -64,17 +78,23 @@ export function PlanStep({ step, toolCall }: Props) {
   const triggerId = `${id}:trigger`;
   const panelId = `${id}:panel`;
 
-  // const { run } = useRunContext();
-  // const { assistant } = useChat();
+  const { run } = useRunContext();
+  const { assistant, thread, onToolApprovalSubmitRef, setThread } = useChat();
   const { project } = useAppContext();
   const { trace } = useTraceData();
+
+  const queryClient = useQueryClient();
+
+  const {
+    updateMutation: { mutate: mutateUpdateThread },
+  } = useThreadApi(thread);
 
   const stepTrace = useMemo(
     () => trace?.steps.find(({ stepId }) => stepId === step.id),
     [step.id, trace?.steps],
   );
 
-  const status = getStepStatus(step);
+  const status = getStepStatus(step, run);
 
   const toolKey = toolCall.type;
   const tool =
@@ -90,19 +110,6 @@ export function PlanStep({ step, toolCall }: Props) {
           }
         : { type: toolKey };
 
-  // const toolApproval = (
-  //   run?.status === 'requires_action' &&
-  //   run.required_action?.type === 'submit_tool_approvals'
-  //     ? run.required_action.submit_tool_approvals.tool_calls
-  //     : []
-  // )
-  //   .map((tool) => ({
-  //     id: tool.id,
-  //     toolId: getToolApprovalId(tool),
-  //     type: tool.type,
-  //   }))
-  //   .find((toolApproval) => toolApproval.toolId === tool.id);
-
   const [toolName, setToolName] = useState(getToolName(tool));
   const [userToolId, setUserToolId] = useState('');
   const ToolIcon = toolKey ? getToolIcon(tool) : null;
@@ -110,6 +117,44 @@ export function PlanStep({ step, toolCall }: Props) {
   const expandedStep = useExpandedStep();
   const { setExpandedStep } = useExpandedStepActions();
   const expanded = expandedStep === step.id;
+
+  const toolApproval = (
+    run?.status === 'requires_action' &&
+    // onToolApprovalSubmitRef.current &&
+    run.required_action?.type === 'submit_tool_approvals'
+      ? run.required_action.submit_tool_approvals.tool_calls
+      : []
+  )
+    .map((tool) => ({
+      id: tool.id,
+      toolId: getToolApprovalId(tool),
+      type: tool.type,
+    }))
+    .find((toolApproval) => toolApproval.toolId === tool.id);
+
+  const handleToolApprovalSubmit = (value: ToolApprovalValue) => {
+    if (value === 'always' && thread && toolApproval?.toolId) {
+      const metadata = decodeMetadata<ThreadMetadata>(thread.metadata);
+      metadata.approvedTools = [
+        ...(metadata.approvedTools ?? []),
+        toolApproval.toolId,
+      ];
+
+      const updatedThread = {
+        ...thread,
+        metadata: encodeMetadata<ThreadMetadata>(metadata),
+      };
+      mutateUpdateThread({ metadata: updatedThread.metadata });
+      setThread(updatedThread);
+    }
+
+    onToolApprovalSubmitRef.current?.(value);
+
+    queryClient.setQueryData(
+      readRunQuery(project.id, thread?.id ?? '', run?.id ?? '').queryKey,
+      (run) => (run ? { ...run, status: 'in_progress' as const } : undefined),
+    );
+  };
 
   const toggleExpand = useCallback(
     (forceOpen?: boolean) =>
@@ -137,11 +182,11 @@ export function PlanStep({ step, toolCall }: Props) {
     }
   }, [userTool]);
 
-  // useEffect(() => {
-  //   if (toolApproval) {
-  //     setExpandedStep(step.id);
-  //   }
-  // }, [toolApproval, step.id, setExpandedStep]);
+  useEffect(() => {
+    if (toolApproval) {
+      setExpandedStep(step.id);
+    }
+  }, [toolApproval, step.id, setExpandedStep]);
 
   return (
     <li className={clsx(classes.root, classes[`step--${status}`])}>
@@ -169,7 +214,7 @@ export function PlanStep({ step, toolCall }: Props) {
         >
           {isDetailEnabled && (
             <div className={classes.info}>
-              {/* {toolApproval && (
+              {toolApproval ? (
                 <div>
                   <p className={clsx(classes.label, classes.approvalLabel)}>
                     <span>{assistant.data?.name} wants to use</span>
@@ -185,64 +230,78 @@ export function PlanStep({ step, toolCall }: Props) {
                   </p>
 
                   <div className={classes.approvalActions}>
-                    <Button size="md" kind="secondary">
+                    <Button
+                      size="md"
+                      kind="secondary"
+                      onClick={() => handleToolApprovalSubmit('always')}
+                    >
                       Always allow
                     </Button>
 
-                    <Button size="md" kind="tertiary">
+                    <Button
+                      size="md"
+                      kind="tertiary"
+                      onClick={() => handleToolApprovalSubmit('once')}
+                    >
                       Allow once
                     </Button>
 
-                    <Button size="md" kind="tertiary">
+                    <Button
+                      size="md"
+                      kind="tertiary"
+                      onClick={() => handleToolApprovalSubmit('decline')}
+                    >
                       Decline
                     </Button>
                   </div>
                 </div>
-              )} */}
-
-              {step.thought && (
-                <div>
-                  <p className={classes.label}>Thought</p>
-                  <p className={classes.value}>{step.thought}</p>
-                </div>
-              )}
-
-              <div>
-                <p className={classes.label}>Tool</p>
-                <p className={classes.tool}>
-                  {ToolIcon && (
-                    <span className={classes.toolIcon}>
-                      <ToolIcon />
-                    </span>
+              ) : (
+                <AnimatePresence>
+                  {step.thought && (
+                    <motion.section {...fadeProps()} key="thought">
+                      <p className={classes.label}>Thought</p>
+                      <p className={classes.value}>{step.thought}</p>
+                    </motion.section>
                   )}
 
-                  <span>{toolName}</span>
-                </p>
-              </div>
+                  <div key="tool">
+                    <p className={classes.label}>Tool</p>
+                    <p className={classes.tool}>
+                      {ToolIcon && (
+                        <span className={classes.toolIcon}>
+                          <ToolIcon />
+                        </span>
+                      )}
 
-              {input && (
-                <div>
-                  <p className={classes.label}>Input</p>
-                  <div className={classes.result}>
-                    <LineClampText numberOfLines={2} code={input}>
-                      {input}
-                    </LineClampText>
+                      <span>{toolName}</span>
+                    </p>
                   </div>
-                </div>
-              )}
 
-              {result && (
-                <div>
-                  <p className={classes.label}>Result</p>
-                  <div className={classes.result}>
-                    <LineClampText numberOfLines={4} code={result}>
-                      {result}
-                    </LineClampText>
-                  </div>
-                </div>
-              )}
+                  {input && (
+                    <motion.section {...fadeProps()} key="input">
+                      <p className={classes.label}>Input</p>
+                      <div className={classes.result}>
+                        <LineClampText numberOfLines={2} code={input}>
+                          {input}
+                        </LineClampText>
+                      </div>
+                    </motion.section>
+                  )}
 
-              {stepTrace && <TraceInfoView data={stepTrace.data} />}
+                  {result && (
+                    <motion.section {...fadeProps()} key="result">
+                      <p className={classes.label}>Result</p>
+                      <div className={classes.result}>
+                        <LineClampText numberOfLines={4} code={result}>
+                          {result}
+                        </LineClampText>
+                      </div>
+                    </motion.section>
+                  )}
+
+                  {stepTrace && <TraceInfoView data={stepTrace.data} />}
+                </AnimatePresence>
+              )}
             </div>
           )}
         </ExpandPanel>
@@ -253,9 +312,15 @@ export function PlanStep({ step, toolCall }: Props) {
 
 type ExtendedStepStatus =
   | Exclude<AssistantPlanStep['status'], undefined>
-  | 'unknown';
+  | 'unknown'
+  | 'expired';
 
-const getStepStatus = (step: AssistantPlanStep): ExtendedStepStatus => {
+const getStepStatus = (
+  step: AssistantPlanStep,
+  run?: ThreadRun,
+): ExtendedStepStatus => {
+  if (step.status === 'in_progress' && run?.status === 'expired')
+    return 'expired';
   return step.status ?? 'unknown';
 };
 
@@ -263,9 +328,24 @@ const STEP_STATUS_ICON: Record<ExtendedStepStatus, ReactElement> = {
   completed: <CheckmarkFilled size={16} aria-label="finished" />,
   in_progress: <Spinner aria-label="executing" />,
   unknown: <WarningFilled size={16} aria-label="unknown" />,
-  failed: <WarningFilled size={16} aria-label="failed" />,
-  cancelled: <ErrorOutline size={16} aria-label="cancelled" />,
+  failed: <StepStatusIcon icon={ErrorFilled} label="Failed" />,
+  cancelled: <StepStatusIcon icon={ErrorOutline} label="Cancelled" />,
+  expired: <StepStatusIcon icon={ErrorOutline} label="Expired" />,
 };
+
+function StepStatusIcon({
+  icon: Icon,
+  label,
+}: {
+  icon: CarbonIconType;
+  label: string;
+}) {
+  return (
+    <Tooltip content={label} asChild placement="top">
+      <Icon size={16} aria-label={label} />
+    </Tooltip>
+  );
+}
 
 const parseJsonLikeString = (string: string): unknown | string => {
   try {

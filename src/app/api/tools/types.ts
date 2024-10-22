@@ -43,6 +43,9 @@ export type SubmitToolOutputsBody =
 
 export type SubmitToolOutput = SubmitToolOutputsBody['tool_outputs'][number];
 
+export type SubmitToolApprovalsBody =
+  paths['/v1/threads/{thread_id}/runs/{run_id}/submit_tool_approvals']['post']['requestBody']['content']['application/json'];
+
 export type ToolReference =
   | {
       type: 'system';
