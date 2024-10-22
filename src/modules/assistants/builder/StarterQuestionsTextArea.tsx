@@ -15,6 +15,7 @@
  */
 
 import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   dispatchChangeEventOnFormInputs,
   submitFormOnEnter,
@@ -38,6 +39,7 @@ interface FormValues {
 
 export function StarterQuestionsTextArea() {
   const formRef = useRef<HTMLFormElement>(null);
+  const { isProjectReadOnly } = useAppContext();
   const { register, watch, handleSubmit, reset } = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
@@ -109,11 +111,15 @@ export function StarterQuestionsTextArea() {
     }
   }, [reset]);
 
+  if (questions?.length === 0 && isProjectReadOnly) {
+    return;
+  }
+
   return (
     <form className={classes.root} onSubmit={submitForm} ref={formRef}>
       <FormLabel>Starter questions</FormLabel>
 
-      {!hasMaxQuestions && (
+      {!hasMaxQuestions && !isProjectReadOnly && (
         <div className={classes.addHolder}>
           <TextAreaAutoHeight
             className={clsx(classes.textarea, classes.addTextarea)}
@@ -142,22 +148,27 @@ export function StarterQuestionsTextArea() {
           {questions.map(({ id, question }) => (
             <li key={id} className={classes.item}>
               <TextAreaAutoHeight
-                className={clsx(classes.textarea, classes.itemTextarea)}
+                className={clsx(classes.textarea, classes.itemTextarea, {
+                  [classes.readOnlyTextarea]: isProjectReadOnly,
+                })}
                 rows={1}
                 defaultValue={question}
                 maxLength={MAX_QUESTION_LENGTH}
                 onChange={(event) => updateQuestion(id, event.target.value)}
+                readOnly={isProjectReadOnly}
               />
 
-              <IconButton
-                wrapperClasses={clsx(classes.button, classes.removeButton)}
-                label="Remove"
-                kind="ghost"
-                align="top-end"
-                onClick={() => removeQuestion(id)}
-              >
-                <Close />
-              </IconButton>
+              {!isProjectReadOnly && (
+                <IconButton
+                  wrapperClasses={clsx(classes.button, classes.removeButton)}
+                  label="Remove"
+                  kind="ghost"
+                  align="top-end"
+                  onClick={() => removeQuestion(id)}
+                >
+                  <Close />
+                </IconButton>
+              )}
             </li>
           ))}
         </ul>

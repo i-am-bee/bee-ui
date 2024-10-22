@@ -118,6 +118,19 @@
   }
 }
 
+.readOnlyTextarea {
+  &::after,
+  > textarea {
+    padding-inline-end: rem(15px);
+  }
+  > textarea {
+    &:active,
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
 .removeButton {
   &:global(.#{$prefix}--popover-container) {
     position: absolute;
