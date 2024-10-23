@@ -85,7 +85,8 @@ export function IconSelector({ disabled }: Props) {
             <div>
               {Object.entries(ASSISTANT_ICONS)
                 .filter(
-                  ([iconName]) => iconName !== 'Bee' && iconName !== 'PalmTree',
+                  ([iconName]) =>
+                    iconName !== 'Bee' && iconName !== 'BeeOutline',
                 )
                 .map(([iconName, Icon]) => (
                   <button

@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-import {
-  Book,
-  Bot,
-  Cafe,
-  Code,
-  Compare,
-  FaceWink,
-  FavoriteHalf,
-  Finance,
-  List,
-  Microscope,
-  Money,
-  PalmTree,
-  Rocket,
-  ToolKit,
-} from '@carbon/react/icons';
 import { clsx } from 'clsx';
 import has from 'lodash/has';
 import { ReactElement } from 'react';
@@ -84,20 +68,18 @@ export function AssistantIconColor({
 export const ASSISTANT_ICONS = {
   Bee: require('./Bee.svg').default,
   BeeOutline: require('./BeeOutline.svg').default,
-  Cafe: Cafe,
-  FaceWink: FaceWink,
-  Microscope: Microscope,
-  ToolKit: ToolKit,
-  Finance: Finance,
-  Money: Money,
-  Rocket: Rocket,
-  PalmTree: PalmTree,
-  Book: Book,
-  Code: Code,
-  FavoriteHalf: FavoriteHalf,
-  List: List,
-  Compare: Compare,
-  Bot: Bot,
+  BeeMain: require('./BeeMain.svg').default,
+  BeeA: require('./BeeA.svg').default,
+  BeeB: require('./BeeB.svg').default,
+  BeeC: require('./BeeC.svg').default,
+  BeeD: require('./BeeD.svg').default,
+  BeeE: require('./BeeE.svg').default,
+  BeeF: require('./BeeF.svg').default,
+  BeeG: require('./BeeG.svg').default,
+  BeeH: require('./BeeH.svg').default,
+  BeeJ: require('./BeeJ.svg').default,
+  BeeK: require('./BeeK.svg').default,
+  BeeL: require('./BeeL.svg').default,
 } as const;
 export type AssitantIconName = keyof typeof ASSISTANT_ICONS;
 
