@@ -68,6 +68,8 @@ export function AppHeader() {
     >
       <SkipToContent />
 
+      <div className={classes.hoverArea} />
+
       <div className={classes.topHolder}>
         <div className={classes.top}>
           <NavButton isOpen={sidebarOpen} />
