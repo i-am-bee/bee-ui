@@ -72,7 +72,7 @@ export function AssistantForm() {
               <SettingsFormGroup>
                 <InstructionsTextArea />
 
-                {/* <StarterQuestionsTextArea /> */}
+                <StarterQuestionsTextArea />
               </SettingsFormGroup>
             </TabPanel>
             <TabPanel>

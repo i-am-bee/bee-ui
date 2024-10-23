@@ -17,21 +17,23 @@
 'use client';
 
 import { MessageFeedback } from '@/app/api/threads-messages/types';
+import { ThreadRun } from '@/app/api/threads-runs/types';
 import {
-  PropsWithChildren,
   createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
   use,
   useCallback,
   useMemo,
   useState,
 } from 'react';
 import { FormState, UseFormReturn } from 'react-hook-form';
-import { useChat } from './ChatProvider';
 import {
   MESSAGE_FEEDBACK_FORM_DEFAULTS,
   useMessageFeedbackForm,
 } from '../message/feedback/useMessageFeedbackForm';
-import { ThreadRun } from '@/app/api/threads-runs/types';
+import { useChat } from './ChatProvider';
 
 export type MessageFeedbackContextValue = {
   onVoteClick: (vote: Vote) => void;
@@ -45,6 +47,7 @@ export type MessageFeedbackContextValue = {
     onSuccess?: (feedback?: MessageFeedback) => void,
   ) => Promise<MessageFeedback | undefined>;
   formState: FormState<MessageFeedback>;
+  setFormOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export const MessageFeedbackContext =
@@ -85,7 +88,7 @@ export function MessageFeedbackProvider({
         });
 
         form.handleSubmit(async () => {
-          await onSubmit({ vote, contact_consent: false });
+          await onSubmit({ vote });
         })();
       }
 
@@ -110,6 +113,7 @@ export function MessageFeedbackProvider({
       closeForm,
       onSubmit,
       formState,
+      setFormOpen,
     }),
     [
       run,
@@ -120,6 +124,7 @@ export function MessageFeedbackProvider({
       closeForm,
       onSubmit,
       formState,
+      setFormOpen,
     ],
   );
 

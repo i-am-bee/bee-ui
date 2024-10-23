@@ -21,33 +21,43 @@ import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAuto
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { AssistantBaseIcon } from '@/modules/assistants/icons/AssistantBaseIcon';
 import { lastAssistantsQuery } from '@/modules/assistants/library/queries';
+import {
+  dispatchChangeEventOnFormInputs,
+  submitFormOnEnter,
+} from '@/utils/formUtils';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { Send, StopOutlineFilled, WarningFilled } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { mergeRefs } from 'react-merge-refs';
 import { Attachment } from '../attachments/Attachment';
 import { AttachmentsList } from '../attachments/AttachmentsList';
 import { SendMessageResult, useChat } from '../providers/ChatProvider';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import { FilesMenu } from './FilesMenu';
 import classes from './InputBar.module.scss';
+import { PromptSuggestions } from './PromptSuggestions';
 import { ThreadSettings } from './ThreadSettings';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
 interface Props {
+  showSuggestions?: boolean;
   onMessageSubmit?: () => void;
   onMessageSent?: (result: SendMessageResult) => void;
 }
 
 export const InputBar = memo(function InputBar({
+  showSuggestions,
   onMessageSubmit,
   onMessageSent,
 }: Props) {
   const queryClient = useQueryClient();
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const [promptSuggestionsOpen, setPromptSuggestionsOpen] = useState(false);
   const {
     files,
     isPending: isFilesPending,
@@ -57,7 +67,7 @@ export const InputBar = memo(function InputBar({
   const { sendMessage, status, cancel, assistant, disabledTools } = useChat();
   const { project } = useAppContext();
 
-  const { register, watch, handleSubmit } = useForm<FormValues>({
+  const { register, watch, handleSubmit, setValue } = useForm<FormValues>({
     mode: 'onChange',
   });
 
@@ -68,16 +78,19 @@ export const InputBar = memo(function InputBar({
 
       formElem.reset();
 
-      // Manually trigger the 'change' event on each form element to correctly resize TextAreaAutoHeight
-      const inputs = formElem.querySelectorAll('input, textarea');
-
-      inputs.forEach((input) => {
-        const event = new Event('change', { bubbles: true });
-
-        input.dispatchEvent(event);
-      });
+      dispatchChangeEventOnFormInputs(formElem);
     }
   }, []);
+
+  const submitFormWithInput = (value: string) => {
+    const formElem = formRef.current;
+
+    if (!formElem) return;
+
+    setValue('input', value);
+
+    formElem.requestSubmit();
+  };
 
   const isPending = status !== 'ready';
 
@@ -86,6 +99,10 @@ export const InputBar = memo(function InputBar({
   const inputValue = watch('input');
 
   const isFileUploadEnabled = isFeatureEnabled(FeatureName.Files);
+
+  const { ref: inputFormRef, ...inputFormProps } = register('input', {
+    required: true,
+  });
 
   return (
     <form
@@ -158,14 +175,9 @@ export const InputBar = memo(function InputBar({
             rows={1}
             placeholder="Type your question or drag a document…"
             autoFocus
-            {...register('input', { required: true })}
-            onKeyDown={(e) => {
-              // Submit form on enter, shit+enter for a new line (default behaviour)
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                e.currentTarget.closest('form')?.requestSubmit();
-              }
-            }}
+            ref={mergeRefs([inputFormRef, inputRef])}
+            {...inputFormProps}
+            onKeyDown={submitFormOnEnter}
           />
           <div className={classes.submitBtnContainer}>
             {!isPending ? (
@@ -192,6 +204,15 @@ export const InputBar = memo(function InputBar({
               />
             )}
           </div>
+
+          {showSuggestions && (
+            <PromptSuggestions
+              inputRef={inputRef}
+              isOpen={promptSuggestionsOpen}
+              setIsOpen={setPromptSuggestionsOpen}
+              onSubmit={submitFormWithInput}
+            />
+          )}
         </div>
       </div>
 

@@ -42,7 +42,6 @@ import { ActionBar } from './ActionBar';
 import { ErrorMessage } from './ErrorMessage';
 import { MarkdownContent } from './MarkdownContent';
 import classes from './Message.module.scss';
-import { MessageFeedbackForm } from './feedback/MessageFeedbackForm';
 import { AttachmentLink } from './markdown/AttachmentLink';
 
 interface Props {
@@ -133,18 +132,11 @@ export const Message = memo(function Message({
             )}
           </div>
           {hasActions && (
-            <>
-              <ActionBar
-                visible={showActions}
-                message={message}
-                isPast={isPast}
-              />
-              <div className={classes.feedbackFormWrapper}>
-                <div className={classes.feedbackFormContainer}>
-                  <MessageFeedbackForm />
-                </div>
-              </div>
-            </>
+            <ActionBar
+              visible={showActions}
+              message={message}
+              isPast={isPast}
+            />
           )}
         </Container>
       </li>

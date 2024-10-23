@@ -27,7 +27,6 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 export const MESSAGE_FEEDBACK_FORM_DEFAULTS = {
   comment: '',
   categories: [],
-  contact_consent: false,
 };
 
 interface Props {
@@ -57,10 +56,10 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
       }
 
       const response = await updateRun(project.id, threadId, run.id, {
-        metadata: encodeMetadata<RunMetadata>({
+        metadata: {
           ...run.metadata,
-          feedback: body,
-        }),
+          ...encodeMetadata<RunMetadata>({ feedback: body }),
+        },
       });
       const { feedback } = decodeMetadata<RunMetadata>(response?.metadata);
 

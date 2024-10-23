@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-import { AssistantResult } from '@/app/api/assistants/types';
-import {
-  AssistantIconColor,
-  AssitantIconName,
-} from './icons/AssistantBaseIcon';
+@use 'styles/common' as *;
 
-export const STARTER_QUESTION_KEY_PREFIX = 'starterQuestion_';
-
-export interface AssistantMetadata extends StarterQuestionsMetadata {
-  icon?: AssitantIconName;
-  color?: AssistantIconColor;
+.ref {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
-export type Assistant = Omit<AssistantResult, 'metadata'> & {
-  metadata: AssistantMetadata;
-};
-
-export interface StarterQuestionsMetadata {
-  [key: `${typeof STARTER_QUESTION_KEY_PREFIX}${string}`]: string;
+.dialog {
+  background-color: $layer;
+  padding: $spacing-04;
+  border-radius: $spacing-03;
+  box-shadow: $box-shadow;
+  z-index: z('modal') - 1;
+  max-inline-size: rem(288px);
 }

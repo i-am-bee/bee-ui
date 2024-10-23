@@ -15,19 +15,167 @@
  */
 
 import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
-import { FormLabel } from '@carbon/react';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import {
+  dispatchChangeEventOnFormInputs,
+  submitFormOnEnter,
+} from '@/utils/formUtils';
+import { isNotNull } from '@/utils/helpers';
+import { FormLabel, IconButton } from '@carbon/react';
+import { Add, Close } from '@carbon/react/icons';
+import clsx from 'clsx';
+import { FormEvent, useCallback, useRef } from 'react';
+import { useController, useForm, useFormContext } from 'react-hook-form';
+import { v4 as uuid } from 'uuid';
+import {
+  AssistantFormValues,
+  StarterQuestion,
+} from './AssistantBuilderProvider';
 import classes from './StarterQuestionsTextArea.module.scss';
 
+interface FormValues {
+  input: string;
+}
+
 export function StarterQuestionsTextArea() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const { isProjectReadOnly } = useAppContext();
+  const { register, watch, handleSubmit, reset } = useForm<FormValues>({
+    mode: 'onChange',
+    defaultValues: {
+      input: '',
+    },
+  });
+  const { setValue } = useFormContext<AssistantFormValues>();
+  const {
+    field: { value: questions, onChange },
+  } = useController<AssistantFormValues, 'starterQuestions'>({
+    name: 'starterQuestions',
+  });
+
+  const inputValue = watch('input');
+
+  const hasMaxQuestions = questions && questions.length >= MAX_QUESTIONS;
+
+  const setQuestions = (questions?: StarterQuestion[]) => {
+    if (isNotNull(questions)) {
+      setValue('starterQuestions', questions);
+      onChange(questions);
+    }
+  };
+
+  const addQuestion = (question: string) => {
+    const newQuestion = {
+      id: uuid(),
+      question,
+    };
+
+    setQuestions(questions ? [...questions, newQuestion] : [newQuestion]);
+  };
+
+  const removeQuestion = (id: string) => {
+    setQuestions(questions?.filter((question) => question.id !== id));
+  };
+
+  const updateQuestion = (id: string, value: string) => {
+    setQuestions(
+      questions?.map((question) =>
+        question.id === id ? { ...question, question: value } : question,
+      ),
+    );
+  };
+
+  const submitForm = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    handleSubmit(({ input }) => {
+      if (hasMaxQuestions || !input.trim()) {
+        return;
+      }
+
+      addQuestion(input);
+      resetForm();
+    })();
+  };
+
+  const resetForm = useCallback(() => {
+    {
+      const formElem = formRef.current;
+
+      if (!formElem) {
+        return;
+      }
+
+      reset();
+      dispatchChangeEventOnFormInputs(formElem);
+    }
+  }, [reset]);
+
+  if (questions?.length === 0 && isProjectReadOnly) {
+    return;
+  }
+
   return (
-    <div className={classes.root}>
+    <form className={classes.root} onSubmit={submitForm} ref={formRef}>
       <FormLabel>Starter questions</FormLabel>
 
-      <TextAreaAutoHeight
-        className={classes.textarea}
-        placeholder="Type and add a question that users can select at the start of a new session"
-        rows={1}
-      />
-    </div>
+      {!hasMaxQuestions && !isProjectReadOnly && (
+        <div className={classes.addHolder}>
+          <TextAreaAutoHeight
+            className={clsx(classes.textarea, classes.addTextarea)}
+            placeholder="Type and add a question that users can select at the start of a new session"
+            rows={1}
+            maxLength={MAX_QUESTION_LENGTH}
+            onKeyDown={submitFormOnEnter}
+            {...register('input', { required: true })}
+          />
+
+          <IconButton
+            wrapperClasses={clsx(classes.button, classes.addButton)}
+            label="Enter the starter question to add"
+            kind="tertiary"
+            align="top-end"
+            disabled={!inputValue.trim()}
+            type="submit"
+          >
+            <Add />
+          </IconButton>
+        </div>
+      )}
+
+      {questions && (
+        <ul className={classes.list}>
+          {questions.map(({ id, question }) => (
+            <li key={id} className={classes.item}>
+              <TextAreaAutoHeight
+                className={clsx(classes.textarea, classes.itemTextarea, {
+                  [classes.readOnlyTextarea]: isProjectReadOnly,
+                })}
+                rows={1}
+                defaultValue={question}
+                maxLength={MAX_QUESTION_LENGTH}
+                onChange={(event) => updateQuestion(id, event.target.value)}
+                readOnly={isProjectReadOnly}
+              />
+
+              {!isProjectReadOnly && (
+                <IconButton
+                  wrapperClasses={clsx(classes.button, classes.removeButton)}
+                  label="Remove"
+                  kind="ghost"
+                  align="top-end"
+                  onClick={() => removeQuestion(id)}
+                >
+                  <Close />
+                </IconButton>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </form>
   );
 }
+
+const MAX_QUESTIONS = 3;
+const MAX_QUESTION_LENGTH = 512;

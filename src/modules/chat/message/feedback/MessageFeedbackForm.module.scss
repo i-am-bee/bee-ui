@@ -16,16 +16,6 @@
 
 @use 'styles/common' as *;
 
-.root {
-  background-color: $layer;
-  padding: $spacing-04;
-  border-radius: $spacing-03;
-  box-shadow: $box-shadow;
-  pointer-events: auto;
-  position: relative;
-  z-index: z('modal');
-}
-
 .header {
   display: flex;
   column-gap: $spacing-03;

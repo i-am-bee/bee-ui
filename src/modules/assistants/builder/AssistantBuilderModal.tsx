@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
+import { AssistantResult } from '@/app/api/assistants/types';
 import { Modal } from '@/components/Modal/Modal';
-import { Button, InlineLoading, ModalBody, ModalHeader } from '@carbon/react';
-import classes from './AssistantBuilderModal.module.scss';
+import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { Button, InlineLoading, ModalBody, ModalHeader } from '@carbon/react';
 import { useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
+import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
+import { Assistant } from '../types';
+import { AssistantBaseInfo } from './AssistantBaseInfo';
+import classes from './AssistantBuilderModal.module.scss';
 import {
   AssistantBuilderProvider,
   useAssistantBuilder,
   useAssistantBuilderApi,
 } from './AssistantBuilderProvider';
-import { Assistant } from '../types';
-import { AssistantBaseInfo } from './AssistantBaseInfo';
 import { AssistantForm } from './AssistantForm';
-import { Copy } from '@carbon/react/icons';
 import { useDeleteAssistant } from './useDeleteAssistant';
-import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
-import clsx from 'clsx';
-import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { AssistantResult } from '@/app/api/assistants/types';
 
 export interface AssistantBuilderProps {
   onSaveSuccess?: (result: AssistantResult, isNew: boolean) => void;
@@ -118,18 +117,19 @@ function AssistantBuilderModalContent({ onDeleteSuccess }: ContentProps) {
             <AssistantForm />
           </div>
         </div>
-        <div className={classes.actionBar}>
-          <div>
-            {assistant && !isProjectReadOnly && (
-              <Button kind="danger--ghost" onClick={deleteAssistant}>
-                Delete bee
-              </Button>
-            )}
-          </div>
+        {!isProjectReadOnly && (
+          <div className={classes.actionBar}>
+            <div>
+              {assistant && (
+                <Button kind="danger--ghost" onClick={deleteAssistant}>
+                  Delete bee
+                </Button>
+              )}
+            </div>
 
-          <div>
-            {/* Copy feature is not available anymore */}
-            {/* <Button
+            <div>
+              {/* Copy feature is not available anymore */}
+              {/* <Button
                 kind="tertiary"
                 className={classes.copyButton}
                 renderIcon={Copy}
@@ -138,23 +138,24 @@ function AssistantBuilderModalContent({ onDeleteSuccess }: ContentProps) {
                 Copy to customize
               </Button> */}
 
-            <Button
-              kind="secondary"
-              size="lg"
-              onClick={() => onSubmit()}
-              disabled={isSubmitting || isSaved}
-              className={classes.saveButton}
-            >
-              {isSubmitting ? (
-                <InlineLoading description="Saving..." />
-              ) : isSaved ? (
-                'Saved'
-              ) : (
-                'Save bee'
-              )}
-            </Button>
+              <Button
+                kind="secondary"
+                size="lg"
+                onClick={() => onSubmit()}
+                disabled={isSubmitting || isSaved}
+                className={classes.saveButton}
+              >
+                {isSubmitting ? (
+                  <InlineLoading description="Saving..." />
+                ) : isSaved ? (
+                  'Saved'
+                ) : (
+                  'Save bee'
+                )}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* <ModalFooter>
