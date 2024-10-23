@@ -52,12 +52,11 @@ import {
   EventStreamContentType,
   fetchEventSource,
 } from '@ai-zen/node-fetch-event-source';
-import { MutableRefObject, RefObject, useCallback, useRef } from 'react';
+import { MutableRefObject, RefObject } from 'react';
 import {
   updatePlanWithRunStep,
   updatePlanWithRunStepDelta,
 } from '../assistant-plan/utils';
-import { RunController, ChatStatus } from '../providers/ChatProvider';
 import { ChatMessage, ToolApprovalValue } from '../types';
 import { isBotMessage } from '../utils';
 import { useQueryClient } from '@tanstack/react-query';
@@ -65,6 +64,7 @@ import { readRunQuery } from '../queries';
 import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { getToolApprovalId } from '@/modules/tools/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { RunController } from '../providers/ChatProvider';
 
 interface ChatStreamParams {
   action:
@@ -143,7 +143,7 @@ export function useChatStream({
       updateController({ status: 'fetching' });
 
       await fetchEventStream({
-        url: `/api/v1/threads/${threadRef.current?.id}/runs/${runId}/submit_tool_outputs`,
+        url: `/api/v1/threads/${getThread()?.id}/runs/${runId}/submit_tool_outputs`,
         body: {
           tool_outputs: outputs,
         },
@@ -166,9 +166,7 @@ export function useChatStream({
       if (!toolApproval) return;
 
       const toolId = getToolApprovalId(toolApproval);
-      const approvedTools = decodeMetadata<ThreadMetadata>(
-        thread.metadata,
-      ).approvedTools;
+      const { approvedTools } = decodeMetadata<ThreadMetadata>(thread.metadata);
 
       let approve = toolId && approvedTools?.includes(toolId);
       if (!approve) {
@@ -277,17 +275,12 @@ export function useChatStream({
       } else if (
         isRunEventResponse(response) &&
         response.event === 'thread.run.requires_action' &&
-        response.data &&
-        isRequiredActionToolOutput(response.data?.required_action)
+        response.data
       ) {
-        callsQueue.push(requestToolOutput(response.data.required_action));
-      } else if (
-        isRunEventResponse(response) &&
-        response.event === 'thread.run.requires_action' &&
-        response.data &&
-        isRequiredActionToolApprovals(response.data?.required_action)
-      ) {
-        callsQueue.push(requestToolApprovals(response.data.required_action));
+        if (isRequiredActionToolOutput(response.data?.required_action))
+          callsQueue.push(requestToolOutput(response.data.required_action));
+        else if (isRequiredActionToolApprovals(response.data?.required_action))
+          callsQueue.push(requestToolApprovals(response.data.required_action));
       }
     }
 

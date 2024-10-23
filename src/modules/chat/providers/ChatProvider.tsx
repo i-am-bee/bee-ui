@@ -18,7 +18,6 @@
 import { createMessage } from '@/app/api/threads-messages';
 import { cancelRun } from '@/app/api/threads-runs';
 import {
-  RequiredActionToolApprovals,
   RunsListResponse,
   ThreadRun,
   ToolApprovals,
@@ -556,9 +555,9 @@ export function ChatProvider({
           setMessagesWithFilesQueryData(thread.id, newMessage);
         }
 
-        const approvedTools = decodeMetadata<ThreadMetadata>(
+        const { approvedTools } = decodeMetadata<ThreadMetadata>(
           thread?.metadata,
-        ).approvedTools;
+        );
         const tools = getUsedTools();
         const toolApprovals = tools.reduce((toolApprovals, tool) => {
           const toolId = getToolUsageId(tool);
