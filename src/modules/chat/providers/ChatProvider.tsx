@@ -17,11 +17,15 @@
 'use client';
 import { createMessage } from '@/app/api/threads-messages';
 import { cancelRun } from '@/app/api/threads-runs';
-import { RunsListResponse, ToolApprovals } from '@/app/api/threads-runs/types';
+import {
+  RequiredActionToolApprovals,
+  RunsListResponse,
+  ThreadRun,
+  ToolApprovals,
+} from '@/app/api/threads-runs/types';
 import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
 import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
-import { useLatestRef } from '@/hooks';
 import { Updater } from '@/hooks/useImmerWithGetter';
 import { useHandleError } from '@/layout/hooks/useHandleError';
 import {
@@ -73,6 +77,7 @@ import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
 import { useThreadApi } from '../hooks/useThreadApi';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
+import { isRequiredActionToolApprovals } from '@/app/api/threads-runs/utils';
 
 interface CancelRunParams {
   threadId: string;
@@ -80,14 +85,16 @@ interface CancelRunParams {
 }
 
 export type ChatStatus = 'ready' | 'fetching' | 'waiting';
-export interface ChatController {
+export interface RunController {
   abortController: AbortController | null;
   status: ChatStatus;
+  runId: string | null;
 }
 
-const CHAT_CONTROLLER_DEFAULT: ChatController = {
+const RUN_CONTROLLER_DEFAULT: RunController = {
   abortController: null,
   status: 'ready',
+  runId: null,
 };
 
 interface Props {
@@ -102,11 +109,8 @@ export function ChatProvider({
   initialData,
   children,
 }: PropsWithChildren<Props>) {
-  const runIdRef = useRef<string | null>(null);
-  const [controller, setController] = useState<ChatController>(
-    CHAT_CONTROLLER_DEFAULT,
-  );
-  const controllerRef = useLatestRef(controller);
+  const [controller, setController, controllerRef] =
+    useStateWithRef<RunController>(RUN_CONTROLLER_DEFAULT);
   const [thread, setThread, threadRef] = useStateWithRef(initialThread || null);
   const [disabledTools, setDisabledTools] = useState<ToolsUsage>([]);
   const {
@@ -120,13 +124,24 @@ export function ChatProvider({
   } = useFilesUpload();
   const { assistant, onPageLeaveRef, project } = useAppContext();
   const { selectAssistant } = useAppApiContext();
-  const { chatStream } = useChatStream();
   const queryClient = useQueryClient();
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const [getMessages, setMessages] = useMessages({
     thread,
     initialData,
+  });
+  const handleToolApprovalSubmitRef = useRef<
+    ((value: ToolApprovalValue) => void) | null
+  >(null);
+  const { chatStream } = useChatStream({
+    threadRef,
+    controllerRef,
+    onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
+    setMessages,
+    updateController: (data: Partial<RunController>) => {
+      setController((controller) => ({ ...controller, ...data }));
+    },
   });
 
   const { mutate: mutateCancel } = useMutation({
@@ -138,16 +153,6 @@ export function ChatProvider({
     updateMutation: { mutateAsync: mutateUpdateThread },
     createMutation: { mutateAsync: mutateCreateThread },
   } = useThreadApi(thread);
-
-  // const { data: runs } = useQuery({
-  //   ...runsQuery(project.id, thread!.id, { limit: 100 }),
-  // });
-
-  // const pendingRuns = runs?.data.filter(
-  //   (run) => run.status === 'requires_action',
-  // );
-
-  // pendingRuns?.forEach((run) => cancelRun(project.id, run.thread_id, run.id));
 
   // TODO: find a different solution, this is called just anytime
   // useEffect(() => {
@@ -174,10 +179,17 @@ export function ChatProvider({
       if (threadId) {
         queryClient.setQueryData(
           messagesWithFilesQuery(project.id, threadId).queryKey,
-          (messages) =>
-            (messages ? [...messages, newMessage] : [newMessage]).filter(
-              isNotNull,
-            ),
+          (messages) => {
+            if (!newMessage) return messages;
+
+            const existingIndex = messages?.findIndex(
+              (item) => item.id === newMessage.id,
+            );
+            if (existingIndex) {
+              return messages?.toSpliced(existingIndex, 1, newMessage);
+            }
+            return messages ? [...messages, newMessage] : [newMessage];
+          },
         );
       }
     },
@@ -210,12 +222,12 @@ export function ChatProvider({
   const reset = useCallback(
     (messages: ChatMessage[]) => {
       controllerRef.current.abortController?.abort();
-      setController(CHAT_CONTROLLER_DEFAULT);
+      setController(RUN_CONTROLLER_DEFAULT);
       setMessages(messages);
       setThread(null);
       resetFiles();
     },
-    [controllerRef, resetFiles, setMessages, setThread],
+    [controllerRef, resetFiles, setController, setMessages, setThread],
   );
 
   const clear = useCallback(() => reset([]), [reset]);
@@ -282,7 +294,102 @@ export function ChatProvider({
 
   ensureThreadRef.current = ensureThread;
 
-  // create last assistant message from last run, if errored
+  const handleError = useHandleError();
+
+  const handleCancelCurrentRun = useCallback(() => {
+    threadRef.current &&
+      controllerRef.current.runId &&
+      mutateCancel({
+        threadId: threadRef.current.id,
+        runId: controllerRef.current.runId,
+      });
+  }, [controllerRef, mutateCancel, threadRef]);
+
+  const handlRunCompleted = useCallback(() => {
+    const lastMessage = getMessages().at(-1);
+
+    queryClient.invalidateQueries({
+      queryKey: readRunQuery(
+        project.id,
+        thread?.id ?? '',
+        lastMessage?.run_id ?? '',
+      ).queryKey,
+    });
+
+    setController(RUN_CONTROLLER_DEFAULT);
+
+    setMessages((messages) => {
+      const lastMessage = messages.at(-1);
+      if (isBotMessage(lastMessage)) {
+        lastMessage.pending = false;
+      }
+    });
+  }, [
+    getMessages,
+    project.id,
+    queryClient,
+    setController,
+    setMessages,
+    thread?.id,
+  ]);
+
+  const requireUserApproval = useCallback(
+    async (run: ThreadRun) => {
+      const requiredAction = run.required_action;
+      if (
+        run.status !== 'requires_action' ||
+        !isRequiredActionToolApprovals(requiredAction) ||
+        controllerRef.current.status !== 'ready'
+      )
+        return;
+
+      const abortController = new AbortController();
+      setController({
+        abortController,
+        status: 'waiting',
+        runId: run.id,
+      });
+
+      handleToolApprovalSubmitRef.current = async (
+        result: ToolApprovalValue,
+      ) => {
+        try {
+          await chatStream({
+            action: {
+              id: 'process-approval',
+              requiredAction,
+              approve: result !== 'decline',
+            },
+            onMessageCompleted: (response) => {
+              setMessagesWithFilesQueryData(thread?.id, response.data);
+            },
+          });
+        } catch (err) {
+          handleError(err, { toast: false });
+        } finally {
+          handlRunCompleted();
+        }
+
+        const aborted = controller.abortController?.signal.aborted;
+        if (aborted) {
+          handleCancelCurrentRun();
+        }
+      };
+    },
+    [
+      chatStream,
+      controller.abortController?.signal.aborted,
+      controllerRef,
+      handlRunCompleted,
+      handleCancelCurrentRun,
+      handleError,
+      setController,
+      setMessagesWithFilesQueryData,
+      thread?.id,
+    ],
+  );
+
+  // check if last run finished successfully
   useEffect(() => {
     if (thread && getMessages().at(-1)?.role !== 'assistant') {
       queryClient
@@ -295,49 +402,39 @@ export function ChatProvider({
         )
         .then((data) => {
           const run = data?.data.at(0);
-          if (run)
+          if (run) {
+            if (
+              run.status === 'requires_action' &&
+              run.required_action?.type === 'submit_tool_approvals'
+            ) {
+              requireUserApproval(run);
+            }
+
             setMessages((messages) => {
               if (messages.at(-1)?.role !== 'assistant')
                 messages.push({
                   role: 'assistant',
                   content: '',
                   pending: false,
-                  error: Error(run.last_error?.message),
+                  error: run.last_error
+                    ? Error(run.last_error?.message)
+                    : undefined,
                   created_at: run.created_at ?? new Date().getTime(),
                   run_id: run.id,
                 });
             });
+          }
         });
     }
-  }, [thread, getMessages, setMessages, queryClient, project.id]);
+  }, [
+    thread,
+    getMessages,
+    setMessages,
+    queryClient,
+    project.id,
+    requireUserApproval,
+  ]);
 
-  const setStatus = (status: ChatStatus) => {
-    setController((controller) => ({ ...controller, status }));
-  };
-
-  const getToolApprovals = useCallback(() => {
-    const approvedTools = decodeMetadata<ThreadMetadata>(
-      threadRef.current?.metadata,
-    ).approvedTools;
-    const tools = getUsedTools();
-    return tools.reduce((toolApprovals, tool) => {
-      const toolId = getToolUsageId(tool);
-
-      if (isNotNull(toolId) && isExternalTool(tool.type, toolId)) {
-        toolApprovals[toolId] = {
-          require: approvedTools?.includes(toolId) ? 'never' : 'always',
-        };
-      }
-
-      return toolApprovals;
-    }, {} as NonNullable<ToolApprovals>);
-  }, [getUsedTools, threadRef]);
-
-  const handleToolApprovalRef = useRef<
-    ((value: ToolApprovalValue) => void) | null
-  >(null);
-
-  const handleError = useHandleError();
   const sendMessage = useCallback(
     async (input: string, { regenerate }: SendMessageOptions = {}) => {
       if (controllerRef.current.status !== 'ready') {
@@ -348,12 +445,11 @@ export function ChatProvider({
       setController({
         abortController,
         status: 'fetching',
+        runId: null,
       });
 
-      function handleAborted(thread: Thread | null) {
-        thread &&
-          runIdRef.current &&
-          mutateCancel({ threadId: thread.id, runId: runIdRef.current });
+      function handleAborted() {
+        handleCancelCurrentRun();
 
         // Remove last bot message if it was empty, and also last user message
         setMessages((messages) => {
@@ -477,18 +573,14 @@ export function ChatProvider({
         }, {} as NonNullable<ToolApprovals>);
 
         await chatStream({
-          projectId: project.id,
-          threadId: thread.id,
-          runIdRef,
-          body: {
-            assistant_id: assistant.id,
-            tools,
-            tool_approvals: toolApprovals,
+          action: {
+            id: 'create-run',
+            body: {
+              assistant_id: assistant.id,
+              tools,
+              tool_approvals: toolApprovals,
+            },
           },
-          onToolApprovalSubmitRef: handleToolApprovalRef,
-          abortController,
-          setStatus,
-          setMessages,
           onMessageCompleted: (response) => {
             setMessagesWithFilesQueryData(thread?.id, response.data);
           },
@@ -496,29 +588,12 @@ export function ChatProvider({
       } catch (err) {
         handleError(err, { toast: false });
       } finally {
-        const lastMessage = getMessages().at(-1);
-
-        queryClient.invalidateQueries({
-          queryKey: readRunQuery(
-            project.id,
-            thread?.id ?? '',
-            lastMessage?.run_id ?? '',
-          ).queryKey,
-        });
-
-        setController(CHAT_CONTROLLER_DEFAULT);
-
-        setMessages((messages) => {
-          const lastMessage = messages.at(-1);
-          if (isBotMessage(lastMessage)) {
-            lastMessage.pending = false;
-          }
-        });
+        handlRunCompleted();
       }
 
       const aborted = abortController.signal.aborted;
       if (aborted) {
-        handleAborted(thread);
+        handleAborted();
       }
 
       return {
@@ -528,10 +603,9 @@ export function ChatProvider({
     },
     [
       controllerRef,
-      mutateCancel,
+      setController,
+      handleCancelCurrentRun,
       setMessages,
-      getMessages,
-      queryClient,
       project.id,
       attachments,
       files,
@@ -539,9 +613,10 @@ export function ChatProvider({
       assistant,
       ensureThread,
       getUsedTools,
+      chatStream,
       setMessagesWithFilesQueryData,
       handleError,
-      chatStream,
+      handlRunCompleted,
     ],
   );
 
@@ -568,7 +643,7 @@ export function ChatProvider({
       setThread,
       setDisabledTools,
       getThreadTools,
-      onToolApprovalSubmitRef: handleToolApprovalRef,
+      onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
       thread,
       assistant: {
         ...threadAssistant,

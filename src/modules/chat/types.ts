@@ -16,7 +16,11 @@
 
 import { Message, MessageAttachments } from '@/app/api/threads-messages/types';
 import { Assistant } from '../assistants/types';
-import { AssistantPlan } from '@/app/api/threads-runs/types';
+import {
+  AssistantPlan,
+  ToolApprovalRequest,
+  ToolApprovals,
+} from '@/app/api/threads-runs/types';
 import { VectoreStoreFileUpload } from '../knowledge/files/VectorStoreFilesUploadProvider';
 
 export interface ThreadAssistant {

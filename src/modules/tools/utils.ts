@@ -17,6 +17,7 @@
 import {
   RequiredActionToolApprovals,
   SystemToolId,
+  ToolApprovalRequest,
   ToolType,
 } from '@/app/api/threads-runs/types';
 import { Tool, ToolId, ToolReference, ToolsUsage } from '@/app/api/tools/types';
@@ -79,9 +80,7 @@ export function getToolUsageId(tool: ToolsUsage[number]): ToolId | null {
   }
 }
 
-export function getToolApprovalId(
-  tool: RequiredActionToolApprovals['submit_tool_approvals']['tool_calls'][number],
-): string | null {
+export function getToolApprovalId(tool: ToolApprovalRequest): string | null {
   switch (tool.type) {
     case 'code_interpreter':
       return tool.type;

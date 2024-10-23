@@ -134,7 +134,6 @@ $width: rem(254px);
   display: flex;
   flex-direction: column;
   row-gap: rem(18px);
-  overflow: hidden;
 }
 
 .main {
@@ -144,6 +143,7 @@ $width: rem(254px);
   margin-inline: $menu-padding * -1;
   padding-inline: $menu-padding;
   min-block-size: 0;
+  overflow: hidden;
 }
 
 .history {

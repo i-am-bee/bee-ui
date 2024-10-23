@@ -229,3 +229,6 @@ export type RunUpdateBody = NonNullable<
 export type RunMetadata = {
   feedback?: MessageFeedback;
 };
+
+export type ToolApprovalRequest =
+  RequiredActionToolApprovals['submit_tool_approvals']['tool_calls'][number];

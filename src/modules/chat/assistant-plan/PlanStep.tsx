@@ -120,7 +120,6 @@ export function PlanStep({ step, toolCall }: Props) {
 
   const toolApproval = (
     run?.status === 'requires_action' &&
-    // onToolApprovalSubmitRef.current &&
     run.required_action?.type === 'submit_tool_approvals'
       ? run.required_action.submit_tool_approvals.tool_calls
       : []
@@ -152,7 +151,14 @@ export function PlanStep({ step, toolCall }: Props) {
 
     queryClient.setQueryData(
       readRunQuery(project.id, thread?.id ?? '', run?.id ?? '').queryKey,
-      (run) => (run ? { ...run, status: 'in_progress' as const } : undefined),
+      (run) =>
+        run
+          ? {
+              ...run,
+              status: 'in_progress' as const,
+              required_action: null,
+            }
+          : undefined,
     );
   };
 
