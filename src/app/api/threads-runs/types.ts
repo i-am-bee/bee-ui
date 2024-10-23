@@ -186,6 +186,7 @@ export interface AssistantPlanStep {
   status: NonNullable<RunStepEventResponse['data']>['status'];
   toolCalls: StepToolCall[];
   thought: string | null;
+  lastError: NonNullable<RunStepEventResponse['data']>['last_error'];
 }
 
 export type StepToolCall = {

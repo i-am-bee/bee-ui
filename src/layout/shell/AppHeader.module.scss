@@ -42,7 +42,7 @@ $width: rem(254px);
   flex-shrink: 0;
   position: relative;
   z-index: z('header');
-  inline-size: rem(40px);
+  inline-size: 0;
   transition: inline-size $duration-fast-02 motion(exit, productive);
   &.sidebarPinned {
     inline-size: $width + (2 * $menu-offset);
@@ -69,6 +69,16 @@ $width: rem(254px);
     background-color: $skip-to-content-background;
     color: $text-inverse;
     clip: auto;
+  }
+}
+
+.hoverArea {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: rem(16px);
+  @media (min-width: 1360px) {
+    inline-size: rem(192px);
   }
 }
 

@@ -27,6 +27,7 @@ import { getToolIcon, getToolReference, isExternalTool } from './utils';
 import { ArrowRight, ArrowUpRight, Edit, View } from '@carbon/react/icons';
 import { UserToolModal } from './manage/UserToolModal';
 import { PublicToolModal } from './manage/PublicToolModal';
+import Markdown from 'react-markdown';
 
 interface Props {
   tool: Tool;
@@ -94,7 +95,9 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       >
         <div className={classes.body}>
           {toolDescription && (
-            <p className={classes.description}>{toolDescription}</p>
+            <p className={classes.description}>
+              <Markdown>{toolDescription}</Markdown>
+            </p>
           )}
           {isExternalTool(tool.type, tool.id) && <ToolExternalTag />}
         </div>

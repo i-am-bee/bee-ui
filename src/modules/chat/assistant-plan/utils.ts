@@ -143,7 +143,12 @@ export function updatePlanWithRunStep(
       steps: [],
     };
 
-  const { id: stepId, status, step_details: stepDetails } = runStep;
+  const {
+    id: stepId,
+    status,
+    step_details: stepDetails,
+    last_error: lastError,
+  } = runStep;
   const step = plan.steps.find(({ id }) => id === stepId);
 
   let thought = step?.thought ?? null;
@@ -161,6 +166,7 @@ export function updatePlanWithRunStep(
     thought,
     id: stepId,
     status,
+    lastError,
   };
 
   if (stepDetails.type === 'tool_calls') {

@@ -108,7 +108,7 @@ export function PlanStep({ step, toolCall }: Props) {
             type: toolKey,
             id: toolCall.toolId,
           }
-        : { type: toolKey };
+        : { type: toolKey, id: toolKey };
 
   const [toolName, setToolName] = useState(getToolName(tool));
   const [userToolId, setUserToolId] = useState('');
@@ -171,6 +171,8 @@ export function PlanStep({ step, toolCall }: Props) {
   );
   const input = maybeParseJson(toolCall.input);
   const result = maybeParseJson(toolCall.result);
+  const error = step.lastError ? JSON.stringify(step.lastError, null, 2) : null;
+  const errorOrResult = error ?? result;
   const isDetailEnabled = input !== null || step.thought;
 
   const { data: userTool } = useQuery({
@@ -303,6 +305,17 @@ export function PlanStep({ step, toolCall }: Props) {
                         </LineClampText>
                       </div>
                     </motion.section>
+                  )}
+
+                  {errorOrResult && (
+                    <div>
+                      <p className={classes.label}>Result</p>
+                      <div className={classes.result}>
+                        <LineClampText numberOfLines={4} code={errorOrResult}>
+                          {errorOrResult}
+                        </LineClampText>
+                      </div>
+                    </div>
                   )}
 
                   {stepTrace && <TraceInfoView data={stepTrace.data} />}

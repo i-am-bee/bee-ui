@@ -78,7 +78,7 @@ export function CardsList<T extends OrderBy>({
   children,
 }: PropsWithChildren<Props<T>>) {
   const [search, setSearch] = useState<string | null>(null);
-  const isEmpty = useRef(false);
+  const [isEmptyState, setEmptyState] = useState(false);
 
   const { ref: fetchMoreAnchorRef } = useFetchNextPageInView({
     onFetchNextPage,
@@ -87,11 +87,14 @@ export function CardsList<T extends OrderBy>({
   });
 
   const noResults = totalCount === 0 && !isFetching;
+  const isEmpty = isEmptyState && noResults;
 
-  if (noResults && search == null) isEmpty.current = true;
+  useEffect(() => {
+    if (noResults && search == null) setEmptyState(true);
+    if (totalCount > 0) setEmptyState(false);
+  }, [noResults, search, totalCount]);
 
-  const showBarWithNewButton =
-    (onSearchChange || newButtonProps) && !isEmpty.current;
+  const showBarWithNewButton = (onSearchChange || newButtonProps) && !isEmpty;
 
   return (
     <section className={classes.root}>
@@ -117,7 +120,7 @@ export function CardsList<T extends OrderBy>({
             <div className={classes.heading}>
               {heading && <h2>{heading}</h2>}
 
-              {orderByProps && !isEmpty.current && (
+              {orderByProps && !isEmpty && (
                 <div className={classes.order}>
                   <OrderBySelect<T> {...orderByProps} />
                 </div>
@@ -127,9 +130,9 @@ export function CardsList<T extends OrderBy>({
         </header>
       )}
 
-      {!error && (isEmpty.current || noResults) && (
+      {!error && (isEmpty || noResults) && (
         <div className={classes.empty}>
-          {isEmpty.current ? (
+          {isEmpty ? (
             <>
               <p>{noItemsText}</p>
               {noItemsDescr && (
