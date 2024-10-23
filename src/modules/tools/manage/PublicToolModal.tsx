@@ -22,6 +22,7 @@ import classes from './PublicToolModal.module.scss';
 import { ToolIcon } from '../ToolCard';
 import { ToolExternalTag } from '@/modules/assistants/tools/ToolToggle';
 import { isExternalTool } from '../utils';
+import Markdown from 'react-markdown';
 
 interface Props extends ModalProps {
   tool: Tool;
@@ -37,7 +38,9 @@ export function PublicToolModal({ tool, ...props }: Props) {
             <ToolIcon tool={tool} />
           </div>
           <h2>{tool.name}</h2>
-          <div>{tool.user_description}</div>
+          <div>
+            <Markdown>{tool.user_description}</Markdown>
+          </div>
         </div>
         <dl className={classes.body}>
           <div>
