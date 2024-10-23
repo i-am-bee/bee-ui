@@ -120,6 +120,8 @@ export function PlanStep({ step, toolCall }: Props) {
   );
   const input = maybeParseJson(toolCall.input);
   const result = maybeParseJson(toolCall.result);
+  const error = step.lastError ? JSON.stringify(step.lastError, null, 2) : null;
+  const errorOrResult = error ?? result;
   const isDetailEnabled = input !== null || step.thought;
 
   const { data: userTool } = useQuery({
@@ -231,12 +233,12 @@ export function PlanStep({ step, toolCall }: Props) {
                 </div>
               )}
 
-              {result && (
+              {errorOrResult && (
                 <div>
                   <p className={classes.label}>Result</p>
                   <div className={classes.result}>
-                    <LineClampText numberOfLines={4} code={result}>
-                      {result}
+                    <LineClampText numberOfLines={4} code={errorOrResult}>
+                      {errorOrResult}
                     </LineClampText>
                   </div>
                 </div>
