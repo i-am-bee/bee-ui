@@ -21,10 +21,10 @@ import { useController } from 'react-hook-form';
 import { useOnClickOutside } from 'usehooks-ts';
 import {
   ASSISTANT_ICON_COLORS,
-  ASSISTANT_ICONS,
   AssistantBaseIcon,
   AssistantIconColor,
   AssitantIconName,
+  getAssistantIcons,
 } from '../icons/AssistantBaseIcon';
 import {
   AssistantFormValues,
@@ -83,22 +83,17 @@ export function IconSelector({ disabled }: Props) {
         <div className={classes.selector}>
           <div className={classes.selectorContent}>
             <div>
-              {Object.entries(ASSISTANT_ICONS)
-                .filter(
-                  ([iconName]) =>
-                    iconName !== 'Bee' && iconName !== 'BeeOutline',
-                )
-                .map(([iconName, Icon]) => (
-                  <button
-                    key={iconName}
-                    className={clsx({ [classes.selected]: iconName === name })}
-                    onClick={() =>
-                      handleChange({ name: iconName as AssitantIconName })
-                    }
-                  >
-                    <Icon />
-                  </button>
-                ))}
+              {getAssistantIcons().map(([iconName, Icon]) => (
+                <button
+                  key={iconName}
+                  className={clsx({ [classes.selected]: iconName === name })}
+                  onClick={() =>
+                    handleChange({ name: iconName as AssitantIconName })
+                  }
+                >
+                  <Icon />
+                </button>
+              ))}
               <div className={classes.colors}></div>
             </div>
             <div>

@@ -37,6 +37,7 @@ export function AssistantBaseIcon({
   const iconName = propName ?? (!initialLetter ? 'Bee' : null);
   const Icon =
     iconName && has(ASSISTANT_ICONS, iconName) && ASSISTANT_ICONS[iconName];
+
   return (
     <span
       className={clsx(classes.root, className, {
@@ -62,6 +63,12 @@ export function AssistantIconColor({
     <span className={classes.color} data-color={color}>
       {children}
     </span>
+  );
+}
+
+export function getAssistantIcons() {
+  return Object.entries(ASSISTANT_ICONS).filter(
+    ([iconName]) => iconName !== 'Bee' && iconName !== 'BeeOutline',
   );
 }
 

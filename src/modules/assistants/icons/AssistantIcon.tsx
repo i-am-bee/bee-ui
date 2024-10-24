@@ -15,6 +15,7 @@
  */
 
 import { Assistant } from '../types';
+import { getAssistantIconName } from '../utils';
 import {
   AssistantBaseIcon,
   AssistantBaseIconProps,
@@ -33,9 +34,11 @@ export function AssistantIcon({
   color,
   ...props
 }: AssistantIconProps) {
+  const iconName = getAssistantIconName(assistant);
+
   return (
     <AssistantBaseIcon
-      name={assistant?.metadata.icon}
+      name={iconName}
       color={color ?? assistant?.metadata.color}
       initialLetter={assistant?.name?.at(0)}
       {...props}

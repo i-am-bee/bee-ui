@@ -29,3 +29,20 @@ export const noop = () => {};
 export function isNotNull<T>(value: T | null | undefined): value is T {
   return value != null;
 }
+
+export function simpleHashInRange(
+  value: string,
+  min: number,
+  max: number,
+): number {
+  let hash = 0;
+
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash << 5) - hash + value.charCodeAt(i);
+    hash |= 0;
+  }
+
+  hash = Math.abs(hash);
+
+  return min + (hash % (max - min + 1));
+}

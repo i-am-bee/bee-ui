@@ -16,7 +16,14 @@
 
 import { AssistantResult } from '@/app/api/assistants/types';
 import { decodeMetadata } from '@/app/api/utils';
+import { simpleHashInRange } from '@/utils/helpers';
+import { has } from 'lodash';
 import { StarterQuestion } from './builder/AssistantBuilderProvider';
+import {
+  ASSISTANT_ICONS,
+  AssitantIconName,
+  getAssistantIcons,
+} from './icons/AssistantBaseIcon';
 import {
   Assistant,
   AssistantMetadata,
@@ -57,4 +64,35 @@ export function decodeStarterQuestionsMetadata(
 
     return starterQuestions;
   }, [] as StarterQuestion[]);
+}
+
+const iconsMap = new Map<string, AssitantIconName>();
+
+export function getAssistantIconName(
+  assistant: Assistant | null,
+): AssitantIconName | undefined {
+  const iconName = assistant?.metadata.icon;
+
+  if (iconName) {
+    if (iconsMap.has(iconName)) {
+      return iconsMap.get(iconName);
+    }
+
+    if (!has(ASSISTANT_ICONS, iconName)) {
+      const assistantIcons = getAssistantIcons();
+      const randomIndex = simpleHashInRange(
+        iconName,
+        0,
+        assistantIcons.length - 1,
+      );
+
+      const newIconName = assistantIcons[randomIndex][0] as AssitantIconName;
+
+      iconsMap.set(iconName, newIconName);
+
+      return newIconName;
+    }
+  }
+
+  return iconName;
 }
