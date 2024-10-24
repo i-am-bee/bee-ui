@@ -19,7 +19,7 @@ import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ModalBody, ModalHeader } from '@carbon/react';
 import classes from './PublicToolModal.module.scss';
-import { ToolIcon } from '../ToolCard';
+import { ToolDescription, ToolIcon } from '../ToolCard';
 import { ToolExternalTag } from '@/modules/assistants/tools/ToolToggle';
 import { isExternalTool } from '../utils';
 import Markdown from 'react-markdown';
@@ -39,7 +39,7 @@ export function PublicToolModal({ tool, ...props }: Props) {
           </div>
           <h2>{tool.name}</h2>
           <div>
-            <Markdown>{tool.user_description}</Markdown>
+            <ToolDescription description={tool.user_description ?? ''} />
           </div>
         </div>
         <dl className={classes.body}>

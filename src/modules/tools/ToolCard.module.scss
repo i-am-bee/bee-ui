@@ -41,4 +41,9 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-04;
+
+  a {
+    position: relative;
+    z-index: 1;
+  }
 }
