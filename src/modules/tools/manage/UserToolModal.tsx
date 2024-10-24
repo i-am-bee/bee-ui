@@ -57,15 +57,17 @@ interface FormValues {
 interface Props extends ModalProps {
   tool?: Tool;
   project: Project;
-  onDeleteSuccess?: (tool: Tool) => void;
+  onCreateSuccess?: (tool: Tool) => void;
   onSaveSuccess?: (tool: Tool) => void;
+  onDeleteSuccess?: (tool: Tool) => void;
 }
 
 export function UserToolModal({
   tool,
   project,
-  onDeleteSuccess,
+  onCreateSuccess,
   onSaveSuccess,
+  onDeleteSuccess,
   ...props
 }: Props) {
   const { onRequestClose } = props;
@@ -100,7 +102,14 @@ export function UserToolModal({
         queryKey: [toolsQuery(project.id).queryKey.at(0)],
       });
 
-      if (tool) onSaveSuccess?.(tool);
+      if (tool) {
+        if (!id) {
+          onCreateSuccess?.(tool);
+        }
+
+        onSaveSuccess?.(tool);
+      }
+
       onRequestClose();
     },
     meta: {
