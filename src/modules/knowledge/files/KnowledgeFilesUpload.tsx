@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { CloudUpload } from '@carbon/react/icons';
-import classes from './KnowledgeFilesUpload.module.scss';
-import { useDropzone, ErrorCode, FileRejection } from 'react-dropzone';
-import { Dispatch, SetStateAction, SyntheticEvent, useCallback } from 'react';
-import { v4 as uuid } from 'uuid';
-import mimeType from 'mime-types';
-import clsx from 'clsx';
-import { FileUploaderItem } from '@carbon/react';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { VectoreStoreFileUpload } from './VectorStoreFilesUploadProvider';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { FileUploaderItem } from '@carbon/react';
+import { CloudUpload } from '@carbon/react/icons';
+import clsx from 'clsx';
+import mimeType from 'mime-types';
+import { Dispatch, SetStateAction, SyntheticEvent, useCallback } from 'react';
+import { ErrorCode, FileRejection, useDropzone } from 'react-dropzone';
+import { v4 as uuid } from 'uuid';
+import classes from './KnowledgeFilesUpload.module.scss';
+import { VectoreStoreFileUpload } from './VectorStoreFilesUploadProvider';
 
 interface Props {
   files: VectoreStoreFileUpload[];
@@ -62,7 +62,7 @@ export function KnowledgeFilesUpload({ files, disabled, onSetFiles }: Props) {
     [addToast],
   );
 
-  const { getRootProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDropAccepted,
     onDropRejected,
     accept: DROPZONE_ALLOWED_MIME_TYPES,
@@ -91,6 +91,8 @@ export function KnowledgeFilesUpload({ files, disabled, onSetFiles }: Props) {
           <p>
             Drag & drop or <a role="button">attach files</a>
           </p>
+
+          <input type="file" {...getInputProps()} />
 
           <p className={classes.description}>
             Supports files up to {HUMAN_MAX_SIZE}. Accepted formats: text (
