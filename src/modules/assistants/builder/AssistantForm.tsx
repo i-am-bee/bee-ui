@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Tool } from '@/app/api/tools/types';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -28,7 +29,9 @@ import { Add } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { ToolsList } from '../tools/ToolsList';
+import { AssistantFormValues } from './AssistantBuilderProvider';
 import classes from './AssistantForm.module.scss';
 import { KnowledgeSelector } from './KnowledgeSelector';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
@@ -42,6 +45,16 @@ export function AssistantForm() {
   const queryClient = useQueryClient();
   const { openModal } = useModal();
   const { isProjectReadOnly, project } = useAppContext();
+
+  const { setValue, getValues } = useFormContext<AssistantFormValues>();
+
+  const handleUserToolCreateSuccess = (tool: Tool) => {
+    const selectedTools = getValues('tools');
+
+    setValue('tools', [...selectedTools, { id: tool.id, type: 'user' }], {
+      shouldDirty: true,
+    });
+  };
 
   return (
     <div className={classes.form}>
@@ -83,7 +96,11 @@ export function AssistantForm() {
                   renderIcon={Add}
                   onClick={() =>
                     openModal((props) => (
-                      <UserToolModal project={project} {...props} />
+                      <UserToolModal
+                        project={project}
+                        onCreateSuccess={handleUserToolCreateSuccess}
+                        {...props}
+                      />
                     ))
                   }
                   disabled={isProjectReadOnly}
