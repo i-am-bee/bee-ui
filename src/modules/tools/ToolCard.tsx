@@ -96,7 +96,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
         <div className={classes.body}>
           {toolDescription && (
             <p className={classes.description}>
-              <ToolDescription description={description} />
+              <ToolDescription description={toolDescription} />
             </p>
           )}
           {isExternalTool(tool.type, tool.id) && <ToolExternalTag />}
