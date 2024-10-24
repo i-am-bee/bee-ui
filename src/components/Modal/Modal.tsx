@@ -16,6 +16,10 @@
 
 'use client';
 
+import {
+  CONFIRM_MESSAGE_DEFAULT,
+  useNavigationControl,
+} from '@/layout/providers/NavigationControlProvider';
 import { moderate02 } from '@carbon/motion';
 import { ComposedModal } from '@carbon/react';
 import clsx from 'clsx';
@@ -96,12 +100,20 @@ export function Modal({
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   const [visible, setVisible] = useState(false);
+  const { isBlocked, confirmMessage } = useNavigationControl();
 
   useEffect(() => {
     setVisible(isOpen);
   }, [isOpen]);
 
   const handleRequestClose = () => {
+    if (
+      isBlocked &&
+      !window.confirm(confirmMessage ?? CONFIRM_MESSAGE_DEFAULT)
+    ) {
+      return false;
+    }
+
     onRequestClose?.();
   };
 

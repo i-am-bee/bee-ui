@@ -46,6 +46,7 @@ export default function AssistantBuilderModal({
   assistant,
   ...props
 }: AssistantBuilderProps & ModalProps) {
+  const { isProjectReadOnly } = useAppContext();
   const handleSucces = (assistant: AssistantResult, isNew: boolean) => {
     onSaveSuccess?.(assistant, isNew);
     props.onRequestClose();
@@ -56,6 +57,7 @@ export default function AssistantBuilderModal({
       <Modal
         {...props}
         size="md"
+        preventCloseOnClickOutside={!isProjectReadOnly}
         className={classes.modal}
         rootClassName={classes.root}
       >
