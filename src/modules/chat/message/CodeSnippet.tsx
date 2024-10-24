@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { CopyButton, Button, Theme } from '@carbon/react';
+import { Button, CopyButton, Theme } from '@carbon/react';
+import { ChevronDown } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { HTMLAttributes, useRef, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
 import classes from './CodeSnippet.module.scss';
-import { ChevronUp } from '@carbon/react/icons';
 
 type Props = HTMLAttributes<HTMLElement>;
 
@@ -59,7 +59,7 @@ export function CodeSnippet(props: Props) {
           <Button
             className={classes.expandBtn}
             size="md"
-            renderIcon={ChevronUp}
+            renderIcon={ChevronDown}
             onClick={() => {
               setExpanded((expanded) => !expanded);
             }}
