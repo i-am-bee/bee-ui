@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import { Project } from '@/app/api/projects/types';
 import { createTool, deleteTool, updateTool } from '@/app/api/tools';
 import { Tool, ToolsCreateBody } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
+import { Link } from '@/components/Link/Link';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
@@ -24,19 +26,22 @@ import {
   Button,
   FormLabel,
   InlineLoading,
+  InlineNotification,
   ModalBody,
   ModalFooter,
   ModalHeader,
   TextInput,
 } from '@carbon/react';
+import { ArrowUpRight } from '@carbon/react/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toolsQuery } from '../queries';
 import classes from './UserToolModal.module.scss';
-import { Project } from '@/app/api/projects/types';
 
-const EXAMPLE_SOURCE_CODE = `import requests
+const EXAMPLE_SOURCE_CODE = `# The following code is just an example
+
+import requests
 
 def ip_info(ip: str) -> dict:
   """
@@ -86,12 +91,16 @@ export function UserToolModal({
   } = useForm<FormValues>({
     defaultValues: {
       name: tool?.name || '',
-      sourceCode: tool?.source_code || (editMode ? '' : EXAMPLE_SOURCE_CODE),
+      sourceCode: tool?.source_code || '',
     },
     mode: 'onChange',
   });
 
-  const { mutateAsync: mutateSaveTool } = useMutation({
+  const {
+    mutateAsync: mutateSaveTool,
+    isError: isSaveError,
+    error: saveError,
+  } = useMutation({
     mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
       return id
         ? updateTool(project.id, id, body)
@@ -115,7 +124,6 @@ export function UserToolModal({
     meta: {
       errorToast: {
         title: id ? 'Failed to update tool' : 'Failed to create a new tool',
-        includeErrorMessage: true,
       },
     },
   });
@@ -147,50 +155,75 @@ export function UserToolModal({
   );
 
   return (
-    <Modal
-      {...props}
-      size="lg"
-      preventCloseOnClickOutside
-      className={classes.modal}
-    >
+    <Modal {...props} preventCloseOnClickOutside className={classes.modal}>
       <ModalHeader>
-        <h2>{editMode ? 'Edit tool' : 'Create a new tool'}</h2>
+        <h2>{editMode ? 'Edit custom tool' : 'Create a custom tool'}</h2>
       </ModalHeader>
       <ModalBody>
         <form onSubmit={handleSubmit(onSubmit)}>
           <SettingsFormGroup>
-            <p className={classes.intro}>
-              Your custom tool should be written in valid Python, with type
-              annotations for all arguments and an accompanying docstring.
-            </p>
+            <div className={classes.group}>
+              <TextInput
+                size="lg"
+                id={`${id}:name`}
+                labelText="Name of tool"
+                placeholder="Type tool name"
+                invalid={errors.name != null}
+                {...register('name', {
+                  required: true,
+                })}
+              />
 
-            <TextInput
-              size="lg"
-              id={`${id}:name`}
-              labelText="Name"
-              helperText="This is your tool’s display name, it can be a real name or pseudonym"
-              invalid={errors.name != null}
-              {...register('name')}
-            />
+              <p className={classes.helperText}>
+                This is your tool’s display name, it can be a real name or
+                pseudonym.
+              </p>
+            </div>
 
-            <Controller
-              name="sourceCode"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field }) => (
-                <EditableSyntaxHighlighter
-                  id={`${id}:code`}
-                  labelText="Python code"
-                  value={field.value}
-                  onChange={field.onChange}
-                  required
-                  invalid={errors.sourceCode != null}
-                  rows={16}
-                />
-              )}
-            />
+            <div className={classes.group}>
+              <div className={classes.groupHeader}>
+                <FormLabel id={`${id}:code`}>Python code</FormLabel>
+
+                {/* <Link href="/" className={classes.link}>
+                  <span>View documentation</span>
+                  <ArrowUpRight />
+                </Link> */}
+              </div>
+
+              <Controller
+                name="sourceCode"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field }) => (
+                  <EditableSyntaxHighlighter
+                    id={`${id}:code`}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder={EXAMPLE_SOURCE_CODE}
+                    required
+                    invalid={errors.sourceCode != null}
+                    rows={16}
+                  />
+                )}
+              />
+
+              <p className={classes.helperText}>
+                Do not share any authentication token in your Python function.
+                Exposing it can compromise any account.
+              </p>
+            </div>
+
+            {isSaveError && (
+              <InlineNotification
+                className={classes.error}
+                kind="error"
+                title={saveError.message}
+                lowContrast
+                hideCloseButton
+              />
+            )}
           </SettingsFormGroup>
         </form>
       </ModalBody>
@@ -259,7 +292,7 @@ UserToolModal.View = function ViewUserToolModal({
 } & ModalProps) {
   const id = useId();
   return (
-    <Modal {...props} size="lg" className={classes.modal}>
+    <Modal {...props} className={classes.modal}>
       <ModalHeader>
         <h2>{tool.name}</h2>
       </ModalHeader>

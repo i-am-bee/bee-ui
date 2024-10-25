@@ -17,24 +17,86 @@
 @use 'styles/common' as *;
 
 .modal {
+  :global(.#{$prefix}--modal-container) {
+    max-inline-size: rem(768px);
+  }
+  :global(.#{$prefix}--modal-header) {
+    padding: $spacing-07 rem(80px) $spacing-07 $spacing-07;
+    margin-block-end: 0;
+    h2 {
+      font-size: rem(18px);
+      line-height: (20 / 18);
+      padding-block: rem(2px);
+    }
+  }
+  :global(.#{$prefix}--modal-close-button) {
+    inset-block-start: rem(20px);
+    inset-inline-end: rem(20px);
+    svg {
+      margin-block-start: 0;
+    }
+  }
   :global(.#{$prefix}--modal-content) {
-    padding-block: 0 $spacing-06;
+    padding: 0 $spacing-07 $spacing-09;
   }
   :global(.#{$prefix}--modal-footer) {
     block-size: auto;
-    padding: 0 $spacing-06 $spacing-06;
+    padding: 0 $spacing-07 $spacing-07;
   }
 }
 
-.intro {
+.group {
+  :global(.#{$prefix}--form-requirement:empty) {
+    display: none;
+  }
+}
+
+.groupHeader {
+  margin-block-end: $spacing-03;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: $spacing-06;
+}
+
+.link {
   @include type-style(body-01);
+  line-height: (18 / 14);
+  display: flex;
+  align-items: center;
+  column-gap: $spacing-03;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus-visible {
+    @include focus-outline('outline');
+    outline-offset: 0;
+  }
+}
+
+.helperText {
+  @include type-style(label-01);
+  color: $text-helper;
+  margin-block-start: $spacing-02;
+}
+
+.error {
+  &:global(.#{$prefix}--inline-notification--error) {
+    border-inline-start: 0;
+    border-radius: $spacing-03;
+    &::before {
+      border-inline-start-width: 1px;
+      border-radius: inherit;
+    }
+  }
 }
 
 .actions {
   inline-size: 100%;
   display: flex;
   justify-content: flex-end;
-  column-gap: $spacing-05;
+  column-gap: $spacing-06;
   :global(.#{$prefix}--btn) {
     inline-size: auto;
     flex: 0 1 auto;
@@ -46,6 +108,9 @@
   }
   :global(.#{$prefix}--btn--ghost) {
     color: $text-dark;
+    :global(.#{$prefix}--modal-footer) & {
+      padding-inline-end: rem(15px);
+    }
   }
   :global(.#{$prefix}--btn--danger--ghost) {
     margin-inline-end: auto;
