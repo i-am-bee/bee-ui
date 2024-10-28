@@ -14,6 +14,11 @@ With Bee UI, users can build and test custom bees that address unique workflows 
 
 ## Getting Started
 
+The simplest way to run bee-ui is by using our [bee-stack](https://github.com/i-am-bee/bee-stack), which lets you set up the entire bee application stack locally via docker compose
+
+If you already have a working [bee-api](https://github.com/i-am-bee/bee-api) instance or can set one up, follow the steps below."
+
+
 ### Set-up Node.js environment
 
 Install the correct version of Node.js according to `.nvmrc`. This can be done using [nvm](https://github.com/nvm-sh/nvm): `nvm install && nvm use` or using [asdf](https://asdf-vm.com/): `asdf plugin-add nodejs && asdf install nodejs`.
@@ -26,6 +31,14 @@ Install dependencies by running:
 
 ```
 pnpm install
+```
+
+### Set up environment
+
+Create a `.env.local` file (see `.env.local.example` for all variables available) and set `API_URL` to point to your [bee-api](https://github.com/i-am-bee/bee-api) instance.
+
+```
+API_URL=http://localhost:4000/
 ```
 
 ### Run the development server
