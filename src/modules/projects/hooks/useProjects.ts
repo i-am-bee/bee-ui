@@ -15,12 +15,42 @@
  */
 
 import { ProjectsListQuery } from '@/app/api/projects/types';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueries } from '@tanstack/react-query';
 import { projectsQuery } from '../queries';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
+import { readProjectUserQuery } from '../users/queries';
+import { useUserProfile } from '@/modules/chat/providers/UserProfileProvider';
+import { ProjectWithScope } from '../types';
 
-export function useProjects() {
+export function useProjects({ withRole }: { withRole?: boolean }) {
+  const { id: userId } = useUserProfile();
+
   const query = useInfiniteQuery(projectsQuery(PROJECTS_QUERY_PARAMS));
+
+  const queries = useQueries({
+    queries:
+      withRole && query.data
+        ? query.data.projects.map((project) => {
+            return {
+              ...readProjectUserQuery(project.id, userId),
+            };
+          })
+        : [],
+  });
+
+  const projects = useMemo(
+    (): ProjectWithScope[] | undefined =>
+      queries.length
+        ? query.data?.projects.map((project, index) => {
+            const projectUser = queries.at(index)?.data;
+            return projectUser
+              ? { ...project, readOnly: projectUser.role === 'reader' }
+              : project;
+          })
+        : query.data?.projects,
+    [queries, query.data?.projects],
+  );
 
   useEffect(() => {
     if (query.hasNextPage && !query.isFetching) {
@@ -28,11 +58,11 @@ export function useProjects() {
     }
   }, [query]);
 
-  return query;
+  return { projects, ...query };
 }
 
 export const PROJECTS_QUERY_PARAMS: ProjectsListQuery = {
-  limit: 100,
+  limit: MAX_API_FETCH_LIMIT,
   order_by: 'created_at',
   order: 'asc',
 };

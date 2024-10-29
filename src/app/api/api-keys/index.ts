@@ -31,7 +31,7 @@ export async function createApiKey(projectId: string, body: ApiKeysCreateBody) {
   return res.data;
 }
 
-export async function listTools(projectId: string, query: ApiKeysListQuery) {
+export async function listApiKeys(projectId: string, query: ApiKeysListQuery) {
   const res = await client.GET(
     '/v1/organization/projects/{project_id}/api_keys',
     {

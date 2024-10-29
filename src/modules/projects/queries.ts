@@ -15,8 +15,6 @@
  */
 
 import { listProjects, readProject } from '@/app/api/projects';
-import { listProjectUsers, readProjectUser } from '@/app/api/projects-users';
-import { ProjectUsersListQuery } from '@/app/api/projects-users/types';
 import { ProjectsListQuery } from '@/app/api/projects/types';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
