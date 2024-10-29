@@ -30,6 +30,11 @@
     letter-spacing: inherit;
   }
 
+  ul {
+    list-style: disc;
+    padding-inline-start: rem(20px);
+  }
+
   h2 {
     @include type-style(heading-02);
     font-weight: normal;
