@@ -19,7 +19,6 @@ import { useToast } from '@/layout/providers/ToastProvider';
 import { Button, Checkbox, InlineLoading } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
-import { BMEnterFrameEvent } from 'lottie-web';
 import {
   MouseEventHandler,
   ReactNode,
@@ -51,7 +50,7 @@ export function AcceptToUForm({ content, callbackUrl }: Props) {
   const { addToast } = useToast();
 
   const onEnterFrame = (event: any) => {
-    const { currentTime } = event as BMEnterFrameEvent;
+    const { currentTime } = event as EnterFrameEvent;
     const lottie = lottieRef.current;
 
     if (!lottie) {
@@ -184,6 +183,13 @@ function SubmitButton({
       {isPending ? <InlineLoading description="Starting..." /> : 'Get started'}
     </Button>
   );
+}
+
+interface EnterFrameEvent {
+  currentTime: number;
+  direction: number;
+  totalTime: number;
+  type: 'enterFrame';
 }
 
 const ANIMATION_PAUSE_FRAME = 125;
