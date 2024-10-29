@@ -192,4 +192,4 @@ interface EnterFrameEvent {
   type: 'enterFrame';
 }
 
-const ANIMATION_PAUSE_FRAME = 125;
+const ANIMATION_PAUSE_FRAME = 165;
