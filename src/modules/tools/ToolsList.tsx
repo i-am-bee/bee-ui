@@ -55,7 +55,7 @@ export function ToolsList({ type }: Props) {
     type:
       type === 'user'
         ? ['user']
-        : ['code_interpreter', 'file_search', 'function', 'system'],
+        : ['code_interpreter', 'file_search', 'system'],
     limit: PAGE_SIZE,
     ...order,
     search: search.length ? search : undefined,
