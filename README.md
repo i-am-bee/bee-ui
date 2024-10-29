@@ -14,9 +14,9 @@ With Bee UI, users can build and test custom bees that address unique workflows 
 
 ## Getting Started
 
-The simplest way to run bee-ui is by using our [bee-stack](https://github.com/i-am-bee/bee-stack), which lets you set up the entire bee application stack locally via docker compose
+The simplest way to run bee-ui is by using our [bee-stack](https://github.com/i-am-bee/bee-stack), which lets you set up the entire bee application stack locally via docker compose.
 
-If you already have a working [bee-api](https://github.com/i-am-bee/bee-api) instance or can set one up, follow the steps below."
+If you already have a working [bee-api](https://github.com/i-am-bee/bee-api) instance or can set one up, follow the steps below.
 
 
 ### Set-up Node.js environment
