@@ -133,13 +133,13 @@ export function PlanStep({ step, toolCall }: Props) {
 
   const handleToolApprovalSubmit = (value: ToolApprovalValue) => {
     if (value === 'always' && thread && toolApproval?.toolId) {
-      const metadata = thread.meta;
+      const metadata = thread.uiMetadata;
       metadata.approvedTools = [
         ...(metadata.approvedTools ?? []),
         toolApproval.toolId,
       ];
 
-      thread.meta = metadata;
+      thread.uiMetadata = metadata;
       const updatedThread = encodeEntityWithMetadata<Thread>(thread);
       mutateUpdateThread({ metadata: updatedThread.metadata });
       setThread(thread);
@@ -262,7 +262,7 @@ export function PlanStep({ step, toolCall }: Props) {
                   </div>
                 </div>
               ) : (
-                <>
+                <AnimatePresence>
                   {step.thought && (
                     <motion.section {...fadeProps()} key={`${id}:thought`}>
                       <p className={classes.label}>Thought</p>
@@ -294,30 +294,19 @@ export function PlanStep({ step, toolCall }: Props) {
                     </motion.section>
                   )}
 
-                  {result && (
-                    <motion.section {...fadeProps()} key={`${id}:result`}>
-                      <p className={classes.label}>Result</p>
-                      <div className={classes.result}>
-                        <LineClampText numberOfLines={4} code={result}>
-                          {result}
-                        </LineClampText>
-                      </div>
-                    </motion.section>
-                  )}
-
                   {errorOrResult && (
-                    <div>
+                    <motion.section {...fadeProps()} key={`${id}:result`}>
                       <p className={classes.label}>Result</p>
                       <div className={classes.result}>
                         <LineClampText numberOfLines={4} code={errorOrResult}>
                           {errorOrResult}
                         </LineClampText>
                       </div>
-                    </div>
+                    </motion.section>
                   )}
 
                   {stepTrace && <TraceInfoView data={stepTrace.data} />}
-                </>
+                </AnimatePresence>
               )}
             </div>
           )}

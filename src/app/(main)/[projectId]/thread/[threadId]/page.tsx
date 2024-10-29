@@ -65,7 +65,7 @@ export default async function ThreadPage({
     return null;
   }
 
-  const { assistantId: threadAssistantId, assistantName } = thread.meta;
+  const { assistantId: threadAssistantId, assistantName } = thread.uiMetadata;
   let threadAssistant: ThreadAssistant = { name: assistantName, data: null };
   try {
     let assistantId = threadAssistantId;

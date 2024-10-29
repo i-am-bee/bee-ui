@@ -242,7 +242,7 @@ export function ChatProvider({
         : undefined;
 
       if (thread) {
-        const threadMetadata = thread.meta;
+        const threadMetadata = thread.uiMetadata;
         if (
           (vectorStoreId && !getThreadVectorStoreId(thread)) ||
           threadMetadata.title === ''
@@ -560,7 +560,7 @@ export function ChatProvider({
           setMessagesWithFilesQueryData(thread.id, newMessage);
         }
 
-        const { approvedTools } = thread.meta;
+        const { approvedTools } = thread.uiMetadata;
         const tools = getUsedTools();
         const toolApprovals = tools.reduce((toolApprovals, tool) => {
           const toolId = getToolUsageId(tool);

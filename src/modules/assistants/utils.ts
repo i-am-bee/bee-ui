@@ -59,7 +59,7 @@ const iconsMap = new Map<string, AssitantIconName>();
 export function getAssistantIconName(
   assistant: Assistant | null,
 ): AssitantIconName | undefined {
-  const iconName = assistant?.meta.icon;
+  const iconName = assistant?.uiMetadata.icon;
 
   if (iconName) {
     if (iconsMap.has(iconName)) {

@@ -50,7 +50,7 @@ export function threadsQuery(projectId: string) {
         .map((item) => {
           if (!item) return null;
           const thread = decodeEntityWithMetadata<Thread>(item);
-          return thread.meta.title ? thread : null;
+          return thread.uiMetadata.title ? thread : null;
         })
         .filter(isNotNull);
     },

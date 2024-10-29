@@ -165,7 +165,7 @@ export function useChatStream({
       if (!toolApproval) return;
 
       const toolId = getToolApprovalId(toolApproval);
-      const { approvedTools } = thread.meta;
+      const { approvedTools } = thread.uiMetadata;
 
       let approve = toolId && approvedTools?.includes(toolId);
       if (!approve) {

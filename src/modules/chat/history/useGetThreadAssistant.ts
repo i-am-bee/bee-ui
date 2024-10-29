@@ -31,7 +31,8 @@ export function useGetThreadAssistant(
 ) {
   const { project } = useAppContext();
 
-  const { assistantId: threadAssistantId, assistantName } = thread?.meta ?? {};
+  const { assistantId: threadAssistantId, assistantName } =
+    thread?.uiMetadata ?? {};
   const [assistant, setAssistant] = useState<ThreadAssistant>(
     initialAssistant ?? {
       name: assistantName,

@@ -129,8 +129,7 @@ const authResult = NextAuth(() => ({
           }),
         });
         if (result) {
-          user.userEntity = user.userEntity =
-            decodeEntityWithMetadata<UserEntity>(result);
+          user.userEntity = decodeEntityWithMetadata<UserEntity>(result);
         }
         return true;
       } catch (error) {
@@ -205,7 +204,7 @@ const authResult = NextAuth(() => ({
         email: token.email ?? '',
         firstName: token.first_name,
         lastName: token.last_name,
-        metadata: token.userEntity.meta,
+        metadata: token.userEntity.uiMetadata,
       };
 
       return session;

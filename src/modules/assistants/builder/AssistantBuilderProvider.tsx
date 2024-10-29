@@ -275,8 +275,8 @@ function formValuesFromAssistant(
 ): AssistantFormValues {
   return {
     icon: {
-      name: assistant?.meta.icon,
-      color: assistant?.meta.color ?? 'white',
+      name: assistant?.uiMetadata.icon,
+      color: assistant?.uiMetadata.color ?? 'white',
     },
     ownName: assistant?.name
       ? `${assistant.name}${isCopy ? ' ( Copy )' : ''}`
@@ -303,7 +303,7 @@ function formValuesFromAssistant(
     vectorStoreId:
       assistant?.tool_resources?.file_search?.vector_store_ids?.at(0),
     model: assistant?.model as AssistantModel,
-    starterQuestions: decodeStarterQuestionsMetadata(assistant?.meta),
+    starterQuestions: decodeStarterQuestionsMetadata(assistant?.uiMetadata),
   };
 }
 

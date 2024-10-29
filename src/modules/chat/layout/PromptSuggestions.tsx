@@ -59,7 +59,9 @@ export function PromptSuggestions({
 }: Props) {
   const { assistant } = useChat();
 
-  const suggestions = decodeStarterQuestionsMetadata(assistant.data?.meta);
+  const suggestions = decodeStarterQuestionsMetadata(
+    assistant.data?.uiMetadata,
+  );
 
   const { refs, floatingStyles, context, placement } = useFloating({
     placement: 'bottom-start',

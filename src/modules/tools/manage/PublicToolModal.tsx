@@ -39,7 +39,9 @@ export function PublicToolModal({ tool, ...props }: Props) {
           </div>
           <h2>{tool.name}</h2>
           <div>
-            <ToolDescription description={tool.meta.description_short ?? ''} />
+            <ToolDescription
+              description={tool.uiMetadata.description_short ?? ''}
+            />
           </div>
         </div>
         <dl className={classes.body}>

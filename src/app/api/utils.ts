@@ -124,20 +124,23 @@ export function decodeMetadata<T extends EntityMetadata>(
   return decoded as T;
 }
 
-export function decodeEntityWithMetadata<T extends { meta: EntityMetadata }>(
-  apiEntity: EntityResultWithMetadata<T>,
-): T {
+export function decodeEntityWithMetadata<
+  T extends { uiMetadata: EntityMetadata },
+>(apiEntity: EntityResultWithMetadata<T>): T {
   const { metadata, ...rest } = apiEntity;
 
-  return { ...rest, meta: decodeMetadata<T['meta']>(metadata) } as T;
+  return {
+    ...rest,
+    uiMetadata: decodeMetadata<T['uiMetadata']>(metadata),
+  } as T;
 }
 
-export function encodeEntityWithMetadata<T extends { meta: EntityMetadata }>(
-  entity: T,
-): EntityWithEncodedMetadata<T> {
-  const { meta, ...rest } = entity;
+export function encodeEntityWithMetadata<
+  T extends { uiMetadata: EntityMetadata },
+>(entity: T): EntityWithEncodedMetadata<T> {
+  const { uiMetadata, ...rest } = entity;
 
-  return { ...rest, metadata: encodeMetadata<T['meta']>(meta) };
+  return { ...rest, metadata: encodeMetadata<T['uiMetadata']>(uiMetadata) };
 }
 
 export function getProjectHeaders(projectId?: string) {

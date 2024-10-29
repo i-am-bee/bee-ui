@@ -78,7 +78,7 @@ export function ThreadItem({ thread }: Props) {
   const href = `/${project.id}/thread/${thread.id}`;
   const isActive = pathname === href;
   const assistant = useGetThreadAssistant(thread);
-  const { title } = thread.meta;
+  const { title } = thread.uiMetadata;
 
   const {
     register,
@@ -151,12 +151,12 @@ export function ThreadItem({ thread }: Props) {
 
       await mutateUpdateThread({
         metadata: encodeMetadata<ThreadMetadata>({
-          ...thread.meta,
+          ...thread.uiMetadata,
           title: values.title,
         }),
       });
     },
-    [title, mutateUpdateThread, thread.meta, reset],
+    [title, mutateUpdateThread, thread.uiMetadata, reset],
   );
 
   const heading =

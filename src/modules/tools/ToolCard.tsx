@@ -47,7 +47,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   const toolDescription =
     type === 'user'
       ? description
-      : (tool.meta.description_short ?? user_description);
+      : (tool.uiMetadata.description_short ?? user_description);
 
   return (
     <>

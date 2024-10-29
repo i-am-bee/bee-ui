@@ -56,7 +56,10 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
       }
 
       const response = await updateRun(project.id, threadId, run.id, {
-        metadata: encodeMetadata<RunMetadata>({ ...run.meta, feedback: body }),
+        metadata: encodeMetadata<RunMetadata>({
+          ...run.uiMetadata,
+          feedback: body,
+        }),
       });
       const thread = response
         ? decodeEntityWithMetadata<ThreadRun>(response)
@@ -64,7 +67,7 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
 
       return {
         response,
-        feedback: thread?.meta.feedback,
+        feedback: thread?.uiMetadata.feedback,
       };
     },
     onSuccess: ({ response, feedback }) => {
@@ -97,8 +100,8 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
   });
 
   useEffect(() => {
-    if (run?.meta) {
-      form.reset(run?.meta.feedback);
+    if (run?.uiMetadata) {
+      form.reset(run?.uiMetadata.feedback);
     }
   }, [form, run]);
 
