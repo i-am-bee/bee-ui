@@ -19,7 +19,7 @@ import { CopyButton, IconButton, InlineLoading } from '@carbon/react';
 import { Reset } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useId } from 'react';
+import { useId } from 'react';
 import { useRetry } from '../hooks/useRetry';
 import { useChat } from '../providers/ChatProvider';
 import { useMessageFeedback } from '../providers/MessageFeedbackProvider';
@@ -39,17 +39,11 @@ export function ActionBar({ message, visible, isPast, className }: Props) {
   const { pending, retry, isDeleting } = useRetry(message);
   const { assistant } = useChat();
 
-  const { closeForm } = useMessageFeedback();
-
-  useEffect(() => {
-    if (!visible) {
-      closeForm();
-    }
-  }, [visible, closeForm]);
+  const { formOpen } = useMessageFeedback();
 
   return (
     <AnimatePresence>
-      {visible && (
+      {(visible || formOpen) && (
         <motion.aside
           {...fadeProps()}
           key={`${id}:root`}

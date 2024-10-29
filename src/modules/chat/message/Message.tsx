@@ -89,6 +89,9 @@ export const Message = memo(function Message({
         className={clsx(classes.root, { [classes.hovered]: showActions })}
         {...focusWithinProps}
         {...contentHover.hoverProps}
+        onBlur={() => {
+          setFocusWithin(false);
+        }}
       >
         <Container size="sm" className={classes.container}>
           <div

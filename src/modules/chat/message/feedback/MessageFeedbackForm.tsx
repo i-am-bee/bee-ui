@@ -77,6 +77,7 @@ export function MessageFeedbackForm() {
                 controllerProps={{
                   control: form.control,
                   name: 'categories',
+                  disabled: isSubmitting,
                 }}
               >
                 {label}
@@ -91,6 +92,7 @@ export function MessageFeedbackForm() {
           labelText="Comments (optional)"
           placeholder="Add more details on what went wrong and how the answer could be improved"
           rows={4}
+          autoFocus
           {...form.register('comment', {
             maxLength: {
               value: COMMENT_MAX_LENGTH,
@@ -129,6 +131,7 @@ function Item({
   const { field } = useController({
     control: controllerProps.control,
     name: controllerProps.name,
+    disabled: controllerProps.disabled,
   });
 
   const prevValue = useMemo(() => field.value || [], [field.value]);
@@ -157,6 +160,7 @@ function Item({
 
           handleChange(value, !isSelected);
         }}
+        disabled={controllerProps.disabled}
       >
         {children}
       </Tag>
