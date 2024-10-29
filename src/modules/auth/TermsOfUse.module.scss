@@ -17,22 +17,21 @@
 @use 'styles/common' as *;
 
 .root {
-  p,
-  ul {
-    @include type-style('body-01');
-    color: $text-secondary;
+  @include type-style('body-01');
+  padding-inline-end: $spacing-06;
 
+  > * + * {
     margin-block-start: $spacing-05;
-    // add 1 grid item + gutter padding to the right
-    // parent is 7 grid items, (i.e. 6 gutters)
-    padding-inline-end: calc((100% - 6 * $grid-gutter) / 7 + $grid-gutter);
+  }
+
+  p {
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
   }
 
   h2 {
-    font-size: rem(16px);
-    line-height: 1.375;
-    font-weight: 500;
-    color: $text-primary;
-    margin-block: $spacing-06;
+    @include type-style(heading-02);
+    font-weight: normal;
   }
 }
