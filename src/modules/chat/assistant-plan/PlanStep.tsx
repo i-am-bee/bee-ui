@@ -65,8 +65,8 @@ import { readRunQuery } from '../queries';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useThreadApi } from '../hooks/useThreadApi';
-import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
-import { ThreadMetadata } from '@/app/api/threads/types';
+import { encodeEntityWithMetadata } from '@/app/api/utils';
+import { Thread } from '@/app/api/threads/types';
 
 interface Props {
   step: AssistantPlanStep;
@@ -133,18 +133,16 @@ export function PlanStep({ step, toolCall }: Props) {
 
   const handleToolApprovalSubmit = (value: ToolApprovalValue) => {
     if (value === 'always' && thread && toolApproval?.toolId) {
-      const metadata = decodeMetadata<ThreadMetadata>(thread.metadata);
+      const metadata = thread.meta;
       metadata.approvedTools = [
         ...(metadata.approvedTools ?? []),
         toolApproval.toolId,
       ];
 
-      const updatedThread = {
-        ...thread,
-        metadata: encodeMetadata<ThreadMetadata>(metadata),
-      };
+      thread.meta = metadata;
+      const updatedThread = encodeEntityWithMetadata<Thread>(thread);
       mutateUpdateThread({ metadata: updatedThread.metadata });
-      setThread(updatedThread);
+      setThread(thread);
     }
 
     onToolApprovalSubmitRef.current?.(value);
@@ -264,9 +262,9 @@ export function PlanStep({ step, toolCall }: Props) {
                   </div>
                 </div>
               ) : (
-                <AnimatePresence>
+                <>
                   {step.thought && (
-                    <motion.section {...fadeProps()} key="thought">
+                    <motion.section {...fadeProps()} key={`${id}:thought`}>
                       <p className={classes.label}>Thought</p>
                       <p className={classes.value}>{step.thought}</p>
                     </motion.section>
@@ -286,7 +284,7 @@ export function PlanStep({ step, toolCall }: Props) {
                   </div>
 
                   {input && (
-                    <motion.section {...fadeProps()} key="input">
+                    <motion.section {...fadeProps()} key={`${id}:input`}>
                       <p className={classes.label}>Input</p>
                       <div className={classes.result}>
                         <LineClampText numberOfLines={2} code={input}>
@@ -297,7 +295,7 @@ export function PlanStep({ step, toolCall }: Props) {
                   )}
 
                   {result && (
-                    <motion.section {...fadeProps()} key="result">
+                    <motion.section {...fadeProps()} key={`${id}:result`}>
                       <p className={classes.label}>Result</p>
                       <div className={classes.result}>
                         <LineClampText numberOfLines={4} code={result}>
@@ -319,7 +317,7 @@ export function PlanStep({ step, toolCall }: Props) {
                   )}
 
                   {stepTrace && <TraceInfoView data={stepTrace.data} />}
-                </AnimatePresence>
+                </>
               )}
             </div>
           )}

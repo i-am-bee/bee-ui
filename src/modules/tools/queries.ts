@@ -15,7 +15,8 @@
  */
 
 import { listTools } from '@/app/api/tools';
-import { ToolsListQuery } from '@/app/api/tools/types';
+import { Tool, ToolsListQuery } from '@/app/api/tools/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { QueryClient, infiniteQueryOptions } from '@tanstack/react-query';
 
@@ -48,7 +49,8 @@ export const toolsQuery = (projectId: string, params?: ToolsListQuery) =>
             (tool) =>
               isFeatureEnabled(FeatureName.Knowledge) ||
               tool.id !== 'file_search',
-          ),
+          )
+          .map(decodeEntityWithMetadata<Tool>),
       };
     },
     meta: {

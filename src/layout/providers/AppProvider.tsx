@@ -17,9 +17,9 @@
 'use client';
 import { ProjectUser } from '@/app/api/projects-users/types';
 import { Project } from '@/app/api/projects/types';
-import { encodeMetadata } from '@/app/api/utils';
+import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { readAssistantQuery } from '@/modules/assistants/queries';
-import { Assistant, AssistantMetadata } from '@/modules/assistants/types';
+import { Assistant } from '@/modules/assistants/types';
 import { useUserProfile } from '@/modules/chat/providers/UserProfileProvider';
 import { readProjectQuery } from '@/modules/projects/queries';
 import { readProjectUserQuery } from '@/modules/projects/users/queries';
@@ -78,10 +78,7 @@ export function AppProvider({
     ...readAssistantQuery(project.id, assistant?.id ?? ''),
     enabled: Boolean(assistant),
     initialData: assistant
-      ? {
-          ...assistant,
-          metadata: encodeMetadata<AssistantMetadata>(assistant.metadata),
-        }
+      ? encodeEntityWithMetadata<Assistant>(assistant)
       : undefined,
   });
 

@@ -17,6 +17,7 @@
 import { listRuns, listRunSteps, readRun } from '.';
 import { paths } from '../schema';
 import { MessageFeedback } from '../threads-messages/types';
+import { EntityWithDecodedMetadata } from '../types';
 
 export type RunsCreateBody =
   paths['/v1/threads/{thread_id}/runs']['post']['requestBody']['content']['application/json'];
@@ -31,7 +32,13 @@ export type RunsListQuery = NonNullable<
 
 export type RunsListResponse = Awaited<ReturnType<typeof listRuns>>;
 
-export type ThreadRun = NonNullable<Awaited<ReturnType<typeof readRun>>>;
+export type ThreadRunResult = NonNullable<Awaited<ReturnType<typeof readRun>>>;
+
+export type RunMetadata = {
+  feedback?: MessageFeedback;
+};
+
+export type ThreadRun = EntityWithDecodedMetadata<ThreadRunResult, RunMetadata>;
 
 export type RunsCreateResponseEvent = RunsCreateResponse['event'];
 
@@ -226,10 +233,6 @@ export type FunctionToolDefinition = Extract<
 export type RunUpdateBody = NonNullable<
   paths['/v1/threads/{thread_id}/runs/{run_id}']['post']['requestBody']
 >['content']['application/json'];
-
-export type RunMetadata = {
-  feedback?: MessageFeedback;
-};
 
 export type ToolApprovalRequest =
   RequiredActionToolApprovals['submit_tool_approvals']['tool_calls'][number];

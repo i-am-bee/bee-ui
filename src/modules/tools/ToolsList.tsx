@@ -28,6 +28,7 @@ import { CardsList } from '@/components/CardsList/CardsList';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import {
   Tool,
+  ToolResult,
   ToolsListQuery,
   ToolsListResponse,
   ToosListQueryOrderBy,
@@ -81,7 +82,7 @@ export function ToolsList({ type }: Props) {
     });
   };
 
-  const handleCreateSuccess = (tool: Tool) => {
+  const handleCreateSuccess = (tool: ToolResult) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
       toolsQuery(project.id, params).queryKey,
       produce((draft) => {

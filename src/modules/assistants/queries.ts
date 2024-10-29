@@ -16,12 +16,13 @@
 
 import { readAssistant } from '@/app/api/assistants';
 import { queryOptions } from '@tanstack/react-query';
-import { getAssistantFromAssistantResult } from './utils';
+import { Assistant } from './types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 
 export const readAssistantQuery = (projectId: string, id: string) =>
   queryOptions({
     queryKey: ['assistant', projectId, id],
     queryFn: () => readAssistant(projectId, id),
-    select: (data) => (data ? getAssistantFromAssistantResult(data) : null),
+    select: (data) => (data ? decodeEntityWithMetadata<Assistant>(data) : null),
     staleTime: 10 * 60 * 1000,
   });

@@ -29,15 +29,21 @@ import { createThread, deleteThread, updateThread } from '@/app/api/threads';
 import { threadQuery, threadsQuery } from '../history/queries';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { produce } from 'immer';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 
 export function useThreadApi(thread: Thread | null) {
   const queryClient = useQueryClient();
   const { project } = useAppContext();
 
   const updateMutation = useMutation({
-    mutationFn: (body: ThreadUpdateBody) =>
-      updateThread(project.id, thread?.id ?? '', body),
-    onSuccess: (data) => {
+    mutationFn: async (body: ThreadUpdateBody) => {
+      const result = await updateThread(project.id, thread?.id ?? '', body);
+      return {
+        result,
+        thread: result && decodeEntityWithMetadata<Thread>(result),
+      };
+    },
+    onSuccess: ({ result }) => {
       queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
         threadsQuery(project.id).queryKey,
         produce((draft) => {
@@ -45,8 +51,8 @@ export function useThreadApi(thread: Thread | null) {
           for (const page of draft.pages) {
             const index = page.data.findIndex((item) => item.id === thread?.id);
 
-            if (index >= 0 && data) {
-              page?.data.splice(index, 1, data);
+            if (index >= 0 && result) {
+              page?.data.splice(index, 1, result);
             }
           }
         }),
@@ -69,7 +75,13 @@ export function useThreadApi(thread: Thread | null) {
   });
 
   const createMutation = useMutation({
-    mutationFn: (body: ThreadCreateBody) => createThread(project.id, body),
+    mutationFn: async (body: ThreadCreateBody) => {
+      const result = await createThread(project.id, body);
+      return {
+        result,
+        thread: result && decodeEntityWithMetadata<Thread>(result),
+      };
+    },
     meta: {
       errorToast: {
         title: 'Failed to create session',

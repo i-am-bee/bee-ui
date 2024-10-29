@@ -15,14 +15,13 @@
  */
 
 'use client';
-import { deleteThread, updateThread } from '@/app/api/threads';
+import { deleteThread } from '@/app/api/threads';
 import {
   Thread,
   ThreadMetadata,
   ThreadsListResponse,
-  ThreadUpdateBody,
 } from '@/app/api/threads/types';
-import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
+import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
@@ -79,8 +78,7 @@ export function ThreadItem({ thread }: Props) {
   const href = `/${project.id}/thread/${thread.id}`;
   const isActive = pathname === href;
   const assistant = useGetThreadAssistant(thread);
-  const metadata = decodeMetadata<ThreadMetadata>(thread.metadata);
-  const { title } = metadata;
+  const { title } = thread.meta;
 
   const {
     register,
@@ -153,12 +151,12 @@ export function ThreadItem({ thread }: Props) {
 
       await mutateUpdateThread({
         metadata: encodeMetadata<ThreadMetadata>({
-          ...metadata,
+          ...thread.meta,
           title: values.title,
         }),
       });
     },
-    [title, mutateUpdateThread, metadata, reset],
+    [title, mutateUpdateThread, thread.meta, reset],
   );
 
   const heading =

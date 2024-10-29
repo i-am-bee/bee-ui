@@ -15,6 +15,7 @@
  */
 
 import { paths } from '../schema';
+import { EntityWithDecodedMetadata } from '../types';
 
 export type UserMetadata = {
   email?: string;
@@ -31,8 +32,10 @@ export interface UserProfile {
   isDummy?: boolean;
 }
 
-export type UserReadResponse =
+export type UserResult =
   paths['/v1/users']['get']['responses']['200']['content']['application/json'];
+
+export type UserEntity = EntityWithDecodedMetadata<UserResult, UserMetadata>;
 
 export type UserCreateBody = NonNullable<
   paths['/v1/users']['post']['requestBody']

@@ -15,7 +15,7 @@
  */
 
 import { createTool, deleteTool, updateTool } from '@/app/api/tools';
-import { Tool, ToolsCreateBody } from '@/app/api/tools/types';
+import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
@@ -57,8 +57,8 @@ interface FormValues {
 interface Props extends ModalProps {
   tool?: Tool;
   project: Project;
-  onCreateSuccess?: (tool: Tool) => void;
-  onSaveSuccess?: (tool: Tool) => void;
+  onCreateSuccess?: (tool: ToolResult) => void;
+  onSaveSuccess?: (tool: ToolResult) => void;
   onDeleteSuccess?: (tool: Tool) => void;
 }
 

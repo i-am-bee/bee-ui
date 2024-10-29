@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Tool } from '@/app/api/tools/types';
+import { ToolResult } from '@/app/api/tools/types';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -48,7 +48,7 @@ export function AssistantForm() {
 
   const { setValue, getValues } = useFormContext<AssistantFormValues>();
 
-  const handleUserToolCreateSuccess = (tool: Tool) => {
+  const handleUserToolCreateSuccess = (tool: ToolResult) => {
     const selectedTools = getValues('tools');
 
     setValue('tools', [...selectedTools, { id: tool.id, type: 'user' }], {

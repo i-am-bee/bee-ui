@@ -16,13 +16,14 @@
 
 import { listAssistants, listLastAssistants } from '@/app/api/assistants';
 import { AssistantsListQuery } from '@/app/api/assistants/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { isNotNull } from '@/utils/helpers';
 import {
   infiniteQueryOptions,
   QueryClient,
   queryOptions,
 } from '@tanstack/react-query';
-import { getAssistantFromAssistantResult } from '../utils';
+import { Assistant } from '../types';
 
 export const PAGE_SIZE = 6;
 
@@ -48,7 +49,7 @@ export const assistantsQuery = (
       const assistants = data.pages
         .flatMap((page) => page?.data)
         .filter(isNotNull)
-        .map((item) => getAssistantFromAssistantResult(item));
+        .map((item) => decodeEntityWithMetadata<Assistant>(item));
       return {
         assistants,
         totalCount: data.pages.at(0)?.total_count,
@@ -73,7 +74,7 @@ export const lastAssistantsQuery = (projectId: string) =>
     queryFn: () => listLastAssistants(projectId),
     select(data) {
       return data
-        ?.map((item) => getAssistantFromAssistantResult(item))
+        ?.map((item) => decodeEntityWithMetadata<Assistant>(item))
         .slice(0, 3);
     },
   });
