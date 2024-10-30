@@ -19,10 +19,13 @@ import {
   StepToolCall,
   ThreadRun,
 } from '@/app/api/threads-runs/types';
+import { Thread } from '@/app/api/threads/types';
+import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { ExpandPanel } from '@/components/ExpandPanel/ExpandPanel';
 import { ExpandPanelButton } from '@/components/ExpandPanelButton/ExpandPanelButton';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Spinner } from '@/components/Spinner/Spinner';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   getToolApprovalId,
@@ -41,6 +44,7 @@ import {
 } from '@carbon/react/icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
+import { AnimatePresence, motion } from 'framer-motion';
 import JSON5 from 'json5';
 import {
   ReactElement,
@@ -50,23 +54,19 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { useThreadApi } from '../hooks/useThreadApi';
 import { useChat } from '../providers/ChatProvider';
 import {
   useExpandedStep,
   useExpandedStepActions,
 } from '../providers/ExpandedStepProvider';
 import { useRunContext } from '../providers/RunProvider';
+import { readRunQuery } from '../queries';
 import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
+import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
 import { toolQuery } from './queries';
-import { ToolApprovalValue } from '../types';
-import { readRunQuery } from '../queries';
-import { Tooltip } from '@/components/Tooltip/Tooltip';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useThreadApi } from '../hooks/useThreadApi';
-import { encodeEntityWithMetadata } from '@/app/api/utils';
-import { Thread } from '@/app/api/threads/types';
 
 interface Props {
   step: AssistantPlanStep;
@@ -262,15 +262,19 @@ export function PlanStep({ step, toolCall }: Props) {
                   </div>
                 </div>
               ) : (
-                <AnimatePresence>
-                  {step.thought && (
-                    <motion.section {...fadeProps()} key={`${id}:thought`}>
-                      <p className={classes.label}>Thought</p>
-                      <p className={classes.value}>{step.thought}</p>
-                    </motion.section>
-                  )}
+                <>
+                  <AnimatePresence>
+                    {step.thought && (
+                      <motion.section {...fadeProps()} key={`${id}:thought`}>
+                        <>
+                          <p className={classes.label}>Thought</p>
+                          <p className={classes.value}>{step.thought}</p>
+                        </>
+                      </motion.section>
+                    )}
+                  </AnimatePresence>
 
-                  <div key="tool">
+                  <section key={`${id}:tool`}>
                     <p className={classes.label}>Tool</p>
                     <p className={classes.tool}>
                       {ToolIcon && (
@@ -281,32 +285,49 @@ export function PlanStep({ step, toolCall }: Props) {
 
                       <span>{toolName}</span>
                     </p>
-                  </div>
+                  </section>
 
-                  {input && (
-                    <motion.section {...fadeProps()} key={`${id}:input`}>
-                      <p className={classes.label}>Input</p>
-                      <div className={classes.result}>
-                        <LineClampText numberOfLines={2} code={input}>
-                          {input}
-                        </LineClampText>
-                      </div>
-                    </motion.section>
-                  )}
+                  <AnimatePresence>
+                    {input && (
+                      <motion.section {...fadeProps()} key={`${id}:input`}>
+                        <>
+                          <p className={classes.label}>Input</p>
+                          <div className={classes.result}>
+                            <LineClampText numberOfLines={2} code={input}>
+                              {input}
+                            </LineClampText>
+                          </div>
+                        </>
+                      </motion.section>
+                    )}
+                  </AnimatePresence>
 
-                  {errorOrResult && (
-                    <motion.section {...fadeProps()} key={`${id}:result`}>
-                      <p className={classes.label}>Result</p>
-                      <div className={classes.result}>
-                        <LineClampText numberOfLines={4} code={errorOrResult}>
-                          {errorOrResult}
-                        </LineClampText>
-                      </div>
-                    </motion.section>
-                  )}
+                  <AnimatePresence>
+                    {errorOrResult && (
+                      <motion.section {...fadeProps()} key={`${id}:result`}>
+                        <>
+                          <p className={classes.label}>Result</p>
+                          <div className={classes.result}>
+                            <LineClampText
+                              numberOfLines={4}
+                              code={errorOrResult}
+                            >
+                              {errorOrResult}
+                            </LineClampText>
+                          </div>
+                        </>
+                      </motion.section>
+                    )}
+                  </AnimatePresence>
 
-                  {stepTrace && <TraceInfoView data={stepTrace.data} />}
-                </AnimatePresence>
+                  <AnimatePresence>
+                    {stepTrace && (
+                      <motion.section {...fadeProps()} key={`${id}:trace`}>
+                        <TraceInfoView data={stepTrace.data} />
+                      </motion.section>
+                    )}
+                  </AnimatePresence>
+                </>
               )}
             </div>
           )}
