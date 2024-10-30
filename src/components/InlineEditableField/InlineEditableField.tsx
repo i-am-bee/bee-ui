@@ -38,21 +38,26 @@ interface Props
   isDisabled?: boolean;
   refCallback?: RefCallBack;
   textClassName?: string;
+  onConfirm?: (value: string) => void;
   value?: string;
+  defaultValue?: string;
 }
 
 export function InlineEditableField({
   name,
-  value,
+  value: controlledValue,
+  defaultValue,
   refCallback,
-  onChange,
   isInvalid,
   isDisabled,
   textClassName,
+  onChange,
+  onConfirm,
   ...inputProps
 }: Props) {
   const id = useId();
   const [isEditing, setEditing] = useState<boolean>(false);
+  const [value, setValue] = useState(defaultValue ?? controlledValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {
@@ -74,7 +79,7 @@ export function InlineEditableField({
           labelText=""
           hideLabel
           name={name}
-          value={value}
+          value={controlledValue ?? value}
           id={`${id}:input`}
           onKeyDown={(e) => {
             if (
@@ -83,12 +88,24 @@ export function InlineEditableField({
             ) {
               setEditing(false);
               inputRef.current?.blur();
+
+              if (e.code === CODE_ENTER)
+                onConfirm?.(inputRef.current?.value ?? '');
+              else {
+                setValue(defaultValue);
+              }
             }
           }}
           className={textClassName}
           disabled={isDisabled}
-          onChange={onChange}
-          onBlur={onChange}
+          onChange={(e) => {
+            onChange?.(e);
+            setValue(inputRef.current?.value ?? '');
+          }}
+          onBlur={(e) => {
+            onChange?.(e);
+            setEditing(false);
+          }}
           ref={mergeRefs([refCallback, inputRef])}
           {...inputProps}
         />

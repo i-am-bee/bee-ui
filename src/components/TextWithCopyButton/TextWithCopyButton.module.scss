@@ -21,11 +21,11 @@
   code {
     @include type-style(body-01);
     display: block;
-    background-color: $border-subtle-01;
   }
   .content {
     white-space: pre-wrap;
     word-break: break-word;
+    background-color: $layer-02;
     padding: $spacing-05 rem(52px) $spacing-05 $spacing-05;
   }
 }

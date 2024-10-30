@@ -20,6 +20,8 @@ import {
   Button,
   DataTable,
   DataTableSkeleton,
+  OverflowMenu,
+  OverflowMenuItem,
   Table,
   TableBody,
   TableCell,
@@ -30,10 +32,10 @@ import {
   TableToolbarContent,
   TableToolbarSearch,
 } from '@carbon/react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { apiKeysQuery } from './queries';
-import { ChangeEvent, useId, useMemo } from 'react';
+import { apiKeysQuery } from './api/queries';
+import { useId, useMemo } from 'react';
 import { getLocaleDateString } from '@/utils/dates';
 import {
   PreferencesLayout,
@@ -45,30 +47,69 @@ import {
   UserProfileProvider,
   useUserProfile,
 } from '../chat/providers/UserProfileProvider';
+import { InlineEditableField } from '@/components/InlineEditableField/InlineEditableField';
+import { useRenameApiKey } from './api/useRenameApiKey';
+import { truncateCenter } from '@/utils/strings';
 
 export function ApiKeysHome() {
   const id = useId();
   const { project } = useAppContext();
-  const { openModal } = useModal();
+  const { openModal, openConfirmation } = useModal();
   const userProfileValue = useUserProfile();
 
   const { data } = useInfiniteQuery(apiKeysQuery(project.id));
 
+  const { mutate: mutateRename } = useRenameApiKey({});
+
   const rows = useMemo(
     () =>
-      data?.apiKeys?.map(({ name, secret, created_at }, index) => {
+      data?.apiKeys?.map((item, index) => {
+        const { id, name, secret, created_at, project } = item;
         return {
           id: `${index}`,
-          name,
-          secret,
+          name: (
+            <InlineEditableField
+              defaultValue={name}
+              onConfirm={(value) =>
+                mutateRename({ id, projectId: project.id, name: value })
+              }
+            />
+          ),
+          secret: truncateCenter(secret, 11, '***'),
+          project: project.name,
           created_at: (
             <time dateTime={getLocaleDateString(created_at)}>
-              {getLocaleDateString(created_at)}
+              {getLocaleDateString(created_at, undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
             </time>
+          ),
+          actions: (
+            <OverflowMenu>
+              <OverflowMenuItem
+                itemText="Regenerate"
+                onClick={() =>
+                  openModal((props) => (
+                    <ApiKeyModal.Regenerate apiKey={item} {...props} />
+                  ))
+                }
+              />
+              <OverflowMenuItem
+                isDelete
+                itemText="Delete"
+                onClick={() =>
+                  openModal((props) => (
+                    <ApiKeyModal.Delete apiKey={item} {...props} />
+                  ))
+                }
+              />
+            </OverflowMenu>
           ),
         };
       }) ?? [],
-    [data?.apiKeys],
+    [data?.apiKeys, mutateRename, openModal],
   );
 
   return (
@@ -166,5 +207,6 @@ const HEADERS = [
   { key: 'name', header: 'Name' },
   { key: 'secret', header: 'API Key' },
   { key: 'project', header: 'Workspace' },
-  { key: 'created', header: 'Created' },
+  { key: 'created_at', header: 'Created' },
+  { key: 'actions', header: '' },
 ];

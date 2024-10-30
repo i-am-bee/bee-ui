@@ -27,67 +27,13 @@
 }
 
 .table {
-  :global(.#{$prefix}--toolbar-content) {
-    border: 1px solid $border-subtle;
-    border-radius: $block-radius $block-radius 0 0;
-    overflow: hidden;
-    button {
-      border-radius: 0;
-    }
-  }
-  :global(.#{$prefix}--search) {
-    inline-size: 100%;
-    display: flex;
-    :global(.#{$prefix}--search-input) {
-      padding-inline-start: $spacing-05;
-      padding-inline-end: rem(80px);
-      border-start-start-radius: $block-radius;
-      &:hover {
-        background-color: $background;
+  thead {
+    th {
+      &:first-child {
+        inline-size: 30%;
       }
-    }
-    :global(.#{$prefix}--search-magnifier-icon) {
-      inset-inline-start: auto;
-      inset-inline-end: 0;
-    }
-    :global(.#{$prefix}--search-close) {
-      inset-inline-start: auto;
-      inset-inline-end: rem(40px);
-    }
-  }
-
-  :global(.#{$prefix}--data-table) {
-    thead {
-      th {
-        block-size: rem(64px);
-        vertical-align: top;
-        padding-block-start: $spacing-03;
-        border-block: 1px solid $border-subtle;
-        &:first-child {
-          border-inline-start: 1px solid $border-subtle;
-        }
-        &:last-child {
-          border-inline-end: 1px solid $border-subtle;
-        }
-      }
-    }
-    tbody {
-      td {
-        border-block-end: 1px solid $border-subtle;
-        &:first-child {
-          border-inline-start: 1px solid $border-subtle;
-        }
-        &:last-child {
-          border-inline-end: 1px solid $border-subtle;
-        }
-      }
-      tr:last-child {
-        td:first-child {
-          border-end-start-radius: $block-radius;
-        }
-        td:last-child {
-          border-end-end-radius: $block-radius;
-        }
+      &:last-child {
+        inline-size: 0;
       }
     }
   }

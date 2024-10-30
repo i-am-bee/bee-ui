@@ -17,15 +17,12 @@
 import { Dropdown } from '@/components/Dropdown/Dropdown';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { Button, SkeletonPlaceholder, Tag } from '@carbon/react';
-import { useQueries } from '@tanstack/react-query';
 import classes from './ProjectSelector.module.scss';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { Project, ProjectsListQuery } from '@/app/api/projects/types';
 import { Add } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
-import { useUserProfile } from '../chat/providers/UserProfileProvider';
 import { useMemo } from 'react';
-import { readProjectUserQuery } from './users/queries';
 import { CreateProjectModal } from './manage/CreateProjectModal';
 import { useProjects } from './hooks/useProjects';
 import { ProjectWithScope } from './types';

@@ -32,21 +32,17 @@ export async function createApiKey(projectId: string, body: ApiKeysCreateBody) {
 }
 
 export async function listApiKeys(projectId: string, query: ApiKeysListQuery) {
-  const res = await client.GET(
-    '/v1/organization/projects/{project_id}/api_keys',
-    {
-      params: {
-        query,
-        path: { project_id: projectId },
-      },
-      headers: getRequestHeaders(projectId),
+  const res = await client.GET('/v1/organization/api_keys', {
+    params: {
+      query,
     },
-  );
+    headers: getRequestHeaders(projectId),
+  });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readTool(projectId: string, id: string) {
+export async function readApiKey(projectId: string, id: string) {
   const res = await client.GET(
     '/v1/organization/projects/{project_id}/api_keys/{api_key_id}',
     {
@@ -79,7 +75,7 @@ export async function updateApiKey(
   return res.data;
 }
 
-export async function deleteTool(projectId: string, id: string) {
+export async function deleteApiKey(projectId: string, id: string) {
   const res = await client.DELETE(
     '/v1/organization/projects/{project_id}/api_keys/{api_key_id}',
     {
