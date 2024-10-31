@@ -19,11 +19,11 @@ import { ApiKeysListQuery } from '@/app/api/api-keys/types';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions } from '@tanstack/react-query';
 
-export const apiKeysQuery = (projectId: string, params?: ApiKeysListQuery) =>
+export const apiKeysQuery = (params?: ApiKeysListQuery) =>
   infiniteQueryOptions({
-    queryKey: ['api-keys', projectId, params],
+    queryKey: ['api-keys', params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listApiKeys(projectId, {
+      listApiKeys({
         after: pageParam,
         order_by: 'created_at',
         order: 'desc',

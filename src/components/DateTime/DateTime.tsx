@@ -14,33 +14,30 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { getLocaleDateString } from '@/utils/dates';
 
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-07;
-
-  p {
-    @include type-style('body-compact-01');
-  }
+interface Props {
+  date: number | string;
+  type?: 'long' | 'short';
+  options?: Intl.DateTimeFormatOptions;
 }
 
-.table {
-  thead {
-    th {
-      &:first-child {
-        inline-size: 30%;
-      }
-      &:last-child {
-        inline-size: 0;
-      }
-    }
-  }
-}
-.regenerateBtnContent {
-  inline-size: 100%;
-  block-size: rem(40px);
-  display: flex;
-  align-items: center;
+export function DateTime({ date, type = 'short', options }: Props) {
+  return (
+    <time dateTime={getLocaleDateString(date)}>
+      {getLocaleDateString(
+        date,
+        undefined,
+        options
+          ? options
+          : type === 'short'
+            ? {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              }
+            : undefined,
+      )}
+    </time>
+  );
 }

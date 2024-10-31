@@ -14,33 +14,19 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { useEffect, useRef } from 'react';
 
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-07;
-
-  p {
-    @include type-style('body-compact-01');
-  }
-}
-
-.table {
-  thead {
-    th {
-      &:first-child {
-        inline-size: 30%;
+export function useOnMount(onMount: () => void) {
+  const mountedRef = useRef<boolean>(false);
+  useEffect(
+    () => {
+      // run only once
+      if (!mountedRef.current) {
+        mountedRef.current = true;
+        onMount();
       }
-      &:last-child {
-        inline-size: 0;
-      }
-    }
-  }
-}
-.regenerateBtnContent {
-  inline-size: 100%;
-  block-size: rem(40px);
-  display: flex;
-  align-items: center;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 }

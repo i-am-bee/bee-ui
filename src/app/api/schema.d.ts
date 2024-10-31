@@ -871,6 +871,7 @@ export interface paths {
                             data: {
                                 created_at: number;
                                 id: string;
+                                last_used_at: number | null;
                                 name: string;
                                 /** @enum {unknown} */
                                 object: "organization.project.api_key";
@@ -1120,6 +1121,7 @@ export interface paths {
                             data: {
                                 created_at: number;
                                 id: string;
+                                last_used_at: number | null;
                                 name: string;
                                 /** @enum {unknown} */
                                 object: "organization.project.api_key";
@@ -1173,6 +1175,7 @@ export interface paths {
                         "application/json": {
                             created_at: number;
                             id: string;
+                            last_used_at: number | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "organization.project.api_key";
@@ -1228,6 +1231,7 @@ export interface paths {
                         "application/json": {
                             created_at: number;
                             id: string;
+                            last_used_at: number | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "organization.project.api_key";
@@ -1277,6 +1281,7 @@ export interface paths {
                         "application/json": {
                             created_at: number;
                             id: string;
+                            last_used_at: number | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "organization.project.api_key";

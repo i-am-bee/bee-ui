@@ -15,25 +15,32 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteApiKey } from '@/app/api/api-keys';
+import { createApiKey, deleteApiKey, updateApiKey } from '@/app/api/api-keys';
+import { ApiKey } from '@/app/api/api-keys/types';
 import { apiKeysQuery } from './queries';
 
-export function useDeleteApiKey({ onSuccess }: { onSuccess?: () => void }) {
+export function useRegenerateApiKey({
+  onSuccess,
+}: {
+  onSuccess?: (apiKey?: ApiKey) => void;
+}) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ id, projectId }: { id: string; projectId: string }) =>
-      deleteApiKey(projectId, id),
-    onSuccess: () => {
+    mutationFn: async ({ id, name, project }: ApiKey) => {
+      const result = await createApiKey(project.id, { name });
+      await deleteApiKey(project.id, id);
+      return result;
+    },
+    onSuccess: (result) => {
       queryClient.invalidateQueries({
         queryKey: [apiKeysQuery().queryKey.at(0)],
       });
-
-      onSuccess?.();
+      onSuccess?.(result);
     },
     meta: {
       errorToast: {
-        title: 'Failed to delete the api key',
+        title: 'Failed to regenerate the api key',
         includeErrorMessage: true,
       },
     },

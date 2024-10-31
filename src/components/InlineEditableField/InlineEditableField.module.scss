@@ -90,7 +90,7 @@
   &.isEditing {
     &:hover {
       button {
-        display: none;
+        opacity: 0;
       }
     }
 
@@ -111,8 +111,15 @@
   }
 
   &.isInvalid {
-    button svg {
-      fill: $color-red-50;
+    &.isEditing {
+      button {
+        opacity: 1 !important;
+      }
+    }
+    button {
+      svg {
+        fill: $color-red-50;
+      }
     }
   }
 }

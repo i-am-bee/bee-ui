@@ -29,31 +29,37 @@ import {
   TextInput,
 } from '@carbon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useId, useMemo, useState } from 'react';
+import { useCallback, useEffect, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import classes from './ApiKeyModal.module.scss';
 import { Project } from '@/app/api/projects/types';
-import { ApiKey, ApiKeysCreateBody } from '@/app/api/api-keys/types';
+import { ApiKey } from '@/app/api/api-keys/types';
 import { apiKeysQuery } from '../api/queries';
-import { createApiKey, deleteApiKey } from '@/app/api/api-keys';
+import { createApiKey } from '@/app/api/api-keys';
 import { useProjects } from '@/modules/projects/hooks/useProjects';
 import { TextWithCopyButton } from '@/components/TextWithCopyButton/TextWithCopyButton';
 import { useDeleteApiKey } from '../api/useDeleteApiKey';
+import { useRegenerateApiKey } from '../api/useRegenerateApiKey';
+import { ProjectWithScope } from '@/modules/projects/types';
+import { useOnMount } from '@/hooks/useOnMount';
 
 interface FormValues {
   name: string;
-  project: Project;
+  project?: ProjectWithScope;
 }
 
 interface Props extends ModalProps {
-  project: Project;
+  project: ProjectWithScope;
   onSuccess?: () => void;
 }
 
-export function ApiKeyModal({ project, onSuccess, ...props }: Props) {
+export function ApiKeyModal({
+  project: currentProject,
+  onSuccess,
+  ...props
+}: Props) {
   const { onRequestClose } = props;
   const id = useId();
-  // const [apiKey, setApiKey] = useState<ApiKey | null>(null);
   const { openModal } = useModal();
 
   const queryClient = useQueryClient();
@@ -65,11 +71,6 @@ export function ApiKeyModal({ project, onSuccess, ...props }: Props) {
     if (!isFetching && hasNextPage) fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetching]);
 
-  const editableProjects = useMemo(
-    () => projects?.filter(({ readOnly }) => !readOnly),
-    [projects],
-  );
-
   const {
     control,
     register,
@@ -78,23 +79,22 @@ export function ApiKeyModal({ project, onSuccess, ...props }: Props) {
   } = useForm<FormValues>({
     defaultValues: {
       name: '',
+      project: currentProject,
     },
     mode: 'onChange',
   });
 
   const { mutateAsync: mutateSaveTool } = useMutation({
     mutationFn: ({ project, ...body }: FormValues) =>
-      createApiKey(project.id, body),
-    onSuccess: (result, { project }) => {
+      createApiKey(project?.id ?? '', body),
+    onSuccess: (result) => {
       queryClient.invalidateQueries({
-        queryKey: [apiKeysQuery(project.id).queryKey.at(0)],
+        queryKey: [apiKeysQuery().queryKey.at(0)],
       });
 
       if (result) {
         onRequestClose();
-        openModal((props) => (
-          <ApiKeyModal.View apiKey={result} project={project} {...props} />
-        ));
+        openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
       }
     },
     meta: {
@@ -144,7 +144,7 @@ export function ApiKeyModal({ project, onSuccess, ...props }: Props) {
                 render={({ field: { onChange, value, ref } }) => (
                   <ComboBox
                     id={`${id}:project`}
-                    items={editableProjects ?? []}
+                    items={projects ?? []}
                     selectedItem={value}
                     titleText="Workspace"
                     placeholder="Choose an option"
@@ -191,13 +191,18 @@ ApiKeyModal.Regenerate = function ViewModal({
 }: {
   apiKey: ApiKey;
 } & ModalProps) {
-  const {} = useMutation({
-    mutationFn: async () => {
-      // TODO:
-      // await createApiKey(project.id, { name: apiKey.name });
-      // await deleteApiKey(apiKey)
+  const { openModal } = useModal();
+
+  const { mutate } = useRegenerateApiKey({
+    onSuccess: (result) => {
+      if (result) {
+        openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
+      }
+      props.onRequestClose();
     },
   });
+
+  useOnMount(() => mutate(apiKey));
 
   return (
     <Modal {...props} size="sm">
@@ -213,11 +218,9 @@ ApiKeyModal.Regenerate = function ViewModal({
 
 ApiKeyModal.View = function ViewModal({
   apiKey,
-  project,
   ...props
 }: {
   apiKey: ApiKey;
-  project: Project;
 } & ModalProps) {
   return (
     <Modal {...props} size="sm" className={classes.modal}>
@@ -231,7 +234,7 @@ ApiKeyModal.View = function ViewModal({
         </p>
       </ModalHeader>
       <ModalBody>
-        <ApiKeyDetail apiKey={apiKey} project={project} isSecretVisible />
+        <ApiKeyDetail apiKey={apiKey} isSecretVisible />
       </ModalBody>
     </Modal>
   );
@@ -257,8 +260,8 @@ ApiKeyModal.Delete = function ViewModal({
           removed and can&apos;t be recovered or modified.
         </p>
       </ModalHeader>
-      <ModalBody>
-        <ApiKeyDetail apiKey={apiKey} project={apiKey.project} />
+      <ModalBody className={classes.viewContent}>
+        <ApiKeyDetail apiKey={apiKey} />
       </ModalBody>
       <ModalFooter>
         <Button kind="ghost" onClick={() => props.onRequestClose()}>
@@ -281,13 +284,12 @@ ApiKeyModal.Delete = function ViewModal({
 
 function ApiKeyDetail({
   apiKey,
-  project,
   isSecretVisible,
 }: {
   apiKey: ApiKey;
-  project: Project;
   isSecretVisible?: boolean;
 }) {
+  const { name, project, secret } = apiKey;
   return (
     <div className={classes.viewContent}>
       <dl>
@@ -295,7 +297,7 @@ function ApiKeyDetail({
           <dd>
             <FormLabel>Name</FormLabel>
           </dd>
-          <dt>{apiKey.name}</dt>
+          <dt>{name}</dt>
         </div>
         <div>
           <dd>
@@ -305,11 +307,11 @@ function ApiKeyDetail({
         </div>
       </dl>
       {isSecretVisible ? (
-        <TextWithCopyButton text={apiKey.secret} isCode>
-          {apiKey.secret}
+        <TextWithCopyButton text={secret} isCode>
+          {secret}
         </TextWithCopyButton>
       ) : (
-        <code>{apiKey.secret}</code>
+        <code className={classes.secret}>{secret}</code>
       )}
     </div>
   );

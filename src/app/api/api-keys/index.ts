@@ -31,12 +31,12 @@ export async function createApiKey(projectId: string, body: ApiKeysCreateBody) {
   return res.data;
 }
 
-export async function listApiKeys(projectId: string, query: ApiKeysListQuery) {
+export async function listApiKeys(query: ApiKeysListQuery) {
   const res = await client.GET('/v1/organization/api_keys', {
     params: {
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(),
   });
   assertSuccessResponse(res);
   return res.data;

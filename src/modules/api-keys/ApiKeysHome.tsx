@@ -36,7 +36,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { apiKeysQuery } from './api/queries';
 import { useId, useMemo } from 'react';
-import { getLocaleDateString } from '@/utils/dates';
 import {
   PreferencesLayout,
   PreferencesSection,
@@ -50,26 +49,39 @@ import {
 import { InlineEditableField } from '@/components/InlineEditableField/InlineEditableField';
 import { useRenameApiKey } from './api/useRenameApiKey';
 import { truncateCenter } from '@/utils/strings';
+import { useDebounceValue } from 'usehooks-ts';
+import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
+import { DateTime } from '@/components/DateTime/DateTime';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
 
 export function ApiKeysHome() {
   const id = useId();
   const { project } = useAppContext();
-  const { openModal, openConfirmation } = useModal();
+  const { openModal } = useModal();
   const userProfileValue = useUserProfile();
+  const [search, setSearch] = useDebounceValue('', 200);
 
-  const { data } = useInfiniteQuery(apiKeysQuery(project.id));
+  const { data, isPending, fetchNextPage, isFetching, hasNextPage } =
+    useInfiniteQuery(apiKeysQuery({ search, limit: PAGE_SIZE }));
+
+  const { ref: fetchMoreAnchorRef } = useFetchNextPageInView({
+    onFetchNextPage: fetchNextPage,
+    isFetching,
+    hasNextPage,
+  });
 
   const { mutate: mutateRename } = useRenameApiKey({});
 
   const rows = useMemo(
     () =>
       data?.apiKeys?.map((item, index) => {
-        const { id, name, secret, created_at, project } = item;
+        const { id, name, secret, created_at, last_used_at, project } = item;
         return {
-          id: `${index}`,
+          id,
           name: (
             <InlineEditableField
               defaultValue={name}
+              required
               onConfirm={(value) =>
                 mutateRename({ id, projectId: project.id, name: value })
               }
@@ -77,19 +89,27 @@ export function ApiKeysHome() {
           ),
           secret: truncateCenter(secret, 11, '***'),
           project: project.name,
-          created_at: (
-            <time dateTime={getLocaleDateString(created_at)}>
-              {getLocaleDateString(created_at, undefined, {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-              })}
-            </time>
+          created_at: <DateTime date={created_at} />,
+          last_used_at: last_used_at ? (
+            <DateTime date={last_used_at} />
+          ) : (
+            'never'
           ),
           actions: (
             <OverflowMenu>
               <OverflowMenuItem
-                itemText="Regenerate"
+                itemText={
+                  <Tooltip
+                    content="Recreates the API key"
+                    asChild
+                    // TODO: disable regenerate on keys of other users
+                    placement="top"
+                  >
+                    <span className={classes.regenerateBtnContent}>
+                      Regenerate
+                    </span>
+                  </Tooltip>
+                }
                 onClick={() =>
                   openModal((props) => (
                     <ApiKeyModal.Regenerate apiKey={item} {...props} />
@@ -120,93 +140,98 @@ export function ApiKeysHome() {
           anyone. Keep it secure to prevent unauthorized access to your account.
         </p>
 
-        {!data?.apiKeys ? (
-          <DataTableSkeleton
-            headers={HEADERS}
-            aria-label="Instances table"
-            showToolbar={false}
-            showHeader={false}
-            className={classes.table}
-            rowCount={10}
-          />
-        ) : (
-          <DataTable headers={HEADERS} rows={rows}>
-            {({
-              rows,
-              headers,
-              getHeaderProps,
-              getRowProps,
-              getTableProps,
-              getToolbarProps,
-            }: any) => (
-              <div className={classes.table}>
-                <TableToolbar {...getToolbarProps()} aria-label="toolbar">
-                  <TableToolbarContent>
-                    <TableToolbarSearch
-                      id={`${id}__table-search`}
-                      placeholder="Search input text"
-                      onChange={(e) => {
-                        // onSearchChange(e.target.value);
-                      }}
-                    />
-                    <div className={classes.toolbarButtons}>
-                      <Button
-                        kind="secondary"
-                        onClick={() =>
-                          openModal((props) => (
-                            <UserProfileProvider value={userProfileValue}>
-                              <ApiKeyModal {...props} project={project} />
-                            </UserProfileProvider>
-                          ))
-                        }
-                      >
-                        Create API key
-                      </Button>
-                    </div>
-                  </TableToolbarContent>
-                </TableToolbar>
-                {/* <TableLoadingContainer isLoading={isLoading}> */}
+        <DataTable headers={HEADERS} rows={rows}>
+          {({
+            rows,
+            headers,
+            getHeaderProps,
+            getRowProps,
+            getTableProps,
+            getToolbarProps,
+          }: any) => (
+            <div className={classes.table}>
+              <TableToolbar {...getToolbarProps()} aria-label="toolbar">
+                <TableToolbarContent>
+                  <TableToolbarSearch
+                    id={`${id}__table-search`}
+                    placeholder="Search input text"
+                    onChange={(e) => e && setSearch(e.target.value)}
+                  />
+                  <div className={classes.toolbarButtons}>
+                    <Button
+                      kind="secondary"
+                      onClick={() =>
+                        openModal((props) => (
+                          <UserProfileProvider value={userProfileValue}>
+                            <ApiKeyModal {...props} project={project} />
+                          </UserProfileProvider>
+                        ))
+                      }
+                    >
+                      Create API key
+                    </Button>
+                  </div>
+                </TableToolbarContent>
+              </TableToolbar>
+              {isPending ? (
+                <DataTableSkeleton
+                  headers={HEADERS}
+                  aria-label="Instances table"
+                  showToolbar={false}
+                  showHeader={false}
+                  className={classes.table}
+                  rowCount={PAGE_SIZE}
+                />
+              ) : (
                 <Table {...getTableProps()}>
                   <TableHead>
                     <TableRow>
-                      {headers.map((header: any) => (
-                        <TableHeader
-                          key={header.key}
-                          {...getHeaderProps({
-                            header,
-                            isSortable: header.isSortable,
-                          })}
-                        >
-                          {header.header}
-                        </TableHeader>
-                      ))}
+                      {headers.map((header: any) => {
+                        const { key, ...headerProps } = getHeaderProps({
+                          header,
+                          isSortable: header.isSortable,
+                        });
+                        return (
+                          <TableHeader key={key} {...headerProps}>
+                            {header.header}
+                          </TableHeader>
+                        );
+                      })}
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map((row: any, index: number) => (
-                      <TableRow key={row.id} {...getRowProps({ row })}>
-                        {row.cells.map((cell: any) => (
-                          <TableCell key={cell.id}>{cell.value}</TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
+                    {rows.map((row: any, index: number) => {
+                      const { key, ...rowProps } = getRowProps({ row });
+
+                      return (
+                        <TableRow key={key} {...rowProps}>
+                          {row.cells.map((cell: any) => (
+                            <TableCell key={cell.id}>{cell.value}</TableCell>
+                          ))}
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
-                {/* <TablePagination aria-label="pagination bar" {...pagination} /> */}
-                {/* </TableLoadingContainer> */}
-              </div>
-            )}
-          </DataTable>
-        )}
+              )}
+              {hasNextPage && (
+                <div ref={fetchMoreAnchorRef} className={classes.anchor} />
+              )}
+            </div>
+          )}
+        </DataTable>
       </div>
     </PreferencesLayout>
   );
 }
+
+const PAGE_SIZE = 10;
 
 const HEADERS = [
   { key: 'name', header: 'Name' },
   { key: 'secret', header: 'API Key' },
   { key: 'project', header: 'Workspace' },
   { key: 'created_at', header: 'Created' },
+  { key: 'last_used_at', header: 'Last used' },
   { key: 'actions', header: '' },
 ];

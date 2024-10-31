@@ -26,10 +26,10 @@ export type ApiKey = NonNullable<
 >;
 
 export type ApiKeysListQuery = NonNullable<
-  paths['/v1/organization/projects/{project_id}/api_keys']['get']['parameters']['query']
+  paths['/v1/organization/api_keys']['get']['parameters']['query']
 >;
 
-export type ToosListQueryOrderBy = FetchParamsOrderBy<ApiKeysListQuery>;
+export type ApiKeysListOrderBy = FetchParamsOrderBy<ApiKeysListQuery>;
 
 export type ApiKeysListResponse =
   paths['/v1/organization/projects/{project_id}/api_keys']['get']['responses']['200']['content']['application/json'];
