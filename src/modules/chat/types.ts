@@ -37,6 +37,7 @@ export type ChatMessageBase = Omit<
   MessageWithFiles,
   'id' | 'content' | 'object' | 'metadata' | 'attachments'
 > & {
+  key: string;
   id?: string;
   content: string;
   error?: Error;

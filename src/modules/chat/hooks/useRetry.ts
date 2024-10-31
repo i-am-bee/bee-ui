@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { useChat } from '../providers/ChatProvider';
 import { deleteMessage } from '@/app/api/threads-messages';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { useMutation } from '@tanstack/react-query';
+import { v4 as uuid } from 'uuid';
+import { useChat } from '../providers/ChatProvider';
 import { ChatMessage } from '../types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useRetry(message: ChatMessage) {
   const { status, thread, sendMessage, getMessages, setMessages } = useChat();
@@ -66,6 +67,7 @@ export function useRetry(message: ChatMessage) {
           lastMessage.error = Error('Regeneration failed');
         } else {
           messages.push({
+            key: uuid(),
             role: 'assistant',
             pending: false,
             content: '',

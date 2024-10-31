@@ -82,74 +82,70 @@ export const Message = memo(function Message({
 
   const files = message.role === 'user' ? message.files : [];
 
-  const content = (
-    <RunProvider run={run}>
-      <li
-        ref={mergeRefs([contentRef, inViewRef])}
-        className={clsx(classes.root, { [classes.hovered]: showActions })}
-        {...focusWithinProps}
-        {...contentHover.hoverProps}
-        onBlur={() => {
-          setFocusWithin(false);
-        }}
-      >
-        <Container size="sm" className={classes.container}>
-          <div
-            className={clsx(classes.holder, {
-              [classes.user]: message.role === 'user',
-              [classes.past]: isPast && !showActions,
-              [classes.scrolled]: isScrolled,
-            })}
-          >
-            <div className={classes.content}>
-              <Sender message={message} />
-              <Content message={message} />
+  return (
+    <MessageFeedbackProvider run={run}>
+      <RunProvider run={run}>
+        <li
+          ref={mergeRefs([contentRef, inViewRef])}
+          className={clsx(classes.root, { [classes.hovered]: showActions })}
+          {...focusWithinProps}
+          {...contentHover.hoverProps}
+          onBlur={() => {
+            setFocusWithin(false);
+          }}
+        >
+          <Container size="sm" className={classes.container}>
+            <div
+              className={clsx(classes.holder, {
+                [classes.user]: message.role === 'user',
+                [classes.past]: isPast && !showActions,
+                [classes.scrolled]: isScrolled,
+              })}
+            >
+              <div className={classes.content}>
+                <Sender message={message} />
+                <Content message={message} />
+              </div>
+
+              {files && files.length > 0 && (
+                <AttachmentsList className={classes.files}>
+                  {files.map(({ file }) => {
+                    return file ? (
+                      <li key={file.id}>
+                        <AttachmentLink
+                          fileId={file.id}
+                          filename={file.filename}
+                          size="md"
+                        />
+                      </li>
+                    ) : null;
+                  })}
+                </AttachmentsList>
+              )}
+
+              {isAssistant && (
+                <PlanWithSources message={message} inView={inView} />
+              )}
+
+              {message.error != null && (
+                <ErrorMessage
+                  error={message.error}
+                  message={message}
+                  className={classes.error}
+                />
+              )}
             </div>
-
-            {files && files.length > 0 && (
-              <AttachmentsList className={classes.files}>
-                {files.map(({ file }) => {
-                  return file ? (
-                    <li key={file.id}>
-                      <AttachmentLink
-                        fileId={file.id}
-                        filename={file.filename}
-                        size="md"
-                      />
-                    </li>
-                  ) : null;
-                })}
-              </AttachmentsList>
-            )}
-
-            {isAssistant && (
-              <PlanWithSources message={message} inView={inView} />
-            )}
-
-            {message.error != null && (
-              <ErrorMessage
-                error={message.error}
+            {hasActions && (
+              <ActionBar
+                visible={showActions}
                 message={message}
-                className={classes.error}
+                isPast={isPast}
               />
             )}
-          </div>
-          {hasActions && (
-            <ActionBar
-              visible={showActions}
-              message={message}
-              isPast={isPast}
-            />
-          )}
-        </Container>
-      </li>
-    </RunProvider>
-  );
-
-  return hasActions ? (
-    <MessageFeedbackProvider run={run}>{content}</MessageFeedbackProvider>
-  ) : (
-    content
+          </Container>
+        </li>
+      </RunProvider>
+    </MessageFeedbackProvider>
   );
 });
 
