@@ -40,6 +40,9 @@
   }
   dd {
     margin-block-start: $spacing-03;
+    p {
+      @include type-style('body-compact-01');
+    }
   }
 }
 .agentDescription {
