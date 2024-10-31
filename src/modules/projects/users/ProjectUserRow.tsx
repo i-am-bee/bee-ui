@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { projectUsersQuery } from './queries';
-import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
-import { ProjectUser, ProjectUserRole } from '@/app/api/projects-users/types';
-import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import { deleteProjectUser, updateProjectUser } from '@/app/api/projects-users';
-import clsx from 'clsx';
-import { SkeletonPlaceholder, SkeletonText } from '@carbon/react';
-import { useUserProfile } from '@/modules/chat/providers/UserProfileProvider';
+import { ProjectUser, ProjectUserRole } from '@/app/api/projects-users/types';
+import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useUserProfile } from '@/store/user-profile';
+import { SkeletonPlaceholder, SkeletonText } from '@carbon/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
+import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import classes from './ProjectUserRow.module.scss';
+import { projectUsersQuery } from './queries';
 
 interface Props {
   user: ProjectUser;
@@ -32,7 +32,7 @@ interface Props {
 
 export function ProjectUserRow({ user }: Props) {
   const { project } = useAppContext();
-  const userProfile = useUserProfile();
+  const userId = useUserProfile((state) => state.id);
   const queryClient = useQueryClient();
 
   const { mutateAsync: mutateDelete, isPending: isDeletePending } = useMutation(
@@ -74,7 +74,7 @@ export function ProjectUserRow({ user }: Props) {
     <fieldset
       key={user.id}
       className={clsx(classes.user, { [classes.isDeleting]: isDeletePending })}
-      disabled={user.id === userProfile.id}
+      disabled={user.id === userId}
     >
       <UserAvatar name={user.name} />
       <span>

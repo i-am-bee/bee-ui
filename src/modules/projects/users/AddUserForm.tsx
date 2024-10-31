@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
+import { OrganizationUser } from '@/app/api/organization-users/types';
+import { createProjectUser } from '@/app/api/projects-users';
+import {
+  ProjectUserCreateBody,
+  ProjectUserRole,
+} from '@/app/api/projects-users/types';
+import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useUserProfile } from '@/store/user-profile';
 import { Button, ComboBox } from '@carbon/react';
-import classes from './AddUserForm.module.scss';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Add, Checkmark } from '@carbon/react/icons';
 import {
   useInfiniteQuery,
@@ -24,24 +31,17 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { projectUsersQuery, readProjectUserQuery, usersQuery } from './queries';
 import debounce from 'lodash/debounce';
-import { OrganizationUser } from '@/app/api/organization-users/types';
-import {
-  ProjectUserCreateBody,
-  ProjectUserRole,
-} from '@/app/api/projects-users/types';
-import { createProjectUser } from '@/app/api/projects-users';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
-import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
-import { useUserProfile } from '@/modules/chat/providers/UserProfileProvider';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { projectUsersQuery, readProjectUserQuery, usersQuery } from './queries';
 
 export function AddUserForm() {
   const htmlId = useId();
   const { project } = useAppContext();
-  const userProfile = useUserProfile();
+  const userId = useUserProfile((state) => state.id);
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -51,8 +51,8 @@ export function AddUserForm() {
     enabled: search.length > 2,
   });
   const users = useMemo(
-    () => data?.users.filter((user) => user.id !== userProfile.id),
-    [data?.users, userProfile.id],
+    () => data?.users.filter((user) => user.id !== userId),
+    [data?.users, userId],
   );
 
   const { mutateAsync } = useMutation({

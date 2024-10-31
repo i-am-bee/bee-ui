@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-import { UserMetadata } from '@/store/user-profile/types';
-import { paths } from '../schema';
-import { EntityWithDecodedMetadata } from '../types';
+import { StoreSlice } from '../types';
 
-export type UserResult =
-  paths['/v1/users']['get']['responses']['200']['content']['application/json'];
+export type UserMetadata = {
+  email?: string;
+  tou_accepted_at?: number;
+};
 
-export type UserEntity = EntityWithDecodedMetadata<UserResult, UserMetadata>;
+export type UserProfileState = {
+  id: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  metadata?: UserMetadata;
+};
 
-export type UserCreateBody = NonNullable<
-  paths['/v1/users']['post']['requestBody']
->['content']['application/json'];
+export type UserProfileAction = {};
 
-export type UserUpdateBody = NonNullable<
-  paths['/v1/users']['put']['requestBody']
->['content']['application/json'];
+export type UserProfileSlice = StoreSlice<UserProfileState, UserProfileAction>;

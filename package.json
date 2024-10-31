@@ -25,6 +25,7 @@
     "@carbon/motion": "^11.17.0",
     "@carbon/react": "^1.64.0",
     "@carbon/styles": "^1.63.0",
+    "@dhmk/zustand-lens": "^5.0.0",
     "@floating-ui/react": "^0.26.22",
     "@hookform/resolvers": "^3.9.0",
     "@opentelemetry/api-logs": "^0.53.0",
@@ -81,7 +82,8 @@
     "use-resize-observer": "^9.1.0",
     "usehooks-ts": "^3.1.0",
     "uuid": "^9.0.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.2.1",

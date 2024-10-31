@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-import { UserMetadata } from '@/store/user-profile/types';
-import { paths } from '../schema';
-import { EntityWithDecodedMetadata } from '../types';
+'use client';
 
-export type UserResult =
-  paths['/v1/users']['get']['responses']['200']['content']['application/json'];
+import { createContext, PropsWithChildren, useRef } from 'react';
+import { createStore } from '.';
+import { InitialStoreState, Store } from './types';
 
-export type UserEntity = EntityWithDecodedMetadata<UserResult, UserMetadata>;
+export const StoreContext = createContext<Store | null>(null);
 
-export type UserCreateBody = NonNullable<
-  paths['/v1/users']['post']['requestBody']
->['content']['application/json'];
+export const StoreProvider = ({
+  children,
+  ...props
+}: PropsWithChildren<InitialStoreState>) => {
+  const storeRef = useRef<Store>();
 
-export type UserUpdateBody = NonNullable<
-  paths['/v1/users']['put']['requestBody']
->['content']['application/json'];
+  if (!storeRef.current) {
+    storeRef.current = createStore(props);
+  }
+
+  return (
+    <StoreContext.Provider value={storeRef.current}>
+      {children}
+    </StoreContext.Provider>
+  );
+};

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useUserProfile } from '@/modules/chat/providers/UserProfileProvider';
+import { useUserProfile } from '@/store/user-profile';
 import clsx from 'clsx';
 import { HTMLAttributes } from 'react';
 import classes from './UserAvatar.module.scss';
@@ -39,6 +39,7 @@ const getUserInitials = (name: string) => {
 };
 
 export function CurrentUserAvatar(props: HTMLAttributes<HTMLSpanElement>) {
-  const { name } = useUserProfile();
+  const name = useUserProfile((state) => state.name);
+
   return <UserAvatar {...props} name={name} />;
 }

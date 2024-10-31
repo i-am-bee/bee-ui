@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-import { Dropdown } from '@/components/Dropdown/Dropdown';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { Button, SkeletonPlaceholder, Tag } from '@carbon/react';
-import { useInfiniteQuery, useQueries } from '@tanstack/react-query';
-import classes from './ProjectSelector.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { projectsQuery } from './queries';
 import { Project, ProjectsListQuery } from '@/app/api/projects/types';
+import { Dropdown } from '@/components/Dropdown/Dropdown';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { useUserProfile } from '@/store/user-profile';
+import { Button, SkeletonPlaceholder, Tag } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
+import { useQueries } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
-import { useUserProfile } from '../chat/providers/UserProfileProvider';
 import { useMemo } from 'react';
-import { readProjectUserQuery } from './users/queries';
-import { CreateProjectModal } from './manage/CreateProjectModal';
 import { useProjects } from './hooks/useProjects';
+import { CreateProjectModal } from './manage/CreateProjectModal';
+import classes from './ProjectSelector.module.scss';
+import { readProjectUserQuery } from './users/queries';
 
 interface Props {
   hideReadOnlyTag?: boolean;
@@ -38,7 +37,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
   const { openModal } = useModal();
   const { project, isProjectReadOnly } = useAppContext();
   const router = useRouter();
-  const { id: userId } = useUserProfile();
+  const userId = useUserProfile((state) => state.id);
 
   const { data, isFetching } = useProjects();
 

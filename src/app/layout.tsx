@@ -18,9 +18,11 @@ import { NavigationControlProvider } from '@/layout/providers/NavigationControlP
 import { ProgressBarProvider } from '@/layout/providers/ProgressBarProvider';
 import { ThemeProvider } from '@/layout/providers/ThemeProvider';
 import { ToastProvider } from '@/layout/providers/ToastProvider';
+import { StoreProvider } from '@/store/StoreProvider';
 import type { Metadata } from 'next';
 import { PropsWithChildren, ReactNode } from 'react';
 import { IncludeGlobalStyles } from './IncludeGlobalStyles';
+import { ensureSession } from './auth/rsc';
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 
@@ -29,10 +31,12 @@ export const metadata: Metadata = {
   icons: { icon: '//www.ibm.com/favicon.ico' },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   modal,
 }: PropsWithChildren<{ modal: ReactNode }>) {
+  const session = await ensureSession();
+
   return (
     // suppressHydrationWarning is added because of ThemeProvider
     <html lang="en" suppressHydrationWarning>
@@ -43,18 +47,20 @@ export default function RootLayout({
         </script>
       </head>
       <body>
-        <ThemeProvider>
-          <ToastProvider>
-            <ProgressBarProvider>
-              <NavigationControlProvider>
-                <IncludeGlobalStyles />
+        <StoreProvider userProfile={session.userProfile}>
+          <ThemeProvider>
+            <ToastProvider>
+              <ProgressBarProvider>
+                <NavigationControlProvider>
+                  <IncludeGlobalStyles />
 
-                {children}
-                {modal}
-              </NavigationControlProvider>
-            </ProgressBarProvider>
-          </ToastProvider>
-        </ThemeProvider>
+                  {children}
+                  {modal}
+                </NavigationControlProvider>
+              </ProgressBarProvider>
+            </ToastProvider>
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );

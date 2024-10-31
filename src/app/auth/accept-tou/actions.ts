@@ -17,8 +17,8 @@
 'use server';
 
 import { updateUser } from '@/app/api/rsc';
-import { UserMetadata } from '@/app/api/users/types';
 import { encodeMetadata } from '@/app/api/utils';
+import { UserMetadata } from '@/store/user-profile/types';
 import { updateSession } from '..';
 import { ensureSession } from '../rsc';
 

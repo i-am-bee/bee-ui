@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { TextInput } from '@carbon/react';
 import clsx from 'clsx';
 import { memo, useId } from 'react';
@@ -21,10 +22,8 @@ import { useController, useFormContext } from 'react-hook-form';
 import classes from './AssistantBaseInfo.module.scss';
 import { AssistantFormValues } from './AssistantBuilderProvider';
 import { IconSelector } from './IconSelector';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export const AssistantBaseInfo = memo(function AssistantBaseInfo() {
-  // const { name } = useUserProfile();
   const { isProjectReadOnly } = useAppContext();
 
   return (
@@ -43,7 +42,8 @@ export const AssistantBaseInfo = memo(function AssistantBaseInfo() {
         placeholder="Describe your bee"
         maxLength={100}
       />
-      <div className={classes.name}>{/* TODO: author */}</div>
+      {/* TODO: author */}
+      {/* <div className={classes.name}></div> */}
     </div>
   );
 });

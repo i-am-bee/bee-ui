@@ -15,6 +15,7 @@
  */
 
 import 'server-only';
+import { defaultUserProfileState } from '@/store/user-profile';
 import { JWT } from 'next-auth/jwt';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
@@ -32,15 +33,7 @@ export const ensureSession = async () => {
       user: {
         access_token: DUMMY_JWT_TOKEN,
       },
-      userProfile: {
-        id: '',
-        name: 'Test User',
-        firstName: 'Test',
-        lastName: 'User',
-        email: 'test@email.com',
-        metadata: {},
-        isDummy: true,
-      },
+      userProfile: defaultUserProfileState,
     };
 
   const session = await getSession();

@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-'use client';
+import { createStore } from '.';
+import { UserProfileSlice, UserProfileState } from './user-profile/types';
 
-import { UserProfile } from '@/app/api/users/types';
-import { ComponentPropsWithoutRef, createContext, use } from 'react';
+export type InitialStoreState = {
+  userProfile?: UserProfileState;
+};
 
-const UserProfileContext = createContext<UserProfile>(
-  null as unknown as UserProfile,
-);
+export type StoreState = {
+  userProfile: UserProfileSlice;
+};
 
-export function UserProfileProvider(
-  props: ComponentPropsWithoutRef<typeof UserProfileContext.Provider>,
-) {
-  return <UserProfileContext.Provider {...props} />;
-}
+export type Store = ReturnType<typeof createStore>;
 
-export function useUserProfile() {
-  const context = use(UserProfileContext);
+export type StoreSlice<State, Action> = State & {
+  actions: Action;
+};
 
-  if (!context) {
-    throw new Error('useUserProfile must be used within a UserProfileProvider');
-  }
-
-  return context;
-}
+export type StoreSelector<Slice> = <T>(selector: (slice: Slice) => T) => T;

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+import { UserMetadata, UserProfileState } from '@/store/user-profile/types';
 import { checkErrorCode } from '@/utils/handleApiError';
 import NextAuth from 'next-auth';
 import type { OAuthConfig } from 'next-auth/providers';
 import * as z from 'zod';
 import { ApiError, HttpError } from '../api/errors';
 import { createUser, readUser } from '../api/users';
-import { UserEntity, UserMetadata, UserProfile } from '../api/users/types';
+import { UserEntity } from '../api/users/types';
 import {
   decodeEntityWithMetadata,
   encodeMetadata,
@@ -275,7 +276,7 @@ const refreshAccessTokenSchema = z.object({
 
 declare module 'next-auth' {
   interface Session {
-    userProfile: UserProfile;
+    userProfile: UserProfileState;
   }
   interface User {
     firstName?: string;

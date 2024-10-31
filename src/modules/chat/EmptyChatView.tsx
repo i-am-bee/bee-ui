@@ -17,15 +17,15 @@
 'use client';
 import { Container } from '@/components/Container/Container';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useUserProfile } from '@/store/user-profile';
 import { memo } from 'react';
 import { AssistantIcon } from '../assistants/icons/AssistantIcon';
 import classes from './EmptyChatView.module.scss';
+import { AssistantAvatar } from './layout/AssistantAvatar';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
 import { SendMessageResult, useChat } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
-import { useUserProfile } from './providers/UserProfileProvider';
-import { AssistantAvatar } from './layout/AssistantAvatar';
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 
@@ -39,7 +39,7 @@ export const EmptyChatView = memo(function EmptyChatView({
   const {
     dropzone: { isDragActive, getRootProps },
   } = useFilesUpload();
-  const { firstName } = useUserProfile();
+  const firstName = useUserProfile((state) => state.firstName);
   const { assistant: appAssistant } = useAppContext();
   const { assistant: chatAssistant } = useChat();
 

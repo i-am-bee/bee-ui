@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-import { ensureSession } from '@/app/auth/rsc';
+import { readProject } from '@/app/api/rsc';
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
-import { UserProfileProvider } from '@/modules/chat/providers/UserProfileProvider';
+import { handleApiError } from '@/utils/handleApiError';
+import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
 import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
-import { handleApiError } from '@/utils/handleApiError';
-import { notFound } from 'next/navigation';
-import { readProject } from '@/app/api/rsc';
 
 interface Props {
   projectId: string;
@@ -33,9 +31,8 @@ export async function AppShell({
   projectId,
   children,
 }: PropsWithChildren<Props>) {
-  const session = await ensureSession();
-
   let project;
+
   try {
     project = await readProject(projectId);
   } catch (e) {
@@ -54,16 +51,14 @@ export async function AppShell({
   if (!project) notFound();
 
   return (
-    <UserProfileProvider value={session.userProfile}>
-      <AppProvider project={project}>
-        <div className={classes.root}>
-          <AppHeader />
+    <AppProvider project={project}>
+      <div className={classes.root}>
+        <AppHeader />
 
-          <main id="main-content" className={classes.content}>
-            {children}
-          </main>
-        </div>
-      </AppProvider>
-    </UserProfileProvider>
+        <main id="main-content" className={classes.content}>
+          {children}
+        </main>
+      </div>
+    </AppProvider>
   );
 }

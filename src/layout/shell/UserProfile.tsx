@@ -17,13 +17,14 @@
 'use client';
 
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
-import {
-  CurrentUserAvatar,
-  UserAvatar,
-} from '@/components/UserAvatar/UserAvatar';
+import { Link } from '@/components/Link/Link';
+import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useUserProfile } from '@/modules/chat/providers/UserProfileProvider';
+import { useUserProfile } from '@/store/user-profile';
+import { PRIVACY_URL, TOU_TEXT } from '@/utils/constants';
+import { isNotNull } from '@/utils/helpers';
 import { Button, Popover, PopoverContent } from '@carbon/react';
+import { Settings } from '@carbon/react/icons';
 import { CODE_ESCAPE } from 'keycode-js';
 import { signOut } from 'next-auth/react';
 import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
@@ -31,10 +32,6 @@ import { useOnClickOutside } from 'usehooks-ts';
 import { UserSettingsModal } from '../user-settings/UserSettingsModal';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
-import { Link } from '@/components/Link/Link';
-import { isNotNull } from '@/utils/helpers';
-import { PRIVACY_URL, TOU_TEXT } from '@/utils/constants';
-import { Settings } from '@carbon/react/icons';
 
 export function UserProfile() {
   const [open, setOpen] = useState(false);
@@ -43,7 +40,11 @@ export function UserProfile() {
   const id = useId();
 
   const { openModal } = useModal();
-  const { name, email, isDummy } = useUserProfile();
+  const userId = useUserProfile((state) => state.id);
+  const name = useUserProfile((state) => state.name);
+  const email = useUserProfile((state) => state.email);
+
+  const isDummyUser = userId === '';
 
   useOnClickOutside(ref, () => {
     setOpen(false);
@@ -101,7 +102,7 @@ export function UserProfile() {
         aria-expanded={open}
         aria-controls={id}
       >
-        {isDummy ? (
+        {isDummyUser ? (
           <span className={classes.settingsIcon}>
             <Settings />
           </span>
@@ -150,7 +151,7 @@ export function UserProfile() {
             </ul>
           </nav>
 
-          {!isDummy && (
+          {!isDummyUser && (
             <footer className={classes.footer}>
               <button
                 type="button"

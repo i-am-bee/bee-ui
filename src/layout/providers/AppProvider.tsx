@@ -20,9 +20,9 @@ import { Project } from '@/app/api/projects/types';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { readAssistantQuery } from '@/modules/assistants/queries';
 import { Assistant } from '@/modules/assistants/types';
-import { useUserProfile } from '@/modules/chat/providers/UserProfileProvider';
 import { readProjectQuery } from '@/modules/projects/queries';
 import { readProjectUserQuery } from '@/modules/projects/users/queries';
+import { useUserProfile } from '@/store/user-profile';
 import { useQuery } from '@tanstack/react-query';
 import {
   createContext,
@@ -67,7 +67,7 @@ export function AppProvider({
   const [project, setProject] = useState<Project>(initialProject);
   const [assistant, setAssistant] = useState<Assistant | null>(null);
   const onPageLeaveRef = useRef(() => null);
-  const { id } = useUserProfile();
+  const id = useUserProfile((state) => state.id);
 
   const { data: projectData } = useQuery({
     ...readProjectQuery(project.id),

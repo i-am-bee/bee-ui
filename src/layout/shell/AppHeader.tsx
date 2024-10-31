@@ -17,10 +17,12 @@
 'use client';
 import { prefetchThreads } from '@/modules/chat/history/queries';
 import { ThreadsHistory } from '@/modules/chat/history/ThreadsHistory';
+import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useUserSetting } from '../hooks/useUserSetting';
+import { useAppContext } from '../providers/AppProvider';
 import { ActionButton } from './ActionButton';
 import classes from './AppHeader.module.scss';
 import { CollapsibleGroup } from './CollapsibleGroup';
@@ -29,8 +31,6 @@ import Pinned from './Pinned.svg';
 import { RecentAssistantsList } from './RecentAssistantsList';
 import Unpinned from './Unpinned.svg';
 import { UserNav } from './UserNav';
-import { useAppContext } from '../providers/AppProvider';
-import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 
 export function AppHeader() {
   const id = useId();

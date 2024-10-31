@@ -21,6 +21,7 @@ import { Spinner } from '@/components/Spinner/Spinner';
 import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
+import { useUserProfile } from '@/store/user-profile';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { memo, useRef, useState } from 'react';
@@ -35,7 +36,6 @@ import { useAssistantModal } from '../providers/AssistantModalProvider';
 import { useChat } from '../providers/ChatProvider';
 import { MessageFeedbackProvider } from '../providers/MessageFeedbackProvider';
 import { RunProvider, useRunContext } from '../providers/RunProvider';
-import { useUserProfile } from '../providers/UserProfileProvider';
 import { readRunQuery } from '../queries';
 import { ChatMessage } from '../types';
 import { ActionBar } from './ActionBar';
@@ -226,7 +226,7 @@ function Content({ message }: { message: ChatMessage }) {
 
 function Sender({ message }: { message: ChatMessage }) {
   const { role } = message;
-  const { name } = useUserProfile();
+  const name = useUserProfile((state) => state.name);
   const { assistant } = useChat();
   const { openAssistantModal } = useAssistantModal();
 
