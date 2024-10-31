@@ -20,12 +20,12 @@ import type { OAuthConfig } from 'next-auth/providers';
 import * as z from 'zod';
 import { ApiError, HttpError } from '../api/errors';
 import { createUser, readUser } from '../api/users';
+import { UserEntity, UserMetadata, UserProfile } from '../api/users/types';
 import {
-  UserMetadata,
-  UserProfile,
-  UserReadResponse,
-} from '../api/users/types';
-import { decodeMetadata, encodeMetadata, maybeGetJsonBody } from '../api/utils';
+  decodeEntityWithMetadata,
+  encodeMetadata,
+  maybeGetJsonBody,
+} from '../api/utils';
 
 const AUTH_PROVIDER_ID = process.env.NEXT_PUBLIC_AUTH_PROVIDER_ID!;
 const AUTH_PROVIDER_NAME = process.env.AUTH_PROVIDER_NAME!;
@@ -108,8 +108,11 @@ const authResult = NextAuth(() => ({
       }
 
       try {
-        user.apiUser = await readUser(account.access_token);
-        return true;
+        const result = await readUser(account.access_token);
+        if (result) {
+          user.userEntity = decodeEntityWithMetadata<UserEntity>(result);
+          return true;
+        }
       } catch (error) {
         if (
           error instanceof TypeError &&
@@ -120,11 +123,14 @@ const authResult = NextAuth(() => ({
       }
 
       try {
-        user.apiUser = await createUser(account.access_token, {
+        const result = await createUser(account.access_token, {
           metadata: encodeMetadata<UserMetadata>({
             email: user.email ?? '',
           }),
         });
+        if (result) {
+          user.userEntity = decodeEntityWithMetadata<UserEntity>(result);
+        }
         return true;
       } catch (error) {
         if (error instanceof ApiError && error.code === 'auth_error') {
@@ -146,11 +152,14 @@ const authResult = NextAuth(() => ({
         token.expires_at = account.expires_at;
       }
 
-      let apiUser = user?.apiUser;
+      let userEntity = user?.userEntity;
 
       if (trigger === 'update') {
         // On session update, refresh a user
-        apiUser = await readUser(token.access_token);
+        const result = await readUser(token.access_token);
+        if (result) {
+          userEntity = decodeEntityWithMetadata<UserEntity>(result);
+        }
       }
 
       if (user) {
@@ -158,8 +167,8 @@ const authResult = NextAuth(() => ({
         token.last_name = user.lastName ?? '';
       }
 
-      if (apiUser) {
-        token.apiUser = apiUser;
+      if (userEntity) {
+        token.userEntity = userEntity;
       }
 
       const exp = token?.expires_at;
@@ -190,12 +199,12 @@ const authResult = NextAuth(() => ({
       delete (session as any).user;
 
       session.userProfile = {
-        id: token.apiUser.id,
+        id: token.userEntity.id,
         name: token.name ?? '',
         email: token.email ?? '',
         firstName: token.first_name,
         lastName: token.last_name,
-        metadata: decodeMetadata<UserMetadata>(token.apiUser.metadata),
+        metadata: token.userEntity.uiMetadata,
       };
 
       return session;
@@ -271,7 +280,7 @@ declare module 'next-auth' {
   interface User {
     firstName?: string;
     lastName?: string;
-    apiUser?: UserReadResponse;
+    userEntity?: UserEntity;
   }
 }
 
@@ -282,7 +291,7 @@ declare module 'next-auth/jwt' {
     expires_at: number;
     first_name: string;
     last_name: string;
-    apiUser: UserReadResponse;
+    userEntity: UserEntity;
   }
 }
 

@@ -18,13 +18,21 @@ import { Assistant } from '@/modules/assistants/types';
 import { paths } from '../schema';
 import { SystemToolId, ToolType } from '../threads-runs/types';
 import { FetchParamsOrderBy } from '../utils';
+import { EntityWithDecodedMetadata } from '../types';
 
 export type ToolsCreateBody = NonNullable<
   paths['/v1/tools']['post']['requestBody']
 >['content']['application/json'];
 
-export type Tool = NonNullable<
+export type ToolResult = NonNullable<
   paths['/v1/tools/{tool_id}']['get']['responses']['200']['content']['application/json']
+>;
+
+export type Tool = EntityWithDecodedMetadata<
+  ToolResult,
+  {
+    description_short?: string;
+  }
 >;
 
 export type ToolsListQuery = NonNullable<

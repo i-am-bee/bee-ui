@@ -26,7 +26,12 @@ import {
   readRun,
   readTrace,
 } from '@/app/api/threads-runs';
-import { RunsListQuery, RunStepsQuery } from '@/app/api/threads-runs/types';
+import {
+  RunsListQuery,
+  RunStepsQuery,
+  ThreadRun,
+} from '@/app/api/threads-runs/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { queryOptions } from '@tanstack/react-query';
 
 export const listMessagesQuery = (
@@ -77,6 +82,8 @@ export const readRunQuery = (
   queryOptions({
     queryKey: ['run', projectId, threadId, runId],
     queryFn: () => readRun(projectId, threadId, runId),
+    select: (data) =>
+      data ? decodeEntityWithMetadata<ThreadRun>(data) : undefined,
     meta: {
       errorToast: false,
     },

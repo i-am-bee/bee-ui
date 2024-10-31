@@ -15,7 +15,7 @@
  */
 
 import { MessageFeedback } from '@/app/api/threads-messages/types';
-import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
+import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -56,16 +56,18 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
       }
 
       const response = await updateRun(project.id, threadId, run.id, {
-        metadata: {
-          ...run.metadata,
-          ...encodeMetadata<RunMetadata>({ feedback: body }),
-        },
+        metadata: encodeMetadata<RunMetadata>({
+          ...run.uiMetadata,
+          feedback: body,
+        }),
       });
-      const { feedback } = decodeMetadata<RunMetadata>(response?.metadata);
+      const thread = response
+        ? decodeEntityWithMetadata<ThreadRun>(response)
+        : undefined;
 
       return {
         response,
-        feedback,
+        feedback: thread?.uiMetadata.feedback,
       };
     },
     onSuccess: ({ response, feedback }) => {
@@ -98,11 +100,8 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
   });
 
   useEffect(() => {
-    if (run) {
-      const runMetadata = decodeMetadata<RunMetadata>(run?.metadata);
-      if (runMetadata) {
-        form.reset(runMetadata.feedback);
-      }
+    if (run?.uiMetadata) {
+      form.reset(run?.uiMetadata.feedback);
     }
   }, [form, run]);
 

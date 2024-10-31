@@ -17,14 +17,14 @@
 @use 'styles/common' as *;
 
 .root {
-  --highlight-background: #1f2937;
-  --highlight-color: #fff;
-  --highlight-subst-color: #b1b5bc;
-  --highlight-comment-color: #879366;
-  --highlight-keyword-color: #f7eb99;
-  --highlight-primary-color: #bf6249;
+  --highlight-background: #{$color-cool-gray-10};
+  --highlight-color: #{$color-black};
+  --highlight-subst-color: var(--highlight-primary-color);
+  --highlight-comment-color: #{$text-muted};
+  --highlight-keyword-color: var(--highlight-color);
+  --highlight-primary-color: #{$color-red-70};
   --highlight-secondary-color: var(--highlight-color);
-  --highlight-tertiary-color: var(--highlight-color);
+  --highlight-tertiary-color: #{$color-green-70};
   --highlight-literal-color: var(--highlight-primary-color);
 
   display: flex;
@@ -32,7 +32,7 @@
   row-gap: $spacing-03;
 
   :global(.#{$prefix}--g90) & {
-    --highlight-background: transparent;
+    --highlight-background: #{$color-gray-20};
   }
 }
 
@@ -45,12 +45,17 @@
 
   > pre,
   > .textarea {
+    font-family: font-family('mono');
+    font-size: rem(12px);
+    line-height: (16 / 12);
+    letter-spacing: rem(0.32px);
     grid-row: 1 / -1;
     grid-column: 1 /-1;
     border-radius: inherit;
-    border: 1px solid $border-subtle-00;
+    border: 0;
     word-break: break-all;
     overflow: hidden;
+    padding: $spacing-05;
   }
 
   code {
@@ -70,13 +75,11 @@
 .textarea {
   background-color: transparent;
   color: transparent;
-  padding: $spacing-04;
-  font-family: font-family('mono');
-  font-size: inherit;
-  line-height: inherit;
-  letter-spacing: inherit;
   resize: none;
   caret-color: var(--highlight-color);
+  &::placeholder {
+    color: $text-placeholder;
+  }
   &:focus {
     outline: 2px solid $focus;
     outline-offset: -2px;

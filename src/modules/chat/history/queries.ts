@@ -15,8 +15,12 @@
  */
 
 import { listThreads, readThread } from '@/app/api/threads';
-import { ThreadMetadata } from '@/app/api/threads/types';
-import { decodeMetadata } from '@/app/api/utils';
+import {
+  Thread,
+  ThreadMetadata,
+  ThreadsListResponse,
+} from '@/app/api/threads/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { isNotNull } from '@/utils/helpers';
 import {
   QueryClient,
@@ -43,9 +47,10 @@ export function threadsQuery(projectId: string) {
     select(data) {
       return data.pages
         .flatMap((page) => page?.data)
-        .filter((item) => {
-          const metadata = decodeMetadata<ThreadMetadata>(item?.metadata);
-          return Boolean(metadata.title);
+        .map((item) => {
+          if (!item) return null;
+          const thread = decodeEntityWithMetadata<Thread>(item);
+          return thread.uiMetadata.title ? thread : null;
         })
         .filter(isNotNull);
     },
@@ -69,6 +74,10 @@ export function lastThreadQuery(projectId: string) {
         order_by: 'created_at',
       }),
     staleTime: 60 * 60 * 1000,
+    select: ({ data }: ThreadsListResponse) => {
+      const result = data.at(0);
+      return result ? decodeEntityWithMetadata<Thread>(result) : undefined;
+    },
     meta: {
       errorToast: {
         title: 'Failed to read last session',
@@ -82,6 +91,7 @@ export function threadQuery(projectId: string, threadId: string) {
   return queryOptions({
     queryKey: ['thread', projectId, threadId],
     queryFn: () => readThread(projectId, threadId),
+    select: (data) => (data ? decodeEntityWithMetadata<Thread>(data) : null),
     meta: {
       errorToast: {
         title: 'Failed to load thread',

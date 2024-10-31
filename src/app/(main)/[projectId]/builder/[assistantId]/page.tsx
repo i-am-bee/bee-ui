@@ -15,10 +15,12 @@
  */
 
 import { readAssistant } from '@/app/api/rsc';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
-import { getAssistantFromAssistantResult } from '@/modules/assistants/utils';
+import { Assistant } from '@/modules/assistants/types';
 import { handleApiError } from '@/utils/handleApiError';
+import { notFound } from 'next/navigation';
 
 interface Props {
   params: {
@@ -34,7 +36,10 @@ export default async function EditAssistantPage({
   let assistant;
   if (assistantId) {
     try {
-      assistant = await readAssistant(projectId, assistantId);
+      const result = await readAssistant(projectId, assistantId);
+      if (!result) notFound();
+
+      assistant = decodeEntityWithMetadata<Assistant>(result);
     } catch (e) {
       const apiError = handleApiError(e);
 
@@ -50,11 +55,7 @@ export default async function EditAssistantPage({
   }
 
   return (
-    <AssistantBuilderProvider
-      assistant={
-        assistant ? getAssistantFromAssistantResult(assistant) : undefined
-      }
-    >
+    <AssistantBuilderProvider assistant={assistant}>
       <></>
     </AssistantBuilderProvider>
   );

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import { Container } from '@/components/Container/Container';
 import { Session } from 'next-auth';
 import classes from './AcceptToU.module.scss';
 import { AcceptToUForm } from './AcceptToUForm';
 import { TermsOfUse } from './TermsOfUse';
-import Illustration from './tou-illustration.svg';
 
 interface Props {
   session: Session;
@@ -27,23 +27,17 @@ interface Props {
 
 export function AcceptToU({ session, callbackUrl }: Props) {
   return (
-    <article className={classes.root}>
-      <div className={classes.intro}>
-        <div className={classes.introContainer}>
-          <div className={classes.introContent}>
-            <Illustration />
-            <p className={classes.introGreeting}>
-              Hi {session.userProfile.firstName},<br />
-              you’re almost there...
-            </p>
-            <p className={classes.introText}>
-              Harness the power of foundation models for your enterprise use
-              cases.
-            </p>
-          </div>
+    <Container size="lg">
+      <section className={classes.root}>
+        <div className={classes.intro}>
+          <p className={classes.heading}>
+            Hi {session.userProfile.firstName},<br />
+            you’re almost there...
+          </p>
         </div>
-      </div>
-      <AcceptToUForm tou={<TermsOfUse />} callbackUrl={callbackUrl} />
-    </article>
+
+        <AcceptToUForm content={<TermsOfUse />} callbackUrl={callbackUrl} />
+      </section>
+    </Container>
   );
 }

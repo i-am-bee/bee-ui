@@ -15,8 +15,9 @@
  */
 
 import { readAssistant } from '@/app/api/rsc';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
-import { getAssistantFromAssistantResult } from '@/modules/assistants/utils';
+import { Assistant } from '@/modules/assistants/types';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -58,7 +59,7 @@ export default async function AssistantChatPage({
       <FilesUploadProvider>
         <ChatProvider
           threadAssistant={{
-            data: getAssistantFromAssistantResult(assistantResult),
+            data: decodeEntityWithMetadata<Assistant>(assistantResult) ?? null,
           }}
         >
           <ChatHomeView />

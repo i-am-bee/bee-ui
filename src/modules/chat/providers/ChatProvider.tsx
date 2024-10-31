@@ -24,7 +24,11 @@ import {
 } from '@/app/api/threads-runs/types';
 import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
-import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
+import {
+  decodeEntityWithMetadata,
+  encodeEntityWithMetadata,
+  encodeMetadata,
+} from '@/app/api/utils';
 import { Updater } from '@/hooks/useImmerWithGetter';
 import { useHandleError } from '@/layout/hooks/useHandleError';
 import {
@@ -238,7 +242,7 @@ export function ChatProvider({
         : undefined;
 
       if (thread) {
-        const threadMetadata = decodeMetadata<ThreadMetadata>(thread.metadata);
+        const threadMetadata = thread.uiMetadata;
         if (
           (vectorStoreId && !getThreadVectorStoreId(thread)) ||
           threadMetadata.title === ''
@@ -248,7 +252,7 @@ export function ChatProvider({
               ? truncate(message, { length: THREAD_TITLE_MAX_LENGTH })
               : threadMetadata.title;
 
-          const updatedThread = await mutateUpdateThread({
+          const { thread: updatedThread } = await mutateUpdateThread({
             tool_resources: toolResources,
             metadata: encodeMetadata<ThreadMetadata>(threadMetadata),
           });
@@ -263,7 +267,7 @@ export function ChatProvider({
         return thread;
       }
 
-      const createdThread = await mutateCreateThread({
+      const { thread: createdThread } = await mutateCreateThread({
         tool_resources: toolResources,
         metadata: encodeMetadata<ThreadMetadata>({
           assistantName: assistant?.name ?? '',
@@ -400,8 +404,9 @@ export function ChatProvider({
           }) as FetchQueryOptions<RunsListResponse>,
         )
         .then((data) => {
-          const run = data?.data.at(0);
-          if (run) {
+          const result = data?.data.at(0);
+          if (result) {
+            const run = decodeEntityWithMetadata<ThreadRun>(result);
             if (
               run.status === 'requires_action' &&
               run.required_action?.type === 'submit_tool_approvals'
@@ -555,9 +560,7 @@ export function ChatProvider({
           setMessagesWithFilesQueryData(thread.id, newMessage);
         }
 
-        const { approvedTools } = decodeMetadata<ThreadMetadata>(
-          thread?.metadata,
-        );
+        const { approvedTools } = thread.uiMetadata;
         const tools = getUsedTools();
         const toolApprovals = tools.reduce((toolApprovals, tool) => {
           const toolId = getToolUsageId(tool);

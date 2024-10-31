@@ -15,20 +15,20 @@
  */
 
 import { FormLabel } from '@carbon/react';
+import { WarningFilled } from '@carbon/react/icons';
+import clsx from 'clsx';
 import { CSSProperties, ReactNode, TextareaHTMLAttributes } from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import python from 'react-syntax-highlighter/dist/cjs/languages/hljs/python';
 import defaultStyle from 'react-syntax-highlighter/dist/cjs/styles/hljs/default-style';
 import classes from './EditableSyntaxHighlighter.module.scss';
-import { WarningFilled } from '@carbon/react/icons';
-import clsx from 'clsx';
 
 const style: { [key: string]: CSSProperties } = {
   ...defaultStyle,
   hljs: {
     display: 'block',
     overflowX: 'auto',
-    padding: '0.75rem',
+    padding: '1rem',
     background: 'var(--highlight-background)',
     color: 'var(--highlight-color)',
   },
@@ -117,7 +117,7 @@ SyntaxHighlighter.registerLanguage('python', python);
 interface Props
   extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
   id: string;
-  labelText: ReactNode;
+  labelText?: ReactNode;
   value: string;
   onChange?: (value: string) => void;
   invalid?: boolean;
@@ -135,7 +135,7 @@ export function EditableSyntaxHighlighter({
 }: Props) {
   return (
     <div className={classes.root}>
-      <FormLabel id={id}>{labelText}</FormLabel>
+      {labelText && <FormLabel id={id}>{labelText}</FormLabel>}
 
       <div className={clsx(classes.wrapper, { [classes.invalid]: invalid })}>
         <SyntaxHighlighter language="python" style={style}>

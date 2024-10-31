@@ -47,11 +47,18 @@ export function PlanView({ plan, show }: Props) {
                 <PlanStep key={step.id} step={step} toolCall={toolCall} />
               )),
             )}
-            {trace && (
-              <li className={classes.trace}>
-                <TraceInfoView data={trace.overall} />
-              </li>
-            )}
+
+            <AnimatePresence>
+              {trace && (
+                <motion.li
+                  {...fadeProps()}
+                  key={`${id}:trace`}
+                  className={classes.trace}
+                >
+                  <TraceInfoView data={trace.overall} />
+                </motion.li>
+              )}
+            </AnimatePresence>
           </ol>
         </motion.section>
       )}

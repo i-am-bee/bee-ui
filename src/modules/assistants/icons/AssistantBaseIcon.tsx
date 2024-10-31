@@ -87,6 +87,8 @@ export const ASSISTANT_ICONS = {
   BeeJ: require('./BeeJ.svg').default,
   BeeK: require('./BeeK.svg').default,
   BeeL: require('./BeeL.svg').default,
+  BeeM: require('./BeeM.svg').default,
+  BeeN: require('./BeeN.svg').default,
 } as const;
 export type AssitantIconName = keyof typeof ASSISTANT_ICONS;
 

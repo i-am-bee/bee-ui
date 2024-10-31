@@ -42,4 +42,16 @@ export type ApiMetadata = {
   [key: string]: string;
 };
 
+export type EntityResultWithMetadata<T> = Omit<T, 'uiMetadata'> & {
+  metadata?: ApiMetadata;
+};
+
+export type EntityWithEncodedMetadata<T> = Omit<T, 'uiMetadata'> & {
+  metadata: ApiMetadata;
+};
+
+export type EntityWithDecodedMetadata<T, M> = Omit<T, 'metadata'> & {
+  uiMetadata: M;
+};
+
 export const METADATA_MAX_LENGTH = 512;

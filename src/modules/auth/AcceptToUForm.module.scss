@@ -17,131 +17,59 @@
 @use 'styles/common' as *;
 
 .root {
-  display: contents;
-}
-
-.body {
+  max-inline-size: rem(472px);
+  margin-inline: auto;
   min-block-size: 0;
-  position: relative;
   display: flex;
   flex-direction: column;
-  background-color: $layer-01;
+  padding-block-start: 20vh;
 }
 
-.bodyContent {
-  min-block-size: 0;
-  flex: 1;
-  max-inline-size: get-max-breakpoint-width() / 2;
-  padding-inline-end: $grid-margin;
-  padding-inline-start: calc($grid-gutter / 2);
-
-  position: relative;
-  display: grid;
-  align-content: center;
-  column-gap: $grid-gutter;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: 0.618fr min-content minmax(rem(40px), auto) minmax(0, 1fr);
-  grid-template-areas:
-    '. . . . . . . .'
-    '. h h h h h h h'
-    '. b b b b b b b'
-    '. f f f f f f f';
-
-  margin-block-start: rem(40px);
-  margin-block-end: rem(120px);
-}
-
-.bodyHeading {
-  grid-area: h;
+.heading {
   font-size: rem(24px);
-  line-height: 1.33333333333;
-  font-weight: 300;
-  margin-block-end: $spacing-03;
+  line-height: (32 / 24);
+  font-weight: normal;
+  margin-block-end: $spacing-07;
 }
 
-.tou {
-  grid-area: b;
-  min-block-size: 0;
-  overflow: auto;
-
-  // TEMP: until resolved for dark theme also
-  // Scrolling shadow
-  // From https://lea.verou.me/2012/04/background-attachment-local/
-  // background:
-  // 	/* Shadow covers */
-  //   linear-gradient($color-white 30%, rgba($color-white, 0)),
-  //   linear-gradient(rgba($color-white, 0), white 70%) 0 100%,
-  //   /* Shadows */
-  //     radial-gradient(
-  //       farthest-side at 50% 0,
-  //       rgba($color-cool-gray-100, 0.2),
-  //       rgba($color-cool-gray-100, 0)
-  //     ),
-  //   radial-gradient(
-  //       farthest-side at 50% 100%,
-  //       rgba($color-cool-gray-100, 0.2),
-  //       rgba($color-cool-gray-100, 0)
-  //     )
-  //     0 100%;
-  // background-repeat: no-repeat;
-  // background-color: transparent;
-  // background-size:
-  //   100% 32px,
-  //   100% 32px,
-  //   100% 14px,
-  //   100% 14px;
-  // /* Opera doesn't support this in the shorthand */
-  // background-attachment: local, local, scroll, scroll;
-
-  p {
-    @include type-style('body-01');
-    color: $text-secondary;
-
-    margin-block-start: $spacing-05;
-    // add 1 grid item + gutter padding to the right
-    // parent is 7 grid items, (i.e. 6 gutters)
-    padding-inline-end: calc((100% - 6 * $grid-gutter) / 7 + $grid-gutter);
-  }
-
-  h2 {
-    font-size: rem(16px);
-    line-height: 1.375;
-    font-weight: 500;
-    color: $text-primary;
-    margin-block: $spacing-06;
-  }
+.content {
+  @include scrollbar();
+  overflow-y: auto;
+  margin-block-end: $spacing-07;
 }
 
-.acceptWrapper {
-  grid-area: f;
-  margin-block: $spacing-06;
-}
-
-.acceptCheckbox {
-  :global(.#{$prefix}--checkbox-label-text) {
-    color: $text-secondary;
-  }
-
-  :global(.cds--checkbox:not(:checked) ~ .cds--checkbox-label::before) {
-    border-color: $border-subtle-02;
+.checkbox {
+  &:global(.#{$prefix}--form-item) {
+    flex-grow: 0;
+    &:global(.#{$prefix}--checkbox-wrapper:last-of-type) {
+      margin-block-end: $spacing-06;
+    }
   }
 
   :global(
-      .#{$prefix}--checkbox:checked
-        + .#{$prefix}--checkbox-label
-        > .#{$prefix}--checkbox-label-text
+      .#{$prefix}--checkbox:not(:checked) ~ .#{$prefix}--checkbox-label::before
     ) {
-    color: $text-primary;
+    border-color: currentColor;
   }
 }
 
-.footer {
-  position: absolute;
-  inset-inline-end: 0;
-  inset-block-end: 0;
+.button {
+  min-inline-size: rem(272px);
+  :global(.#{$prefix}--inline-loading) {
+    min-block-size: auto;
+    svg {
+      fill: transparent;
+    }
+  }
+  :global(.#{$prefix}--inline-loading__text) {
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
 }
 
-.acceptBtn {
-  border-radius: 0;
-  border-start-start-radius: $block-radius;
+.animation {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }

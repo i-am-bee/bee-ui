@@ -38,7 +38,6 @@ import {
   SubmitToolOutputsBody,
 } from '@/app/api/tools/types';
 import {
-  decodeMetadata,
   getProjectHeaders,
   handleFailedResponse,
   maybeGetJsonBody,
@@ -166,7 +165,7 @@ export function useChatStream({
       if (!toolApproval) return;
 
       const toolId = getToolApprovalId(toolApproval);
-      const { approvedTools } = decodeMetadata<ThreadMetadata>(thread.metadata);
+      const { approvedTools } = thread.uiMetadata;
 
       let approve = toolId && approvedTools?.includes(toolId);
       if (!approve) {

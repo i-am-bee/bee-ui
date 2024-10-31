@@ -39,7 +39,7 @@ export function AssistantIcon({
   return (
     <AssistantBaseIcon
       name={iconName}
-      color={color ?? assistant?.metadata.color}
+      color={color ?? assistant?.uiMetadata.color}
       initialLetter={assistant?.name?.at(0)}
       {...props}
     />

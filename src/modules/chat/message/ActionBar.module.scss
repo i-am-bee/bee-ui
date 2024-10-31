@@ -26,10 +26,6 @@
   transform: translateY(-50%);
 }
 
-:where(.root) {
-  opacity: 0;
-}
-
 :where(.btnWrapper) {
   :global(.#{$prefix}--btn--ghost) {
     border-color: $border-subtle-00;

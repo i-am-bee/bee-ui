@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { AssistantResult } from '@/app/api/assistants/types';
-import { decodeMetadata } from '@/app/api/utils';
 import { simpleHashInRange } from '@/utils/helpers';
 import { has } from 'lodash';
 import { StarterQuestion } from './builder/AssistantBuilderProvider';
@@ -26,19 +24,9 @@ import {
 } from './icons/AssistantBaseIcon';
 import {
   Assistant,
-  AssistantMetadata,
   STARTER_QUESTION_KEY_PREFIX,
   StarterQuestionsMetadata,
 } from './types';
-
-export function getAssistantFromAssistantResult(
-  data: AssistantResult,
-): Assistant {
-  return {
-    ...data,
-    metadata: decodeMetadata<AssistantMetadata>(data?.metadata),
-  };
-}
 
 export function encodeStarterQuestionsMetadata(
   questions: StarterQuestion[] = [],
@@ -71,7 +59,7 @@ const iconsMap = new Map<string, AssitantIconName>();
 export function getAssistantIconName(
   assistant: Assistant | null,
 ): AssitantIconName | undefined {
-  const iconName = assistant?.metadata.icon;
+  const iconName = assistant?.uiMetadata.icon;
 
   if (iconName) {
     if (iconsMap.has(iconName)) {

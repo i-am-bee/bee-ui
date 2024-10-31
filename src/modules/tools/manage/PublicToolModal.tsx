@@ -39,7 +39,9 @@ export function PublicToolModal({ tool, ...props }: Props) {
           </div>
           <h2>{tool.name}</h2>
           <div>
-            <ToolDescription description={tool.user_description ?? ''} />
+            <ToolDescription
+              description={tool.uiMetadata.description_short ?? ''}
+            />
           </div>
         </div>
         <dl className={classes.body}>
@@ -48,8 +50,16 @@ export function PublicToolModal({ tool, ...props }: Props) {
             <dd>{isExternalTool(tool.type, tool.id) && <ToolExternalTag />}</dd>
           </div>
           <div>
-            <dt>Description</dt>
-            <dd>{tool.description}</dd>
+            <dt>Detailed description</dt>
+            <dd>{tool.user_description}</dd>
+          </div>
+          <div>
+            <dt>Agent-facing description</dt>
+            <dd>
+              <div className={classes.agentDescription}>
+                <code>{tool.description}</code>
+              </div>
+            </dd>
           </div>
         </dl>
       </ModalBody>

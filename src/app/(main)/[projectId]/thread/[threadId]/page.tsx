@@ -22,10 +22,10 @@ import {
   readAssistant,
   readThread,
 } from '@/app/api/rsc';
-import { ThreadMetadata } from '@/app/api/threads/types';
-import { decodeMetadata } from '@/app/api/utils';
+import { Thread } from '@/app/api/threads/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
-import { getAssistantFromAssistantResult } from '@/modules/assistants/utils';
+import { Assistant } from '@/modules/assistants/types';
 import { ConversationView } from '@/modules/chat/ConversationView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -46,8 +46,10 @@ export default async function ThreadPage({
 }: Props) {
   let thread, assistantResult;
   try {
-    thread = await readThread(projectId, threadId);
-    if (!thread) notFound();
+    const result = await readThread(projectId, threadId);
+    if (!result) notFound();
+
+    thread = decodeEntityWithMetadata<Thread>(result);
   } catch (e) {
     const apiError = handleApiError(e);
 
@@ -63,8 +65,7 @@ export default async function ThreadPage({
     return null;
   }
 
-  const { assistantId: threadAssistantId, assistantName } =
-    decodeMetadata<ThreadMetadata>(thread?.metadata ?? {});
+  const { assistantId: threadAssistantId, assistantName } = thread.uiMetadata;
   let threadAssistant: ThreadAssistant = { name: assistantName, data: null };
   try {
     let assistantId = threadAssistantId;
@@ -80,7 +81,8 @@ export default async function ThreadPage({
     if (assistantId)
       assistantResult = await readAssistant(projectId, assistantId);
     if (assistantResult) {
-      threadAssistant.data = getAssistantFromAssistantResult(assistantResult);
+      threadAssistant.data =
+        decodeEntityWithMetadata<Assistant>(assistantResult);
     }
   } catch (e) {
     if (e instanceof ApiError && e.code === 'not_found') {

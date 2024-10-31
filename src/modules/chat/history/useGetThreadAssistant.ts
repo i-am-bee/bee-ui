@@ -15,7 +15,6 @@
  */
 
 import { Thread, ThreadMetadata } from '@/app/api/threads/types';
-import { decodeMetadata } from '@/app/api/utils';
 import { readAssistantQuery } from '@/modules/assistants/queries';
 import { useQuery } from '@tanstack/react-query';
 import { runsQuery } from '../queries';
@@ -33,7 +32,7 @@ export function useGetThreadAssistant(
   const { project } = useAppContext();
 
   const { assistantId: threadAssistantId, assistantName } =
-    decodeMetadata<ThreadMetadata>(thread?.metadata ?? {});
+    thread?.uiMetadata ?? {};
   const [assistant, setAssistant] = useState<ThreadAssistant>(
     initialAssistant ?? {
       name: assistantName,

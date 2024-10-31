@@ -54,6 +54,7 @@
     "json5": "^2.2.3",
     "keycode-js": "^3.1.0",
     "lodash": "^4.17.21",
+    "lottie-react": "^2.4.0",
     "mdast-util-to-hast": "^13.1.0",
     "mime-types": "^2.1.35",
     "next": "14.2.10",

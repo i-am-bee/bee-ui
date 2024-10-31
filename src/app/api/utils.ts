@@ -22,7 +22,13 @@ import {
   UnauthenticatedError,
   UnauthorizedError,
 } from './errors';
-import { ApiErrorResponse, ApiMetadata, EntityMetadata } from './types';
+import {
+  ApiErrorResponse,
+  ApiMetadata,
+  EntityMetadata,
+  EntityResultWithMetadata,
+  EntityWithEncodedMetadata,
+} from './types';
 import { ORGANIZATION_ID_DEFAULT } from '@/utils/constants';
 
 export async function maybeGetJsonBody(response: Response): Promise<unknown> {
@@ -116,6 +122,25 @@ export function decodeMetadata<T extends EntityMetadata>(
   }
 
   return decoded as T;
+}
+
+export function decodeEntityWithMetadata<
+  T extends { uiMetadata: EntityMetadata },
+>(apiEntity: EntityResultWithMetadata<T>): T {
+  const { metadata, ...rest } = apiEntity;
+
+  return {
+    ...rest,
+    uiMetadata: decodeMetadata<T['uiMetadata']>(metadata),
+  } as T;
+}
+
+export function encodeEntityWithMetadata<
+  T extends { uiMetadata: EntityMetadata },
+>(entity: T): EntityWithEncodedMetadata<T> {
+  const { uiMetadata, ...rest } = entity;
+
+  return { ...rest, metadata: encodeMetadata<T['uiMetadata']>(uiMetadata) };
 }
 
 export function getProjectHeaders(projectId?: string) {

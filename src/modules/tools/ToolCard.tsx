@@ -32,7 +32,7 @@ import Markdown, { Components } from 'react-markdown';
 interface Props {
   tool: Tool;
   onDeleteSuccess: (tool: Tool) => void;
-  onSaveSuccess?: (tool: Tool) => void;
+  onSaveSuccess?: () => void;
 }
 
 export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
@@ -45,7 +45,9 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   const { openModal } = useModal();
 
   const toolDescription =
-    type === 'user' ? description : (user_description ?? description);
+    type === 'user'
+      ? description
+      : (tool.uiMetadata.description_short ?? user_description);
 
   return (
     <>

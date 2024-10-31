@@ -18,7 +18,7 @@
 import { AssistantModel, AssistantResult } from '@/app/api/assistants/types';
 import { SystemToolId, ToolType } from '@/app/api/threads-runs/types';
 import { AssistantTools } from '@/app/api/types';
-import { encodeMetadata } from '@/app/api/utils';
+import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
@@ -44,7 +44,6 @@ import { Assistant, AssistantMetadata } from '../types';
 import {
   decodeStarterQuestionsMetadata,
   encodeStarterQuestionsMetadata,
-  getAssistantFromAssistantResult,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
 
@@ -112,7 +111,7 @@ export function AssistantBuilderProvider({
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
-      const assistant = getAssistantFromAssistantResult(result);
+      const assistant = decodeEntityWithMetadata<Assistant>(result);
       if (isEditCurrent && assistant) {
         setAssistant(assistant);
       }
@@ -144,7 +143,7 @@ export function AssistantBuilderProvider({
           ) as UseQueryOptions<AssistantResult>,
         )
         .then((data) => {
-          const assistant = getAssistantFromAssistantResult(data);
+          const assistant = decodeEntityWithMetadata<Assistant>(data);
           setAssistant(assistant);
           reset(formValuesFromAssistant(assistant), {
             keepValues: false,
@@ -276,8 +275,8 @@ function formValuesFromAssistant(
 ): AssistantFormValues {
   return {
     icon: {
-      name: assistant?.metadata.icon,
-      color: assistant?.metadata.color ?? 'white',
+      name: assistant?.uiMetadata.icon,
+      color: assistant?.uiMetadata.color ?? 'white',
     },
     ownName: assistant?.name
       ? `${assistant.name}${isCopy ? ' ( Copy )' : ''}`
@@ -304,7 +303,7 @@ function formValuesFromAssistant(
     vectorStoreId:
       assistant?.tool_resources?.file_search?.vector_store_ids?.at(0),
     model: assistant?.model as AssistantModel,
-    starterQuestions: decodeStarterQuestionsMetadata(assistant?.metadata),
+    starterQuestions: decodeStarterQuestionsMetadata(assistant?.uiMetadata),
   };
 }
 

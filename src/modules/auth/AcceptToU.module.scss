@@ -20,46 +20,18 @@
   block-size: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-
-  color: $text-primary;
+  padding-block: $spacing-07;
+  column-gap: $spacing-07;
 }
 
 .intro {
-  background-color: $layer-01;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.introContainer {
-  max-inline-size: get-max-breakpoint-width() / 2;
-  padding-inline-start: $grid-margin;
-  padding-inline-end: calc($grid-gutter / 2);
-
-  display: grid;
-  column-gap: $grid-gutter;
-  grid-template-columns: repeat(8, 1fr);
-  // "center" grid content more naturally in golden ratio
-  grid-template-rows: 0.618fr max-content 1fr;
-  grid-template-areas:
-    '. . . . . . . .'
-    '. c c c c c . .'
-    '. . . . . . . .';
-}
-
-.introContent {
-  grid-area: c;
-}
-
-.introGreeting {
-  font-size: rem(42px);
-  line-height: 1.19;
-  font-weight: 300;
-  color: $text-secondary;
-
-  margin-block-start: $spacing-09;
-  margin-block-end: $spacing-06;
-}
-
-.introText {
-  @include type-style('body-01');
+.heading {
+  @include type-style(heading-06);
+  @include font-family(serif);
 }
