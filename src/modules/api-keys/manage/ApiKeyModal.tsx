@@ -186,7 +186,7 @@ export function ApiKeyModal({
   );
 }
 
-ApiKeyModal.Regenerate = function ViewModal({
+ApiKeyModal.Regenerate = function RegenerateModal({
   apiKey,
   ...props
 }: {
@@ -245,7 +245,7 @@ ApiKeyModal.View = function ViewModal({
   );
 };
 
-ApiKeyModal.Delete = function ViewModal({
+ApiKeyModal.Delete = function DeleteModal({
   apiKey,
   ...props
 }: {
