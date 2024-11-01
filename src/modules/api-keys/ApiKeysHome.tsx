@@ -96,7 +96,7 @@ export function ApiKeysHome() {
             'never'
           ),
           actions: (
-            <OverflowMenu>
+            <OverflowMenu size="sm">
               <OverflowMenuItem
                 itemText={
                   <Tooltip

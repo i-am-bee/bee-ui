@@ -305,7 +305,7 @@ h1 {
     th {
       block-size: rem(64px);
       vertical-align: top;
-      padding-block-start: $spacing-03;
+      padding-block-start: $spacing-04;
       border-block-end: 1px solid $border-subtle;
       &:first-child {
         border-inline-start: 1px solid $border-subtle;
@@ -317,6 +317,9 @@ h1 {
   }
   tbody {
     td {
+      padding-block-start: $spacing-03;
+      block-size: rem(64px);
+      padding-block-end: $spacing-06;
       border-block-end: 1px solid $border-subtle;
       &:first-child {
         border-inline-start: 1px solid $border-subtle;

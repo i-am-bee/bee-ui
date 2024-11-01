@@ -37,6 +37,11 @@
       }
     }
   }
+  tbody {
+    td {
+      padding-block-end: $spacing-05;
+    }
+  }
 }
 .regenerateBtnContent {
   inline-size: 100%;

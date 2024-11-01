@@ -42,6 +42,7 @@ import { useDeleteApiKey } from '../api/useDeleteApiKey';
 import { useRegenerateApiKey } from '../api/useRegenerateApiKey';
 import { ProjectWithScope } from '@/modules/projects/types';
 import { useOnMount } from '@/hooks/useOnMount';
+import clsx from 'clsx';
 
 interface FormValues {
   name: string;
@@ -117,7 +118,7 @@ export function ApiKeyModal({
       {...props}
       size="sm"
       preventCloseOnClickOutside
-      className={classes.modal}
+      className={clsx(classes.modal, classes.modalCreate)}
     >
       <ModalHeader>
         <h2>Create a new API key</h2>
@@ -223,7 +224,11 @@ ApiKeyModal.View = function ViewModal({
   apiKey: ApiKey;
 } & ModalProps) {
   return (
-    <Modal {...props} size="sm" className={classes.modal}>
+    <Modal
+      {...props}
+      size="sm"
+      className={clsx(classes.modal, classes.modalView)}
+    >
       <ModalHeader>
         <h2>Save your key</h2>
         <p>

@@ -28,10 +28,17 @@
     }
   }
 
-  :global(.#{$prefix}--modal-content) {
-    overflow: visible;
-    mask-image: none;
-    padding-block-end: $spacing-10;
+  &.modalCreate {
+    :global(.#{$prefix}--modal-content) {
+      overflow: visible;
+      mask-image: none;
+      padding-block-end: $spacing-10;
+    }
+  }
+  &.modalView {
+    :global(.#{$prefix}--modal-content) {
+      padding-block-start: 0;
+    }
   }
 }
 
@@ -75,8 +82,13 @@
   dl {
     display: flex;
     flex-direction: column;
-    gap: $spacing-06;
-    margin-block-end: $spacing-06;
+    gap: $spacing-05;
+    margin-block-end: $spacing-04;
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-02;
+    }
   }
 }
 
