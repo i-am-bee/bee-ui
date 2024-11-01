@@ -131,7 +131,7 @@ export function ApiKeyModal({
               id={`${id}:name`}
               labelText="Name"
               invalid={errors.name != null}
-              {...register('name')}
+              {...register('name', { required: true })}
             />
 
             {isLoading ? (
