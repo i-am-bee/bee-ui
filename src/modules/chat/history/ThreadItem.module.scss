@@ -36,16 +36,16 @@
   column-gap: $spacing-03;
 }
 
-.heading,
+.header,
 .subheading {
   &:global(.#{$prefix}--skeleton__text) {
-    block-size: 1em;
+    block-size: rem(16px);
   }
 }
 
-.heading {
+.header {
   @include type-style(label-02);
-  line-height: rem(16px);
+  line-height: rem(20px);
   color: $text-dark;
   display: flex;
   column-gap: $spacing-02;
@@ -59,8 +59,19 @@
   }
 
   &:global(.#{$prefix}--skeleton__text) {
-    margin-block-end: $spacing-01;
+    margin-block-end: 0;
   }
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  column-gap: $spacing-02;
+}
+
+.fileCount {
+  margin-block: rem(-2px);
+  margin-inline-start: auto;
 }
 
 .options {
@@ -89,7 +100,7 @@
 .link {
   display: flex;
   flex-direction: column;
-  gap: $spacing-01;
+  gap: $spacing-02;
 }
 .link {
   @include link-mask();
@@ -116,10 +127,6 @@
   .root:hover &::before,
   &.active::before {
     background-color: $border-subtle-01;
-  }
-
-  > span {
-    @include truncate();
   }
 }
 

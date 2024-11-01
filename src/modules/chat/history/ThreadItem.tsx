@@ -23,6 +23,7 @@ import {
 } from '@/app/api/threads/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import {
@@ -43,20 +44,21 @@ import {
 import clsx from 'clsx';
 import { produce } from 'immer';
 import { CODE_ENTER, CODE_ESCAPE } from 'keycode-js';
+import truncate from 'lodash/truncate';
 import { useRouter } from 'next-nprogress-bar';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useThreadApi } from '../hooks/useThreadApi';
 import { listMessagesQuery } from '../queries';
+import { FileCount } from './FileCount';
 import { threadsQuery } from './queries';
 import classes from './ThreadItem.module.scss';
 import {
   getThreadAssistantName,
   useGetThreadAssistant,
 } from './useGetThreadAssistant';
-import truncate from 'lodash/truncate';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { useThreadApi } from '../hooks/useThreadApi';
+import { useThreadFileCount } from './useThreadFileCount';
 
 interface Props {
   thread: Thread;
@@ -79,6 +81,7 @@ export function ThreadItem({ thread }: Props) {
   const isActive = pathname === href;
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
+  const fileCount = useThreadFileCount(thread);
 
   const {
     register,
@@ -183,7 +186,7 @@ export function ThreadItem({ thread }: Props) {
       })}
     >
       <div className={classes.wrapper}>
-        <p className={classes.heading}>
+        <p className={classes.header}>
           {error && <WarningFilled />}
 
           <Link
@@ -193,8 +196,14 @@ export function ThreadItem({ thread }: Props) {
               [classes.active]: isActive,
             })}
           >
-            <span className={classes.truncate}>
-              {!error ? heading : 'Failed to load'}
+            <span className={classes.heading}>
+              <span className={classes.truncate}>
+                {!error ? heading : 'Failed to load'}
+              </span>
+
+              {fileCount > 0 && (
+                <FileCount count={fileCount} className={classes.fileCount} />
+              )}
             </span>
             <span className={clsx(classes.subheading, classes.truncate)}>
               {getThreadAssistantName(assistant)}
@@ -273,7 +282,7 @@ ThreadItem.Skeleton = function Skeleton() {
   return (
     <li className={classes.root}>
       <div className={classes.skeleton}>
-        <SkeletonText className={classes.heading} />
+        <SkeletonText className={classes.header} />
         <SkeletonText className={classes.subheading} />
       </div>
     </li>
@@ -289,7 +298,7 @@ ThreadItem.Error = function Error({
 }) {
   return (
     <li className={clsx(classes.root, classes.error)}>
-      <p className={classes.heading}>
+      <p className={classes.header}>
         <WarningFilled />
 
         <span className={classes.truncate}>Failed to load</span>
