@@ -48,7 +48,7 @@ export function RenameModal({ project, ...props }: Props) {
   const { id, name } = project;
   const queryClient = useQueryClient();
 
-  const { data: projects } = useProjects();
+  const { data: projects } = useProjects({});
 
   const { mutateAsync } = useMutation({
     mutationFn: (newName: string) => updateProject(id, { name: newName }),

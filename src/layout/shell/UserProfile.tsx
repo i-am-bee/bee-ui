@@ -28,7 +28,6 @@ import { CODE_ESCAPE } from 'keycode-js';
 import { signOut } from 'next-auth/react';
 import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
-import { UserSettingsModal } from '../user-settings/UserSettingsModal';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
 import { Link } from '@/components/Link/Link';
