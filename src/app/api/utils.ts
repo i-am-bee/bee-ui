@@ -163,3 +163,5 @@ export function getRequestHeaders(
 export type FetchParamsOrderBy<
   K extends { order_by?: string; order?: string },
 > = Pick<K, 'order_by' | 'order'>;
+
+export const MAX_API_FETCH_LIMIT = 100;

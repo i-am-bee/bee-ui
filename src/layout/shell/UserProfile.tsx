@@ -29,7 +29,7 @@ import { CODE_ESCAPE } from 'keycode-js';
 import { signOut } from 'next-auth/react';
 import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
-import { UserSettingsModal } from '../user-settings/UserSettingsModal';
+import { useAppContext } from '../providers/AppProvider';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
 
@@ -37,6 +37,7 @@ export function UserProfile() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const { project } = useAppContext();
   const id = useId();
 
   const { openModal } = useModal();
@@ -63,7 +64,7 @@ export function UserProfile() {
       [
         {
           label: 'Preferences',
-          onClick: () => openModal((props) => <UserSettingsModal {...props} />),
+          href: `/${project.id}/preferences`,
         },
         TOU_TEXT
           ? {
@@ -80,7 +81,7 @@ export function UserProfile() {
             }
           : null,
       ].filter(isNotNull),
-    [openModal],
+    [openModal, project.id],
   );
 
   return (

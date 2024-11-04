@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-import { listProjects, readProject } from '@/app/api/projects';
-import { ProjectsListQuery } from '@/app/api/projects/types';
+import { listApiKeys } from '@/app/api/api-keys';
+import { ApiKeysListQuery } from '@/app/api/api-keys/types';
 import { isNotNull } from '@/utils/helpers';
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions } from '@tanstack/react-query';
 
-const PAGE_SIZE = 10;
-
-export const projectsQuery = (params?: ProjectsListQuery) =>
+export const apiKeysQuery = (params?: ApiKeysListQuery) =>
   infiniteQueryOptions({
-    queryKey: ['projects', params],
+    queryKey: ['api-keys', params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listProjects({
-        ...params,
-        limit: params?.limit || PAGE_SIZE,
-        order: 'asc',
-        order_by: 'created_at',
+      listApiKeys({
         after: pageParam,
+        order_by: 'created_at',
+        order: 'desc',
+        ...params,
       }),
     initialPageParam: undefined,
     getNextPageParam(lastPage) {
@@ -39,23 +36,15 @@ export const projectsQuery = (params?: ProjectsListQuery) =>
         : undefined;
     },
     select(data) {
-      const projects = data.pages
+      const apiKeys = data.pages
         .flatMap((page) => page?.data)
         .filter(isNotNull);
       return {
-        projects,
+        apiKeys,
         totalCount: data.pages.at(0)?.total_count,
       };
     },
-    staleTime: 10 * 60 * 1000,
     meta: {
       errorToast: false,
     },
-  });
-
-export const readProjectQuery = (id: string) =>
-  queryOptions({
-    queryKey: ['project', id],
-    queryFn: () => readProject(id),
-    staleTime: 10 * 60 * 1000,
   });

@@ -51,7 +51,9 @@ export function PublicToolModal({ tool, ...props }: Props) {
           </div>
           <div>
             <dt>Detailed description</dt>
-            <dd>{tool.user_description}</dd>
+            <dd>
+              <ToolDescription description={tool.user_description ?? ''} />
+            </dd>
           </div>
           <div>
             <dt>Agent-facing description</dt>

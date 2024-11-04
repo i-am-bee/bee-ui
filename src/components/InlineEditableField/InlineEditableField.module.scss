@@ -20,6 +20,12 @@
   display: flex;
   overflow: hidden;
 
+  &:hover {
+    button {
+      opacity: 1;
+    }
+  }
+
   .input {
     position: relative;
     transition: flex $duration-fast-01 ease-out;
@@ -32,14 +38,15 @@
       display: block;
       block-size: rem(32px);
       line-height: rem(32px);
-      font-size: rem(16px);
-      padding-inline: 0 $spacing-03;
+      font-size: rem(14px);
+      padding-inline: $spacing-04;
       letter-spacing: rem(0.16px);
       border-radius: 0;
     }
     span {
       position: relative;
       padding-block-end: 1px;
+      padding-inline: 0;
       max-inline-size: 100%;
       @include truncate();
       white-space: pre;
@@ -71,7 +78,9 @@
     align-items: center;
     justify-content: center;
     inline-size: rem(24px);
+    min-block-size: rem(24px);
     border-radius: $block-radius;
+    opacity: 0;
 
     &:not(:disabled) {
       cursor: pointer;
@@ -79,6 +88,12 @@
   }
 
   &.isEditing {
+    &:hover {
+      button {
+        opacity: 0;
+      }
+    }
+
     .input {
       flex: 1;
       :global(.#{$prefix}--form-item) {
@@ -96,8 +111,15 @@
   }
 
   &.isInvalid {
-    button svg {
-      fill: $color-red-50;
+    &.isEditing {
+      button {
+        opacity: 1 !important;
+      }
+    }
+    button {
+      svg {
+        fill: $color-red-50;
+      }
     }
   }
 }

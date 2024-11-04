@@ -32,7 +32,12 @@
   row-gap: $spacing-03;
 
   :global(.#{$prefix}--g90) & {
-    --highlight-background: #{$color-gray-20};
+    --highlight-background: #{$color-cool-gray-100};
+    --highlight-color: #{$color-white};
+    --highlight-comment-color: #{$color-green-60};
+    --highlight-keyword-color: #{$color-purple-40};
+    --highlight-primary-color: #{$color-orange-30-hover};
+    --highlight-tertiary-color: #{$color-green-50};
   }
 }
 

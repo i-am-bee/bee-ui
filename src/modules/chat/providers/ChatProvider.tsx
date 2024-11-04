@@ -22,14 +22,12 @@ import {
   ThreadRun,
   ToolApprovals,
 } from '@/app/api/threads-runs/types';
+import { isRequiredActionToolApprovals } from '@/app/api/threads-runs/utils';
 import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
-import {
-  decodeEntityWithMetadata,
-  encodeEntityWithMetadata,
-  encodeMetadata,
-} from '@/app/api/utils';
+import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { Updater } from '@/hooks/useImmerWithGetter';
+import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useHandleError } from '@/layout/hooks/useHandleError';
 import {
   useAppApiContext,
@@ -63,9 +61,12 @@ import {
   useRef,
   useState,
 } from 'react';
+import { v4 as uuid } from 'uuid';
+import { threadQuery, threadsQuery } from '../history/queries';
 import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
 import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
+import { useThreadApi } from '../hooks/useThreadApi';
 import { messagesWithFilesQuery, readRunQuery, runsQuery } from '../queries';
 import {
   ChatMessage,
@@ -78,9 +79,6 @@ import { getThreadVectorStoreId, isBotMessage } from '../utils';
 import { AssistantModalProvider } from './AssistantModalProvider';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
-import { useThreadApi } from '../hooks/useThreadApi';
-import { useStateWithRef } from '@/hooks/useStateWithRef';
-import { isRequiredActionToolApprovals } from '@/app/api/threads-runs/utils';
 
 interface CancelRunParams {
   threadId: string;
@@ -417,6 +415,7 @@ export function ChatProvider({
             setMessages((messages) => {
               if (messages.at(-1)?.role !== 'assistant')
                 messages.push({
+                  key: uuid(),
                   role: 'assistant',
                   content: '',
                   pending: false,
@@ -515,6 +514,7 @@ export function ChatProvider({
 
       function handleCreateChatMessages(): UserChatMessage {
         const userMessage: UserChatMessage = {
+          key: uuid(),
           role: 'user',
           content: input,
           attachments,
@@ -533,6 +533,7 @@ export function ChatProvider({
             messages.push(userMessage);
           }
           messages.push({
+            key: uuid(),
             role: 'assistant',
             content: '',
             pending: true,
@@ -585,6 +586,16 @@ export function ChatProvider({
           },
           onMessageCompleted: (response) => {
             setMessagesWithFilesQueryData(thread?.id, response.data);
+
+            if (files.length > 0) {
+              queryClient.invalidateQueries({
+                queryKey: threadsQuery(project.id).queryKey,
+              });
+
+              queryClient.invalidateQueries({
+                queryKey: threadQuery(project.id, thread?.id ?? '').queryKey,
+              });
+            }
           },
         });
       } catch (err) {
@@ -604,6 +615,7 @@ export function ChatProvider({
       };
     },
     [
+      queryClient,
       controllerRef,
       setController,
       handleCancelCurrentRun,

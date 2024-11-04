@@ -14,41 +14,25 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { Attachment } from '@carbon/react/icons';
+import clsx from 'clsx';
+import pluralize from 'pluralize';
+import classes from './FileCount.module.scss';
 
-.header {
-  box-shadow: $box-shadow;
-  padding: $spacing-05;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-03;
-
-  h2 {
-    @include type-style('heading-01');
-    font-size: rem(18px);
-  }
+interface Props {
+  count: number;
+  className?: string;
 }
 
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-06;
-  margin-block-start: $spacing-06;
+export function FileCount({ className, count }: Props) {
+  return (
+    <span
+      className={clsx(classes.root, className)}
+      aria-label={`${count} ${pluralize('file', count)}`}
+    >
+      <Attachment size={12} />
 
-  dt {
-    color: $text-secondary;
-  }
-  dd {
-    margin-block-start: $spacing-03;
-    p {
-      @include type-style('body-compact-01');
-    }
-  }
-}
-.agentDescription {
-  padding: $spacing-05;
-  background-color: $layer-02;
-  code {
-    font-size: rem(12px);
-  }
+      <span>{count}</span>
+    </span>
+  );
 }

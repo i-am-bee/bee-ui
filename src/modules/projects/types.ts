@@ -14,30 +14,8 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { Project } from '@/app/api/projects/types';
 
-.modal {
-  :global(.#{$prefix}--modal-container) {
-    min-block-size: 40vh;
-  }
-}
-
-.themeToggle {
-  :global(.#{$prefix}--radio-button-group) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: $spacing-03;
-  }
-  :global(.#{$prefix}--radio-button-wrapper) {
-    margin: 0;
-  }
-  :global(.#{$prefix}--radio-button__appearance) {
-    margin-block: rem(1px);
-  }
-  :global(.#{$prefix}--radio-button__label-text) {
-    display: flex;
-    align-items: center;
-    column-gap: $spacing-02;
-    padding-block: rem(1px);
-  }
-}
+export type ProjectWithScope = Project & {
+  readOnly?: boolean;
+};

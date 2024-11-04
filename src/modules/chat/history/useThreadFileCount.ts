@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { Thread } from '@/app/api/threads/types';
 
-.root {
-  position: relative;
-  code {
-    @include type-style(body-01);
-    display: block;
-  }
-  .content {
-    white-space: pre-wrap;
-    word-break: break-word;
-    background-color: $layer-02;
-    padding: $spacing-05 rem(52px) $spacing-05 $spacing-05;
-  }
-}
+export function useThreadFileCount(thread: Thread) {
+  const fileIds = new Set(
+    Object.values(thread?.tool_resources ?? {}).flatMap((resource) =>
+      'file_ids' in resource ? resource.file_ids : [],
+    ),
+  );
 
-.button {
-  position: absolute;
-  inset-block-start: rem(10px);
-  inset-inline-end: rem(10px);
+  return fileIds.size;
 }

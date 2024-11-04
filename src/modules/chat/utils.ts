@@ -24,6 +24,7 @@ export function getMessagesFromThreadMessages(
   return messages.map(
     ({ id, role, content, attachments, files, created_at, run_id }) => {
       return {
+        key: id,
         id,
         role,
         pending: false,

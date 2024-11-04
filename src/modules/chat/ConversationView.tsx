@@ -91,7 +91,7 @@ export const ConversationView = memo(function ConversationView() {
             const isPast = evenMessages ? index < size - 2 : index < size - 1;
             return (
               <Message
-                key={msg.id ?? index}
+                key={msg.key}
                 message={msg}
                 isPast={isPast}
                 isScrolled={isScrolled}

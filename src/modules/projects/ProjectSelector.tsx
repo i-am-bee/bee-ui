@@ -18,16 +18,14 @@ import { Project, ProjectsListQuery } from '@/app/api/projects/types';
 import { Dropdown } from '@/components/Dropdown/Dropdown';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useUserProfile } from '@/store/user-profile';
 import { Button, SkeletonPlaceholder, Tag } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
-import { useQueries } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useMemo } from 'react';
 import { useProjects } from './hooks/useProjects';
 import { CreateProjectModal } from './manage/CreateProjectModal';
 import classes from './ProjectSelector.module.scss';
-import { readProjectUserQuery } from './users/queries';
+import { ProjectWithScope } from './types';
 
 interface Props {
   hideReadOnlyTag?: boolean;
@@ -37,31 +35,8 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
   const { openModal } = useModal();
   const { project, isProjectReadOnly } = useAppContext();
   const router = useRouter();
-  const userId = useUserProfile((state) => state.id);
 
-  const { data, isFetching } = useProjects();
-
-  const queries = useQueries({
-    queries:
-      data?.projects.map((project) => {
-        return {
-          ...readProjectUserQuery(project.id, userId),
-        };
-      }) ?? [],
-  });
-
-  const projects = useMemo(
-    () =>
-      queries.length
-        ? data?.projects.map((project, index) => {
-            const projectUser = queries.at(index)?.data;
-            return projectUser
-              ? { ...project, readOnly: projectUser.role === 'reader' }
-              : project;
-          })
-        : data?.projects,
-    [data?.projects, queries],
-  );
+  const { projects, data, isFetching } = useProjects({ withRole: true });
 
   const selectedItem = useMemo(
     () => projects?.find(({ id }) => id === project.id),
@@ -72,7 +47,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
     <div className={classes.root}>
       {projects && (
         <>
-          <Dropdown<ProjectOption>
+          <Dropdown<ProjectWithScope>
             label=""
             items={projects}
             size="md"
@@ -80,7 +55,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
             itemToString={(option: Option) =>
               option === 'new' ? 'Create workspace' : (option?.name ?? '')
             }
-            itemToElement={(project: ProjectOption) => (
+            itemToElement={(project: ProjectWithScope) => (
               <span className={classes.option}>
                 <span className={classes.optionContent}>
                   <span>{project.name}</span>
@@ -127,10 +102,6 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
 }
 
 type Option = Project | 'new';
-
-type ProjectOption = Project & {
-  readOnly?: boolean;
-};
 
 export const PROJECTS_QUERY_PARAMS: ProjectsListQuery = {
   limit: 100,

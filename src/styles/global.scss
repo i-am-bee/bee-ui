@@ -43,6 +43,10 @@
 @use '@carbon/styles/scss/components/select';
 @use '@carbon/styles/scss/components/dropdown';
 @use '@carbon/styles/scss/components/file-uploader';
+@use '@carbon/styles/scss/components/data-table';
+@use '@carbon/styles/scss/components/data-table/action';
+@use '@carbon/styles/scss/components/data-table/sort';
+@use '@carbon/styles/scss/components/data-table/skeleton';
 
 html {
   overflow: hidden;
@@ -161,7 +165,7 @@ h1 {
 }
 .#{$prefix}--list-box__field {
   background-color: $background;
-  border: 1px solid $border-subtle;
+  border: 1px solid $border-subtle-00;
   border-radius: $block-radius;
 }
 .#{$prefix}--combo-box {
@@ -171,9 +175,6 @@ h1 {
   .#{$prefix}--text-input {
     border: none;
   }
-}
-.#{$prefix}--list-box__label {
-  // color: $text-placeholder;
 }
 .#{$prefix}--list-box__menu {
   background-color: $background;
@@ -264,4 +265,76 @@ h1 {
 
 .#{$prefix}--toggle__appearance {
   vertical-align: top;
+}
+
+.#{$prefix}--table-toolbar {
+  .#{$prefix}--toolbar-content {
+    border: 1px solid $border-subtle;
+    border-radius: $block-radius $block-radius 0 0;
+    overflow: hidden;
+    button {
+      border-radius: 0;
+    }
+  }
+  .#{$prefix}--search {
+    inline-size: 100%;
+    display: flex;
+    background-color: $background;
+    .#{$prefix}--search-input {
+      padding-inline-start: $spacing-05;
+      padding-inline-end: rem(80px);
+      border-start-start-radius: $block-radius;
+      &:hover {
+        background-color: $background;
+      }
+    }
+    .#{$prefix}--search-magnifier-icon {
+      inset-inline-start: auto;
+      inset-inline-end: 0;
+    }
+    .#{$prefix}--search-close {
+      inset-inline-start: auto;
+      inset-inline-end: rem(40px);
+    }
+  }
+}
+
+.#{$prefix}--data-table {
+  border-radius: 0 0 $block-radius $block-radius;
+  thead {
+    th {
+      block-size: rem(64px);
+      vertical-align: top;
+      padding-block-start: $spacing-04;
+      border-block-end: 1px solid $border-subtle;
+      &:first-child {
+        border-inline-start: 1px solid $border-subtle;
+      }
+      &:last-child {
+        border-inline-end: 1px solid $border-subtle;
+      }
+    }
+  }
+  tbody {
+    td {
+      padding-block-start: $spacing-03;
+      block-size: rem(64px);
+      padding-block-end: $spacing-06;
+      border-block-end: 1px solid $border-subtle;
+      &:first-child {
+        border-inline-start: 1px solid $border-subtle;
+      }
+      &:last-child {
+        border-inline-end: 1px solid $border-subtle;
+      }
+    }
+    tr:last-child {
+      td:first-child {
+        border-end-start-radius: $block-radius;
+      }
+      td:last-child {
+        border-end-end-radius: $block-radius;
+      }
+    }
+  }
 }

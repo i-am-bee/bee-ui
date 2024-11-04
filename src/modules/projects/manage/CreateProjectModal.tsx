@@ -50,7 +50,7 @@ export function CreateProjectModal({
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data: projects } = useProjects();
+  const { data: projects } = useProjects({});
 
   const projectNames = useMemo(
     () => projects?.projects.map(({ name }) => name),
