@@ -16,39 +16,28 @@
 
 @use 'styles/common' as *;
 
-.header {
-  box-shadow: $box-shadow;
-  padding: $spacing-05;
+.root {
   display: flex;
   flex-direction: column;
-  gap: $spacing-03;
-
-  h2 {
-    @include type-style('heading-01');
-    font-size: rem(18px);
-  }
+  gap: $spacing-07;
 }
 
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-06;
-  margin-block-start: $spacing-06;
-
-  dt {
-    color: $text-secondary;
+.themeToggle {
+  :global(.#{$prefix}--radio-button-group) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-03;
   }
-  dd {
-    margin-block-start: $spacing-03;
-    p {
-      @include type-style('body-compact-01');
-    }
+  :global(.#{$prefix}--radio-button-wrapper) {
+    margin: 0;
   }
-}
-.agentDescription {
-  padding: $spacing-05;
-  background-color: $layer-02;
-  code {
-    font-size: rem(12px);
+  :global(.#{$prefix}--radio-button__appearance) {
+    margin-block: rem(1px);
+  }
+  :global(.#{$prefix}--radio-button__label-text) {
+    display: flex;
+    align-items: center;
+    column-gap: $spacing-02;
+    padding-block: rem(1px);
   }
 }

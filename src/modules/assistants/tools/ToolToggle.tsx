@@ -36,6 +36,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { MouseEventHandler, useId } from 'react';
 import classes from './ToolToggle.module.scss';
+import { ToolDescription } from '@/modules/tools/ToolCard';
 
 interface Props extends Omit<ToggleProps, 'id' | 'size'> {
   tool: ToolReference;
@@ -110,7 +111,7 @@ export function ToolToggle({
       />
       {description && (
         <LineClampText className={classes.description} numberOfLines={2}>
-          {description}
+          <ToolDescription description={description} />
         </LineClampText>
       )}
     </div>

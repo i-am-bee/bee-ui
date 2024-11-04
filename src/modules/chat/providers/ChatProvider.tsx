@@ -62,6 +62,7 @@ import {
   useState,
 } from 'react';
 import { v4 as uuid } from 'uuid';
+import { threadQuery, threadsQuery } from '../history/queries';
 import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
 import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
@@ -585,6 +586,16 @@ export function ChatProvider({
           },
           onMessageCompleted: (response) => {
             setMessagesWithFilesQueryData(thread?.id, response.data);
+
+            if (files.length > 0) {
+              queryClient.invalidateQueries({
+                queryKey: threadsQuery(project.id).queryKey,
+              });
+
+              queryClient.invalidateQueries({
+                queryKey: threadQuery(project.id, thread?.id ?? '').queryKey,
+              });
+            }
           },
         });
       } catch (err) {
@@ -604,6 +615,7 @@ export function ChatProvider({
       };
     },
     [
+      queryClient,
       controllerRef,
       setController,
       handleCancelCurrentRun,

@@ -838,6 +838,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/organization/api_keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    after?: string;
+                    before?: string;
+                    limit?: number;
+                    order?: "asc" | "desc";
+                    order_by?: "created_at" | "name";
+                    search?: string | null;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                created_at: number;
+                                id: string;
+                                last_used_at: number | null;
+                                name: string;
+                                /** @enum {unknown} */
+                                object: "organization.project.api_key";
+                                project: {
+                                    archived_at: number | null;
+                                    created_at: number;
+                                    id: string;
+                                    name: string;
+                                    /** @enum {unknown} */
+                                    object: "organization.project";
+                                    /** @enum {string} */
+                                    status: "active" | "archived";
+                                    /** @enum {string} */
+                                    visibility: "public" | "private";
+                                };
+                                secret: string;
+                            }[];
+                            first_id: string | null;
+                            has_more: boolean;
+                            last_id: string | null;
+                            total_count: number;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/organization/projects": {
         parameters: {
             query?: never;
@@ -1014,6 +1082,256 @@ export interface paths {
             };
         };
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/organization/projects/{project_id}/api_keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    after?: string;
+                    before?: string;
+                    limit?: number;
+                    order?: "asc" | "desc";
+                    order_by?: "created_at";
+                };
+                header?: never;
+                path: {
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                created_at: number;
+                                id: string;
+                                last_used_at: number | null;
+                                name: string;
+                                /** @enum {unknown} */
+                                object: "organization.project.api_key";
+                                project: {
+                                    archived_at: number | null;
+                                    created_at: number;
+                                    id: string;
+                                    name: string;
+                                    /** @enum {unknown} */
+                                    object: "organization.project";
+                                    /** @enum {string} */
+                                    status: "active" | "archived";
+                                    /** @enum {string} */
+                                    visibility: "public" | "private";
+                                };
+                                secret: string;
+                            }[];
+                            first_id: string | null;
+                            has_more: boolean;
+                            last_id: string | null;
+                            total_count: number;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        name: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            created_at: number;
+                            id: string;
+                            last_used_at: number | null;
+                            name: string;
+                            /** @enum {unknown} */
+                            object: "organization.project.api_key";
+                            project: {
+                                archived_at: number | null;
+                                created_at: number;
+                                id: string;
+                                name: string;
+                                /** @enum {unknown} */
+                                object: "organization.project";
+                                /** @enum {string} */
+                                status: "active" | "archived";
+                                /** @enum {string} */
+                                visibility: "public" | "private";
+                            };
+                            secret: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/organization/projects/{project_id}/api_keys/{api_key_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    api_key_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            created_at: number;
+                            id: string;
+                            last_used_at: number | null;
+                            name: string;
+                            /** @enum {unknown} */
+                            object: "organization.project.api_key";
+                            project: {
+                                archived_at: number | null;
+                                created_at: number;
+                                id: string;
+                                name: string;
+                                /** @enum {unknown} */
+                                object: "organization.project";
+                                /** @enum {string} */
+                                status: "active" | "archived";
+                                /** @enum {string} */
+                                visibility: "public" | "private";
+                            };
+                            secret: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    api_key_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            created_at: number;
+                            id: string;
+                            last_used_at: number | null;
+                            name: string;
+                            /** @enum {unknown} */
+                            object: "organization.project.api_key";
+                            project: {
+                                archived_at: number | null;
+                                created_at: number;
+                                id: string;
+                                name: string;
+                                /** @enum {unknown} */
+                                object: "organization.project";
+                                /** @enum {string} */
+                                status: "active" | "archived";
+                                /** @enum {string} */
+                                visibility: "public" | "private";
+                            };
+                            secret: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    api_key_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @default true */
+                            deleted: boolean;
+                            id: string;
+                            /** @enum {unknown} */
+                            object: "organization.project.api_key.deleted";
+                        };
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;

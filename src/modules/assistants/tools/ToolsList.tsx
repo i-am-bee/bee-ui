@@ -95,7 +95,7 @@ export function ToolsList({ enableFetch }: Props) {
           <ToolToggle
             tool={getToolReference(tool)}
             heading={tool.name}
-            description={tool.user_description || tool.description}
+            description={tool.uiMetadata.description_short || tool.description}
             disabled={isSubmitting || isProjectReadOnly}
             onToggle={(toggled) => {
               if (

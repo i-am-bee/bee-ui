@@ -16,39 +16,36 @@
 
 @use 'styles/common' as *;
 
-.header {
-  box-shadow: $box-shadow;
-  padding: $spacing-05;
+.root {
   display: flex;
   flex-direction: column;
-  gap: $spacing-03;
+  gap: $spacing-07;
 
-  h2 {
-    @include type-style('heading-01');
-    font-size: rem(18px);
+  p {
+    @include type-style('body-compact-01');
   }
 }
 
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-06;
-  margin-block-start: $spacing-06;
-
-  dt {
-    color: $text-secondary;
+.table {
+  thead {
+    th {
+      &:first-child {
+        inline-size: 30%;
+      }
+      &:last-child {
+        inline-size: 0;
+      }
+    }
   }
-  dd {
-    margin-block-start: $spacing-03;
-    p {
-      @include type-style('body-compact-01');
+  tbody {
+    td {
+      padding-block-end: $spacing-05;
     }
   }
 }
-.agentDescription {
-  padding: $spacing-05;
-  background-color: $layer-02;
-  code {
-    font-size: rem(12px);
-  }
+.regenerateBtnContent {
+  inline-size: 100%;
+  block-size: rem(40px);
+  display: flex;
+  align-items: center;
 }

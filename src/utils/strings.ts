@@ -14,41 +14,22 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
-
-.header {
-  box-shadow: $box-shadow;
-  padding: $spacing-05;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-03;
-
-  h2 {
-    @include type-style('heading-01');
-    font-size: rem(18px);
-  }
+export function capitalizeFirstLetter(message: string) {
+  return message.charAt(0).toUpperCase() + message.slice(1);
 }
 
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-06;
-  margin-block-start: $spacing-06;
+export function truncateCenter(
+  string: string,
+  maxLength: number,
+  separator: string = '...',
+) {
+  if (!string || string.length <= maxLength) return string;
 
-  dt {
-    color: $text-secondary;
-  }
-  dd {
-    margin-block-start: $spacing-03;
-    p {
-      @include type-style('body-compact-01');
-    }
-  }
-}
-.agentDescription {
-  padding: $spacing-05;
-  background-color: $layer-02;
-  code {
-    font-size: rem(12px);
-  }
+  const partLength = Math.floor((maxLength - separator.length) / 2);
+
+  return (
+    string.substring(0, partLength) +
+    separator +
+    string.substring(string.length - partLength)
+  );
 }

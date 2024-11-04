@@ -20,12 +20,12 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { memo } from 'react';
 import { AssistantIcon } from '../assistants/icons/AssistantIcon';
 import classes from './EmptyChatView.module.scss';
+import { AssistantAvatar } from './layout/AssistantAvatar';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
 import { SendMessageResult, useChat } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
 import { useUserProfile } from './providers/UserProfileProvider';
-import { AssistantAvatar } from './layout/AssistantAvatar';
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 

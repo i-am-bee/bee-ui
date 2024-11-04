@@ -28,18 +28,19 @@ import { CODE_ESCAPE } from 'keycode-js';
 import { signOut } from 'next-auth/react';
 import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
-import { UserSettingsModal } from '../user-settings/UserSettingsModal';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
 import { Link } from '@/components/Link/Link';
 import { isNotNull } from '@/utils/helpers';
 import { PRIVACY_URL, TOU_TEXT } from '@/utils/constants';
 import { Settings } from '@carbon/react/icons';
+import { useAppContext } from '../providers/AppProvider';
 
 export function UserProfile() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const { project } = useAppContext();
   const id = useId();
 
   const { openModal } = useModal();
@@ -62,7 +63,7 @@ export function UserProfile() {
       [
         {
           label: 'Preferences',
-          onClick: () => openModal((props) => <UserSettingsModal {...props} />),
+          href: `/${project.id}/preferences`,
         },
         TOU_TEXT
           ? {
@@ -79,7 +80,7 @@ export function UserProfile() {
             }
           : null,
       ].filter(isNotNull),
-    [openModal],
+    [openModal, project.id],
   );
 
   return (

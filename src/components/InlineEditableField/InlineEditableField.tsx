@@ -34,38 +34,47 @@ interface Props
     InputHTMLAttributes<HTMLInputElement>,
     'name' | 'onChange' | 'placeholder' | 'maxLength'
   > {
-  isInvalid?: boolean;
-  isDisabled?: boolean;
+  invalid?: boolean;
+  required?: boolean;
+  disabled?: boolean;
   refCallback?: RefCallBack;
   textClassName?: string;
+  onConfirm?: (value: string) => void;
   value?: string;
+  defaultValue?: string;
 }
 
 export function InlineEditableField({
   name,
-  value,
+  value: controlledValue,
+  defaultValue,
   refCallback,
-  onChange,
-  isInvalid,
-  isDisabled,
+  invalid: invalidProp,
+  required,
+  disabled,
   textClassName,
+  onChange,
+  onConfirm,
   ...inputProps
 }: Props) {
   const id = useId();
   const [isEditing, setEditing] = useState<boolean>(false);
+  const [value, setValue] = useState(defaultValue ?? controlledValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {
     if (isEditing && inputRef.current) inputRef.current.focus();
   }, [isEditing]);
 
-  const ButtonIcon = !isEditing ? Edit : !isInvalid ? Checkmark : Close;
+  const invalid = invalidProp || (required && !value);
+
+  const ButtonIcon = !isEditing ? Edit : !invalid ? Checkmark : Close;
 
   return (
     <div
       className={clsx(classes.root, {
         [classes.isEditing]: isEditing,
-        [classes.isInvalid]: isInvalid,
+        [classes.isInvalid]: invalid,
       })}
     >
       <div className={classes.input}>
@@ -74,21 +83,30 @@ export function InlineEditableField({
           labelText=""
           hideLabel
           name={name}
-          value={value}
+          value={controlledValue ?? value}
           id={`${id}:input`}
           onKeyDown={(e) => {
-            if (
-              !isInvalid &&
-              (e.code === CODE_ENTER || e.code === CODE_ESCAPE)
-            ) {
+            if (!invalid && (e.code === CODE_ENTER || e.code === CODE_ESCAPE)) {
               setEditing(false);
               inputRef.current?.blur();
+
+              if (e.code === CODE_ENTER)
+                onConfirm?.(inputRef.current?.value ?? '');
+              else {
+                setValue(defaultValue);
+              }
             }
           }}
           className={textClassName}
-          disabled={isDisabled}
-          onChange={onChange}
-          onBlur={onChange}
+          disabled={disabled}
+          onChange={(e) => {
+            onChange?.(e);
+            setValue(inputRef.current?.value ?? '');
+          }}
+          onBlur={(e) => {
+            onChange?.(e);
+            setEditing(false);
+          }}
           ref={mergeRefs([refCallback, inputRef])}
           {...inputProps}
         />
@@ -96,10 +114,9 @@ export function InlineEditableField({
         <span className={textClassName}>{value}</span>
       </div>
 
-      {!isDisabled && (
+      {!disabled && (
         <Button
           className={classes.editButton}
-          disabled={isInvalid}
           kind="ghost"
           size="sm"
           onClick={() => setEditing((isEditing) => !isEditing)}

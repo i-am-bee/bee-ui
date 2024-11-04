@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
-
-.root {
-  position: relative;
-  code {
-    @include type-style(body-01);
-    display: block;
-  }
-  .content {
-    white-space: pre-wrap;
-    word-break: break-word;
-    background-color: $layer-02;
-    padding: $spacing-05 rem(52px) $spacing-05 $spacing-05;
-  }
-}
-
-.button {
-  position: absolute;
-  inset-block-start: rem(10px);
-  inset-inline-end: rem(10px);
+export function getLocaleDateString(
+  date: Date | string | number,
+  locales: Intl.LocalesArgument = 'en-US',
+  options?: Intl.DateTimeFormatOptions,
+): string {
+  const dateObject =
+    date instanceof Date
+      ? date
+      : new Date(Number.isInteger(date) ? Number(date) * 1000 : date);
+  return dateObject.toLocaleString(locales, options);
 }

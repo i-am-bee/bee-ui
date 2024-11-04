@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { MouseEventHandler } from 'react';
 import classes from './ToolCard.module.scss';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
@@ -24,7 +23,7 @@ import { useDeleteTool } from './hooks/useDeleteTool';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolExternalTag } from '../assistants/tools/ToolToggle';
 import { getToolIcon, getToolReference, isExternalTool } from './utils';
-import { ArrowRight, ArrowUpRight, Edit, View } from '@carbon/react/icons';
+import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
 import { UserToolModal } from './manage/UserToolModal';
 import { PublicToolModal } from './manage/PublicToolModal';
 import Markdown, { Components } from 'react-markdown';
