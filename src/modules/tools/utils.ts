@@ -33,6 +33,7 @@ import Arxiv from './icons/arxiv.svg';
 import Google from './icons/google.svg';
 import DuckDuckGo from './icons/duckduckgo.svg';
 import Wikipedia from './icons/wikipedia.svg';
+import { AssistantTool } from '@/app/api/assistants/types';
 
 export function getToolIcon(tool: ToolReference) {
   if (tool.type === 'system') return SYSTEM_TOOL_ICONS[tool.id];
@@ -129,6 +130,21 @@ export function isExternalTool(type: ToolType, id: string) {
     type === 'function' ||
     (type === 'system' && id === ('read_file' satisfies SystemToolId))
   );
+}
+
+export function getAssistantToolReference(assistantTool: AssistantTool) {
+  const toolType = assistantTool.type;
+  return toolType === 'system'
+    ? {
+        type: toolType,
+        id: assistantTool.system.id,
+      }
+    : toolType === 'user'
+      ? {
+          type: toolType,
+          id: assistantTool.user.tool.id,
+        }
+      : { type: toolType, id: toolType };
 }
 
 const SYSTEM_TOOL_ICONS: Record<SystemToolId, ComponentType> = {
