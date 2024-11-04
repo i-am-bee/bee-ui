@@ -17,7 +17,15 @@
 'use client';
 
 import clsx from 'clsx';
-import { TextareaHTMLAttributes, forwardRef, useState } from 'react';
+import {
+  TextareaHTMLAttributes,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { mergeRefs } from 'react-merge-refs';
 import classes from './TextAreaAutoHeight.module.scss';
 
 type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'>;
@@ -25,18 +33,28 @@ type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'>;
 export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
   function TextAreaAutoHeight({ className, onChange, ...rest }, ref) {
     const [value, setValue] = useState(rest.defaultValue ?? '');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const handleInput = useCallback((event: Event) => {
+      setValue((event.target as HTMLTextAreaElement).value);
+    }, []);
+
+    useEffect(() => {
+      textareaRef.current?.addEventListener('input', handleInput);
+
+      return () =>
+        textareaRef.current?.removeEventListener('input', handleInput);
+    });
+
     return (
       <div
         className={clsx(classes.root, className)}
         data-replicated-value={value}
       >
         <textarea
-          ref={ref}
+          ref={mergeRefs([ref, textareaRef])}
           {...rest}
-          onChange={(e) => {
-            setValue(e.target.value);
-            onChange?.(e);
-          }}
+          onChange={onChange}
         />
       </div>
     );

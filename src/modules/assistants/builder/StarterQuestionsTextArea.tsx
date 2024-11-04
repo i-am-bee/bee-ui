@@ -17,7 +17,7 @@
 import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import {
-  dispatchChangeEventOnFormInputs,
+  dispatchInputEventOnFormTextarea,
   submitFormOnEnter,
 } from '@/utils/formUtils';
 import { isNotNull } from '@/utils/helpers';
@@ -107,7 +107,7 @@ export function StarterQuestionsTextArea() {
       }
 
       reset();
-      dispatchChangeEventOnFormInputs(formElem);
+      dispatchInputEventOnFormTextarea(formElem);
     }
   }, [reset]);
 

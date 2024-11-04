@@ -24,13 +24,13 @@ export function submitFormOnEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
   }
 }
 
-// Manually trigger the 'change' event on each form element to correctly resize TextAreaAutoHeight
-export function dispatchChangeEventOnFormInputs(form: HTMLFormElement) {
-  const inputs = form.querySelectorAll('input, textarea');
+// Manually trigger the 'input' event to correctly resize TextAreaAutoHeight
+export function dispatchInputEventOnFormTextarea(form: HTMLFormElement) {
+  const elements = form.querySelectorAll('textarea');
 
-  inputs.forEach((input) => {
-    const event = new Event('change', { bubbles: true });
+  elements.forEach((element) => {
+    const event = new Event('input', { bubbles: true });
 
-    input.dispatchEvent(event);
+    element.dispatchEvent(event);
   });
 }

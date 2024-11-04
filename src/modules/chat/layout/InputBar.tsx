@@ -22,7 +22,7 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { AssistantBaseIcon } from '@/modules/assistants/icons/AssistantBaseIcon';
 import { lastAssistantsQuery } from '@/modules/assistants/library/queries';
 import {
-  dispatchChangeEventOnFormInputs,
+  dispatchInputEventOnFormTextarea,
   submitFormOnEnter,
 } from '@/utils/formUtils';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
@@ -78,18 +78,20 @@ export const InputBar = memo(function InputBar({
 
       formElem.reset();
 
-      dispatchChangeEventOnFormInputs(formElem);
+      dispatchInputEventOnFormTextarea(formElem);
     }
   }, []);
 
-  const submitFormWithInput = (value: string) => {
+  const fillWithInput = (value: string) => {
     const formElem = formRef.current;
 
     if (!formElem) return;
 
     setValue('input', value);
+    setPromptSuggestionsOpen(false);
+    dispatchInputEventOnFormTextarea(formElem);
 
-    formElem.requestSubmit();
+    inputRef.current?.focus();
   };
 
   const isPending = status !== 'ready';
@@ -210,7 +212,7 @@ export const InputBar = memo(function InputBar({
               inputRef={inputRef}
               isOpen={promptSuggestionsOpen}
               setIsOpen={setPromptSuggestionsOpen}
-              onSubmit={submitFormWithInput}
+              onSubmit={fillWithInput}
             />
           )}
         </div>
