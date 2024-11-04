@@ -17,34 +17,21 @@
 import { listApiKeys } from '@/app/api/api-keys';
 import { ApiKeysListQuery } from '@/app/api/api-keys/types';
 import { isNotNull } from '@/utils/helpers';
-import { infiniteQueryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export const apiKeysQuery = (params?: ApiKeysListQuery) =>
-  infiniteQueryOptions({
+  queryOptions({
     queryKey: ['api-keys', params],
-    queryFn: ({ pageParam }: { pageParam?: string }) =>
+    queryFn: () =>
       listApiKeys({
-        after: pageParam,
         order_by: 'created_at',
         order: 'desc',
         ...params,
       }),
-    initialPageParam: undefined,
-    getNextPageParam(lastPage) {
-      return lastPage?.has_more && lastPage?.last_id
-        ? lastPage.last_id
-        : undefined;
-    },
-    select(data) {
-      const apiKeys = data.pages
-        .flatMap((page) => page?.data)
-        .filter(isNotNull);
-      return {
-        apiKeys,
-        totalCount: data.pages.at(0)?.total_count,
-      };
-    },
     meta: {
-      errorToast: false,
+      errorToast: {
+        title: 'Failed to load api keys',
+        includeErrorMessage: true,
+      },
     },
   });

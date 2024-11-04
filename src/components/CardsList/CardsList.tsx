@@ -33,6 +33,7 @@ import {
   OrderBySelect,
   OrderBySelectProps,
 } from '../OrderBySelect/OrderBySelect';
+import { useDataResultState } from '@/hooks/useDataResultState';
 
 interface OrderBy {
   order?: string;
@@ -78,7 +79,6 @@ export function CardsList<T extends OrderBy>({
   children,
 }: PropsWithChildren<Props<T>>) {
   const [search, setSearch] = useState<string | null>(null);
-  const [isEmptyState, setEmptyState] = useState(false);
 
   const { ref: fetchMoreAnchorRef } = useFetchNextPageInView({
     onFetchNextPage,
@@ -86,13 +86,11 @@ export function CardsList<T extends OrderBy>({
     hasNextPage,
   });
 
-  const noResults = totalCount === 0 && !isFetching;
-  const isEmpty = isEmptyState && noResults;
-
-  useEffect(() => {
-    if (noResults && search == null) setEmptyState(true);
-    if (totalCount > 0) setEmptyState(false);
-  }, [noResults, search, totalCount]);
+  const { noResults, isEmpty } = useDataResultState({
+    totalCount,
+    isFetching,
+    isFiltered: Boolean(search),
+  });
 
   const showBarWithNewButton = (onSearchChange || newButtonProps) && !isEmpty;
 
@@ -131,19 +129,12 @@ export function CardsList<T extends OrderBy>({
       )}
 
       {!error && (isEmpty || noResults) && (
-        <div className={classes.empty}>
-          {isEmpty ? (
-            <>
-              <p>{noItemsText}</p>
-              {noItemsDescr && (
-                <p className={classes.emptyDescr}>{noItemsDescr}</p>
-              )}
-              <NewButton {...newButtonProps} />
-            </>
-          ) : (
-            <p className={classes.notFound}>No results found.</p>
-          )}
-        </div>
+        <EmptyDataInfo
+          newButtonProps={newButtonProps}
+          isEmpty={isEmpty}
+          noItemsDescr={noItemsDescr}
+          noItemsText={noItemsText}
+        />
       )}
 
       <div className={classes.grid}>{children}</div>
@@ -203,5 +194,31 @@ function NewButton({ title, tooltipContent, ...props }: NewButtonProps) {
     </Tooltip>
   ) : (
     button
+  );
+}
+
+export function EmptyDataInfo({
+  isEmpty,
+  noItemsDescr,
+  noItemsText,
+  newButtonProps,
+}: {
+  isEmpty: boolean;
+  noItemsText?: string;
+  noItemsDescr?: string;
+  newButtonProps?: NewButtonProps;
+}) {
+  return (
+    <div className={classes.empty}>
+      {isEmpty ? (
+        <>
+          <p>{noItemsText}</p>
+          {noItemsDescr && <p className={classes.emptyDescr}>{noItemsDescr}</p>}
+          <NewButton {...newButtonProps} />
+        </>
+      ) : (
+        <p className={classes.notFound}>No results found.</p>
+      )}
+    </div>
   );
 }

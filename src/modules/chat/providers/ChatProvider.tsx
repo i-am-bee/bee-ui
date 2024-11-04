@@ -629,6 +629,7 @@ export function ChatProvider({
       getUsedTools,
       chatStream,
       setMessagesWithFilesQueryData,
+      queryClient,
       handleError,
       handlRunCompleted,
     ],

@@ -47,6 +47,7 @@
 @use '@carbon/styles/scss/components/data-table/action';
 @use '@carbon/styles/scss/components/data-table/sort';
 @use '@carbon/styles/scss/components/data-table/skeleton';
+@use '@carbon/styles/scss/components/pagination';
 
 html {
   overflow: hidden;
@@ -300,41 +301,47 @@ h1 {
 }
 
 .#{$prefix}--data-table {
-  border-radius: 0 0 $block-radius $block-radius;
-  thead {
-    th {
-      block-size: rem(64px);
-      vertical-align: top;
-      padding-block-start: $spacing-04;
-      border-block-end: 1px solid $border-subtle;
-      &:first-child {
-        border-inline-start: 1px solid $border-subtle;
+  &,
+  &.#{$prefix}--skeleton {
+    border-radius: 0 0 $block-radius $block-radius;
+    thead {
+      th {
+        block-size: rem(64px);
+        vertical-align: top;
+        padding-block-start: $spacing-04;
+        border-block-end: 1px solid $border-subtle;
+        &:first-child {
+          border-inline-start: 1px solid $border-subtle;
+        }
+        &:last-child {
+          border-inline-end: 1px solid $border-subtle;
+        }
       }
-      &:last-child {
-        border-inline-end: 1px solid $border-subtle;
+    }
+    tbody {
+      td {
+        padding-block-start: $spacing-03;
+        block-size: rem(64px);
+        padding-block-end: $spacing-06;
+        border-block-end: 1px solid $border-subtle;
+        &:first-child {
+          border-inline-start: 1px solid $border-subtle;
+        }
+        &:last-child {
+          border-inline-end: 1px solid $border-subtle;
+        }
+      }
+      tr:last-child {
+        td:first-child {
+          border-end-start-radius: $block-radius;
+        }
+        td:last-child {
+          border-end-end-radius: $block-radius;
+        }
       }
     }
   }
-  tbody {
-    td {
-      padding-block-start: $spacing-03;
-      block-size: rem(64px);
-      padding-block-end: $spacing-06;
-      border-block-end: 1px solid $border-subtle;
-      &:first-child {
-        border-inline-start: 1px solid $border-subtle;
-      }
-      &:last-child {
-        border-inline-end: 1px solid $border-subtle;
-      }
-    }
-    tr:last-child {
-      td:first-child {
-        border-end-start-radius: $block-radius;
-      }
-      td:last-child {
-        border-end-end-radius: $block-radius;
-      }
-    }
-  }
+}
+.#{$prefix}--data-table-container {
+  padding-block-start: 0;
 }

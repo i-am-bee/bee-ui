@@ -251,7 +251,7 @@ ApiKeyModal.Delete = function DeleteModal({
 }: {
   apiKey: ApiKey;
 } & ModalProps) {
-  const { mutate } = useDeleteApiKey({
+  const { mutate, isPending } = useDeleteApiKey({
     onSuccess: () => props.onRequestClose(),
   });
 
@@ -276,11 +276,12 @@ ApiKeyModal.Delete = function DeleteModal({
         <Button
           kind="danger"
           type="submit"
+          disabled={isPending}
           onClick={() =>
             mutate({ id: apiKey.id, projectId: apiKey.project.id })
           }
         >
-          Delete key
+          {isPending ? <InlineLoading title="Deleting..." /> : 'Delete key'}
         </Button>
       </ModalFooter>
     </Modal>
