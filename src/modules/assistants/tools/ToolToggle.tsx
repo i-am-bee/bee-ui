@@ -19,30 +19,23 @@ import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { toolQuery } from '@/modules/chat/assistant-plan/queries';
+import { ToolDescription } from '@/modules/tools/ToolCard';
 import {
   getToolIcon,
   getToolName,
   getToolReferenceId,
-  isExternalTool,
 } from '@/modules/tools/utils';
-import {
-  SkeletonIcon,
-  SkeletonText,
-  Tag,
-  Toggle,
-  ToggleProps,
-  Tooltip,
-} from '@carbon/react';
+import { SkeletonIcon, SkeletonText, Toggle, ToggleProps } from '@carbon/react';
 import { useQuery } from '@tanstack/react-query';
 import { MouseEventHandler, useId } from 'react';
 import classes from './ToolToggle.module.scss';
-import { ToolDescription } from '@/modules/tools/ToolCard';
+import { ToolTypeTag } from './ToolTypeTag';
 
 interface Props extends Omit<ToggleProps, 'id' | 'size'> {
   tool: ToolReference;
   heading?: string;
   description?: string;
-  showWarning?: boolean;
+  showTypeTag?: boolean;
   toggled?: boolean;
   onToggle?: (toggled: boolean) => void;
   onEditClick?: MouseEventHandler<HTMLButtonElement>;
@@ -52,7 +45,7 @@ export function ToolToggle({
   tool,
   heading,
   description,
-  showWarning,
+  showTypeTag,
   toggled,
   disabled,
   onToggle,
@@ -71,6 +64,8 @@ export function ToolToggle({
     enabled: Boolean(!heading && userToolId),
   });
 
+  const toolId = getToolReferenceId(tool);
+
   return (
     <div className={classes.root}>
       <span className={classes.icon}>{Icon && <Icon />}</span>
@@ -84,13 +79,8 @@ export function ToolToggle({
           <h3 className={classes.heading}>{userTool?.name || name}</h3>
         )}
 
-        {showWarning && isExternalTool(tool.type, getToolReferenceId(tool)) && (
-          <Tooltip
-            align="right"
-            label="Third-party tools may share your data with external services."
-          >
-            <ToolExternalTag />
-          </Tooltip>
+        {showTypeTag && (
+          <ToolTypeTag type={tool.type} id={toolId} showTooltip />
         )}
 
         {toolType === 'user' && onEditClick && (
@@ -133,11 +123,3 @@ ToolToggle.Skeleton = function Skeleton() {
     </div>
   );
 };
-
-export function ToolExternalTag() {
-  return (
-    <Tag size="sm" type="blue" className={classes.tag}>
-      Public API
-    </Tag>
-  );
-}

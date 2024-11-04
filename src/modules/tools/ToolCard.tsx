@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import classes from './ToolCard.module.scss';
+import { Tool } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { isNotNull } from '@/utils/helpers';
-import { Tool } from '@/app/api/tools/types';
-import { useDeleteTool } from './hooks/useDeleteTool';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { ToolExternalTag } from '../assistants/tools/ToolToggle';
-import { getToolIcon, getToolReference, isExternalTool } from './utils';
+import { isNotNull } from '@/utils/helpers';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
-import { UserToolModal } from './manage/UserToolModal';
-import { PublicToolModal } from './manage/PublicToolModal';
 import Markdown, { Components } from 'react-markdown';
+import { ToolTypeTag } from '../assistants/tools/ToolTypeTag';
+import { useDeleteTool } from './hooks/useDeleteTool';
+import { PublicToolModal } from './manage/PublicToolModal';
+import { UserToolModal } from './manage/UserToolModal';
+import classes from './ToolCard.module.scss';
+import { getToolIcon, getToolReference } from './utils';
 
 interface Props {
   tool: Tool;
@@ -100,7 +100,8 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
               <ToolDescription description={toolDescription} />
             </div>
           )}
-          {isExternalTool(tool.type, tool.id) && <ToolExternalTag />}
+
+          <ToolTypeTag type={tool.type} id={tool.id} />
         </div>
       </CardsListItem>
     </>

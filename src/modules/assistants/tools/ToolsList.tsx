@@ -128,7 +128,7 @@ export function ToolsList({ enableFetch }: Props) {
                 />
               ))
             }
-            showWarning
+            showTypeTag
           />
         </li>
       ))}

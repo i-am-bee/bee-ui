@@ -58,11 +58,6 @@
   @include type-style(heading-01);
 }
 
-.tag {
-  flex-shrink: 0;
-  margin: 0;
-}
-
 .editButton {
   &:global(.#{$prefix}--btn) {
     padding: 0;
