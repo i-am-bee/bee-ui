@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import { StoreSlice } from '../types';
+'use client';
 
-export type UserMetadata = {
-  email?: string;
-  tou_accepted_at?: number;
-};
+import { isNotNull } from '@/utils/helpers';
+import { ReactNode } from 'react';
+import { useUserProfile, useUserProfileActions } from '.';
+import { UserProfileState } from './types';
 
-export type UserProfileState = {
-  id: string;
-  name: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  metadata?: UserMetadata;
-};
+export function UserProfileInitializer({
+  userProfile,
+  children,
+}: {
+  userProfile: UserProfileState;
+  children: ReactNode;
+}) {
+  const userId = useUserProfile((state) => state.id) as string | undefined;
+  const { setUserProfile } = useUserProfileActions();
 
-export type UserProfileAction = {
-  setUserProfile: (userProfile: UserProfileState) => void;
-};
+  setUserProfile(userProfile);
 
-export type UserProfileSlice = StoreSlice<UserProfileState, UserProfileAction>;
+  return isNotNull(userId) ? children : null;
+}
