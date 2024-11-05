@@ -18,11 +18,6 @@
 
 $height-tools-estimate: rem(800px);
 
-.root {
-  // TODO: render all modals into one element and remove this
-  z-index: z('modal') - 1;
-}
-
 .modal {
   :global(.#{$prefix}--modal-header) {
     block-size: rem(32px);

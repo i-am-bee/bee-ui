@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { clsx } from 'clsx';
 import debounce from 'lodash/debounce';
 import {
+  ElementType,
   PropsWithChildren,
   useCallback,
   useEffect,
@@ -24,14 +26,14 @@ import {
   useRef,
   useState,
 } from 'react';
-import { TextWithCopyButton } from '../TextWithCopyButton/TextWithCopyButton';
 import { ExpandButton } from '../ExpandButton/ExpandButton';
+import { TextWithCopyButton } from '../TextWithCopyButton/TextWithCopyButton';
 import classes from './LineClampText.module.scss';
-import { clsx } from 'clsx';
 
 interface Props {
   numberOfLines: number;
   code?: string | null;
+  as?: ElementType;
   className?: string;
 }
 
@@ -39,6 +41,7 @@ export function LineClampText({
   children,
   numberOfLines,
   code,
+  as: Component = 'p',
   className,
 }: PropsWithChildren<Props>) {
   const id = useId();
@@ -118,7 +121,7 @@ export function LineClampText({
           {content}
         </TextWithCopyButton>
       ) : (
-        <p>{content}</p>
+        <Component>{content}</Component>
       )}
 
       {showButton && (
