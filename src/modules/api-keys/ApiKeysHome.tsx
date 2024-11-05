@@ -35,7 +35,7 @@ import {
 } from '@carbon/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo } from 'react';
 import {
   PreferencesLayout,
   PreferencesSection,
@@ -44,19 +44,20 @@ import { apiKeysQuery } from './api/queries';
 import { useRenameApiKey } from './api/useRenameApiKey';
 import { useDebounceValue } from 'usehooks-ts';
 import { DateTime } from '@/components/DateTime/DateTime';
-import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useDataResultState } from '@/hooks/useDataResultState';
-import { EmptyDataInfo } from '@/components/CardsList/CardsList';
 import { TablePagination } from '@/components/TablePagination/TablePagination';
 import classes from './ApiKeysHome.module.scss';
 import { ApiKeyModal } from './manage/ApiKeyModal';
 import { usePagination } from '@/components/TablePagination/usePagination';
+import { useUserProfile } from '@/store/user-profile';
+import { EmptyDataInfo } from '@/components/CardsList/CardsList';
 
 export function ApiKeysHome() {
   const id = useId();
   const { project } = useAppContext();
-  const { openModal } = useModal();
+  const { openModal, openConfirmation } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
+  const userId = useUserProfile((state) => state.id);
 
   const {
     page,
@@ -92,7 +93,8 @@ export function ApiKeysHome() {
   const rows = useMemo(
     () =>
       data?.data?.map((item, index) => {
-        const { id, name, secret, created_at, last_used_at, project } = item;
+        const { id, name, secret, created_at, last_used_at, project, owner } =
+          item;
         return {
           id,
           name: (
@@ -107,6 +109,7 @@ export function ApiKeysHome() {
           secret: secret.replace(/[*]+/, '...'),
           project: project.name,
           created_at: <DateTime date={created_at} />,
+          owner: owner.user?.name,
           last_used_at: last_used_at ? (
             <DateTime date={last_used_at} />
           ) : (
@@ -115,22 +118,18 @@ export function ApiKeysHome() {
           actions: (
             <OverflowMenu size="sm">
               <OverflowMenuItem
-                itemText={
-                  <Tooltip
-                    content="Recreates the API key"
-                    asChild
-                    // TODO: disable regenerate on keys of other users
-                    placement="top"
-                  >
-                    <span className={classes.regenerateBtnContent}>
-                      Regenerate
-                    </span>
-                  </Tooltip>
-                }
+                disabled={owner.user?.id !== userId}
+                itemText="Regenerate"
                 onClick={() =>
-                  openModal((props) => (
-                    <ApiKeyModal.Regenerate apiKey={item} {...props} />
-                  ))
+                  openConfirmation({
+                    title: `Regenerate API key '${name}'?`,
+                    body: 'The current API key will be deleted, and a new one with the same name will be generated.',
+                    primaryButtonText: 'Regenerate',
+                    onSubmit: () =>
+                      openModal((props) => (
+                        <ApiKeyModal.Regenerate apiKey={item} {...props} />
+                      )),
+                  })
                 }
               />
               <OverflowMenuItem
@@ -146,7 +145,7 @@ export function ApiKeysHome() {
           ),
         };
       }) ?? [],
-    [data?.data, mutateRename, openModal],
+    [data?.data, mutateRename, openConfirmation, openModal, userId],
   );
 
   return (
@@ -192,7 +191,11 @@ export function ApiKeysHome() {
                         kind="secondary"
                         onClick={() =>
                           openModal((props) => (
-                            <ApiKeyModal {...props} project={project} />
+                            <ApiKeyModal
+                              {...props}
+                              project={project}
+                              onSuccess={() => resetPagination()}
+                            />
                           ))
                         }
                       >
@@ -279,6 +282,7 @@ const HEADERS = [
   { key: 'secret', header: 'API Key' },
   { key: 'project', header: 'Workspace' },
   { key: 'created_at', header: 'Created' },
+  { key: 'owner', header: 'Owner' },
   { key: 'last_used_at', header: 'Last used' },
   { key: 'actions', header: '' },
 ];

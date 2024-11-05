@@ -16,8 +16,7 @@
 
 import { listApiKeys } from '@/app/api/api-keys';
 import { ApiKeysListQuery } from '@/app/api/api-keys/types';
-import { isNotNull } from '@/utils/helpers';
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { queryOptions } from '@tanstack/react-query';
 
 export const apiKeysQuery = (params?: ApiKeysListQuery) =>
   queryOptions({
