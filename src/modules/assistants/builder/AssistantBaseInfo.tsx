@@ -62,7 +62,6 @@ const Input = ({
   placeholder,
   className,
   maxLength,
-  primaryFocus,
   required,
 }: InputProps) => {
   const htmlId = useId();
@@ -95,7 +94,7 @@ const Input = ({
       readOnly={isProjectReadOnly}
       className={clsx(classes.input, className)}
       maxLength={maxLength}
-      data-modal-primary-focus={primaryFocus}
+      invalid={invalid}
     />
   );
 };

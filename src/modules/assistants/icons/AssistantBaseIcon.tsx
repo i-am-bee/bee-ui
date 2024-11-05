@@ -22,7 +22,7 @@ import classes from './AssistantBaseIcon.module.scss';
 export interface AssistantBaseIconProps {
   name?: AssitantIconName;
   color?: AssistantIconColor;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   initialLetter?: string;
   className?: string;
 }

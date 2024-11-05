@@ -54,9 +54,9 @@ export const EmptyChatView = memo(function EmptyChatView({
     >
       <Container size="sm" className={classes.content}>
         {assistant ? (
-          <AssistantAvatar assistant={assistant} size="xl" />
+          <AssistantAvatar assistant={assistant} size="xxl" />
         ) : (
-          <AssistantIcon assistant={assistant} size="xl" />
+          <AssistantIcon assistant={assistant} size="xxl" />
         )}
 
         <div className={classes.heading}>

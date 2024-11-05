@@ -34,6 +34,7 @@ import Google from './icons/google.svg';
 import DuckDuckGo from './icons/duckduckgo.svg';
 import Wikipedia from './icons/wikipedia.svg';
 import { AssistantTool } from '@/app/api/assistants/types';
+import { has } from 'lodash';
 
 export function getToolIcon(tool: ToolReference) {
   if (tool.type === 'system') return SYSTEM_TOOL_ICONS[tool.id];
@@ -162,3 +163,7 @@ const SYSTEM_TOOL_NAME: Record<SystemToolId, string> = {
   arxiv: 'Arxiv',
   read_file: 'ReadFile',
 };
+
+export function isTool(item: Tool | ToolReference): item is Tool {
+  return has(item, 'created_at');
+}

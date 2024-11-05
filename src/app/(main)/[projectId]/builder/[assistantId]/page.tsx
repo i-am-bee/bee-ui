@@ -18,7 +18,9 @@ import { readAssistant } from '@/app/api/rsc';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
+import { Builder } from '@/modules/assistants/builder/Builder';
 import { Assistant } from '@/modules/assistants/types';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { handleApiError } from '@/utils/handleApiError';
 import { notFound } from 'next/navigation';
 
@@ -29,8 +31,7 @@ interface Props {
   };
 }
 
-// TODO: use this page for split screen builder
-export default async function EditAssistantPage({
+export default async function AssistantBuildePage({
   params: { assistantId, projectId },
 }: Props) {
   let assistant;
@@ -55,8 +56,10 @@ export default async function EditAssistantPage({
   }
 
   return (
-    <AssistantBuilderProvider assistant={assistant}>
-      <></>
-    </AssistantBuilderProvider>
+    <LayoutInitializer layout={{ sidebarVisible: false }}>
+      <AssistantBuilderProvider assistant={assistant}>
+        <Builder />
+      </AssistantBuilderProvider>
+    </LayoutInitializer>
   );
 }

@@ -19,8 +19,11 @@ importers:
       '@carbon/grid':
         specifier: ^11.22.0
         version: 11.29.0
+      '@carbon/layout':
+        specifier: ^11.22.0
+        version: 11.28.0
       '@carbon/motion':
-        specifier: ^11.17.0
+        specifier: ^11.22.0
         version: 11.24.0
       '@carbon/react':
         specifier: ^1.64.0

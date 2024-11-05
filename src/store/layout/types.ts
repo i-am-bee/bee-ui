@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { AssistantsHome } from '@/modules/assistants/AssistantsHome';
-import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+import { StoreSlice } from '../types';
 
-export default function HomePage() {
-  return (
-    <LayoutInitializer layout={{ sidebarVisible: true }}>
-      <AssistantsHome />
-    </LayoutInitializer>
-  );
-}
+export type LayoutState = {
+  sidebarVisible: boolean;
+};
+
+export type LayoutActions = {
+  setLayout: (value: Partial<LayoutState>) => void;
+};
+
+export type LayoutSlice = StoreSlice<LayoutState, LayoutActions>;

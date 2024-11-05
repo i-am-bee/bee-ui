@@ -60,7 +60,7 @@ export function IconSelector({ disabled }: Props) {
     <AssistantBaseIcon
       name={name}
       color={color}
-      size="lg"
+      size="xl"
       initialLetter={assistant?.name?.at(0)}
       className={classes.icon}
     />

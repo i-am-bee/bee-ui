@@ -16,9 +16,10 @@
 
 import { deleteAssistant } from '@/app/api/assistants';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Assistant } from '../types';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
 
 interface Props {
   assistant: Assistant;
@@ -28,10 +29,21 @@ interface Props {
 export function useDeleteAssistant({ assistant, onSuccess }: Props) {
   const { openConfirmation } = useModal();
   const { project } = useAppContext();
+  const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (id: string) => deleteAssistant(project.id, id),
-    onSuccess,
+    onSuccess: () => {
+      onSuccess?.();
+
+      // invalidate all queries on GET:/assistants
+      queryClient.invalidateQueries({
+        queryKey: [assistantsQuery(project.id).queryKey.at(0)],
+      });
+      queryClient.invalidateQueries({
+        queryKey: lastAssistantsQuery(project.id).queryKey,
+      });
+    },
     meta: {
       errorToast: {
         title: 'Failed to delete the app',

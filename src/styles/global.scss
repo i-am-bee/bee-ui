@@ -139,18 +139,19 @@ h1 {
 }
 
 .#{$prefix}--modal-footer.#{$prefix}--btn-set {
-  > .#{$prefix}--btn {
+  .#{$prefix}--btn {
     block-size: rem(48px);
     padding-block: 0;
     display: flex;
     align-items: center;
     flex: 0 1 40%;
+    box-shadow: none !important;
 
     &:first-child {
       flex-grow: 1;
     }
   }
-  > .#{$prefix}--btn--ghost {
+  .#{$prefix}--btn--ghost {
     color: $text-primary;
   }
 }

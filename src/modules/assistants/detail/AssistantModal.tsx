@@ -1,7 +1,29 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
-import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
-import { useQueryClient } from '@tanstack/react-query';
+import {
+  Button,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  SkeletonText,
+} from '@carbon/react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
@@ -17,6 +39,11 @@ import {
   getToolIcon,
   getToolName,
 } from '@/modules/tools/utils';
+import { ToolIcon } from '@/modules/tools/ToolCard';
+import { readVectorStoreQuery } from '@/modules/knowledge/queries';
+import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
+import pluralize from 'pluralize';
+import { useRouter } from 'next-nprogress-bar';
 
 export interface AssistantModalProps {
   onDeleteSuccess?: () => void;
@@ -30,6 +57,7 @@ export default function AssistantModal({
 }: AssistantModalProps & ModalProps) {
   const { project, isProjectReadOnly } = useAppContext();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
     assistant: assistant!,
     onSuccess: async () => {
@@ -45,87 +73,121 @@ export default function AssistantModal({
     },
   });
 
+  const vectorStoreId =
+    assistant.tool_resources?.file_search?.vector_store_ids?.at(0);
+  const { data: vectorStore, isLoading: isVectorStoreLoading } = useQuery({
+    // We support only one vector store per assistant
+    ...readVectorStoreQuery(project.id, vectorStoreId ?? ''),
+    enabled: Boolean(vectorStoreId),
+  });
+
   const tools = useMemo(
     () =>
       assistant.tools.map((item) => {
         const toolReference = getAssistantToolReference(item);
         return {
-          icon: getToolIcon(toolReference),
+          icon: <ToolIcon tool={toolReference} size="sm" />,
           name: getToolName(toolReference),
         };
       }),
     [assistant.tools],
   );
 
-  console.log({ assistant });
-
   return (
-    <Modal
-      {...props}
-      size="md"
-      className={classes.modal}
-      rootClassName={classes.root}
-    >
-      <ModalHeader />
-      <ModalBody>
-        <div
-          className={clsx(classes.content, {
-            [classes.isDeletePending]: isDeletePending,
-          })}
-        >
-          <div className={classes.head}>
-            <AssistantIcon assistant={assistant} size="lg" />
-            <h2>{assistant.name}</h2>
-            <p>{assistant.description}</p>
-          </div>
-          <dl className={classes.body}>
-            {assistant.instructions && (
+    <SSRSafePortal>
+      <Modal
+        {...props}
+        size="md"
+        className={classes.modal}
+        rootClassName={classes.root}
+      >
+        <ModalHeader />
+        <ModalBody>
+          <div
+            className={clsx(classes.content, {
+              [classes.isDeletePending]: isDeletePending,
+            })}
+          >
+            <div className={classes.head}>
+              <AssistantIcon assistant={assistant} size="lg" />
+              <h2>{assistant.name}</h2>
+              <p>{assistant.description}</p>
+            </div>
+            <dl className={classes.body}>
+              {assistant.instructions && (
+                <div>
+                  <dd>Role</dd>
+                  <dt>
+                    <LineClampText numberOfLines={4}>
+                      {assistant.instructions}
+                    </LineClampText>
+                  </dt>
+                </div>
+              )}
+
               <div>
-                <dd>Role</dd>
+                <dd>Tools</dd>
                 <dt>
-                  <LineClampText numberOfLines={4}>
-                    {assistant.instructions}
-                  </LineClampText>
+                  <ul className={classes.tools}>
+                    {tools.map(({ icon, name }, index) => (
+                      <li key={index}>
+                        {icon}
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
                 </dt>
               </div>
-            )}
 
-            <div>
-              <dd>Tools</dd>
-              <dt>
-                <ul>
-                  {tools.map(({ icon: Icon, name }, index) => (
-                    <li key={index}>
-                      <Icon /> {name}
-                    </li>
-                  ))}
-                </ul>
-              </dt>
-            </div>
-          </dl>
-        </div>
-      </ModalBody>
-      <ModalFooter className={classes.actionBar}>
-        <div>
-          {assistant && (
-            <Button kind="danger--ghost" onClick={deleteAssistant}>
-              Delete bee
+              {vectorStoreId && (
+                <div>
+                  <dd>Knowledge</dd>
+                  <dt className={classes.vectorStore}>
+                    {vectorStore ? (
+                      <>
+                        <strong>{vectorStore.name}</strong>
+                        <span>
+                          {pluralize(
+                            'Document',
+                            vectorStore.file_counts.total,
+                            true,
+                          )}
+                        </span>
+                      </>
+                    ) : (
+                      <SkeletonText lineCount={2} paragraph />
+                    )}
+                  </dt>
+                </div>
+              )}
+            </dl>
+          </div>
+        </ModalBody>
+        <ModalFooter className={classes.actionBar}>
+          <div>
+            {assistant && (
+              <Button kind="danger--ghost" onClick={deleteAssistant}>
+                Delete bee
+              </Button>
+            )}
+          </div>
+          <div>
+            <Button kind="ghost" onClick={() => props.onRequestClose()}>
+              Cancel
             </Button>
-          )}
-        </div>
-        <div>
-          <Button kind="ghost" onClick={() => props.onRequestClose()}>
-            Cancel
-          </Button>
-          <Button
-            kind="secondary"
-            onClick={() => props.onRequestClose()}
-            renderIcon={Edit}
-          >
-            Edit
-          </Button>
-        </div>
-      </ModalFooter>
-    </Modal>
+            <Button
+              kind="secondary"
+              onClick={() =>
+                router.push(`${project.id}/builder/${assistant.id}`)
+              }
+              renderIcon={Edit}
+              disabled={isProjectReadOnly}
+            >
+              Edit
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
+    </SSRSafePortal>
   );
 }

@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-import { AssistantsHome } from '@/modules/assistants/AssistantsHome';
-import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+'use client';
+import { ReactNode, useEffect } from 'react';
+import { LayoutState } from './types';
+import { useLayoutActions } from '.';
 
-export default function HomePage() {
-  return (
-    <LayoutInitializer layout={{ sidebarVisible: true }}>
-      <AssistantsHome />
-    </LayoutInitializer>
-  );
+export function LayoutInitializer({
+  layout,
+  children,
+}: {
+  layout: LayoutState;
+  children: ReactNode;
+}) {
+  const { setLayout } = useLayoutActions();
+
+  useEffect(() => {
+    setLayout(layout);
+  }, [layout, setLayout]);
+
+  return children;
 }

@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import { AssistantsHome } from '@/modules/assistants/AssistantsHome';
-import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+@use 'styles/common' as *;
 
-export default function HomePage() {
-  return (
-    <LayoutInitializer layout={{ sidebarVisible: true }}>
-      <AssistantsHome />
-    </LayoutInitializer>
-  );
+.root {
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  h2 {
+    font-size: rem(16px);
+    font-weight: 600;
+  }
 }

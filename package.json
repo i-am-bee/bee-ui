@@ -22,7 +22,8 @@
   "dependencies": {
     "@ai-zen/node-fetch-event-source": "^2.1.4",
     "@carbon/grid": "^11.22.0",
-    "@carbon/motion": "^11.17.0",
+    "@carbon/motion": "^11.22.0",
+    "@carbon/layout": "^11.22.0",
     "@carbon/react": "^1.64.0",
     "@carbon/styles": "^1.63.0",
     "@dhmk/zustand-lens": "^5.0.0",
