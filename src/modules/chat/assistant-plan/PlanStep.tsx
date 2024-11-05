@@ -207,7 +207,20 @@ export function PlanStep({ step, toolCall }: Props) {
               toggleExpand();
             }}
           />
-          <h3 className={classes.caption}>{toolCall.caption}</h3>
+          <p className={classes.tool}>
+            {ToolIcon && (
+              <span className={classes.toolIcon}>
+                <ToolIcon />
+              </span>
+            )}
+
+            <span>{toolName}</span>
+          </p>
+          {step.thought && !expanded && (
+            <h3 className={classes.thought}>
+              “<span>{step.thought}</span>”
+            </h3>
+          )}
           <span className={classes.status}>{STEP_STATUS_ICON[status]}</span>
         </header>
         <ExpandPanel
@@ -273,19 +286,6 @@ export function PlanStep({ step, toolCall }: Props) {
                       </motion.section>
                     )}
                   </AnimatePresence>
-
-                  <section key={`${id}:tool`}>
-                    <p className={classes.label}>Tool</p>
-                    <p className={classes.tool}>
-                      {ToolIcon && (
-                        <span className={classes.toolIcon}>
-                          <ToolIcon />
-                        </span>
-                      )}
-
-                      <span>{toolName}</span>
-                    </p>
-                  </section>
 
                   <AnimatePresence>
                     {input && (

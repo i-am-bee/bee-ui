@@ -19,6 +19,7 @@
 .root {
   display: grid;
   row-gap: $spacing-04;
+  min-inline-size: 0;
 }
 
 .error {

@@ -20,6 +20,7 @@
   border-radius: $spacing-03;
   background-color: $layer;
   border: 1px solid $border-subtle;
+  min-inline-size: 0;
 }
 
 .trace {

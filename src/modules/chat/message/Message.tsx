@@ -15,6 +15,7 @@
  */
 
 'use client';
+import { AssistantPlan } from '@/app/api/threads-runs/types';
 import { BounceButton } from '@/components/BounceLink/BounceButton';
 import { Container } from '@/components/Container/Container';
 import { Spinner } from '@/components/Spinner/Spinner';
@@ -24,12 +25,13 @@ import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { useUserProfile } from '@/store/user-profile';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { memo, useRef, useState } from 'react';
+import throttle from 'lodash/throttle';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useFocusWithin, useHover } from 'react-aria';
 import { useInView } from 'react-intersection-observer';
 import { mergeRefs } from 'react-merge-refs';
 import { PlanWithSources } from '../assistant-plan/PlanWithSources';
-import { hasPlanInProgress } from '../assistant-plan/utils';
+import { getLastCompletedStep } from '../assistant-plan/utils';
 import { AttachmentsList } from '../attachments/AttachmentsList';
 import { getThreadAssistantName } from '../history/useGetThreadAssistant';
 import { useAssistantModal } from '../providers/AssistantModalProvider';
@@ -187,14 +189,7 @@ function Content({ message }: { message: ChatMessage }) {
       }
 
       if (message.pending) {
-        return !hasPlanInProgress(message.plan) ? (
-          <blockquote>
-            <p className={classes.loading}>
-              <span>Thinking</span>&nbsp;
-              <Spinner />
-            </p>
-          </blockquote>
-        ) : null;
+        return <PendingThought plan={message.plan} />;
       }
 
       if (!message.plan?.pending) {
@@ -254,4 +249,41 @@ function Sender({ message }: { message: ChatMessage }) {
       </figure>
     );
   }
+}
+
+function PendingThought({ plan }: { plan?: AssistantPlan }) {
+  const THROTTLE_WAIT = 2000;
+  const [thought, setThought] = useState(null);
+  const pendingThought = getLastCompletedStep(plan)?.thought;
+
+  const updateThought = useMemo(
+    () =>
+      throttle((thought) => {
+        setThought(thought);
+      }, THROTTLE_WAIT),
+    [],
+  );
+
+  useEffect(() => {
+    updateThought(pendingThought);
+  }, [pendingThought, updateThought]);
+
+  useEffect(() => {
+    return () => updateThought.cancel();
+  }, [updateThought]);
+
+  return thought ? (
+    <blockquote>
+      <p className={classes.loading}>
+        <span>{thought}</span>
+      </p>
+    </blockquote>
+  ) : (
+    <blockquote>
+      <p className={classes.loading}>
+        <span>Thinking</span>&nbsp;
+        <Spinner />
+      </p>
+    </blockquote>
+  );
 }
