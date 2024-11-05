@@ -39,11 +39,13 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
       setValue((event.target as HTMLTextAreaElement).value);
     }, []);
 
+    // This is necessary for the auto height to work properly. React does some optimization and ignores custom Event dispatch if the value is unchanged, which happens with react-hook-form.
     useEffect(() => {
-      textareaRef.current?.addEventListener('input', handleInput);
+      const element = textareaRef.current;
 
-      return () =>
-        textareaRef.current?.removeEventListener('input', handleInput);
+      element?.addEventListener('input', handleInput);
+
+      return () => element?.removeEventListener('input', handleInput);
     });
 
     return (
