@@ -16,6 +16,7 @@
 
 'use client';
 
+import { useAfterMount } from '@/hooks/useAfterMount';
 import { usePrefix } from '@carbon/react';
 import { noop } from 'lodash';
 import {
@@ -122,7 +123,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   // Ensure the theme is applied. Fixes the bug with theme
   // not being applied on not-found.tsx pages (the standalone script,
   // that should do so below is not being run). I couldn't find out why.
-  useEffect(() => applyTheme(theme), [applyTheme, theme]);
+  useAfterMount(() => applyTheme(theme), [applyTheme, theme]);
 
   const contextValue = useMemo(
     () => ({
