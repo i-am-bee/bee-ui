@@ -16,18 +16,13 @@
 
 @use 'styles/common' as *;
 
-.form {
-  textarea {
-    inline-size: 100%;
-  }
-}
-
-.tabs {
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-block-start: $spacing-05;
-
-  :global(.#{$prefix}--tabs) {
-    margin-block-end: rem(18px);
-    border-block-end: 1px solid $border-subtle-00;
-    padding-block-end: 0.5px;
+  margin-block-end: $spacing-02;
+  h2 {
+    font-size: rem(16px);
   }
 }

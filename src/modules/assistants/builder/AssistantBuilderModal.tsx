@@ -31,7 +31,6 @@ import {
   useAssistantBuilder,
   useAssistantBuilderApi,
 } from './AssistantBuilderProvider';
-import { AssistantForm } from './AssistantForm';
 import { useDeleteAssistant } from './useDeleteAssistant';
 
 export interface AssistantBuilderProps {
@@ -115,7 +114,6 @@ function AssistantBuilderModalContent({ onDeleteSuccess }: ContentProps) {
         <div className={classes.main}>
           <div className={classes.form}>
             <AssistantBaseInfo />
-            <AssistantForm />
           </div>
         </div>
         {!isProjectReadOnly && (

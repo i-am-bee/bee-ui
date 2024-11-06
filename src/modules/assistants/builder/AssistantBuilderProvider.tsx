@@ -46,6 +46,7 @@ import {
   encodeStarterQuestionsMetadata,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
+import { ToolReference } from '@/app/api/tools/types';
 
 export type AssistantFormValues = {
   icon: {
@@ -55,7 +56,7 @@ export type AssistantFormValues = {
   ownName: string;
   description?: string;
   instructions: string;
-  tools: { type: ToolType; id: string }[];
+  tools: ToolReference[];
   vectorStoreId?: string;
   model?: AssistantModel;
   starterQuestions?: StarterQuestion[];
@@ -101,7 +102,6 @@ export function AssistantBuilderProvider({
 
   const searchParams = useSearchParams();
   const isEditCurrent = searchParams?.has('current');
-  // TODO: The duplication feature should be removed completely.
   const isDuplicate = searchParams?.has('duplicate');
 
   const [assistant, setAssistant] = useState<Assistant | null>(
@@ -271,7 +271,7 @@ export function useAssistantBuilder() {
 
 function formValuesFromAssistant(
   assistant: Assistant | null,
-  isCopy?: boolean,
+  isDuplicate?: boolean,
 ): AssistantFormValues {
   return {
     icon: {
@@ -279,7 +279,7 @@ function formValuesFromAssistant(
       color: assistant?.uiMetadata.color ?? 'white',
     },
     ownName: assistant?.name
-      ? `${assistant.name}${isCopy ? ' ( Copy )' : ''}`
+      ? `${assistant.name}${isDuplicate ? ' ( Copy )' : ''}`
       : 'New Bee',
     description: assistant?.description ?? '',
     instructions: assistant?.instructions || '',

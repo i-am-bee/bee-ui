@@ -43,6 +43,8 @@ export function getToolIcon(tool: ToolReference) {
 }
 
 export function getToolName(tool: ToolReference) {
+  if (tool.tool) return tool.tool.name;
+
   switch (tool.type) {
     case 'system':
       return SYSTEM_TOOL_NAME[tool.id];
@@ -116,11 +118,14 @@ export function toolIncluded(
 }
 
 export function getToolReference(tool: Tool): ToolReference {
-  return tool.type === 'system'
-    ? { type: tool.type, id: tool.id as SystemToolId }
-    : tool.type === 'user'
-      ? { type: tool.type, id: tool.id }
-      : { type: tool.type };
+  return {
+    tool,
+    ...(tool.type === 'system'
+      ? { type: tool.type, id: tool.id as SystemToolId }
+      : tool.type === 'user'
+        ? { type: tool.type, id: tool.id }
+        : { type: tool.type, id: tool.type }),
+  };
 }
 
 export function isExternalTool(type: ToolType, id: string) {

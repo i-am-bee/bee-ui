@@ -27,9 +27,7 @@ import {
   useState,
 } from 'react';
 import { mergeRefs } from 'react-merge-refs';
-
 import classes from './TextAreaAutoHeight.module.scss';
-import { useMergeRefs } from '@floating-ui/react';
 import { spacing } from '@carbon/layout';
 
 type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'> & {
@@ -84,6 +82,6 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
   },
 );
 
-const SPACING_04 = parseFloat(spacing[4]);
+const SPACING_04 = spacing[4];
 const FONT_SIZE_REM = 0.875;
 const LINE_HEIGHT_REM = FONT_SIZE_REM * (21 / 14);

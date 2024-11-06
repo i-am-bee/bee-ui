@@ -54,7 +54,7 @@ export type SubmitToolOutput = SubmitToolOutputsBody['tool_outputs'][number];
 export type SubmitToolApprovalsBody =
   paths['/v1/threads/{thread_id}/runs/{run_id}/submit_tool_approvals']['post']['requestBody']['content']['application/json'];
 
-export type ToolReference =
+export type ToolReference = (
   | {
       type: 'system';
       id: SystemToolId;
@@ -65,7 +65,9 @@ export type ToolReference =
     }
   | {
       type: Exclude<ToolType, 'system' | 'user'>;
-    };
+      id: string;
+    }
+) & { tool?: Tool };
 
 export type ToolsUsage = Assistant['tools'];
 

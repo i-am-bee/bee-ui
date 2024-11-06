@@ -1,21 +1,34 @@
-'use client';
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+'use client';
 import clsx from 'clsx';
 import { useAssistantBuilder } from './AssistantBuilderProvider';
 import classes from './Builder.module.scss';
 import { useQueryClient } from '@tanstack/react-query';
 import { useDeleteAssistant } from './useDeleteAssistant';
-import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { AssistantBaseInfo } from './AssistantBaseInfo';
-import { AssistantForm } from './AssistantForm';
 import { Button, IconButton, TextArea, TextInput } from '@carbon/react';
-import { ArrowLeft, CheckmarkFilled, Save } from '@carbon/react/icons';
+import { ArrowLeft, CheckmarkFilled } from '@carbon/react/icons';
 import { IconSelector } from './IconSelector';
 import { useId } from 'react';
 import { InstructionsTextArea } from './InstructionsTextArea';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
-import { ToolsList } from './ToolsList';
+import { BuilderTools } from '../tools/BuilderTools';
+import { KnowledgeSelector } from './KnowledgeSelector';
 
 export function Builder() {
   const {
@@ -66,7 +79,8 @@ export function Builder() {
           />
           <InstructionsTextArea />
           <StarterQuestionsTextArea />
-          <ToolsList />
+          <BuilderTools />
+          <KnowledgeSelector />
         </fieldset>
 
         <div className={classes.actionBar}>

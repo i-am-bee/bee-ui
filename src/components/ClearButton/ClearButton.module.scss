@@ -15,14 +15,3 @@
  */
 
 @use 'styles/common' as *;
-
-.root {
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  h2 {
-    font-size: rem(16px);
-    font-weight: 600;
-  }
-}

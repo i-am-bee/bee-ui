@@ -42,6 +42,9 @@ import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from './AssistantBuilderProvider';
 import classes from './KnowledgeSelector.module.scss';
+import { BuilderSectionHeading } from './BuilderSectionHeading';
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
+import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
 
 interface Props {}
 
@@ -121,52 +124,39 @@ export function KnowledgeSelector({}: Props) {
 
   return (
     <div className={classes.root}>
+      <BuilderSectionHeading
+        title="Knowledge"
+        buttonProps={{
+          children: 'New knowledge base',
+          onClick: () =>
+            openModal((props) => (
+              <CreateKnowledgeModal
+                projectId={project.id}
+                onCreateVectorStore={onCreateSuccess}
+                onSuccess={handleInvalidateData}
+                {...props}
+              />
+            )),
+          disabled: isProjectReadOnly,
+        }}
+      />
+
       {data?.stores && (
         <div className={classes.select}>
-          <Dropdown<VectorStore>
-            label="Connect to a knowledge base"
-            placeholder="Choose an existing base or create new"
+          <DropdownSelector<VectorStore>
             items={data.stores}
-            size="lg"
-            itemToString={(option: KnowledgeOption) =>
-              option === 'new' ? 'Create new' : (option?.name ?? '')
-            }
-            onChange={(item: VectorStore | null) =>
-              item ? handleConnectKnowledge(item.id) : handleClearKnowledge()
-            }
-            selected={vectorStore ?? null}
-            disabled={isProjectReadOnly}
-            hideClearButton={isProjectReadOnly}
-            footer={
-              <Button
-                kind="ghost"
-                className={classes.createNewButton}
-                onClick={() =>
-                  openModal((props) => (
-                    <CreateKnowledgeModal
-                      projectId={project.id}
-                      onCreateVectorStore={onCreateSuccess}
-                      onSuccess={handleInvalidateData}
-                      {...props}
-                    />
-                  ))
-                }
-                renderIcon={ArrowUpRight}
-              >
-                Create new
-              </Button>
-            }
+            onSubmit={(value) => {
+              if (value === null) {
+                handleClearKnowledge();
+              } else {
+                const selectedItem = value.at(0);
+                selectedItem && handleConnectKnowledge(selectedItem.id);
+              }
+            }}
+            selected={vectorStore}
+            placeholder="Browse knowledge bases"
+            itemToString={(item) => item.name}
           />
-          {vectorStore && (
-            <Link
-              href={`/${project.id}/knowledge/${vectorStore.id}`}
-              className={classes.knowledgeBaseLink}
-            >
-              <Button kind="ghost" renderIcon={ArrowUpRight}>
-                Manage knowledge base
-              </Button>
-            </Link>
-          )}
         </div>
       )}
 
@@ -187,9 +177,7 @@ export function KnowledgeSelector({}: Props) {
 
 type KnowledgeOption = VectorStore | 'new' | null;
 
-const VECTOR_STORES_LIMIT = 100;
-
-const VECTOR_STORES_QUERY_PARAMS = { limit: VECTOR_STORES_LIMIT };
+const VECTOR_STORES_QUERY_PARAMS = { limit: MAX_API_FETCH_LIMIT };
 
 const KNOWLEDGE_TOOLS = [
   { id: 'code_interpreter', type: 'code_interpreter' } as const,

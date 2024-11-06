@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-import { Tool, ToolResult } from '@/app/api/tools/types';
-import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
+import { ToolResult } from '@/app/api/tools/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { ToolDisableModal } from '@/modules/tools/manage/ToolDisableModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
-import { TOOLS_DEFAULT_PAGE_SIZE, toolsQuery } from '@/modules/tools/queries';
-import { getToolReference } from '@/modules/tools/utils';
-import { Button, InlineLoading } from '@carbon/react';
-import { Add, WarningFilled } from '@carbon/react/icons';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback } from 'react';
-import { useController, useFormContext, useFormState } from 'react-hook-form';
+import { Button } from '@carbon/react';
+import { Add } from '@carbon/react/icons';
+import { useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from '../builder/AssistantBuilderProvider';
-import classes from './ToolsList.module.scss';
+import classes from './BuilderTools.module.scss';
+import { ToolsSelector } from './ToolsSelector';
+import { BuilderSectionHeading } from '../builder/BuilderSectionHeading';
 
-export function ToolsList() {
+export function BuilderTools() {
   const { openModal } = useModal();
   const { project, isProjectReadOnly } = useAppContext();
-  const { isSubmitting } = useFormState();
 
   const { setValue, getValues } = useFormContext<AssistantFormValues>();
-  const {
-    field: { onChange, value },
-  } = useController<AssistantFormValues, 'tools'>({ name: 'tools' });
 
   const handleUserToolCreateSuccess = (tool: ToolResult) => {
     const selectedTools = getValues('tools');
@@ -50,25 +42,23 @@ export function ToolsList() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.header}>
-        <h2>Tools</h2>
-        <Button
-          kind="ghost"
-          size="md"
-          renderIcon={Add}
-          onClick={() =>
+      <BuilderSectionHeading
+        title="Tools"
+        buttonProps={{
+          children: 'New Tool',
+          onClick: () =>
             openModal((props) => (
               <UserToolModal
                 project={project}
                 onCreateSuccess={handleUserToolCreateSuccess}
                 {...props}
               />
-            ))
-          }
-          disabled={isProjectReadOnly}
-        >
-          New tool
-        </Button>
+            )),
+          disabled: isProjectReadOnly,
+        }}
+      />
+      <div className={classes.body}>
+        <ToolsSelector />
       </div>
     </div>
   );
