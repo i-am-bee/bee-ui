@@ -110,7 +110,11 @@ export function ToolToggle({
         disabled={!toolType || disabled}
       />
       {description && (
-        <LineClampText className={classes.description} numberOfLines={2}>
+        <LineClampText
+          className={classes.description}
+          numberOfLines={2}
+          as="div"
+        >
           <ToolDescription description={description} />
         </LineClampText>
       )}

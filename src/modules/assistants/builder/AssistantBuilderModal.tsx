@@ -59,7 +59,6 @@ export default function AssistantBuilderModal({
         size="md"
         preventCloseOnClickOutside={!isProjectReadOnly}
         className={classes.modal}
-        rootClassName={classes.root}
       >
         <ModalHeader />
         <ModalBody>

@@ -72,9 +72,7 @@ export type RunEventResponse = RunsCreateResponse & {
 
 export type RunStepEventResponse = RunsCreateResponse & {
   event: RunStepEventName;
-  data: RunsCreateResponse['data'] & {
-    metadata: { caption?: string };
-  };
+  data: NonNullable<RunsCreateResponse['data']>;
 };
 
 export type RunEventRequiresAction = RunEventResponse & {
@@ -198,7 +196,6 @@ export interface AssistantPlanStep {
 
 export type StepToolCall = {
   id: string;
-  caption: string;
   input: string | null;
   result: string | null;
   sources?: string[];

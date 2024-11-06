@@ -88,7 +88,7 @@ export function AcceptToUForm({ content, callbackUrl }: Props) {
 
     const { scrollHeight, clientHeight, scrollTop } = element;
 
-    if (scrollTop === scrollHeight - clientHeight) {
+    if (scrollHeight - clientHeight - scrollTop <= SCROLLED_BOTTOM_THRESHOLD) {
       setScrolled(true);
     }
   }, [scrolled]);
@@ -193,3 +193,4 @@ interface EnterFrameEvent {
 }
 
 const ANIMATION_PAUSE_FRAME = 165;
+const SCROLLED_BOTTOM_THRESHOLD = 5;

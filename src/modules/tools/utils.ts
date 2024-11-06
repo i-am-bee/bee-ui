@@ -15,7 +15,6 @@
  */
 
 import {
-  RequiredActionToolApprovals,
   SystemToolId,
   ToolApprovalRequest,
   ToolType,
@@ -30,7 +29,6 @@ import {
 } from '@carbon/react/icons';
 import { ComponentType } from 'react';
 import Arxiv from './icons/arxiv.svg';
-import Google from './icons/google.svg';
 import DuckDuckGo from './icons/duckduckgo.svg';
 import Wikipedia from './icons/wikipedia.svg';
 import { AssistantTool } from '@/app/api/assistants/types';
