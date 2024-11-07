@@ -15,32 +15,22 @@
  */
 
 @use 'styles/common' as *;
-@use '@carbon/styles/scss/utilities/button-reset';
 
-.root {
-  min-block-size: rem(318px);
-}
-
-.options {
-  position: relative;
-  z-index: 1;
-  margin-block: rem(-6px);
-  margin-inline-end: rem(-6px);
-}
-
-.description {
-  @include type-style(label-02);
-  &:global(.#{$prefix}--skeleton__text) {
-    margin-block-end: $spacing-02;
-  }
-}
-
-.cta {
-  @include type-style(label-02);
-  color: $text-dark;
-  margin-block-start: auto;
+.body {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  column-gap: $spacing-05;
+  flex-direction: column;
+  justify-content: center;
+  block-size: 100%;
+  row-gap: $spacing-04;
+}
+
+.illustration {
+  display: flex;
+  margin: auto;
+  color: $border-subtle-00;
+  padding-block-end: $spacing-04;
+  svg {
+    inline-size: rem(64px);
+    block-size: rem(64px);
+  }
 }

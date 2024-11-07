@@ -39,6 +39,7 @@ import { produce } from 'immer';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { HomeSection, ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
+import { OnboardingModal } from '../onboarding/OnboardingModal';
 
 export function AssistantsHome() {
   const { project, isProjectReadOnly } = useAppContext();
@@ -156,6 +157,8 @@ export function AssistantsHome() {
         onModalClose={() => setBuilderOpened(false)}
         onSaveSuccess={handleSaveAssistantSuccess}
       />
+
+      <OnboardingModal assistants={data?.assistants} isOpen />
     </>
   );
 }

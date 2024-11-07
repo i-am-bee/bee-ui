@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-import { SkeletonIcon, SkeletonText } from '@carbon/react';
+import { CardsListItem } from '@/components/CardsList/CardsListItem';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { isNotNull } from '@/utils/helpers';
 import { MouseEventHandler, useState } from 'react';
+import { AssistantModalRenderer } from '../builder/AssistantModalRenderer';
 import { useDeleteAssistant } from '../builder/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
 import classes from './AssistantCard.module.scss';
-import BlankAssistantCard from './blank-app-card.svg';
-import { AssistantModalRenderer } from '../builder/AssistantModalRenderer';
-import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { isNotNull } from '@/utils/helpers';
 
 interface Props {
   assistant: Assistant;
   cta?: string;
-  blank?: boolean;
+  hideActions?: boolean;
+  canHover?: boolean;
+  selected?: boolean;
   onClick?: MouseEventHandler;
-  onDeleteSuccess: (assistant: Assistant) => void;
+  onDeleteSuccess?: (assistant: Assistant) => void;
 }
 
 export function AssistantCard({
   assistant,
   cta,
-  blank,
+  hideActions,
+  canHover,
+  selected,
   onClick,
   onDeleteSuccess,
 }: Props) {
@@ -45,7 +47,7 @@ export function AssistantCard({
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
     assistant,
     onSuccess: async () => {
-      onDeleteSuccess(assistant);
+      onDeleteSuccess?.(assistant);
     },
   });
   const { isProjectReadOnly } = useAppContext();
@@ -60,35 +62,40 @@ export function AssistantCard({
         onClick={onClick}
         isDeletePending={isDeletePending}
         cta={cta ? { title: cta } : undefined}
-        actions={[
-          {
-            itemText: 'Bee details',
-            onClick: () => setBuilderModalOpened(true),
-          },
-          !isProjectReadOnly
-            ? {
-                isDelete: true,
-                itemText: 'Delete',
-                onClick: () => deleteAssistant(),
-              }
-            : null,
-        ].filter(isNotNull)}
+        actions={
+          !hideActions
+            ? [
+                {
+                  itemText: 'Bee details',
+                  onClick: () => setBuilderModalOpened(true),
+                },
+                !isProjectReadOnly
+                  ? {
+                      isDelete: true,
+                      itemText: 'Delete',
+                      onClick: () => deleteAssistant(),
+                    }
+                  : null,
+              ].filter(isNotNull)
+            : undefined
+        }
+        canHover={canHover}
+        selected={selected}
       >
-        <div className={classes.body}>
-          {description && <p className={classes.description}>{description}</p>}
-
-          {blank && (
-            <div className={classes.illustration}>
-              <BlankAssistantCard />
-            </div>
-          )}
-        </div>
+        {description && (
+          <div>
+            <p>{description}</p>
+          </div>
+        )}
       </CardsListItem>
-      <AssistantModalRenderer
-        assistant={assistant}
-        isOpened={builderModalOpened}
-        onModalClose={() => setBuilderModalOpened(false)}
-      />
+
+      {!hideActions && (
+        <AssistantModalRenderer
+          assistant={assistant}
+          isOpened={builderModalOpened}
+          onModalClose={() => setBuilderModalOpened(false)}
+        />
+      )}
     </>
   );
 }
