@@ -26,12 +26,14 @@ export interface AssistantIconProps {
   assistant: Assistant | null;
   size?: AssistantBaseIconProps['size'];
   color?: AssistantIconColor;
+  initialLetter?: string;
   className?: string;
 }
 
 export function AssistantIcon({
   assistant,
   color,
+  initialLetter,
   ...props
 }: AssistantIconProps) {
   const iconName = getAssistantIconName(assistant);
@@ -40,7 +42,7 @@ export function AssistantIcon({
     <AssistantBaseIcon
       name={iconName}
       color={color ?? assistant?.uiMetadata.color}
-      initialLetter={assistant?.name?.at(0)}
+      initialLetter={assistant?.name?.at(0) ?? initialLetter}
       {...props}
     />
   );

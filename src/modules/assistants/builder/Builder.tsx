@@ -16,12 +16,22 @@
 
 'use client';
 import clsx from 'clsx';
-import { useAssistantBuilder } from './AssistantBuilderProvider';
+import {
+  AssistantFormValues,
+  useAssistantBuilder,
+  useAssistantBuilderApi,
+} from './AssistantBuilderProvider';
 import classes from './Builder.module.scss';
 import { useQueryClient } from '@tanstack/react-query';
 import { useDeleteAssistant } from './useDeleteAssistant';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { Button, IconButton, TextArea, TextInput } from '@carbon/react';
+import {
+  Button,
+  IconButton,
+  InlineLoading,
+  TextArea,
+  TextInput,
+} from '@carbon/react';
 import { ArrowLeft, CheckmarkFilled } from '@carbon/react/icons';
 import { IconSelector } from './IconSelector';
 import { useId } from 'react';
@@ -29,24 +39,48 @@ import { InstructionsTextArea } from './InstructionsTextArea';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 import { BuilderTools } from '../tools/BuilderTools';
 import { KnowledgeSelector } from './KnowledgeSelector';
+import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
+import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
+import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
+import { ChatHomeView, ChatState } from '@/modules/chat/ChatHomeView';
+import { Thread } from '@/app/api/threads/types';
+import { MessageWithFiles } from '@/modules/chat/types';
+import { Link } from '@/components/Link/Link';
+import isEmpty from 'lodash/isEmpty';
+import { Controller } from 'react-hook-form';
+import { error } from 'console';
 
-export function Builder() {
+interface Props {
+  thread?: Thread;
+  initialMessages?: MessageWithFiles[];
+}
+
+export function Builder({ thread, initialMessages }: Props) {
   const {
     assistant,
     formReturn: {
       register,
-      formState: { isSubmitting, isDirty },
+      getValues,
+      watch,
+      formState: { isSubmitting, isDirty, dirtyFields },
     },
   } = useAssistantBuilder();
   const { project, isProjectReadOnly } = useAppContext();
-  const queryClient = useQueryClient();
+  const { onSubmit } = useAssistantBuilderApi();
   const id = useId();
 
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
     assistant: assistant!,
   });
 
-  const isSaved = Boolean(assistant && !isDirty);
+  const isSaved = Boolean(assistant && isEmpty(dirtyFields));
+
+  const handleAutoSaveAssistant = () => {
+    !isSaved && onSubmit();
+  };
+
+  const assitantName = watch('ownName');
+  const assitantDescription = watch('description');
 
   return (
     <div
@@ -56,25 +90,48 @@ export function Builder() {
     >
       <section className={classes.form}>
         <div className={classes.header}>
-          <IconButton size="lg" kind="tertiary" label="Back to home">
-            <ArrowLeft />
-          </IconButton>
-          <h1>{assistant?.name ?? 'New bee'}</h1>
+          <Link href={`/${project.id}`}>
+            <IconButton
+              size="lg"
+              kind="tertiary"
+              label="Back to home"
+              autoAlign
+            >
+              <ArrowLeft />
+            </IconButton>
+          </Link>
+          <h1>{assitantName ?? 'New bee'}</h1>
         </div>
 
         <fieldset disabled={isProjectReadOnly}>
           <IconSelector disabled={isProjectReadOnly} />
-          <TextInput
-            id={`${id}:name`}
-            placeholder="Name your bee"
-            maxLength={NAME_MAX_LENGTH}
-            labelText="Name"
-            {...register('ownName', { required: true })}
+          <Controller
+            name="ownName"
+            rules={{ required: true }}
+            render={({
+              field: { onChange, value, ref },
+              fieldState: { invalid },
+            }) => (
+              <TextInput
+                id={`${id}:name`}
+                placeholder="Name your bee"
+                maxLength={NAME_MAX_LENGTH}
+                labelText="Name"
+                size="lg"
+                onChange={onChange}
+                invalid={invalid}
+                invalidText="Name is required"
+                value={value}
+                ref={ref}
+              />
+            )}
           />
+
           <TextArea
             labelText="Description (user-facing)"
             rows={3}
             placeholder="Describe your bee so users can kow how to use it"
+            invalid={true}
             {...register('description', { required: true })}
           />
           <InstructionsTextArea />
@@ -84,25 +141,95 @@ export function Builder() {
         </fieldset>
 
         <div className={classes.actionBar}>
-          {assistant && (
-            <Button kind="danger--ghost" onClick={deleteAssistant}>
-              Delete bee
-            </Button>
-          )}
+          <div>
+            {assistant && (
+              <Button kind="danger--ghost" onClick={deleteAssistant}>
+                Delete bee
+              </Button>
+            )}
+          </div>
 
           <Button
             kind="secondary"
-            onClick={() => {}}
+            onClick={() => onSubmit()}
             renderIcon={isSaved ? CheckmarkFilled : undefined}
-            disabled={isProjectReadOnly || isSaved}
+            disabled={isProjectReadOnly || isSaved || isSubmitting}
           >
-            {isSaved ? 'Saved' : 'Save'}
+            {isSubmitting ? (
+              <InlineLoading description="Saving..." />
+            ) : isSaved ? (
+              'Saved'
+            ) : (
+              'Save'
+            )}
           </Button>
         </div>
       </section>
-      <section className={classes.chat}></section>
+      <section className={classes.chat}>
+        <VectorStoreFilesUploadProvider projectId={project.id}>
+          <FilesUploadProvider>
+            <ChatProvider
+              threadAssistant={{
+                data: assistant,
+              }}
+              thread={thread}
+              initialData={initialMessages}
+              builderState={{
+                isSaved,
+                onAutoSaveAssistant: handleAutoSaveAssistant,
+                name: assitantName,
+                description: assitantDescription,
+              }}
+            >
+              <BuilderChat />
+            </ChatProvider>
+          </FilesUploadProvider>
+        </VectorStoreFilesUploadProvider>
+      </section>
     </div>
   );
 }
 
 const NAME_MAX_LENGTH = 55;
+
+function BuilderChat() {
+  const { thread, assistant, reset, getMessages } = useChat();
+  const { project } = useAppContext();
+
+  const handleClear = () => {
+    reset([]);
+
+    if (thread)
+      window.history.replaceState(
+        undefined,
+        '',
+        `/${project.id}/builder/${assistant.data?.id}`,
+      );
+  };
+
+  return (
+    <>
+      <div className={classes.chatTopBar}>
+        <div>This is preview of your new bee. </div>
+
+        <Button
+          kind="ghost"
+          size="md"
+          disabled={!thread}
+          className={classes.newSessionButton}
+          onClick={handleClear}
+        >
+          Clear chat
+        </Button>
+      </div>
+      <ChatHomeView />
+    </>
+  );
+}
+
+export interface AssistantBuilderState {
+  isSaved: boolean;
+  name: string;
+  description?: string;
+  onAutoSaveAssistant: () => void;
+}

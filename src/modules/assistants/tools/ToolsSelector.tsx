@@ -1,3 +1,19 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {
   Button,
   Checkbox,
@@ -42,6 +58,9 @@ import { Link } from '@/components/Link/Link';
 import clsx from 'clsx';
 import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { useQuery } from '@tanstack/react-query';
+import { readToolQuery } from '@/modules/tools/queries';
+import { encodeEntityWithMetadata } from '@/app/api/utils';
 
 export function ToolsSelector() {
   const prefix = usePrefix();
@@ -72,28 +91,12 @@ export function ToolsSelector() {
         <span className={`${prefix}--label`}>Added tools</span>
         <ul>
           {value.map((tool) => {
-            const Icon = getToolIcon(tool);
             return (
-              <AnimatePresence key={tool.id}>
-                <motion.li {...fadeProps()}>
-                  <span className={classes.selectedIcon}>
-                    <Icon />
-                  </span>
-                  {getToolName(tool)}
-                  <Tooltip
-                    content="Remove tool from bee"
-                    asChild
-                    placement="top"
-                  >
-                    <button
-                      className={classes.removeButton}
-                      onClick={() => handleToggle(tool, false)}
-                    >
-                      <Close size={18} />
-                    </button>
-                  </Tooltip>
-                </motion.li>
-              </AnimatePresence>
+              <SelectedToolsItem
+                key={tool.id}
+                tool={tool}
+                onToggle={handleToggle}
+              />
             );
           })}
         </ul>
@@ -102,11 +105,40 @@ export function ToolsSelector() {
   );
 }
 
-function filterToolsBySelectedValue(tools: Tool[], selected: ToolReference[]) {
-  return tools
-    .filter(
-      (tool) =>
-        !selected.some(({ type, id }) => type === tool.type && id === tool.id),
-    )
-    .map(getToolReference);
+function SelectedToolsItem({
+  tool: toolProp,
+  onToggle,
+}: {
+  tool: ToolReference;
+  onToggle: (tool: ToolReference, toggled: boolean) => void;
+}) {
+  const { project } = useAppContext();
+  const { data } = useQuery({
+    ...readToolQuery(project.id, toolProp.id),
+    enabled:
+      !toolProp.tool &&
+      (toolProp.type === 'user' || toolProp.type === 'system'),
+  });
+
+  const tool = data ? { ...toolProp, tool: data } : toolProp;
+  const Icon = getToolIcon(tool);
+
+  return (
+    <AnimatePresence key={tool.id}>
+      <motion.li {...fadeProps()}>
+        <span className={classes.selectedIcon}>
+          <Icon />
+        </span>
+        {getToolName(tool)}
+        <Tooltip content="Remove tool from bee" asChild placement="top">
+          <button
+            className={classes.removeButton}
+            onClick={() => onToggle(tool, false)}
+          >
+            <Close size={18} />
+          </button>
+        </Tooltip>
+      </motion.li>
+    </AnimatePresence>
+  );
 }

@@ -66,7 +66,7 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
-import { toolQuery } from './queries';
+import { readToolQuery } from '@/modules/tools/queries';
 
 interface Props {
   step: AssistantPlanStep;
@@ -174,7 +174,7 @@ export function PlanStep({ step, toolCall }: Props) {
   const isDetailEnabled = input !== null || step.thought;
 
   const { data: userTool } = useQuery({
-    ...toolQuery(project.id, userToolId),
+    ...readToolQuery(project.id, userToolId),
     enabled: !!userToolId,
   });
 

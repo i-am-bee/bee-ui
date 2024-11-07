@@ -19,22 +19,19 @@ import {
   VectorStore,
   VectorStoreCreateResponse,
 } from '@/app/api/vector-stores/types';
-import { Dropdown } from '@/components/Dropdown/Dropdown';
-import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
-import { vectorStoresQuery } from '@/modules/knowledge/queries';
-import { getToolName } from '@/modules/tools/utils';
 import {
-  ActionableNotification,
-  Button,
-  DropdownSkeleton,
-} from '@carbon/react';
-import { ArrowUpRight } from '@carbon/react/icons';
+  vectorStoresFilesQuery,
+  vectorStoresQuery,
+} from '@/modules/knowledge/queries';
+import { getToolName } from '@/modules/tools/utils';
+import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import {
   InfiniteData,
   useInfiniteQuery,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { produce } from 'immer';
@@ -45,10 +42,10 @@ import classes from './KnowledgeSelector.module.scss';
 import { BuilderSectionHeading } from './BuilderSectionHeading';
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
+import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
+import pluralize from 'pluralize';
 
-interface Props {}
-
-export function KnowledgeSelector({}: Props) {
+export function KnowledgeSelector() {
   const { openModal } = useModal();
   const { project, isProjectReadOnly } = useAppContext();
   const {
@@ -120,6 +117,15 @@ export function KnowledgeSelector({}: Props) {
     vectorStoresQuery(project.id, VECTOR_STORES_QUERY_PARAMS),
   );
 
+  const { data: dataFiles } = useInfiniteQuery({
+    ...vectorStoresFilesQuery(
+      project.id,
+      value ?? '',
+      VECTOR_STORE_FILES_QUERY_PARAMS,
+    ),
+    enabled: Boolean(value),
+  });
+
   const vectorStore = data?.stores.find((item) => item.id === value);
 
   return (
@@ -160,6 +166,31 @@ export function KnowledgeSelector({}: Props) {
         </div>
       )}
 
+      {vectorStore && dataFiles && (
+        <>
+          <ul className={classes.files}>
+            {dataFiles.files.map((item) => (
+              <KnowledgeFileCard
+                key={item.id}
+                vectorStore={vectorStore}
+                vectorStoreFile={item}
+                kind="list"
+              />
+            ))}
+          </ul>
+          {dataFiles.totalCount &&
+            dataFiles.totalCount > VECTOR_STORE_FILES_QUERY_PARAMS.limit && (
+              <p className={classes.filesMore}>
+                ...and {dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT} more{' '}
+                {pluralize(
+                  'file',
+                  dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT,
+                )}
+              </p>
+            )}
+        </>
+      )}
+
       {!data && isFetching && <DropdownSkeleton />}
 
       {autoEnabledToolNames.length > 0 && (
@@ -175,9 +206,9 @@ export function KnowledgeSelector({}: Props) {
   );
 }
 
-type KnowledgeOption = VectorStore | 'new' | null;
-
 const VECTOR_STORES_QUERY_PARAMS = { limit: MAX_API_FETCH_LIMIT };
+const VECTOR_STORE_FILES_LIMIT = 3;
+const VECTOR_STORE_FILES_QUERY_PARAMS = { limit: VECTOR_STORE_FILES_LIMIT };
 
 const KNOWLEDGE_TOOLS = [
   { id: 'code_interpreter', type: 'code_interpreter' } as const,

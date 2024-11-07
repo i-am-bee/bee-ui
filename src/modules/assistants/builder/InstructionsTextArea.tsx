@@ -56,12 +56,11 @@ export function InstructionsTextArea({ className }: Props) {
         maxLength={LIMIT}
         readOnly={isProjectReadOnly}
         resizable
+        defaultValue={content}
         onChange={(event) => {
           onChange(formatContent(event.target.value));
         }}
-      >
-        {content}
-      </TextAreaAutoHeight>
+      />
     </div>
   );
 }

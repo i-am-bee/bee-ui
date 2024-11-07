@@ -41,10 +41,14 @@ export const EmptyChatView = memo(function EmptyChatView({
   } = useFilesUpload();
   const firstName = useUserProfile((state) => state.firstName);
   const { assistant: appAssistant } = useAppContext();
-  const { assistant: chatAssistant } = useChat();
+  const { assistant: chatAssistant, builderState } = useChat();
 
   const assistant = chatAssistant.data ?? appAssistant;
-  const assistantName = assistant?.name ?? APP_NAME;
+  const assistantName =
+    (builderState ? builderState.name : assistant?.name) ?? APP_NAME;
+  const assistantDescription =
+    (builderState ? builderState.description : assistant?.description) ??
+    'How can I assist you?';
 
   return (
     <div
@@ -55,6 +59,12 @@ export const EmptyChatView = memo(function EmptyChatView({
       <Container size="sm" className={classes.content}>
         {assistant ? (
           <AssistantAvatar assistant={assistant} size="xxl" />
+        ) : builderState ? (
+          <AssistantAvatar
+            assistant={null}
+            initialLetter={builderState.name.at(0) ?? 'N'}
+            size="xxl"
+          />
         ) : (
           <AssistantIcon assistant={assistant} size="xxl" />
         )}
@@ -63,11 +73,7 @@ export const EmptyChatView = memo(function EmptyChatView({
           <h1>
             Hi {firstName}, I&apos;m {assistantName}!
           </h1>
-          <p>
-            {assistant?.description
-              ? assistant.description
-              : 'How can I assist you?'}
-          </p>
+          <p>{assistantDescription}</p>
         </div>
 
         <div>

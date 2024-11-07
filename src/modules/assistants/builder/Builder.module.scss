@@ -58,3 +58,26 @@
   justify-content: space-between;
   border-block-start: 1px solid $border-subtle;
 }
+
+.chat {
+  background-color: $layer-02;
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  block-size: 100vh;
+  overflow: hidden;
+
+  > :last-child {
+    max-block-size: 100%;
+    overflow: hidden;
+  }
+}
+
+.chatTopBar {
+  block-size: rem(50px);
+  background-color: $layer-03;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: $spacing-06;
+  font-size: rem(14px);
+}

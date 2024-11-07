@@ -17,7 +17,6 @@
 'use client';
 import { useDebounceValue } from 'usehooks-ts';
 import { useState } from 'react';
-import { AssistantModalRenderer } from '../assistants/builder/AssistantModalRenderer';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   InfiniteData,
@@ -31,7 +30,6 @@ import {
 import { AssistantsList } from '../assistants/library/AssistantsList';
 import { Assistant } from '../assistants/types';
 import {
-  AssistantResult,
   AssistantsListQueryOrderBy,
   ListAssistantsResponse,
 } from '@/app/api/assistants/types';
@@ -39,12 +37,13 @@ import { produce } from 'immer';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { HomeSection, ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
+import { useRouter } from 'next-nprogress-bar';
 
 export function AssistantsHome() {
   const { project, isProjectReadOnly } = useAppContext();
-  const [builderOpened, setBuilderOpened] = useState(false);
   const [order, setOrder] = useState<AssistantsListQueryOrderBy>(ORDER_DEFAULT);
   const [search, setSearch] = useDebounceValue('', 200);
+  const router = useRouter();
 
   const queryClient = useQueryClient();
 
@@ -74,26 +73,6 @@ export function AssistantsHome() {
     queryClient.invalidateQueries({
       queryKey: lastAssistantsQuery(project.id).queryKey,
     });
-  };
-
-  const handleSaveAssistantSuccess = (
-    assistant: AssistantResult,
-    isNew: boolean,
-  ) => {
-    queryClient.setQueryData<InfiniteData<ListAssistantsResponse>>(
-      assistantsQuery(project.id, params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        if (isNew) {
-          const firstPage = draft.pages.at(0);
-          if (firstPage) firstPage.data.unshift(assistant);
-        }
-        // TODO: handle update
-      }),
-    );
-    handleInvalidateData();
-
-    setBuilderOpened(false);
   };
 
   const handleDeleteAssistantSuccess = (assistant: Assistant) => {
@@ -136,7 +115,7 @@ export function AssistantsHome() {
           }}
           newButtonProps={{
             title: 'New bee',
-            onClick: () => setBuilderOpened(true),
+            onClick: () => router.push(`/${project.id}/builder`),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (
               <ReadOnlyTooltipContent entityName="bee" />
@@ -150,12 +129,6 @@ export function AssistantsHome() {
           />
         </CardsList>
       </ProjectHome>
-
-      <AssistantModalRenderer
-        isOpened={builderOpened}
-        onModalClose={() => setBuilderOpened(false)}
-        onSaveSuccess={handleSaveAssistantSuccess}
-      />
     </>
   );
 }

@@ -82,6 +82,6 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
   },
 );
 
-const SPACING_04 = spacing[4];
+const SPACING_04 = parseInt(`${spacing[4]}`);
 const FONT_SIZE_REM = 0.875;
 const LINE_HEIGHT_REM = FONT_SIZE_REM * (21 / 14);

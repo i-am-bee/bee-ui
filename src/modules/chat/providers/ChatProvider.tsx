@@ -79,6 +79,7 @@ import { getThreadVectorStoreId, isBotMessage } from '../utils';
 import { AssistantModalProvider } from './AssistantModalProvider';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
+import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
 
 interface CancelRunParams {
   threadId: string;
@@ -102,12 +103,14 @@ interface Props {
   thread?: Thread;
   threadAssistant?: ThreadAssistant;
   initialData?: MessageWithFiles[];
+  builderState?: AssistantBuilderState;
 }
 
 export function ChatProvider({
   thread: initialThread,
   threadAssistant: initialThreadAssistant,
   initialData,
+  builderState,
   children,
 }: PropsWithChildren<Props>) {
   const [controller, setController, controllerRef] =
@@ -648,6 +651,7 @@ export function ChatProvider({
   const contextValue = useMemo(
     () => ({
       status: controller.status,
+      builderState,
       getMessages,
       cancel,
       clear,
@@ -718,6 +722,7 @@ type ChatContextValue = {
   thread: Thread | null;
   assistant: ThreadAssistant;
   disabledTools: ToolsUsage;
+  builderState?: AssistantBuilderState;
   setDisabledTools: Dispatch<SetStateAction<ToolsUsage>>;
   getThreadTools: () => ToolsUsage;
   onToolApprovalSubmitRef: MutableRefObject<

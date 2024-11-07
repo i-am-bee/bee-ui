@@ -1,3 +1,19 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Button, Checkbox, Tag } from '@carbon/react';
 import classes from './DropdownSelector.module.scss';
 import { Checkmark, ChevronDown, Close } from '@carbon/react/icons';
@@ -18,8 +34,8 @@ import { fadeProps } from '@/utils/fadeProps';
 import { mergeRefs } from 'react-merge-refs';
 import clsx from 'clsx';
 import has from 'lodash/has';
-import { Tooltip } from '../Tooltip/Tooltip';
 import { ClearButton } from '../ClearButton/ClearButton';
+import { noop } from '@/utils/helpers';
 
 type ItemWithId = { id: string };
 
@@ -30,7 +46,7 @@ interface Props<T extends ItemWithId> {
   selected?: T | T[];
   submitButtonTitle?: string;
   actionBarContentLeft?: ReactElement;
-  onSubmit: (value: T[] | null) => void;
+  onSubmit: (value: T[] | null, clearSelected: () => void) => void;
   itemToString: (item: T) => string;
   itemToElement?: (item: T) => ReactElement;
 }
@@ -47,12 +63,23 @@ export function DropdownSelector<T extends ItemWithId>({
   itemToElement,
 }: Props<T>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<T[]>([]);
+  const [selected, setSelected] = useState<T[]>(
+    Array.isArray(controlledSelected)
+      ? controlledSelected
+      : controlledSelected
+        ? [controlledSelected]
+        : [],
+  );
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleSubmit = useCallback(() => {
-    onSubmit(selected);
+    onSubmit(selected, handleClear);
     setIsOpen(false);
+  }, [onSubmit, selected]);
+
+  const handleClear = useCallback(() => {
+    onSubmit(null, noop);
+    setSelected([]);
   }, [onSubmit, selected]);
 
   const handleToggle = useCallback(
@@ -99,7 +126,7 @@ export function DropdownSelector<T extends ItemWithId>({
   ]);
 
   return (
-    <div className={clsx(classes.root, { [classes.multiple]: multiple })}>
+    <div className={classes.root}>
       <Button
         kind="tertiary"
         renderIcon={ChevronDown}
@@ -115,7 +142,7 @@ export function DropdownSelector<T extends ItemWithId>({
             {itemToString(controlledSelected)}
             <ClearButton
               label="Disconnect knowledge base"
-              onClick={() => onSubmit(null)}
+              onClick={() => handleClear()}
             />
           </span>
         ) : (
@@ -144,21 +171,27 @@ export function DropdownSelector<T extends ItemWithId>({
                   },
                 })}
               >
-                <div className={classes.listBox}>
+                <div
+                  className={clsx(classes.listBox, {
+                    [classes.multiple]: multiple,
+                  })}
+                >
                   <div className={classes.list}>
                     {isListItemGroupArray(items) ? (
                       items.map(({ id, groupTitle, items }) => (
                         <>
                           <h3>{groupTitle}</h3>
-                          {items.map((item, index) => (
-                            <ListOption<T>
-                              key={item.id}
-                              item={item}
-                              selectedItems={selected}
-                              onToggle={handleToggle}
-                              itemToElement={itemToElement ?? itemToString}
-                            />
-                          ))}
+                          <ul>
+                            {items.map((item, index) => (
+                              <ListOption<T>
+                                key={item.id}
+                                item={item}
+                                selectedItems={selected}
+                                onToggle={handleToggle}
+                                itemToElement={itemToElement ?? itemToString}
+                              />
+                            ))}
+                          </ul>
                         </>
                       ))
                     ) : (

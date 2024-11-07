@@ -23,6 +23,7 @@ import { Tool, ToolId, ToolReference, ToolsUsage } from '@/app/api/tools/types';
 import {
   Code,
   DocumentView,
+  IbmWatsonDiscovery,
   PartlyCloudy,
   SearchLocate,
   Tools,
@@ -30,14 +31,21 @@ import {
 import { ComponentType } from 'react';
 import Arxiv from './icons/arxiv.svg';
 import DuckDuckGo from './icons/duckduckgo.svg';
+import Google from './icons/google.svg';
 import Wikipedia from './icons/wikipedia.svg';
 import { AssistantTool } from '@/app/api/assistants/types';
 import { has } from 'lodash';
 
-export function getToolIcon(tool: ToolReference) {
-  if (tool.type === 'system') return SYSTEM_TOOL_ICONS[tool.id];
-  if (tool.type === 'file_search') return SearchLocate;
-  if (tool.type === 'code_interpreter' || tool.type === 'function') return Code;
+export function getToolIcon({ type, id, tool }: ToolReference) {
+  if (type === 'system') {
+    if (id === 'web_search' && tool) {
+      if (tool.name === 'GoogleSearch') return Google;
+      if (tool.name === 'DuckDuckGo') return DuckDuckGo;
+    }
+    return SYSTEM_TOOL_ICONS[id];
+  }
+  if (type === 'file_search') return SearchLocate;
+  if (type === 'code_interpreter' || type === 'function') return Code;
 
   return Tools;
 }
@@ -153,7 +161,7 @@ export function getAssistantToolReference(assistantTool: AssistantTool) {
 
 const SYSTEM_TOOL_ICONS: Record<SystemToolId, ComponentType> = {
   wikipedia: Wikipedia,
-  web_search: DuckDuckGo,
+  web_search: IbmWatsonDiscovery,
   weather: PartlyCloudy,
   arxiv: Arxiv,
   read_file: DocumentView,

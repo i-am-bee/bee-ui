@@ -215,6 +215,7 @@ export function AssistantBuilderProvider({
           model,
         },
       });
+      formReturn.reset({}, { keepValues: true });
     },
     [assistant, saveAssistantAsync],
   );

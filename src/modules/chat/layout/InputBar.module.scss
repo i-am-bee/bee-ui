@@ -21,28 +21,28 @@
 .root {
   display: grid;
   row-gap: $spacing-02;
-
-  &.fileUploadEnabled {
-    .textarea textarea {
-      padding-inline-start: rem(84px);
-    }
-  }
 }
 
 .container {
   position: relative;
   border: 1px solid $border-subtle;
   border-radius: $spacing-03;
+  background-color: $background;
 }
 
 .inputContainer {
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.actionBar {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing-02;
 }
 
 .actions {
-  position: absolute;
-  inset-inline-start: $spacing-04;
-  inset-block-end: rem(11px);
   display: flex;
   :global(.#{$prefix}--btn) {
     color: $button-secondary;
@@ -69,8 +69,8 @@
 .root .textarea {
   &::after,
   > textarea {
-    padding-inline: rem(54px) rem(84px);
-    padding-block: calc($spacing-05 - 1px);
+    padding-inline: $spacing-04;
+    padding-block: rem(10px);
     border-radius: $spacing-03;
   }
   > textarea {
@@ -87,12 +87,6 @@
       }
     }
   }
-}
-
-.submitBtnContainer {
-  position: absolute;
-  inset-inline-end: $spacing-04;
-  inset-block-end: rem(11px);
 }
 
 .disclaimer {

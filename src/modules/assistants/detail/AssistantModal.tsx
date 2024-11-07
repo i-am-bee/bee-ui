@@ -178,7 +178,7 @@ export default function AssistantModal({
             <Button
               kind="secondary"
               onClick={() =>
-                router.push(`${project.id}/builder/${assistant.id}`)
+                router.push(`/${project.id}/builder/${assistant.id}`)
               }
               renderIcon={Edit}
               disabled={isProjectReadOnly}

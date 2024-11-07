@@ -18,7 +18,6 @@ import { ToolReference } from '@/app/api/tools/types';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { toolQuery } from '@/modules/chat/assistant-plan/queries';
 import {
   getToolIcon,
   getToolName,
@@ -37,6 +36,7 @@ import { useQuery } from '@tanstack/react-query';
 import { MouseEventHandler, useId } from 'react';
 import classes from './ToolToggle.module.scss';
 import { ToolDescription } from '@/modules/tools/ToolCard';
+import { readToolQuery } from '@/modules/tools/queries';
 
 interface Props extends Omit<ToggleProps, 'id' | 'size'> {
   tool: ToolReference;
@@ -67,7 +67,7 @@ export function ToolToggle({
   const userToolId = tool.type === 'user' ? tool.id : '';
 
   const { data: userTool, isLoading } = useQuery({
-    ...toolQuery(project.id, userToolId),
+    ...readToolQuery(project.id, userToolId),
     enabled: Boolean(!heading && userToolId),
   });
 

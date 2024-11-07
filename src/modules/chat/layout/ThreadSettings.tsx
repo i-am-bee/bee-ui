@@ -108,6 +108,7 @@ export function ThreadSettings({ buttonRef }: Props) {
         kind="ghost"
         size="sm"
         label="Customize Tools & Knowledge"
+        autoAlign
         ref={mergeRefs([buttonRef, refs.setReference])}
         {...getReferenceProps()}
       >

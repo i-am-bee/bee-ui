@@ -31,13 +31,14 @@ import { Thread } from '@/app/api/threads/types';
 import { ChatMessage } from './types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 
-interface ChatState {
+export interface ChatState {
   thread: Thread;
   messages: ChatMessage[];
 }
 
 export function ChatHomeView() {
-  const { getMessages, clear, reset, setThread } = useChat();
+  const { getMessages, clear, reset, setThread, builderState, assistant } =
+    useChat();
   const queryClient = useQueryClient();
   const router = useRouter();
   const { project } = useAppContext();
@@ -58,7 +59,7 @@ export function ChatHomeView() {
           } satisfies ChatState,
         },
         '',
-        `/${project.id}/thread/${thread.id}`,
+        `/${project.id}${builderState ? `/builder/${assistant.data?.id}` : ''}/thread/${thread.id}`,
       );
       queryClient.invalidateQueries({
         queryKey: threadsQuery(project.id).queryKey,

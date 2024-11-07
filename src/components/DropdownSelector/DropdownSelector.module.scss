@@ -18,12 +18,6 @@
 
 .root {
   inline-size: 100%;
-
-  &.multiple {
-    .list ul > li > label :global(.#{$prefix}--checkbox-wrapper) {
-      display: flex;
-    }
-  }
 }
 .openButton {
   inline-size: 100%;
@@ -58,12 +52,24 @@
   inline-size: 100%;
 }
 
+.floating {
+  z-index: 1;
+}
+
 .listBox {
   box-shadow: $box-shadow;
   border-radius: $block-radius;
   display: flex;
   flex-direction: column;
   background-color: $background;
+  &.multiple {
+    .list li > label :global(.#{$prefix}--checkbox-wrapper) {
+      display: flex;
+    }
+    .checkedIcon {
+      display: none;
+    }
+  }
 }
 .list {
   padding: $spacing-05 $spacing-04;
@@ -147,7 +153,4 @@
       }
     }
   }
-}
-.floating {
-  z-index: 1;
 }

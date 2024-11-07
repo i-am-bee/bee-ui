@@ -102,7 +102,8 @@ themes.$white: map.merge(
     box-shadow-color: rgba(193, 199, 205, 0.45),
     conversation-starter-btn-background-hover: $cool-gray-10,
     message-color: $gray-100,
-    message-background-hover: rgba($cool-gray-10, 0.5),
+    // cool-gray-05
+    message-background-hover: rgb(248, 249, 251),
     avatar-caption-color: $cool-gray-70,
     assistant-plan-btn-color: $cool-gray-60,
     assistant-plan-icon-color: $black,
