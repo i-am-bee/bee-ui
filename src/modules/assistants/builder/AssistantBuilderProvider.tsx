@@ -106,10 +106,6 @@ export function AssistantBuilderProvider({
   const searchParams = useSearchParams();
   const isDuplicate = searchParams?.has('duplicate');
 
-  // const [assistant, setAssistant] = useState<Assistant | null>(
-  //   !isDuplicate ? (initialAssistant ?? null) : null,
-  // );
-
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
@@ -142,23 +138,15 @@ export function AssistantBuilderProvider({
 
     if (initialAssistant) {
       selectAssistant(initialAssistant);
-
-      // queryClient
-      //   .fetchQuery(
-      //     readAssistantQuery(
-      //       project.id,
-      //       initialAssistant?.id ?? '',
-      //     ) as UseQueryOptions<AssistantResult>,
-      //   )
-      //   .then((data) => {
-      //     const assistant = decodeEntityWithMetadata<Assistant>(data);
-      //     selectAssistant(assistant);
-      //     reset(formValuesFromAssistant(assistant), {
-      //       keepValues: false,
-      //     });
-      //   });
     }
-  }, [initialAssistant, queryClient, reset, isDuplicate, project.id]);
+  }, [
+    initialAssistant,
+    queryClient,
+    reset,
+    isDuplicate,
+    project.id,
+    selectAssistant,
+  ]);
 
   useEffect(() => {
     if (formState.isDirty)
@@ -176,7 +164,7 @@ export function AssistantBuilderProvider({
       keepValues: false,
     });
     selectAssistant(null);
-  }, [assistant, reset]);
+  }, [assistant, reset, selectAssistant]);
 
   const onSubmit = useCallback(
     async ({
@@ -226,7 +214,7 @@ export function AssistantBuilderProvider({
 
       formReturn.reset({}, { keepValues: true });
     },
-    [assistant, saveAssistantAsync],
+    [assistant, formReturn, saveAssistantAsync],
   );
 
   const handleError = useCallback(() => {

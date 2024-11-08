@@ -674,6 +674,7 @@ export function ChatProvider({
     }),
     [
       controller.status,
+      builderState,
       getMessages,
       cancel,
       clear,

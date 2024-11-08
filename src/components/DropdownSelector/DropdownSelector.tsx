@@ -72,15 +72,15 @@ export function DropdownSelector<T extends ItemWithId>({
   );
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleSubmit = useCallback(() => {
-    onSubmit(selected, handleClear);
-    setIsOpen(false);
-  }, [onSubmit, selected]);
-
   const handleClear = useCallback(() => {
     onSubmit(null, noop);
     setSelected([]);
-  }, [onSubmit, selected]);
+  }, [onSubmit]);
+
+  const handleSubmit = useCallback(() => {
+    onSubmit(selected, handleClear);
+    setIsOpen(false);
+  }, [handleClear, onSubmit, selected]);
 
   const handleToggle = useCallback(
     (item: T, toggled: boolean) => {

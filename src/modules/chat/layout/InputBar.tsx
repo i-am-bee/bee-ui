@@ -186,7 +186,11 @@ export const InputBar = memo(function InputBar({
 
               {isFileUploadEnabled && (
                 <>
-                  <input type="file" {...getInputProps()} />
+                  <input
+                    type="file"
+                    {...getInputProps()}
+                    disabled={!assistant}
+                  />
                   <FilesMenu onUploadClick={openUpload} />
                 </>
               )}

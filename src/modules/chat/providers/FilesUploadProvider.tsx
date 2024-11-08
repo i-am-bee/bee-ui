@@ -72,7 +72,7 @@ const ERROR_MESSAGES = {
 };
 
 export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
-  const { project } = useAppContext();
+  const { project, assistant } = useAppContext();
   const {
     files,
     setFiles,
@@ -218,7 +218,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     noClick: true,
     noKeyboard: true,
     maxFiles: CHAT_MAX_FILES_UPLOAD,
-    disabled: !isFeatureEnabled(FeatureName.Files),
+    disabled: !isFeatureEnabled(FeatureName.Files) || !assistant,
     onDropAccepted,
     onDropRejected,
   });
