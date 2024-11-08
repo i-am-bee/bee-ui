@@ -18,13 +18,7 @@ import { ToolReference } from '@/app/api/tools/types';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { toolQuery } from '@/modules/chat/assistant-plan/queries';
-import {
-  getToolIcon,
-  getToolName,
-  getToolReferenceId,
-  isExternalTool,
-} from '@/modules/tools/utils';
+import { getToolReferenceId, isExternalTool } from '@/modules/tools/utils';
 import {
   SkeletonIcon,
   SkeletonText,
@@ -37,6 +31,8 @@ import { useQuery } from '@tanstack/react-query';
 import { MouseEventHandler, useId } from 'react';
 import classes from './ToolToggle.module.scss';
 import { ToolDescription } from '@/modules/tools/ToolCard';
+import { readToolQuery } from '@/modules/tools/queries';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 
 interface Props extends Omit<ToggleProps, 'id' | 'size'> {
   tool: ToolReference;
@@ -62,12 +58,11 @@ export function ToolToggle({
   const id = useId();
   const { project } = useAppContext();
   const toolType = tool.type;
-  const Icon = getToolIcon(tool);
-  const name = getToolName(tool);
+  const { toolName, toolIcon: Icon } = useToolInfo(tool);
   const userToolId = tool.type === 'user' ? tool.id : '';
 
   const { data: userTool, isLoading } = useQuery({
-    ...toolQuery(project.id, userToolId),
+    ...readToolQuery(project.id, userToolId),
     enabled: Boolean(!heading && userToolId),
   });
 
@@ -81,7 +76,7 @@ export function ToolToggle({
         ) : isLoading ? (
           <SkeletonText className={classes.heading} />
         ) : (
-          <h3 className={classes.heading}>{userTool?.name || name}</h3>
+          <h3 className={classes.heading}>{userTool?.name || toolName}</h3>
         )}
 
         {showWarning && isExternalTool(tool.type, getToolReferenceId(tool)) && (

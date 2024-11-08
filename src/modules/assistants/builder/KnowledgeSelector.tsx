@@ -25,7 +25,6 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { vectorStoresQuery } from '@/modules/knowledge/queries';
-import { getToolName } from '@/modules/tools/utils';
 import {
   ActionableNotification,
   Button,
@@ -42,6 +41,7 @@ import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from './AssistantBuilderProvider';
 import classes from './KnowledgeSelector.module.scss';
+import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 
 interface Props {}
 
@@ -78,7 +78,7 @@ export function KnowledgeSelector({}: Props) {
         shouldValidate: true,
       });
 
-      setAutoEnabledToolNames(knowledgeToolsToEnable.map(getToolName));
+      setAutoEnabledToolNames(knowledgeToolsToEnable.map(getStaticToolName));
     }
   };
 

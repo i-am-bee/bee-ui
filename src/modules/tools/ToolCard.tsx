@@ -22,11 +22,12 @@ import { Tool } from '@/app/api/tools/types';
 import { useDeleteTool } from './hooks/useDeleteTool';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolExternalTag } from '../assistants/tools/ToolToggle';
-import { getToolIcon, getToolReference, isExternalTool } from './utils';
+import { getToolReference, isExternalTool } from './utils';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
 import { UserToolModal } from './manage/UserToolModal';
 import { PublicToolModal } from './manage/PublicToolModal';
 import Markdown, { Components } from 'react-markdown';
+import { useToolInfo } from './hooks/useToolInfo';
 
 interface Props {
   tool: Tool;
@@ -108,7 +109,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
 }
 
 export function ToolIcon({ tool }: { tool: Tool }) {
-  const Icon = getToolIcon(getToolReference(tool));
+  const { toolIcon: Icon } = useToolInfo(getToolReference(tool));
   return (
     <span className={classes.icon}>
       <Icon size="20" />
