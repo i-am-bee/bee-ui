@@ -34,7 +34,7 @@ import DuckDuckGo from './icons/duckduckgo.svg';
 import Google from './icons/google.svg';
 import Wikipedia from './icons/wikipedia.svg';
 import { AssistantTool } from '@/app/api/assistants/types';
-import { has } from 'lodash';
+import has from 'lodash/has';
 
 export function getToolIcon({ type, id, tool }: ToolReference) {
   if (type === 'system') {

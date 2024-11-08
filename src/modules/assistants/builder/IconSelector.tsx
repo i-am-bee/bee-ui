@@ -31,12 +31,14 @@ import {
   useAssistantBuilder,
 } from './AssistantBuilderProvider';
 import classes from './IconSelector.module.scss';
+import { FormItem, usePrefix } from '@carbon/react';
 
 interface Props {
   disabled?: boolean;
 }
 
 export function IconSelector({ disabled }: Props) {
+  const prefix = usePrefix();
   const [opened, setOpened] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(selectorRef, () => {
@@ -70,55 +72,62 @@ export function IconSelector({ disabled }: Props) {
     />
   );
 
-  return disabled ? (
-    <div className={classes.root}>{BaseIcon}</div>
-  ) : (
-    <div className={classes.root} ref={selectorRef}>
-      <button
-        className={classes.button}
-        onClick={() => setOpened((opened) => !opened)}
-      >
-        {opened ? <Checkmark size={12} /> : <Edit size={12} />}
-        {BaseIcon}
-      </button>
+  return (
+    <FormItem>
+      <label className={`${prefix}--label`}>Icon</label>
+      {disabled ? (
+        <div className={classes.root}>{BaseIcon}</div>
+      ) : (
+        <div className={classes.root} ref={selectorRef}>
+          <button
+            className={classes.button}
+            onClick={() => setOpened((opened) => !opened)}
+          >
+            {opened ? <Checkmark size={12} /> : <Edit size={12} />}
+            {BaseIcon}
+          </button>
 
-      {/* TODO: animate */}
-      {opened && (
-        <div className={classes.selector}>
-          <div className={classes.selectorContent}>
-            <div>
-              {getAssistantIcons().map(([iconName, Icon]) => (
-                <button
-                  key={iconName}
-                  className={clsx({ [classes.selected]: iconName === name })}
-                  onClick={() =>
-                    handleChange({ name: iconName as AssitantIconName })
-                  }
-                >
-                  <Icon />
-                </button>
-              ))}
-              <div className={classes.colors}></div>
+          {/* TODO: animate */}
+          {opened && (
+            <div className={classes.selector}>
+              <div className={classes.selectorContent}>
+                <div>
+                  {getAssistantIcons().map(([iconName, Icon]) => (
+                    <button
+                      key={iconName}
+                      className={clsx({
+                        [classes.selected]: iconName === name,
+                      })}
+                      onClick={() =>
+                        handleChange({ name: iconName as AssitantIconName })
+                      }
+                    >
+                      <Icon />
+                    </button>
+                  ))}
+                  <div className={classes.colors}></div>
+                </div>
+                <div>
+                  {ASSISTANT_ICON_COLORS.filter(
+                    (color) => color !== 'black',
+                  ).map((iconColor) => (
+                    <button
+                      key={iconColor}
+                      className={clsx(classes.color, {
+                        [classes.selected]: iconColor === color,
+                      })}
+                      onClick={() => handleChange({ color: iconColor })}
+                    >
+                      <AssistantIconColor color={iconColor} />
+                    </button>
+                  ))}
+                  <div className={classes.colors}></div>
+                </div>
+              </div>
             </div>
-            <div>
-              {ASSISTANT_ICON_COLORS.filter((color) => color !== 'black').map(
-                (iconColor) => (
-                  <button
-                    key={iconColor}
-                    className={clsx(classes.color, {
-                      [classes.selected]: iconColor === color,
-                    })}
-                    onClick={() => handleChange({ color: iconColor })}
-                  >
-                    <AssistantIconColor color={iconColor} />
-                  </button>
-                ),
-              )}
-              <div className={classes.colors}></div>
-            </div>
-          </div>
+          )}
         </div>
       )}
-    </div>
+    </FormItem>
   );
 }

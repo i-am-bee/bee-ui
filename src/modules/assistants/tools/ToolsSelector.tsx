@@ -14,53 +14,23 @@
  * limitations under the License.
  */
 
-import {
-  Button,
-  Checkbox,
-  IconButton,
-  SelectableTile,
-  Tag,
-  usePrefix,
-} from '@carbon/react';
+import { usePrefix } from '@carbon/react';
 import classes from './ToolsSelector.module.scss';
-import { ChevronDown, Close } from '@carbon/react/icons';
+import { Close } from '@carbon/react/icons';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  autoUpdate,
-  flip,
-  FloatingPortal,
-  size,
-  useClick,
-  useDismiss,
-  useFloating,
-  useInteractions,
-  useRole,
-} from '@floating-ui/react';
-import { useId, useMemo, useRef, useState } from 'react';
 import { fadeProps } from '@/utils/fadeProps';
-import { mergeRefs } from 'react-merge-refs';
-import { useListAllTools } from './useListAllTools';
-import { Tool, ToolReference } from '@/app/api/tools/types';
+import { ToolReference } from '@/app/api/tools/types';
 import { useController } from 'react-hook-form';
 import {
   AssistantFormValues,
   useAssistantBuilder,
 } from '../builder/AssistantBuilderProvider';
-import {
-  getToolIcon,
-  getToolName,
-  getToolReference,
-} from '@/modules/tools/utils';
-import { ToolIcon } from '@/modules/tools/ToolCard';
-import { LinkButton } from '@/components/LinkButton/LinkButton';
+import { getToolIcon, getToolName } from '@/modules/tools/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { Link } from '@/components/Link/Link';
-import clsx from 'clsx';
 import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useQuery } from '@tanstack/react-query';
 import { readToolQuery } from '@/modules/tools/queries';
-import { encodeEntityWithMetadata } from '@/app/api/utils';
 
 export function ToolsSelector() {
   const prefix = usePrefix();

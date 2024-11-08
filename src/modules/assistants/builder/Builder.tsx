@@ -47,6 +47,7 @@ import { MessageWithFiles } from '@/modules/chat/types';
 import { Link } from '@/components/Link/Link';
 import isEmpty from 'lodash/isEmpty';
 import { Controller } from 'react-hook-form';
+import { useRouter } from 'next-nprogress-bar';
 
 interface Props {
   thread?: Thread;
@@ -64,6 +65,7 @@ export function Builder({ thread, initialMessages }: Props) {
   const { project, isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
   const id = useId();
+  const router = useRouter();
 
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
     assistant: assistant!,
@@ -162,7 +164,9 @@ export function Builder({ thread, initialMessages }: Props) {
           <div>
             <Button
               kind="tertiary"
-              onClick={() => onSubmit()}
+              onClick={() =>
+                assistant && router.push(`/${project.id}/chat/${assistant.id}`)
+              }
               renderIcon={ArrowUpRight}
               disabled={isProjectReadOnly || !assistant || isSubmitting}
             >

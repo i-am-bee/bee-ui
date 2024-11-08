@@ -16,7 +16,7 @@
 
 'use client';
 import { AssistantModel, AssistantResult } from '@/app/api/assistants/types';
-import { SystemToolId, ToolType } from '@/app/api/threads-runs/types';
+import { SystemToolId } from '@/app/api/threads-runs/types';
 import { AssistantTools } from '@/app/api/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import {
@@ -26,7 +26,7 @@ import {
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { isNotNull } from '@/utils/helpers';
-import { useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,
@@ -35,14 +35,12 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useState,
 } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import {
   AssistantIconColor,
   AssitantIconName,
 } from '../icons/AssistantBaseIcon';
-import { readAssistantQuery } from '../queries';
 import { Assistant, AssistantMetadata } from '../types';
 import {
   decodeStarterQuestionsMetadata,
@@ -50,7 +48,6 @@ import {
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
 import { ToolReference } from '@/app/api/tools/types';
-import { useRouter } from 'next-nprogress-bar';
 
 export type AssistantFormValues = {
   icon: {
@@ -132,21 +129,12 @@ export function AssistantBuilderProvider({
   const { handleSubmit, reset, formState } = formReturn;
 
   useEffect(() => {
-    if (isDuplicate) {
-      return;
-    }
-
-    if (initialAssistant) {
+    if (isDuplicate || !initialAssistant) {
+      selectAssistant(null);
+    } else {
       selectAssistant(initialAssistant);
     }
-  }, [
-    initialAssistant,
-    queryClient,
-    reset,
-    isDuplicate,
-    project.id,
-    selectAssistant,
-  ]);
+  }, [initialAssistant, isDuplicate, selectAssistant]);
 
   useEffect(() => {
     if (formState.isDirty)
