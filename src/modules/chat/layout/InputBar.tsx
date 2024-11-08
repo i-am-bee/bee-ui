@@ -172,7 +172,7 @@ export const InputBar = memo(function InputBar({
             className={classes.textarea}
             rows={1}
             placeholder="Ask a question…"
-            autoFocus
+            autoFocus={!builderState}
             ref={mergeRefs([inputFormRef, inputRef])}
             {...inputFormProps}
             onKeyDown={submitFormOnEnter}

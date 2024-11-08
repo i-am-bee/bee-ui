@@ -51,7 +51,7 @@ export function ChatHomeView() {
       // So instead we use history api manually and handle 'popstate' event.
       // Nextjs since 14.1 expects history can be used directly so we are not
       // bypassing nextjs entirelly.
-      window.history.replaceState(
+      window.history.pushState(
         {
           chat: {
             thread,

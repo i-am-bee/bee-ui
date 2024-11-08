@@ -42,7 +42,11 @@ export function IconSelector({ disabled }: Props) {
   useOnClickOutside(selectorRef, () => {
     setOpened(false);
   });
-  const { assistant } = useAssistantBuilder();
+  const {
+    assistant,
+    formReturn: { watch },
+  } = useAssistantBuilder();
+  const assistantName = watch('ownName');
 
   const {
     field: { value, onChange },
@@ -61,7 +65,7 @@ export function IconSelector({ disabled }: Props) {
       name={name}
       color={color}
       size="xl"
-      initialLetter={assistant?.name?.at(0)}
+      initialLetter={assistantName?.at(0)}
       className={classes.icon}
     />
   );

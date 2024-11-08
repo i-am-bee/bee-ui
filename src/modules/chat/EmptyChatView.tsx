@@ -63,6 +63,8 @@ export const EmptyChatView = memo(function EmptyChatView({
           <AssistantAvatar
             assistant={null}
             initialLetter={builderState.name.at(0) ?? 'N'}
+            color={builderState.icon?.color}
+            iconName={builderState.icon?.name}
             size="xxl"
           />
         ) : (

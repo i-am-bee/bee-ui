@@ -22,7 +22,6 @@ import {
   useAssistantBuilderApi,
 } from './AssistantBuilderProvider';
 import classes from './Builder.module.scss';
-import { useQueryClient } from '@tanstack/react-query';
 import { useDeleteAssistant } from './useDeleteAssistant';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import {
@@ -32,7 +31,7 @@ import {
   TextArea,
   TextInput,
 } from '@carbon/react';
-import { ArrowLeft, CheckmarkFilled } from '@carbon/react/icons';
+import { ArrowLeft, ArrowUpRight, CheckmarkFilled } from '@carbon/react/icons';
 import { IconSelector } from './IconSelector';
 import { useId } from 'react';
 import { InstructionsTextArea } from './InstructionsTextArea';
@@ -42,13 +41,12 @@ import { KnowledgeSelector } from './KnowledgeSelector';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
-import { ChatHomeView, ChatState } from '@/modules/chat/ChatHomeView';
+import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { Thread } from '@/app/api/threads/types';
 import { MessageWithFiles } from '@/modules/chat/types';
 import { Link } from '@/components/Link/Link';
 import isEmpty from 'lodash/isEmpty';
 import { Controller } from 'react-hook-form';
-import { error } from 'console';
 
 interface Props {
   thread?: Thread;
@@ -59,10 +57,8 @@ export function Builder({ thread, initialMessages }: Props) {
   const {
     assistant,
     formReturn: {
-      register,
-      getValues,
       watch,
-      formState: { isSubmitting, isDirty, dirtyFields },
+      formState: { isSubmitting, dirtyFields },
     },
   } = useAssistantBuilder();
   const { project, isProjectReadOnly } = useAppContext();
@@ -81,6 +77,7 @@ export function Builder({ thread, initialMessages }: Props) {
 
   const assitantName = watch('ownName');
   const assitantDescription = watch('description');
+  const assitantIcon = watch('icon');
 
   return (
     <div
@@ -127,13 +124,26 @@ export function Builder({ thread, initialMessages }: Props) {
             )}
           />
 
-          <TextArea
-            labelText="Description (user-facing)"
-            rows={3}
-            placeholder="Describe your bee so users can kow how to use it"
-            invalid={true}
-            {...register('description', { required: true })}
+          <Controller
+            name="description"
+            rules={{ required: true }}
+            render={({
+              field: { onChange, value, ref },
+              fieldState: { invalid },
+            }) => (
+              <TextArea
+                labelText="Description (user-facing)"
+                rows={3}
+                placeholder="Describe your bee so users can kow how to use it"
+                invalid={invalid}
+                invalidText="Description is required"
+                value={value}
+                ref={ref}
+                onChange={onChange}
+              />
+            )}
           />
+
           <InstructionsTextArea />
           <StarterQuestionsTextArea />
           <BuilderTools />
@@ -149,20 +159,30 @@ export function Builder({ thread, initialMessages }: Props) {
             )}
           </div>
 
-          <Button
-            kind="secondary"
-            onClick={() => onSubmit()}
-            renderIcon={isSaved ? CheckmarkFilled : undefined}
-            disabled={isProjectReadOnly || isSaved || isSubmitting}
-          >
-            {isSubmitting ? (
-              <InlineLoading description="Saving..." />
-            ) : isSaved ? (
-              'Saved'
-            ) : (
-              'Save'
-            )}
-          </Button>
+          <div>
+            <Button
+              kind="tertiary"
+              onClick={() => onSubmit()}
+              renderIcon={ArrowUpRight}
+              disabled={isProjectReadOnly || !assistant || isSubmitting}
+            >
+              Launch in chat
+            </Button>
+            <Button
+              kind="secondary"
+              onClick={() => onSubmit()}
+              renderIcon={isSaved ? CheckmarkFilled : undefined}
+              disabled={isProjectReadOnly || isSaved || isSubmitting}
+            >
+              {isSubmitting ? (
+                <InlineLoading description="Saving..." />
+              ) : isSaved ? (
+                'Saved'
+              ) : (
+                'Save'
+              )}
+            </Button>
+          </div>
         </div>
       </section>
       <section className={classes.chat}>
@@ -179,6 +199,7 @@ export function Builder({ thread, initialMessages }: Props) {
                 onAutoSaveAssistant: handleAutoSaveAssistant,
                 name: assitantName,
                 description: assitantDescription,
+                icon: assitantIcon,
               }}
             >
               <BuilderChat />
@@ -231,5 +252,6 @@ export interface AssistantBuilderState {
   isSaved: boolean;
   name: string;
   description?: string;
+  icon?: AssistantFormValues['icon'];
   onAutoSaveAssistant: () => void;
 }

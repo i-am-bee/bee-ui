@@ -113,6 +113,10 @@
 
         .optionContent {
           flex: 1 0 auto;
+          display: flex;
+          align-items: center;
+          font-size: rem(14px);
+          gap: $spacing-03;
         }
 
         .checkedIcon {

@@ -43,7 +43,7 @@ export interface AppContextValue {
 }
 
 export interface AppApiContextValue {
-  selectAssistant: (assistant: Assistant) => void;
+  selectAssistant: (assistant: Assistant | null) => void;
   selectProject: (project: Project) => void;
   onPageLeave: () => void;
 }

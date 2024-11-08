@@ -57,6 +57,10 @@
   display: flex;
   justify-content: space-between;
   border-block-start: 1px solid $border-subtle;
+  > div {
+    display: flex;
+    gap: $spacing-03;
+  }
 }
 
 .chat {

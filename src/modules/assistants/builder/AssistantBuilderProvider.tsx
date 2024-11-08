@@ -19,7 +19,10 @@ import { AssistantModel, AssistantResult } from '@/app/api/assistants/types';
 import { SystemToolId, ToolType } from '@/app/api/threads-runs/types';
 import { AssistantTools } from '@/app/api/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import {
+  useAppApiContext,
+  useAppContext,
+} from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { isNotNull } from '@/utils/helpers';
@@ -47,6 +50,7 @@ import {
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
 import { ToolReference } from '@/app/api/tools/types';
+import { useRouter } from 'next-nprogress-bar';
 
 export type AssistantFormValues = {
   icon: {
@@ -85,37 +89,39 @@ const AssistantBuilderApiContext =
 
 interface Props {
   assistant?: Assistant;
-  onSuccess?: (result: AssistantResult, isNew: boolean) => void;
   children: ReactElement;
 }
 
 export function AssistantBuilderProvider({
   assistant: initialAssistant,
-  onSuccess,
   children,
 }: Props) {
   const { addToast } = useToast();
   const queryClient = useQueryClient();
-  const { project } = useAppContext();
+  const { project, assistant } = useAppContext();
+  const { selectAssistant } = useAppApiContext();
   const { setConfirmOnPageLeave, clearConfirmOnPageLeave } =
     useNavigationControl();
 
   const searchParams = useSearchParams();
-  const isEditCurrent = searchParams?.has('current');
   const isDuplicate = searchParams?.has('duplicate');
 
-  const [assistant, setAssistant] = useState<Assistant | null>(
-    !isDuplicate ? (initialAssistant ?? null) : null,
-  );
+  // const [assistant, setAssistant] = useState<Assistant | null>(
+  //   !isDuplicate ? (initialAssistant ?? null) : null,
+  // );
 
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
-      const assistant = decodeEntityWithMetadata<Assistant>(result);
-      if (isEditCurrent && assistant) {
-        setAssistant(assistant);
-      }
-      onSuccess?.(result, isNew);
+      const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
+      selectAssistant(assistantFromResult);
+
+      if (isNew)
+        window.history.pushState(
+          {},
+          '',
+          `/${project.id}/builder/${assistantFromResult.id}`,
+        );
     },
   });
 
@@ -135,20 +141,22 @@ export function AssistantBuilderProvider({
     }
 
     if (initialAssistant) {
-      queryClient
-        .fetchQuery(
-          readAssistantQuery(
-            project.id,
-            initialAssistant?.id ?? '',
-          ) as UseQueryOptions<AssistantResult>,
-        )
-        .then((data) => {
-          const assistant = decodeEntityWithMetadata<Assistant>(data);
-          setAssistant(assistant);
-          reset(formValuesFromAssistant(assistant), {
-            keepValues: false,
-          });
-        });
+      selectAssistant(initialAssistant);
+
+      // queryClient
+      //   .fetchQuery(
+      //     readAssistantQuery(
+      //       project.id,
+      //       initialAssistant?.id ?? '',
+      //     ) as UseQueryOptions<AssistantResult>,
+      //   )
+      //   .then((data) => {
+      //     const assistant = decodeEntityWithMetadata<Assistant>(data);
+      //     selectAssistant(assistant);
+      //     reset(formValuesFromAssistant(assistant), {
+      //       keepValues: false,
+      //     });
+      //   });
     }
   }, [initialAssistant, queryClient, reset, isDuplicate, project.id]);
 
@@ -167,7 +175,7 @@ export function AssistantBuilderProvider({
     reset(formValuesFromAssistant(assistant, true), {
       keepValues: false,
     });
-    setAssistant(null);
+    selectAssistant(null);
   }, [assistant, reset]);
 
   const onSubmit = useCallback(
@@ -192,7 +200,7 @@ export function AssistantBuilderProvider({
         }, [])
         .filter(isNotNull);
 
-      await saveAssistantAsync({
+      const result = await saveAssistantAsync({
         id: assistant?.id,
         body: {
           name: ownName,
@@ -215,6 +223,7 @@ export function AssistantBuilderProvider({
           model,
         },
       });
+
       formReturn.reset({}, { keepValues: true });
     },
     [assistant, saveAssistantAsync],
@@ -223,6 +232,7 @@ export function AssistantBuilderProvider({
   const handleError = useCallback(() => {
     addToast({
       title: 'Form contains errors, please check required fields.',
+      kind: 'warning',
       timeout: 6000,
     });
   }, [addToast]);

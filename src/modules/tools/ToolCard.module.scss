@@ -36,6 +36,10 @@
     inline-size: $spacing-06;
     padding-inline: $spacing-02;
   }
+  svg {
+    max-inline-size: $spacing-06;
+    max-block-size: $spacing-06;
+  }
 }
 
 .description {

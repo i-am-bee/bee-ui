@@ -179,7 +179,7 @@ export function DropdownSelector<T extends ItemWithId>({
                   <div className={classes.list}>
                     {isListItemGroupArray(items) ? (
                       items.map(({ id, groupTitle, items }) => (
-                        <>
+                        <div key={id}>
                           <h3>{groupTitle}</h3>
                           <ul>
                             {items.map((item, index) => (
@@ -192,7 +192,7 @@ export function DropdownSelector<T extends ItemWithId>({
                               />
                             ))}
                           </ul>
-                        </>
+                        </div>
                       ))
                     ) : (
                       <ul role="listbox">
