@@ -1,5 +1,14 @@
 # Changelog
 
+## <small>0.0.4 (2024-11-08)</small>
+
+* fix(chat): past errored message should not have retry button (#57) ([31cbe08](https://github.com/i-am-bee/bee-ui/commit/31cbe08)), closes [#57](https://github.com/i-am-bee/bee-ui/issues/57)
+* fix(tou): animation in dark mode ([3aead4f](https://github.com/i-am-bee/bee-ui/commit/3aead4f))
+* fix(tou): checkbox enabling on scroll ([94785f2](https://github.com/i-am-bee/bee-ui/commit/94785f2))
+* feat(api-keys): add paging, owner (#54) ([a14a73b](https://github.com/i-am-bee/bee-ui/commit/a14a73b)), closes [#54](https://github.com/i-am-bee/bee-ui/issues/54)
+* feat(chat): populate input with suggestion without submitting it (#50) ([986be87](https://github.com/i-am-bee/bee-ui/commit/986be87)), closes [#50](https://github.com/i-am-bee/bee-ui/issues/50)
+* feat(plan): remove tool caption, update thinking state with thought (#55) ([daa20b1](https://github.com/i-am-bee/bee-ui/commit/daa20b1)), closes [#55](https://github.com/i-am-bee/bee-ui/issues/55)
+
 ## <small>0.0.3 (2024-11-05)</small>
 
 * chore: add codeowners file (#6) ([b027c13](https://github.com/i-am-bee/bee-ui/commit/b027c13)), closes [#6](https://github.com/i-am-bee/bee-ui/issues/6)

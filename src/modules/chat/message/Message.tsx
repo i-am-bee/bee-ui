@@ -137,6 +137,7 @@ export const Message = memo(function Message({
                   error={message.error}
                   message={message}
                   className={classes.error}
+                  hideRetry={isPast}
                 />
               )}
             </div>
