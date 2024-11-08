@@ -48,8 +48,11 @@ export function useToolInfo(toolReference: ToolReference) {
   const toolName = useMemo(() => {
     if (tool) return tool.name;
 
-    if (type === 'system' && id === 'web_search') {
-      return isLoading ? <ToolNameSkeleton /> : SYSTEM_TOOL_NAME[id];
+    if (
+      isLoading &&
+      ((type === 'system' && id === 'web_search') || type === 'user')
+    ) {
+      return <ToolNameSkeleton />;
     }
 
     return getStaticToolName({ ...toolReference, tool });

@@ -56,15 +56,8 @@ export function ToolToggle({
   ...props
 }: Props) {
   const id = useId();
-  const { project } = useAppContext();
   const toolType = tool.type;
   const { toolName, toolIcon: Icon } = useToolInfo(tool);
-  const userToolId = tool.type === 'user' ? tool.id : '';
-
-  const { data: userTool, isLoading } = useQuery({
-    ...readToolQuery(project.id, userToolId),
-    enabled: Boolean(!heading && userToolId),
-  });
 
   return (
     <div className={classes.root}>
@@ -73,10 +66,8 @@ export function ToolToggle({
       <div className={classes.header}>
         {heading ? (
           <h3 className={classes.heading}>{heading}</h3>
-        ) : isLoading ? (
-          <SkeletonText className={classes.heading} />
         ) : (
-          <h3 className={classes.heading}>{userTool?.name || toolName}</h3>
+          <h3 className={classes.heading}>{toolName}</h3>
         )}
 
         {showWarning && isExternalTool(tool.type, getToolReferenceId(tool)) && (

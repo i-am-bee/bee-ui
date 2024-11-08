@@ -38,18 +38,11 @@ import {
   ErrorOutline,
   WarningFilled,
 } from '@carbon/react/icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import JSON5 from 'json5';
-import {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactElement, useCallback, useEffect, useId, useMemo } from 'react';
 import { useThreadApi } from '../hooks/useThreadApi';
 import { useChat } from '../providers/ChatProvider';
 import {
@@ -62,7 +55,6 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
-import { readToolQuery } from '@/modules/tools/queries';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 
 interface Props {
