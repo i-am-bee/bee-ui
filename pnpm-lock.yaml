@@ -19,9 +19,6 @@ importers:
       '@carbon/grid':
         specifier: ^11.22.0
         version: 11.29.0
-      '@carbon/layout':
-        specifier: ^11.22.0
-        version: 11.28.0
       '@carbon/motion':
         specifier: ^11.22.0
         version: 11.24.0
@@ -221,9 +218,6 @@ importers:
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.6.3)
-      '@types/carbon__layout':
-        specifier: ^0.0.3
-        version: 0.0.3
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
@@ -2637,9 +2631,6 @@ packages:
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
-
-  '@types/carbon__layout@0.0.3':
-    resolution: {integrity: sha512-ZAAgNTBecBtxuqm/yQCWkXN2Nlz0TorTORhGKWuy1pO3jF0TRNut/0W8me14396Q6a0BugH/xMa7Jv8miQP3kg==}
 
   '@types/conventional-commits-parser@5.0.0':
     resolution: {integrity: sha512-loB369iXNmAZglwWATL+WRe+CRMmmBPtpolYzIebFaX4YA3x+BEfLqhUAV9WanycKI3TG1IMr5bMJDajDKLlUQ==}
@@ -9864,8 +9855,6 @@ snapshots:
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
   '@trysound/sax@0.2.0': {}
-
-  '@types/carbon__layout@0.0.3': {}
 
   '@types/conventional-commits-parser@5.0.0':
     dependencies:

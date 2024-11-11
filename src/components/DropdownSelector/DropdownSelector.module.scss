@@ -19,6 +19,15 @@
 .root {
   inline-size: 100%;
 }
+
+.field {
+  position: relative;
+  .clearButton {
+    position: absolute;
+    inset-block-start: rem(8px);
+    inset-inline-end: $spacing-04;
+  }
+}
 .openButton {
   inline-size: 100%;
   max-inline-size: none;

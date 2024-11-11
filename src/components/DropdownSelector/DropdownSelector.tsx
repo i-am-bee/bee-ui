@@ -127,28 +127,33 @@ export function DropdownSelector<T extends ItemWithId>({
 
   return (
     <div className={classes.root}>
-      <Button
-        kind="tertiary"
-        renderIcon={ChevronDown}
-        className={clsx(classes.openButton, {
-          [classes.isOpen]: isOpen,
-          [classes.isOpenDisabled]: controlledSelected,
-        })}
-        ref={mergeRefs([buttonRef, refs.setReference])}
-        {...getReferenceProps()}
-      >
-        {controlledSelected && !Array.isArray(controlledSelected) ? (
-          <span className={classes.openButtonValue}>
-            {itemToString(controlledSelected)}
-            <ClearButton
-              label="Disconnect knowledge base"
-              onClick={() => handleClear()}
-            />
-          </span>
-        ) : (
-          <span className={classes.openButtonPlaceholder}>{placeholder}</span>
+      <div className={classes.field}>
+        <Button
+          kind="tertiary"
+          renderIcon={ChevronDown}
+          className={clsx(classes.openButton, {
+            [classes.isOpen]: isOpen,
+            [classes.isOpenDisabled]: controlledSelected,
+          })}
+          ref={mergeRefs([buttonRef, refs.setReference])}
+          {...getReferenceProps()}
+        >
+          {controlledSelected && !Array.isArray(controlledSelected) ? (
+            <span className={classes.openButtonValue}>
+              {itemToString(controlledSelected)}
+            </span>
+          ) : (
+            <span className={classes.openButtonPlaceholder}>{placeholder}</span>
+          )}
+        </Button>
+        {controlledSelected && !Array.isArray(controlledSelected) && (
+          <ClearButton
+            label="Disconnect knowledge base"
+            className={classes.clearButton}
+            onClick={() => handleClear()}
+          />
         )}
-      </Button>
+      </div>
       <AnimatePresence>
         {isOpen && (
           <FloatingPortal>

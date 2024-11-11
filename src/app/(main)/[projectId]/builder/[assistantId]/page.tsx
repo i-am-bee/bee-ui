@@ -31,7 +31,7 @@ interface Props {
   };
 }
 
-export default async function AssistantBuildePage({
+export default async function AssistantBuilderPage({
   params: { assistantId, projectId },
 }: Props) {
   let assistant;

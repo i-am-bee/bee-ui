@@ -38,34 +38,22 @@ interface Props {
   };
 }
 
-export default async function AssistantBuildePage({
+export default async function AssistantBuilderPage({
   params: { assistantId, projectId, threadId },
 }: Props) {
   let assistant;
-  try {
-    const result = await readAssistant(projectId, assistantId);
-    if (!result) notFound();
-
-    assistant = decodeEntityWithMetadata<Assistant>(result);
-  } catch (e) {
-    const apiError = handleApiError(e);
-
-    if (apiError) {
-      return (
-        <ErrorPage
-          statusCode={apiError.error.code}
-          title={apiError.error.message}
-        />
-      );
-    }
-  }
-
   let thread;
-  try {
-    const result = await readThread(projectId, threadId);
-    if (!result) notFound();
 
-    thread = decodeEntityWithMetadata<Thread>(result);
+  try {
+    const assistantResult = await readAssistant(projectId, assistantId);
+    if (!assistantResult) notFound();
+
+    assistant = decodeEntityWithMetadata<Assistant>(assistantResult);
+
+    const threadResult = await readThread(projectId, threadId);
+    if (!threadResult) notFound();
+
+    thread = decodeEntityWithMetadata<Thread>(threadResult);
   } catch (e) {
     const apiError = handleApiError(e);
 

@@ -16,17 +16,16 @@
 
 import { IconButton } from '@carbon/react';
 import { Close } from '@carbon/react/icons';
-import { ComponentProps, HTMLProps } from 'react';
-import classes from './ClearButton.module.scss';
-import clsx from 'clsx';
+import { ComponentProps } from 'react';
 
-interface Props extends Partial<ComponentProps<typeof IconButton>> {}
-
-export function ClearButton({ className, ...props }: Props) {
+export function ClearButton({
+  className,
+  ...props
+}: Partial<ComponentProps<typeof IconButton>>) {
   return (
     <IconButton
       kind="ghost"
-      wrapperClasses={clsx(classes.button, className)}
+      wrapperClasses={className}
       size="sm"
       label="Clear"
       autoAlign

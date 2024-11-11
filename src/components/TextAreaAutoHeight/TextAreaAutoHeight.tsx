@@ -28,7 +28,6 @@ import {
 } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 import classes from './TextAreaAutoHeight.module.scss';
-import { spacing } from '@carbon/layout';
 
 type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'> & {
   maxRows?: number;
@@ -66,9 +65,7 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
         data-replicated-value={value}
         style={
           maxRows
-            ? ({
-                '--max-block-size': `${maxRows * LINE_HEIGHT_REM + 2 * SPACING_04}rem`,
-              } as CSSProperties)
+            ? ({ '--max-rows': `${maxRows}` } as CSSProperties)
             : undefined
         }
       >
@@ -81,7 +78,3 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
     );
   },
 );
-
-const SPACING_04 = parseInt(`${spacing[4]}`);
-const FONT_SIZE_REM = 0.875;
-const LINE_HEIGHT_REM = FONT_SIZE_REM * (21 / 14);

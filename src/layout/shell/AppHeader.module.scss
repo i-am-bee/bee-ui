@@ -45,8 +45,9 @@ $sidebar-width: $width + (2 * $menu-offset);
   z-index: z('header');
   inline-size: 0;
   transform: translate(-$sidebar-width, 0);
-  transition: inline-size $duration-fast-02 motion(exit, productive) translate
-    $duration-fast-02 motion(exit, productive);
+  transition:
+    inline-size $duration-fast-02 motion(exit, productive),
+    translate $duration-fast-02 motion(exit, productive);
   &.sidebarPinned.visible {
     inline-size: $sidebar-width;
   }
