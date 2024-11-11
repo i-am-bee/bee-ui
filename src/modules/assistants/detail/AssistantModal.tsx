@@ -153,7 +153,11 @@ export default function AssistantModal({
         <ModalFooter className={classes.actionBar}>
           <div>
             {assistant && (
-              <Button kind="danger--ghost" onClick={deleteAssistant}>
+              <Button
+                kind="danger--ghost"
+                onClick={deleteAssistant}
+                disabled={isProjectReadOnly}
+              >
                 Delete bee
               </Button>
             )}
