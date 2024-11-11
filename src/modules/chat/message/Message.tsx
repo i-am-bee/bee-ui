@@ -58,7 +58,7 @@ export const Message = memo(function Message({
   isScrolled,
 }: Props) {
   const contentRef = useRef<HTMLLIElement>(null);
-  const { thread } = useChat();
+  const { thread, builderState } = useChat();
   const { project } = useAppContext();
   const { ref: inViewRef, inView } = useInView({
     rootMargin: '30% 0%',
@@ -89,7 +89,10 @@ export const Message = memo(function Message({
       <RunProvider run={run}>
         <li
           ref={mergeRefs([contentRef, inViewRef])}
-          className={clsx(classes.root, { [classes.hovered]: showActions })}
+          className={clsx(classes.root, {
+            [classes.hovered]: showActions,
+            [classes.isBuilder]: builderState,
+          })}
           {...focusWithinProps}
           {...contentHover.hoverProps}
           onBlur={() => {
@@ -134,6 +137,7 @@ export const Message = memo(function Message({
                   error={message.error}
                   message={message}
                   className={classes.error}
+                  hideRetry={isPast}
                 />
               )}
             </div>

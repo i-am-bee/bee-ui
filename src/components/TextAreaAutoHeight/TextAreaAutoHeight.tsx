@@ -18,6 +18,7 @@
 
 import clsx from 'clsx';
 import {
+  CSSProperties,
   TextareaHTMLAttributes,
   forwardRef,
   useCallback,
@@ -28,10 +29,16 @@ import {
 import { mergeRefs } from 'react-merge-refs';
 import classes from './TextAreaAutoHeight.module.scss';
 
-type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'>;
+type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'> & {
+  maxRows?: number;
+  resizable?: boolean;
+};
 
 export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
-  function TextAreaAutoHeight({ className, onChange, ...rest }, ref) {
+  function TextAreaAutoHeight(
+    { className, resizable, maxRows, onChange, ...rest },
+    ref,
+  ) {
     const [value, setValue] = useState(rest.defaultValue ?? '');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -48,10 +55,19 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
       return () => element?.removeEventListener('input', handleInput);
     });
 
+    // TODO: add resizable feature
+
     return (
       <div
-        className={clsx(classes.root, className)}
+        className={clsx(classes.root, className, {
+          [classes.resizable]: resizable,
+        })}
         data-replicated-value={value}
+        style={
+          maxRows
+            ? ({ '--max-rows': `${maxRows}` } as CSSProperties)
+            : undefined
+        }
       >
         <textarea
           ref={mergeRefs([ref, textareaRef])}

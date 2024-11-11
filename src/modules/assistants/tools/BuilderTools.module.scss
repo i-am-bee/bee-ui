@@ -16,42 +16,8 @@
 
 @use 'styles/common' as *;
 
-.tools {
+.root {
   display: flex;
   flex-direction: column;
-  row-gap: rem(18px);
-}
-
-.anchor {
-  margin-block-start: rem(-18px);
-}
-
-.error {
-  display: flex;
-  flex-direction: column;
-  padding-inline-start: $spacing-07;
-  row-gap: $spacing-03;
-  p {
-    @include type-style(label-01);
-    color: $text-secondary;
-  }
-  :global(.#{$prefix}--inline-loading) {
-    min-block-size: auto;
-    svg {
-      fill: transparent;
-    }
-  }
-  :global(.#{$prefix}--inline-loading__text) {
-    color: inherit;
-    font-size: inherit;
-  }
-}
-
-.errorHeading {
-  display: flex;
-  align-items: center;
-  column-gap: $spacing-02;
-  svg {
-    color: $text-error;
-  }
+  gap: $spacing-02;
 }

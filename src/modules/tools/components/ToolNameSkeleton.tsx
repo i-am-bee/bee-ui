@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { SkeletonText } from '@carbon/react';
+import classes from './ToolNameSkeleton.module.scss';
 
-.form {
-  textarea {
-    inline-size: 100%;
-  }
+export function ToolNameSkeleton() {
+  return (
+    <SkeletonText
+      width={LOADING_TOOL_NAME_WIDTH}
+      className={classes.skeleton}
+    />
+  );
 }
 
-.tabs {
-  margin-block-start: $spacing-05;
-
-  :global(.#{$prefix}--tabs) {
-    margin-block-end: rem(18px);
-    border-block-end: 1px solid $border-subtle-00;
-    padding-block-end: 0.5px;
-  }
-}
+const LOADING_TOOL_NAME_WIDTH = '5rem';

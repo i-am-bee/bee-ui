@@ -35,12 +35,16 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 interface Props {
   vectorStore: VectorStore;
   vectorStoreFile: VectorStoreFile;
-  onDeleteSuccess: (file: VectorStoreFile) => void;
+  onDeleteSuccess?: (file: VectorStoreFile) => void;
+  readOnly?: boolean;
+  kind?: 'card' | 'list';
 }
 
 export function KnowledgeFileCard({
   vectorStore,
   vectorStoreFile,
+  readOnly,
+  kind = 'card',
   onDeleteSuccess,
 }: Props) {
   const { openConfirmation } = useModal();
@@ -51,7 +55,7 @@ export function KnowledgeFileCard({
       mutationFn: () =>
         deleteVectorStoreFile(project.id, vectorStore.id, vectorStoreFile.id),
       onSuccess: async () => {
-        onDeleteSuccess(vectorStoreFile);
+        onDeleteSuccess?.(vectorStoreFile);
       },
       meta: {
         errorToast: {
@@ -65,9 +69,16 @@ export function KnowledgeFileCard({
     readFileQuery(project.id, vectorStoreFile.id),
   );
 
-  if (!data && isLoading) return <KnowledgeFileCard.Skeleton />;
+  if (!data && isLoading)
+    return kind === 'card' ? (
+      <KnowledgeFileCard.Skeleton />
+    ) : (
+      <li>
+        <SkeletonPlaceholder className={classes.listItem} />
+      </li>
+    );
 
-  return (
+  return kind === 'card' ? (
     <CardsListItem
       title={
         <>
@@ -78,7 +89,7 @@ export function KnowledgeFileCard({
       className={classes.card}
       isDeletePending={isDeletePending}
       actions={
-        !isProjectReadOnly
+        !isProjectReadOnly && !readOnly
           ? [
               {
                 isDelete: true,
@@ -107,6 +118,8 @@ export function KnowledgeFileCard({
         <Document size={32} />
       </div>
     </CardsListItem>
+  ) : (
+    <li className={classes.listItem}>{data?.filename}</li>
   );
 }
 

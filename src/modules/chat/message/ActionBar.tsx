@@ -57,6 +57,7 @@ export function ActionBar({ message, visible, isPast, className }: Props) {
               <CopyButton
                 kind="ghost"
                 size="sm"
+                autoAlign
                 aria-label="Copy"
                 onClick={() => {
                   navigator.clipboard.writeText(message.content);
@@ -71,6 +72,7 @@ export function ActionBar({ message, visible, isPast, className }: Props) {
                   align="bottom"
                   kind="ghost"
                   size="sm"
+                  autoAlign
                   onClick={retry}
                   disabled={pending || isDeleting || assistant.isDeleted}
                 >

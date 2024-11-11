@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-import { listTools } from '@/app/api/tools';
+import { listTools, readTool } from '@/app/api/tools';
 import { Tool, ToolsListQuery } from '@/app/api/tools/types';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
+import {
+  decodeEntityWithMetadata,
+  encodeEntityWithMetadata,
+} from '@/app/api/utils';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
-import { QueryClient, infiniteQueryOptions } from '@tanstack/react-query';
+import {
+  QueryClient,
+  infiniteQueryOptions,
+  queryOptions,
+} from '@tanstack/react-query';
 
 export const TOOLS_DEFAULT_PAGE_SIZE = 20;
 
@@ -65,3 +72,11 @@ export function prelistTools(
 ) {
   return client.prefetchInfiniteQuery(toolsQuery(projectId, params));
 }
+
+export const readToolQuery = (projectId: string, id: string) =>
+  queryOptions({
+    queryKey: ['tool', projectId, id],
+    queryFn: () => readTool(projectId, id),
+    staleTime: 60 * 60 * 1_000,
+    select: (data) => data && decodeEntityWithMetadata<Tool>(data),
+  });

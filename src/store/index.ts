@@ -21,6 +21,7 @@ import { immer } from 'zustand/middleware/immer';
 import { StoreContext } from './StoreProvider';
 import { InitialStoreState, StoreState } from './types';
 import { userProfileSlice } from './user-profile';
+import { layoutSlice } from './layout';
 
 export const createStore = (initialState?: InitialStoreState) =>
   create<StoreState>()(
@@ -28,6 +29,7 @@ export const createStore = (initialState?: InitialStoreState) =>
       withLenses(() => {
         return {
           userProfile: userProfileSlice(initialState?.userProfile),
+          layout: layoutSlice(initialState?.layout),
         };
       }),
     ),

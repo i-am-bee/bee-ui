@@ -18,8 +18,9 @@ import { Tool } from '@/app/api/tools/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
-import { getToolName, getToolReference } from '../utils';
+import { getToolReference } from '../utils';
 import classes from './ToolDisableModal.module.scss';
+import { getStaticToolName } from '../hooks/useToolInfo';
 
 interface Props extends ModalProps {
   tool: Tool;
@@ -32,7 +33,7 @@ export function ToolDisableModal({ tool, onDisableClick, ...props }: Props) {
   return (
     <Modal {...props} preventCloseOnClickOutside className={classes.modal}>
       <ModalHeader>
-        <h2>Disable {getToolName(getToolReference(tool))}?</h2>
+        <h2>Disable {getStaticToolName(getToolReference(tool))}?</h2>
       </ModalHeader>
 
       <ModalBody>{content}</ModalBody>
@@ -60,7 +61,7 @@ export function ToolDisableModal({ tool, onDisableClick, ...props }: Props) {
 }
 
 function getContent(tool: Tool) {
-  const toolName = getToolName(getToolReference(tool));
+  const toolName = getStaticToolName(getToolReference(tool));
 
   if (tool.type === 'file_search') {
     return (

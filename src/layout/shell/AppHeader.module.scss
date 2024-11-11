@@ -21,6 +21,7 @@ $nav-button-height: var(--nav-button-height);
 $menu-offset: rem(20px);
 $menu-padding: $spacing-04;
 $width: rem(254px);
+$sidebar-width: $width + (2 * $menu-offset);
 
 @mixin toggleable {
   opacity: 0;
@@ -43,9 +44,15 @@ $width: rem(254px);
   position: relative;
   z-index: z('header');
   inline-size: 0;
-  transition: inline-size $duration-fast-02 motion(exit, productive);
-  &.sidebarPinned {
-    inline-size: $width + (2 * $menu-offset);
+  transform: translate(-$sidebar-width, 0);
+  transition:
+    inline-size $duration-fast-02 motion(exit, productive),
+    translate $duration-fast-02 motion(exit, productive);
+  &.sidebarPinned.visible {
+    inline-size: $sidebar-width;
+  }
+  &.visible {
+    transform: translate(0, 0);
   }
 }
 

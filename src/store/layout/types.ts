@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-import { readTool } from '@/app/api/tools';
-import { queryOptions } from '@tanstack/react-query';
+import { StoreSlice } from '../types';
 
-export const toolQuery = (projectId: string, id: string) =>
-  queryOptions({
-    queryKey: ['tools', projectId, id],
-    queryFn: () => readTool(projectId, id),
-  });
+export type LayoutState = {
+  sidebarVisible: boolean;
+};
+
+export type LayoutActions = {
+  setLayout: (value: Partial<LayoutState>) => void;
+};
+
+export type LayoutSlice = StoreSlice<LayoutState, LayoutActions>;

@@ -70,6 +70,8 @@ export function AcceptToUForm({ content, callbackUrl }: Props) {
   const onButtonClick: MouseEventHandler<HTMLButtonElement> = (event) => {
     const lottie = lottieRef.current;
 
+    setShouldPauseAnimation(false);
+
     if (lottie) {
       lottie.play();
 
@@ -141,7 +143,7 @@ export function AcceptToUForm({ content, callbackUrl }: Props) {
         />
 
         <SubmitButton
-          disabled={!accepted || shouldPauseAnimation}
+          disabled={!accepted}
           isRedirecting={Boolean(response?.success) || loading}
           onClick={onButtonClick}
         />

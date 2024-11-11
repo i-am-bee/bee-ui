@@ -18,15 +18,17 @@ import classes from './ToolCard.module.scss';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
-import { Tool } from '@/app/api/tools/types';
+import { Tool, ToolReference } from '@/app/api/tools/types';
 import { useDeleteTool } from './hooks/useDeleteTool';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolExternalTag } from '../assistants/tools/ToolToggle';
-import { getToolIcon, getToolReference, isExternalTool } from './utils';
+import { getToolReference, isExternalTool, isTool } from './utils';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
 import { UserToolModal } from './manage/UserToolModal';
 import { PublicToolModal } from './manage/PublicToolModal';
 import Markdown, { Components } from 'react-markdown';
+import clsx from 'clsx';
+import { useToolInfo } from './hooks/useToolInfo';
 
 interface Props {
   tool: Tool;
@@ -53,7 +55,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={<ToolIcon tool={tool} />}
+        icon={<ToolIcon tool={getToolReference(tool)} />}
         onClick={() =>
           openModal((props) =>
             tool.type === 'user' ? (
@@ -107,10 +109,18 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   );
 }
 
-export function ToolIcon({ tool }: { tool: Tool }) {
-  const Icon = getToolIcon(getToolReference(tool));
+export function ToolIcon({
+  tool,
+  size = 'md',
+  className,
+}: {
+  tool: ToolReference;
+  className?: string;
+  size?: 'md' | 'sm';
+}) {
+  const { toolIcon: Icon } = useToolInfo(tool);
   return (
-    <span className={classes.icon}>
+    <span className={clsx(classes.icon, className)} data-size={size}>
       <Icon size="20" />
     </span>
   );

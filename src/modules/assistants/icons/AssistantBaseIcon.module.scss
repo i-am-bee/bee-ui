@@ -30,6 +30,11 @@
     --font-size: 0.875rem;
   }
   &[data-size='xl'] {
+    --size: 3.5rem;
+    --icon-size: 1.8rem;
+    --font-size: 1.3rem;
+  }
+  &[data-size='xxl'] {
     --size: 5rem;
     --icon-size: 2.5rem;
     --font-size: 2rem;

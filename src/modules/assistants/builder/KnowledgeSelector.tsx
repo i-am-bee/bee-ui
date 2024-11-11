@@ -19,22 +19,17 @@ import {
   VectorStore,
   VectorStoreCreateResponse,
 } from '@/app/api/vector-stores/types';
-import { Dropdown } from '@/components/Dropdown/Dropdown';
-import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
-import { vectorStoresQuery } from '@/modules/knowledge/queries';
-import { getToolName } from '@/modules/tools/utils';
 import {
-  ActionableNotification,
-  Button,
-  DropdownSkeleton,
-} from '@carbon/react';
-import { ArrowUpRight } from '@carbon/react/icons';
+  vectorStoresFilesQuery,
+  vectorStoresQuery,
+} from '@/modules/knowledge/queries';
 import {
   InfiniteData,
   useInfiniteQuery,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { produce } from 'immer';
@@ -42,10 +37,15 @@ import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from './AssistantBuilderProvider';
 import classes from './KnowledgeSelector.module.scss';
+import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
+import { BuilderSectionHeading } from './BuilderSectionHeading';
+import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
+import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
+import pluralize from 'pluralize';
+import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 
-interface Props {}
-
-export function KnowledgeSelector({}: Props) {
+export function KnowledgeSelector() {
   const { openModal } = useModal();
   const { project, isProjectReadOnly } = useAppContext();
   const {
@@ -78,7 +78,7 @@ export function KnowledgeSelector({}: Props) {
         shouldValidate: true,
       });
 
-      setAutoEnabledToolNames(knowledgeToolsToEnable.map(getToolName));
+      setAutoEnabledToolNames(knowledgeToolsToEnable.map(getStaticToolName));
     }
   };
 
@@ -117,57 +117,78 @@ export function KnowledgeSelector({}: Props) {
     vectorStoresQuery(project.id, VECTOR_STORES_QUERY_PARAMS),
   );
 
+  const { data: dataFiles } = useInfiniteQuery({
+    ...vectorStoresFilesQuery(
+      project.id,
+      value ?? '',
+      VECTOR_STORE_FILES_QUERY_PARAMS,
+    ),
+    enabled: Boolean(value),
+  });
+
   const vectorStore = data?.stores.find((item) => item.id === value);
 
   return (
     <div className={classes.root}>
+      <BuilderSectionHeading
+        title="Knowledge"
+        buttonProps={{
+          children: 'New knowledge base',
+          onClick: () =>
+            openModal((props) => (
+              <CreateKnowledgeModal
+                projectId={project.id}
+                onCreateVectorStore={onCreateSuccess}
+                onSuccess={handleInvalidateData}
+                {...props}
+              />
+            )),
+          disabled: isProjectReadOnly,
+        }}
+      />
+
       {data?.stores && (
         <div className={classes.select}>
-          <Dropdown<VectorStore>
-            label="Connect to a knowledge base"
-            placeholder="Choose an existing base or create new"
+          <DropdownSelector<VectorStore>
             items={data.stores}
-            size="lg"
-            itemToString={(option: KnowledgeOption) =>
-              option === 'new' ? 'Create new' : (option?.name ?? '')
-            }
-            onChange={(item: VectorStore | null) =>
-              item ? handleConnectKnowledge(item.id) : handleClearKnowledge()
-            }
-            selected={vectorStore ?? null}
-            disabled={isProjectReadOnly}
-            hideClearButton={isProjectReadOnly}
-            footer={
-              <Button
-                kind="ghost"
-                className={classes.createNewButton}
-                onClick={() =>
-                  openModal((props) => (
-                    <CreateKnowledgeModal
-                      projectId={project.id}
-                      onCreateVectorStore={onCreateSuccess}
-                      onSuccess={handleInvalidateData}
-                      {...props}
-                    />
-                  ))
-                }
-                renderIcon={ArrowUpRight}
-              >
-                Create new
-              </Button>
-            }
+            onSubmit={(value) => {
+              if (value === null) {
+                handleClearKnowledge();
+              } else {
+                const selectedItem = value.at(0);
+                selectedItem && handleConnectKnowledge(selectedItem.id);
+              }
+            }}
+            selected={vectorStore}
+            placeholder="Browse knowledge bases"
+            itemToString={(item) => item.name}
           />
-          {vectorStore && (
-            <Link
-              href={`/${project.id}/knowledge/${vectorStore.id}`}
-              className={classes.knowledgeBaseLink}
-            >
-              <Button kind="ghost" renderIcon={ArrowUpRight}>
-                Manage knowledge base
-              </Button>
-            </Link>
-          )}
         </div>
+      )}
+
+      {vectorStore && dataFiles && (
+        <>
+          <ul className={classes.files}>
+            {dataFiles.files.map((item) => (
+              <KnowledgeFileCard
+                key={item.id}
+                vectorStore={vectorStore}
+                vectorStoreFile={item}
+                kind="list"
+              />
+            ))}
+          </ul>
+          {dataFiles.totalCount &&
+            dataFiles.totalCount > VECTOR_STORE_FILES_QUERY_PARAMS.limit && (
+              <p className={classes.filesMore}>
+                ...and {dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT} more{' '}
+                {pluralize(
+                  'file',
+                  dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT,
+                )}
+              </p>
+            )}
+        </>
       )}
 
       {!data && isFetching && <DropdownSkeleton />}
@@ -185,11 +206,9 @@ export function KnowledgeSelector({}: Props) {
   );
 }
 
-type KnowledgeOption = VectorStore | 'new' | null;
-
-const VECTOR_STORES_LIMIT = 100;
-
-const VECTOR_STORES_QUERY_PARAMS = { limit: VECTOR_STORES_LIMIT };
+const VECTOR_STORES_QUERY_PARAMS = { limit: MAX_API_FETCH_LIMIT };
+const VECTOR_STORE_FILES_LIMIT = 3;
+const VECTOR_STORE_FILES_QUERY_PARAMS = { limit: VECTOR_STORE_FILES_LIMIT };
 
 const KNOWLEDGE_TOOLS = [
   { id: 'code_interpreter', type: 'code_interpreter' } as const,

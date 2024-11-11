@@ -31,6 +31,7 @@ import Pinned from './Pinned.svg';
 import { RecentAssistantsList } from './RecentAssistantsList';
 import Unpinned from './Unpinned.svg';
 import { UserNav } from './UserNav';
+import { useLayout } from '@/store/layout';
 
 export function AppHeader() {
   const id = useId();
@@ -40,6 +41,7 @@ export function AppHeader() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarPinned = getUserSetting('sidebarPinned');
   const { project } = useAppContext();
+  const visible = useLayout((state) => state.sidebarVisible);
 
   const queryClient = useQueryClient();
 
@@ -53,6 +55,7 @@ export function AppHeader() {
     <header
       className={clsx(classes.root, {
         [classes.sidebarOpen]: sidebarOpen,
+        [classes.visible]: visible,
         [classes.sidebarPinned]: sidebarPinned,
       })}
       ref={ref}

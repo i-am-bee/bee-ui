@@ -16,14 +16,17 @@
 
 'use client';
 import { AssistantModel, AssistantResult } from '@/app/api/assistants/types';
-import { SystemToolId, ToolType } from '@/app/api/threads-runs/types';
+import { SystemToolId } from '@/app/api/threads-runs/types';
 import { AssistantTools } from '@/app/api/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import {
+  useAppApiContext,
+  useAppContext,
+} from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { isNotNull } from '@/utils/helpers';
-import { useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,
@@ -32,20 +35,19 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useState,
 } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import {
   AssistantIconColor,
   AssitantIconName,
 } from '../icons/AssistantBaseIcon';
-import { readAssistantQuery } from '../queries';
 import { Assistant, AssistantMetadata } from '../types';
 import {
   decodeStarterQuestionsMetadata,
   encodeStarterQuestionsMetadata,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
+import { ToolReference } from '@/app/api/tools/types';
 
 export type AssistantFormValues = {
   icon: {
@@ -55,7 +57,7 @@ export type AssistantFormValues = {
   ownName: string;
   description?: string;
   instructions: string;
-  tools: { type: ToolType; id: string }[];
+  tools: ToolReference[];
   vectorStoreId?: string;
   model?: AssistantModel;
   starterQuestions?: StarterQuestion[];
@@ -84,38 +86,35 @@ const AssistantBuilderApiContext =
 
 interface Props {
   assistant?: Assistant;
-  onSuccess?: (result: AssistantResult, isNew: boolean) => void;
   children: ReactElement;
 }
 
 export function AssistantBuilderProvider({
   assistant: initialAssistant,
-  onSuccess,
   children,
 }: Props) {
   const { addToast } = useToast();
   const queryClient = useQueryClient();
-  const { project } = useAppContext();
+  const { project, assistant } = useAppContext();
+  const { selectAssistant } = useAppApiContext();
   const { setConfirmOnPageLeave, clearConfirmOnPageLeave } =
     useNavigationControl();
 
   const searchParams = useSearchParams();
-  const isEditCurrent = searchParams?.has('current');
-  // TODO: The duplication feature should be removed completely.
   const isDuplicate = searchParams?.has('duplicate');
-
-  const [assistant, setAssistant] = useState<Assistant | null>(
-    !isDuplicate ? (initialAssistant ?? null) : null,
-  );
 
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
-      const assistant = decodeEntityWithMetadata<Assistant>(result);
-      if (isEditCurrent && assistant) {
-        setAssistant(assistant);
-      }
-      onSuccess?.(result, isNew);
+      const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
+      selectAssistant(assistantFromResult);
+
+      if (isNew)
+        window.history.pushState(
+          {},
+          '',
+          `/${project.id}/builder/${assistantFromResult.id}`,
+        );
     },
   });
 
@@ -130,27 +129,12 @@ export function AssistantBuilderProvider({
   const { handleSubmit, reset, formState } = formReturn;
 
   useEffect(() => {
-    if (isDuplicate) {
-      return;
+    if (isDuplicate || !initialAssistant) {
+      selectAssistant(null);
+    } else {
+      selectAssistant(initialAssistant);
     }
-
-    if (initialAssistant) {
-      queryClient
-        .fetchQuery(
-          readAssistantQuery(
-            project.id,
-            initialAssistant?.id ?? '',
-          ) as UseQueryOptions<AssistantResult>,
-        )
-        .then((data) => {
-          const assistant = decodeEntityWithMetadata<Assistant>(data);
-          setAssistant(assistant);
-          reset(formValuesFromAssistant(assistant), {
-            keepValues: false,
-          });
-        });
-    }
-  }, [initialAssistant, queryClient, reset, isDuplicate, project.id]);
+  }, [initialAssistant, isDuplicate, selectAssistant]);
 
   useEffect(() => {
     if (formState.isDirty)
@@ -167,8 +151,8 @@ export function AssistantBuilderProvider({
     reset(formValuesFromAssistant(assistant, true), {
       keepValues: false,
     });
-    setAssistant(null);
-  }, [assistant, reset]);
+    selectAssistant(null);
+  }, [assistant, reset, selectAssistant]);
 
   const onSubmit = useCallback(
     async ({
@@ -192,7 +176,7 @@ export function AssistantBuilderProvider({
         }, [])
         .filter(isNotNull);
 
-      await saveAssistantAsync({
+      const result = await saveAssistantAsync({
         id: assistant?.id,
         body: {
           name: ownName,
@@ -215,13 +199,16 @@ export function AssistantBuilderProvider({
           model,
         },
       });
+
+      formReturn.reset({}, { keepValues: true });
     },
-    [assistant, saveAssistantAsync],
+    [assistant, formReturn, saveAssistantAsync],
   );
 
   const handleError = useCallback(() => {
     addToast({
       title: 'Form contains errors, please check required fields.',
+      kind: 'warning',
       timeout: 6000,
     });
   }, [addToast]);
@@ -271,7 +258,7 @@ export function useAssistantBuilder() {
 
 function formValuesFromAssistant(
   assistant: Assistant | null,
-  isCopy?: boolean,
+  isDuplicate?: boolean,
 ): AssistantFormValues {
   return {
     icon: {
@@ -279,7 +266,7 @@ function formValuesFromAssistant(
       color: assistant?.uiMetadata.color ?? 'white',
     },
     ownName: assistant?.name
-      ? `${assistant.name}${isCopy ? ' ( Copy )' : ''}`
+      ? `${assistant.name}${isDuplicate ? ' ( Copy )' : ''}`
       : 'New Bee',
     description: assistant?.description ?? '',
     instructions: assistant?.instructions || '',

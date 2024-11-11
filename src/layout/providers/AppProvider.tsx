@@ -38,12 +38,12 @@ export interface AppContextValue {
   assistant: Assistant | null;
   project: Project;
   role: ProjectUser['role'] | null;
-  isProjectReadOnly: boolean;
+  isProjectReadOnly?: boolean;
   onPageLeaveRef: MutableRefObject<() => void>;
 }
 
 export interface AppApiContextValue {
-  selectAssistant: (assistant: Assistant) => void;
+  selectAssistant: (assistant: Assistant | null) => void;
   selectProject: (project: Project) => void;
   onPageLeave: () => void;
 }
@@ -95,7 +95,7 @@ export function AppProvider({
     [],
   );
 
-  const isProjectReadOnly = !projectUser || projectUser.role === 'reader';
+  const isProjectReadOnly = projectUser?.role === 'reader';
 
   return (
     <AppApiContext.Provider value={apiValue}>

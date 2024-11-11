@@ -15,10 +15,12 @@
  */
 
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { TextArea } from '@carbon/react';
+import { TextArea, usePrefix } from '@carbon/react';
 import { useController } from 'react-hook-form';
 import { AssistantFormValues } from './AssistantBuilderProvider';
 import classes from './InstructionsTextArea.module.scss';
+import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
+import { useId } from 'react';
 
 interface Props {
   className?: string;
@@ -30,6 +32,8 @@ const formatContent = (text: string | undefined) => text?.slice(0, LIMIT) || '';
 
 export function InstructionsTextArea({ className }: Props) {
   const { isProjectReadOnly } = useAppContext();
+  const prefix = usePrefix();
+  const id = useId();
   const {
     field: { value, onChange },
   } = useController<AssistantFormValues, 'instructions'>({
@@ -39,26 +43,24 @@ export function InstructionsTextArea({ className }: Props) {
 
   return (
     <div className={classes.root}>
-      <TextArea
-        labelText="Instructions"
-        className={className}
-        placeholder="You are a helpful assistant."
-        rows={5}
+      <label className={`${prefix}--label`} htmlFor={id}>
+        Role
+      </label>
+      <TextAreaAutoHeight
+        title="Instructions"
+        id={id}
+        className={classes.textArea}
+        placeholder="What does this bee do? How does it behave? What should it avoid doing?"
+        rows={4}
+        maxRows={10}
         maxLength={LIMIT}
-        value={content}
         readOnly={isProjectReadOnly}
+        resizable
+        defaultValue={content}
         onChange={(event) => {
           onChange(formatContent(event.target.value));
         }}
       />
-
-      {!isProjectReadOnly && (
-        <div className={classes.bottom}>
-          <span className={classes.limit}>
-            {content.length}/{LIMIT}
-          </span>
-        </div>
-      )}
     </div>
   );
 }

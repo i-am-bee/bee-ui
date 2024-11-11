@@ -31,6 +31,15 @@
   box-shadow: $box-shadow;
   font-size: var(--font-size);
   background-color: $background;
+  &[data-size='sm'] {
+    block-size: $spacing-06;
+    inline-size: $spacing-06;
+    padding-inline: $spacing-02;
+  }
+  svg {
+    max-inline-size: $spacing-06;
+    max-block-size: $spacing-06;
+  }
 }
 
 .description {

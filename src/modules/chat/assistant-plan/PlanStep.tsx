@@ -27,11 +27,8 @@ import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import {
-  getToolApprovalId,
-  getToolIcon,
-  getToolName,
-} from '@/modules/tools/utils';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { getToolApprovalId } from '@/modules/tools/utils';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
 import { Button } from '@carbon/react';
@@ -42,18 +39,11 @@ import {
   ErrorOutline,
   WarningFilled,
 } from '@carbon/react/icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import JSON5 from 'json5';
-import {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactElement, useCallback, useEffect, useId, useMemo } from 'react';
 import { useThreadApi } from '../hooks/useThreadApi';
 import { useChat } from '../providers/ChatProvider';
 import {
@@ -66,7 +56,6 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
-import { toolQuery } from './queries';
 
 interface Props {
   step: AssistantPlanStep;
@@ -110,9 +99,8 @@ export function PlanStep({ step, toolCall }: Props) {
           }
         : { type: toolKey, id: toolKey };
 
-  const [toolName, setToolName] = useState(getToolName(tool));
-  const [userToolId, setUserToolId] = useState('');
-  const ToolIcon = toolKey ? getToolIcon(tool) : null;
+  const { toolName, toolIcon } = useToolInfo(tool);
+  const ToolIcon = toolKey ? toolIcon : null;
 
   const expandedStep = useExpandedStep();
   const { setExpandedStep } = useExpandedStepActions();
@@ -173,21 +161,6 @@ export function PlanStep({ step, toolCall }: Props) {
   const errorOrResult = error ?? result;
   const isDetailEnabled = input !== null || step.thought;
 
-  const { data: userTool } = useQuery({
-    ...toolQuery(project.id, userToolId),
-    enabled: !!userToolId,
-  });
-
-  useEffect(() => {
-    setUserToolId(toolCall.type === 'user' ? toolCall.toolId : '');
-  }, [toolCall]);
-
-  useEffect(() => {
-    if (userTool) {
-      setToolName(userTool.name);
-    }
-  }, [userTool]);
-
   useEffect(() => {
     if (toolApproval) {
       setExpandedStep(step.id);
@@ -207,7 +180,7 @@ export function PlanStep({ step, toolCall }: Props) {
               toggleExpand();
             }}
           />
-          <p className={classes.tool}>
+          <div className={classes.tool}>
             {ToolIcon && (
               <span className={classes.toolIcon}>
                 <ToolIcon />
@@ -215,7 +188,7 @@ export function PlanStep({ step, toolCall }: Props) {
             )}
 
             <span>{toolName}</span>
-          </p>
+          </div>
           {step.thought && !expanded && (
             <h3 className={classes.thought}>
               “<span>{step.thought}</span>”
@@ -235,7 +208,7 @@ export function PlanStep({ step, toolCall }: Props) {
             <div className={classes.info}>
               {toolApproval ? (
                 <div>
-                  <p className={clsx(classes.label, classes.approvalLabel)}>
+                  <div className={clsx(classes.label, classes.approvalLabel)}>
                     <span>{assistant.data?.name} wants to use</span>
                     <span className={classes.tool}>
                       {ToolIcon && (
@@ -246,7 +219,7 @@ export function PlanStep({ step, toolCall }: Props) {
 
                       <strong>{toolName}</strong>
                     </span>
-                  </p>
+                  </div>
 
                   <div className={classes.approvalActions}>
                     <Button

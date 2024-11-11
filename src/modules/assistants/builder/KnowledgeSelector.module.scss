@@ -52,3 +52,16 @@
     background-color: $layer-hover;
   }
 }
+
+.files {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-03;
+  margin-block-start: $spacing-05;
+}
+
+.filesMore {
+  font-size: rem(14px);
+  color: $text-placeholder;
+  margin-block-start: $spacing-04;
+}

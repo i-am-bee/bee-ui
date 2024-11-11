@@ -47,3 +47,5 @@ export type AssistantsListQueryOrderBy =
   FetchParamsOrderBy<AssistantsListQuery>;
 
 export type AssistantModel = AssistantCreateBody['model'];
+
+export type AssistantTool = AssistantResult['tools'][number];
