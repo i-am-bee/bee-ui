@@ -22,7 +22,7 @@ import {
   AssistantFormValues,
   useAssistantBuilder,
 } from '../builder/AssistantBuilderProvider';
-import { getToolName, getToolReference } from '@/modules/tools/utils';
+import { getToolReference } from '@/modules/tools/utils';
 import { ToolIcon } from '@/modules/tools/ToolCard';
 import uniq from 'lodash/uniq';
 import {
@@ -30,6 +30,7 @@ import {
   DropdownSelectorGroup,
 } from '@/components/DropdownSelector/DropdownSelector';
 import { DropdownSkeleton } from '@carbon/react';
+import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 
 export function ToolsSelectorDropdown() {
   const {
@@ -79,10 +80,10 @@ export function ToolsSelectorDropdown() {
           items={items}
           multiple
           placeholder="Browse available tools"
-          itemToString={(item) => getToolName(item)}
+          itemToString={(item) => getStaticToolName(item)}
           itemToElement={(item) => (
             <>
-              <ToolIcon tool={item} /> {getToolName(item)}
+              <ToolIcon tool={item} /> {getStaticToolName(item)}
             </>
           )}
           onSubmit={(items, clearSelected) => {

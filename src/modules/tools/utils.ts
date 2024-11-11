@@ -20,52 +20,8 @@ import {
   ToolType,
 } from '@/app/api/threads-runs/types';
 import { Tool, ToolId, ToolReference, ToolsUsage } from '@/app/api/tools/types';
-import {
-  Code,
-  DocumentView,
-  IbmWatsonDiscovery,
-  PartlyCloudy,
-  SearchLocate,
-  Tools,
-} from '@carbon/react/icons';
-import { ComponentType } from 'react';
-import Arxiv from './icons/arxiv.svg';
-import DuckDuckGo from './icons/duckduckgo.svg';
-import Google from './icons/google.svg';
-import Wikipedia from './icons/wikipedia.svg';
 import { AssistantTool } from '@/app/api/assistants/types';
 import has from 'lodash/has';
-
-export function getToolIcon({ type, id, tool }: ToolReference) {
-  if (type === 'system') {
-    if (id === 'web_search' && tool) {
-      if (tool.name === 'GoogleSearch') return Google;
-      if (tool.name === 'DuckDuckGo') return DuckDuckGo;
-    }
-    return SYSTEM_TOOL_ICONS[id];
-  }
-  if (type === 'file_search') return SearchLocate;
-  if (type === 'code_interpreter' || type === 'function') return Code;
-
-  return Tools;
-}
-
-export function getToolName(tool: ToolReference) {
-  if (tool.tool) return tool.tool.name;
-
-  switch (tool.type) {
-    case 'system':
-      return SYSTEM_TOOL_NAME[tool.id];
-    case 'code_interpreter':
-      return 'Python Intepreter';
-    case 'function':
-      return 'Function';
-    case 'user':
-      return 'Custom Tool';
-    case 'file_search':
-      return 'FileSearch';
-  }
-}
 
 export function getToolReferenceId(tool: ToolReference): string {
   switch (tool.type) {
@@ -158,22 +114,6 @@ export function getAssistantToolReference(assistantTool: AssistantTool) {
         }
       : { type: toolType, id: toolType };
 }
-
-const SYSTEM_TOOL_ICONS: Record<SystemToolId, ComponentType> = {
-  wikipedia: Wikipedia,
-  web_search: IbmWatsonDiscovery,
-  weather: PartlyCloudy,
-  arxiv: Arxiv,
-  read_file: DocumentView,
-};
-
-const SYSTEM_TOOL_NAME: Record<SystemToolId, string> = {
-  wikipedia: 'Wikipedia',
-  web_search: 'DuckDuckGo',
-  weather: 'OpenMeteo',
-  arxiv: 'Arxiv',
-  read_file: 'ReadFile',
-};
 
 export function isTool(item: Tool | ToolReference): item is Tool {
   return has(item, 'created_at');

@@ -21,8 +21,7 @@ import { ModalBody, ModalHeader } from '@carbon/react';
 import classes from './PublicToolModal.module.scss';
 import { ToolDescription, ToolIcon } from '../ToolCard';
 import { ToolExternalTag } from '@/modules/assistants/tools/ToolToggle';
-import { isExternalTool } from '../utils';
-import Markdown from 'react-markdown';
+import { getToolReference, isExternalTool } from '../utils';
 
 interface Props extends ModalProps {
   tool: Tool;
@@ -35,7 +34,7 @@ export function PublicToolModal({ tool, ...props }: Props) {
       <ModalBody>
         <div className={classes.header}>
           <div>
-            <ToolIcon tool={tool} />
+            <ToolIcon tool={getToolReference(tool)} />
           </div>
           <h2>{tool.name}</h2>
           <div>

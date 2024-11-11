@@ -22,12 +22,13 @@ import { Tool, ToolReference } from '@/app/api/tools/types';
 import { useDeleteTool } from './hooks/useDeleteTool';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolExternalTag } from '../assistants/tools/ToolToggle';
-import { getToolIcon, getToolReference, isExternalTool, isTool } from './utils';
+import { getToolReference, isExternalTool, isTool } from './utils';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
 import { UserToolModal } from './manage/UserToolModal';
 import { PublicToolModal } from './manage/PublicToolModal';
 import Markdown, { Components } from 'react-markdown';
 import clsx from 'clsx';
+import { useToolInfo } from './hooks/useToolInfo';
 
 interface Props {
   tool: Tool;
@@ -54,7 +55,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={<ToolIcon tool={tool} />}
+        icon={<ToolIcon tool={getToolReference(tool)} />}
         onClick={() =>
           openModal((props) =>
             tool.type === 'user' ? (
@@ -113,11 +114,11 @@ export function ToolIcon({
   size = 'md',
   className,
 }: {
-  tool: Tool | ToolReference;
+  tool: ToolReference;
   className?: string;
   size?: 'md' | 'sm';
 }) {
-  const Icon = getToolIcon(isTool(tool) ? getToolReference(tool) : tool);
+  const { toolIcon: Icon } = useToolInfo(tool);
   return (
     <span className={clsx(classes.icon, className)} data-size={size}>
       <Icon size="20" />

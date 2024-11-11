@@ -27,11 +27,7 @@ import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import {
-  getToolApprovalId,
-  getToolIcon,
-  getToolName,
-} from '@/modules/tools/utils';
+import { getToolApprovalId } from '@/modules/tools/utils';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
 import { Button } from '@carbon/react';
@@ -42,18 +38,11 @@ import {
   ErrorOutline,
   WarningFilled,
 } from '@carbon/react/icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import JSON5 from 'json5';
-import {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactElement, useCallback, useEffect, useId, useMemo } from 'react';
 import { useThreadApi } from '../hooks/useThreadApi';
 import { useChat } from '../providers/ChatProvider';
 import {
@@ -66,7 +55,7 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
-import { readToolQuery } from '@/modules/tools/queries';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 
 interface Props {
   step: AssistantPlanStep;
@@ -110,9 +99,8 @@ export function PlanStep({ step, toolCall }: Props) {
           }
         : { type: toolKey, id: toolKey };
 
-  const [toolName, setToolName] = useState(getToolName(tool));
-  const [userToolId, setUserToolId] = useState('');
-  const ToolIcon = toolKey ? getToolIcon(tool) : null;
+  const { toolName, toolIcon } = useToolInfo(tool);
+  const ToolIcon = toolKey ? toolIcon : null;
 
   const expandedStep = useExpandedStep();
   const { setExpandedStep } = useExpandedStepActions();
@@ -172,21 +160,6 @@ export function PlanStep({ step, toolCall }: Props) {
   const error = step.lastError ? JSON.stringify(step.lastError, null, 2) : null;
   const errorOrResult = error ?? result;
   const isDetailEnabled = input !== null || step.thought;
-
-  const { data: userTool } = useQuery({
-    ...readToolQuery(project.id, userToolId),
-    enabled: !!userToolId,
-  });
-
-  useEffect(() => {
-    setUserToolId(toolCall.type === 'user' ? toolCall.toolId : '');
-  }, [toolCall]);
-
-  useEffect(() => {
-    if (userTool) {
-      setToolName(userTool.name);
-    }
-  }, [userTool]);
 
   useEffect(() => {
     if (toolApproval) {

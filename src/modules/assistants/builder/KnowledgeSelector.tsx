@@ -26,8 +26,6 @@ import {
   vectorStoresFilesQuery,
   vectorStoresQuery,
 } from '@/modules/knowledge/queries';
-import { getToolName } from '@/modules/tools/utils';
-import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import {
   InfiniteData,
   useInfiniteQuery,
@@ -39,11 +37,13 @@ import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from './AssistantBuilderProvider';
 import classes from './KnowledgeSelector.module.scss';
+import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 import { BuilderSectionHeading } from './BuilderSectionHeading';
-import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
 import pluralize from 'pluralize';
+import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 
 export function KnowledgeSelector() {
   const { openModal } = useModal();
@@ -78,7 +78,7 @@ export function KnowledgeSelector() {
         shouldValidate: true,
       });
 
-      setAutoEnabledToolNames(knowledgeToolsToEnable.map(getToolName));
+      setAutoEnabledToolNames(knowledgeToolsToEnable.map(getStaticToolName));
     }
   };
 

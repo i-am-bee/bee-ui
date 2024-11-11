@@ -77,5 +77,6 @@ export const readToolQuery = (projectId: string, id: string) =>
   queryOptions({
     queryKey: ['tool', projectId, id],
     queryFn: () => readTool(projectId, id),
+    staleTime: 60 * 60 * 1_000,
     select: (data) => data && decodeEntityWithMetadata<Tool>(data),
   });
