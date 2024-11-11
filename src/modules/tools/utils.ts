@@ -36,7 +36,9 @@ export function getToolReferenceId(tool: ToolReference): string {
   }
 }
 
-export function getToolUsageId(tool: ToolsUsage[number]): ToolId | null {
+export function getToolUsageId(
+  tool: ToolsUsage[number],
+): ToolId | string | null {
   switch (tool.type) {
     case 'code_interpreter':
       return tool.type;
@@ -44,6 +46,8 @@ export function getToolUsageId(tool: ToolsUsage[number]): ToolId | null {
       return tool.type;
     case 'system':
       return tool.system.id;
+    case 'user':
+      return tool.user.tool.id;
     default:
       return null;
   }

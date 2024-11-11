@@ -27,6 +27,7 @@ import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { getToolApprovalId } from '@/modules/tools/utils';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
@@ -55,7 +56,6 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
-import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 
 interface Props {
   step: AssistantPlanStep;
@@ -180,7 +180,7 @@ export function PlanStep({ step, toolCall }: Props) {
               toggleExpand();
             }}
           />
-          <p className={classes.tool}>
+          <div className={classes.tool}>
             {ToolIcon && (
               <span className={classes.toolIcon}>
                 <ToolIcon />
@@ -188,7 +188,7 @@ export function PlanStep({ step, toolCall }: Props) {
             )}
 
             <span>{toolName}</span>
-          </p>
+          </div>
           {step.thought && !expanded && (
             <h3 className={classes.thought}>
               “<span>{step.thought}</span>”
@@ -208,7 +208,7 @@ export function PlanStep({ step, toolCall }: Props) {
             <div className={classes.info}>
               {toolApproval ? (
                 <div>
-                  <p className={clsx(classes.label, classes.approvalLabel)}>
+                  <div className={clsx(classes.label, classes.approvalLabel)}>
                     <span>{assistant.data?.name} wants to use</span>
                     <span className={classes.tool}>
                       {ToolIcon && (
@@ -219,7 +219,7 @@ export function PlanStep({ step, toolCall }: Props) {
 
                       <strong>{toolName}</strong>
                     </span>
-                  </p>
+                  </div>
 
                   <div className={classes.approvalActions}>
                     <Button
