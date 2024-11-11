@@ -93,6 +93,10 @@ themes.$white: map.merge(
 
     icon-on-color-disabled: $gray-50,
 
+    field-hover-01: $cool-gray-20,
+    field-hover-02: $cool-gray-20,
+    field-hover-03: $cool-gray-20,
+
     body-background: $white,
     body-background-transparent: rgba($white, 0),
     box-shadow-color: rgba(193, 199, 205, 0.45),
@@ -149,6 +153,10 @@ themes.$g90: map.merge(
     button-gray-active: $cool-gray-70,
 
     button-disabled: $gray-70,
+
+    field-hover-01: $cool-gray-80,
+    field-hover-02: $cool-gray-80,
+    field-hover-03: $cool-gray-80,
 
     tag-background-blue: $blue-10,
     tag-color-blue: $blue-60,

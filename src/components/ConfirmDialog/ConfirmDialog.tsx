@@ -63,7 +63,7 @@ export function ConfirmDialog({
         </Button>
         <Button
           onClick={onSubmitClick}
-          kind={danger ? 'danger' : 'primary'}
+          kind={danger ? 'danger' : 'secondary'}
           data-modal-primary-focus
           renderIcon={Icon}
         >

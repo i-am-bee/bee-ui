@@ -53,6 +53,7 @@ export function ThreadTools({ assistantTools = [] }: Props) {
                 }
               : {
                   type: tool.type,
+                  id: tool.type,
                 };
         const toggled = !toolIncluded(disabledTools, tool);
 

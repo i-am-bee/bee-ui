@@ -19,7 +19,8 @@ import { createPortal } from 'react-dom';
 
 export function SSRSafePortal({ children }: { children: ReactNode }) {
   const [rendered, setRendered] = useState(false);
+  const modalRoot = document.getElementById('modal-root') ?? document.body;
 
   useEffect(() => setRendered(true), []);
-  return rendered ? createPortal(children, document.body) : null;
+  return rendered ? createPortal(children, modalRoot) : null;
 }

@@ -17,16 +17,10 @@
 import { ToolReference } from '@/app/api/tools/types';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { toolQuery } from '@/modules/chat/assistant-plan/queries';
 import { ToolDescription } from '@/modules/tools/ToolCard';
-import {
-  getToolIcon,
-  getToolName,
-  getToolReferenceId,
-} from '@/modules/tools/utils';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { getToolReferenceId } from '@/modules/tools/utils';
 import { SkeletonIcon, SkeletonText, Toggle, ToggleProps } from '@carbon/react';
-import { useQuery } from '@tanstack/react-query';
 import { MouseEventHandler, useId } from 'react';
 import classes from './ToolToggle.module.scss';
 import { ToolTypeTag } from './ToolTypeTag';
@@ -53,16 +47,8 @@ export function ToolToggle({
   ...props
 }: Props) {
   const id = useId();
-  const { project } = useAppContext();
   const toolType = tool.type;
-  const Icon = getToolIcon(tool);
-  const name = getToolName(tool);
-  const userToolId = tool.type === 'user' ? tool.id : '';
-
-  const { data: userTool, isLoading } = useQuery({
-    ...toolQuery(project.id, userToolId),
-    enabled: Boolean(!heading && userToolId),
-  });
+  const { toolName, toolIcon: Icon } = useToolInfo(tool);
 
   const toolId = getToolReferenceId(tool);
 
@@ -73,10 +59,8 @@ export function ToolToggle({
       <div className={classes.header}>
         {heading ? (
           <h3 className={classes.heading}>{heading}</h3>
-        ) : isLoading ? (
-          <SkeletonText className={classes.heading} />
         ) : (
-          <h3 className={classes.heading}>{userTool?.name || name}</h3>
+          <h3 className={classes.heading}>{toolName}</h3>
         )}
 
         {showTypeTag && (
@@ -100,7 +84,11 @@ export function ToolToggle({
         disabled={!toolType || disabled}
       />
       {description && (
-        <LineClampText className={classes.description} numberOfLines={2}>
+        <LineClampText
+          className={classes.description}
+          numberOfLines={2}
+          as="div"
+        >
           <ToolDescription description={description} />
         </LineClampText>
       )}

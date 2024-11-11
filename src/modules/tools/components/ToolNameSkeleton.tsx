@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-import { readTool } from '@/app/api/tools';
-import { queryOptions } from '@tanstack/react-query';
+import { SkeletonText } from '@carbon/react';
+import classes from './ToolNameSkeleton.module.scss';
 
-export const toolQuery = (projectId: string, id: string) =>
-  queryOptions({
-    queryKey: ['tools', projectId, id],
-    queryFn: () => readTool(projectId, id),
-  });
+export function ToolNameSkeleton() {
+  return (
+    <SkeletonText
+      width={LOADING_TOOL_NAME_WIDTH}
+      className={classes.skeleton}
+    />
+  );
+}
+
+const LOADING_TOOL_NAME_WIDTH = '5rem';

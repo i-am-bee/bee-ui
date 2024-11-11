@@ -30,6 +30,8 @@ export type UserProfileState = {
   metadata?: UserMetadata;
 };
 
-export type UserProfileAction = {};
+export type UserProfileAction = {
+  setUserProfile: (userProfile: UserProfileState) => void;
+};
 
 export type UserProfileSlice = StoreSlice<UserProfileState, UserProfileAction>;

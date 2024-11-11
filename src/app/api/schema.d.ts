@@ -875,6 +875,21 @@ export interface paths {
                                 name: string;
                                 /** @enum {unknown} */
                                 object: "organization.project.api_key";
+                                owner: {
+                                    service_account?: unknown;
+                                    /** @enum {string} */
+                                    type: "user" | "service_account";
+                                    user?: {
+                                        added_at: number;
+                                        email: string;
+                                        id: string;
+                                        name: string;
+                                        /** @enum {unknown} */
+                                        object: "organization.project.user";
+                                        /** @enum {string} */
+                                        role: "admin" | "writer" | "reader";
+                                    };
+                                };
                                 project: {
                                     archived_at: number | null;
                                     created_at: number;
@@ -1125,6 +1140,21 @@ export interface paths {
                                 name: string;
                                 /** @enum {unknown} */
                                 object: "organization.project.api_key";
+                                owner: {
+                                    service_account?: unknown;
+                                    /** @enum {string} */
+                                    type: "user" | "service_account";
+                                    user?: {
+                                        added_at: number;
+                                        email: string;
+                                        id: string;
+                                        name: string;
+                                        /** @enum {unknown} */
+                                        object: "organization.project.user";
+                                        /** @enum {string} */
+                                        role: "admin" | "writer" | "reader";
+                                    };
+                                };
                                 project: {
                                     archived_at: number | null;
                                     created_at: number;
@@ -1179,6 +1209,21 @@ export interface paths {
                             name: string;
                             /** @enum {unknown} */
                             object: "organization.project.api_key";
+                            owner: {
+                                service_account?: unknown;
+                                /** @enum {string} */
+                                type: "user" | "service_account";
+                                user?: {
+                                    added_at: number;
+                                    email: string;
+                                    id: string;
+                                    name: string;
+                                    /** @enum {unknown} */
+                                    object: "organization.project.user";
+                                    /** @enum {string} */
+                                    role: "admin" | "writer" | "reader";
+                                };
+                            };
                             project: {
                                 archived_at: number | null;
                                 created_at: number;
@@ -1235,6 +1280,21 @@ export interface paths {
                             name: string;
                             /** @enum {unknown} */
                             object: "organization.project.api_key";
+                            owner: {
+                                service_account?: unknown;
+                                /** @enum {string} */
+                                type: "user" | "service_account";
+                                user?: {
+                                    added_at: number;
+                                    email: string;
+                                    id: string;
+                                    name: string;
+                                    /** @enum {unknown} */
+                                    object: "organization.project.user";
+                                    /** @enum {string} */
+                                    role: "admin" | "writer" | "reader";
+                                };
+                            };
                             project: {
                                 archived_at: number | null;
                                 created_at: number;
@@ -1285,6 +1345,21 @@ export interface paths {
                             name: string;
                             /** @enum {unknown} */
                             object: "organization.project.api_key";
+                            owner: {
+                                service_account?: unknown;
+                                /** @enum {string} */
+                                type: "user" | "service_account";
+                                user?: {
+                                    added_at: number;
+                                    email: string;
+                                    id: string;
+                                    name: string;
+                                    /** @enum {unknown} */
+                                    object: "organization.project.user";
+                                    /** @enum {string} */
+                                    role: "admin" | "writer" | "reader";
+                                };
+                            };
                             project: {
                                 archived_at: number | null;
                                 created_at: number;

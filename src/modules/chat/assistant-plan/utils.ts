@@ -31,13 +31,8 @@ import {
 import { isNotNull } from '@/utils/helpers';
 import { v4 as uuid } from 'uuid';
 
-export function hasPlanInProgress(plan?: AssistantPlan): boolean {
-  return Boolean(
-    plan?.steps.length &&
-      plan.steps.some(
-        (step) => step.status === 'in_progress' && step.toolCalls.length,
-      ),
-  );
+export function getLastCompletedStep(plan?: AssistantPlan) {
+  return plan?.steps.findLast((step) => step.status === 'completed');
 }
 
 function getToolCallInput(toolCall: ResponseToolCall): string | null {
@@ -178,7 +173,6 @@ export function updatePlanWithRunStep(
           : item.type === 'user'
             ? { toolId: item.user.tool.id, type: 'user' }
             : { type: item.type }),
-        caption: runStep.metadata.caption ?? newStepData.thought ?? '',
         result: getToolCallResult(item),
         input: getToolCallInput(item),
         sources: getToolCallSources(item),

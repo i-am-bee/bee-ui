@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { DependencyList, EffectCallback, useEffect, useState } from 'react';
 
-.root {
-  border-radius: $spacing-03;
-  background-color: $layer;
-  border: 1px solid $border-subtle;
-  min-inline-size: 0;
-}
+export function useAfterMount(
+  effect: EffectCallback,
+  deps: DependencyList | undefined = [],
+) {
+  const [initialMount, setInitialMount] = useState(true);
 
-.trace {
-  border-block-start: 1px solid $border-subtle-01;
-  block-size: rem(36px);
-  display: flex;
-  align-items: center;
-  padding-inline-start: $spacing-04;
+  useEffect(() => {
+    if (initialMount) return setInitialMount(false);
+
+    return effect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 }

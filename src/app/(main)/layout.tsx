@@ -15,13 +15,19 @@
  */
 
 import { ModalProvider } from '@/layout/providers/ModalProvider';
+import { UserProfileInitializer } from '@/store/user-profile/UserProfileInitializer';
 import { PropsWithChildren } from 'react';
 import { QueryProvider } from '../../layout/providers/QueryProvider';
+import { ensureSession } from '../auth/rsc';
 
-export default function MainLayout({ children }: PropsWithChildren) {
+export default async function MainLayout({ children }: PropsWithChildren) {
+  const session = await ensureSession();
+
   return (
-    <QueryProvider>
-      <ModalProvider>{children}</ModalProvider>
-    </QueryProvider>
+    <UserProfileInitializer userProfile={session.userProfile}>
+      <QueryProvider>
+        <ModalProvider>{children}</ModalProvider>
+      </QueryProvider>
+    </UserProfileInitializer>
   );
 }

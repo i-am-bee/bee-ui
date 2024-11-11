@@ -17,7 +17,15 @@
 'use client';
 
 import clsx from 'clsx';
-import { TextareaHTMLAttributes, forwardRef, useState } from 'react';
+import {
+  TextareaHTMLAttributes,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { mergeRefs } from 'react-merge-refs';
 import classes from './TextAreaAutoHeight.module.scss';
 
 type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'>;
@@ -25,18 +33,30 @@ type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'>;
 export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
   function TextAreaAutoHeight({ className, onChange, ...rest }, ref) {
     const [value, setValue] = useState(rest.defaultValue ?? '');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const handleInput = useCallback((event: Event) => {
+      setValue((event.target as HTMLTextAreaElement).value);
+    }, []);
+
+    // This is necessary for the auto height to work properly. React does some optimization and ignores custom Event dispatch if the value is unchanged, which happens with react-hook-form.
+    useEffect(() => {
+      const element = textareaRef.current;
+
+      element?.addEventListener('input', handleInput);
+
+      return () => element?.removeEventListener('input', handleInput);
+    });
+
     return (
       <div
         className={clsx(classes.root, className)}
         data-replicated-value={value}
       >
         <textarea
-          ref={ref}
+          ref={mergeRefs([ref, textareaRef])}
           {...rest}
-          onChange={(e) => {
-            setValue(e.target.value);
-            onChange?.(e);
-          }}
+          onChange={onChange}
         />
       </div>
     );

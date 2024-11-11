@@ -22,7 +22,6 @@ import { StoreProvider } from '@/store/StoreProvider';
 import type { Metadata } from 'next';
 import { PropsWithChildren, ReactNode } from 'react';
 import { IncludeGlobalStyles } from './IncludeGlobalStyles';
-import { ensureSession } from './auth/rsc';
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 
@@ -31,12 +30,10 @@ export const metadata: Metadata = {
   icons: { icon: '//www.ibm.com/favicon.ico' },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
   modal,
 }: PropsWithChildren<{ modal: ReactNode }>) {
-  const session = await ensureSession();
-
   return (
     // suppressHydrationWarning is added because of ThemeProvider
     <html lang="en" suppressHydrationWarning>
@@ -47,7 +44,7 @@ export default async function RootLayout({
         </script>
       </head>
       <body>
-        <StoreProvider userProfile={session.userProfile}>
+        <StoreProvider>
           <ThemeProvider>
             <ToastProvider>
               <ProgressBarProvider>

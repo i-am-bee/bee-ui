@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { useEffect, useState } from 'react';
 
-.root {
-  border-radius: $spacing-03;
-  background-color: $layer;
-  border: 1px solid $border-subtle;
-  min-inline-size: 0;
-}
+export function useDataResultState({
+  totalCount,
+  isFetching,
+  isFiltered,
+}: {
+  totalCount?: number;
+  isFetching?: boolean;
+  isFiltered?: boolean;
+}) {
+  const [isEmptyState, setEmptyState] = useState(false);
 
-.trace {
-  border-block-start: 1px solid $border-subtle-01;
-  block-size: rem(36px);
-  display: flex;
-  align-items: center;
-  padding-inline-start: $spacing-04;
+  const noResults = totalCount === 0 && !isFetching;
+  const isEmpty = isEmptyState && noResults;
+
+  useEffect(() => {
+    if (noResults && !isFiltered) setEmptyState(true);
+    if (totalCount && totalCount > 0) setEmptyState(false);
+  }, [isFiltered, noResults, totalCount]);
+
+  return { noResults, isEmpty };
 }

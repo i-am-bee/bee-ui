@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+'use client';
 
-.root {
-  border-radius: $spacing-03;
-  background-color: $layer;
-  border: 1px solid $border-subtle;
-  min-inline-size: 0;
-}
+import { isNotNull } from '@/utils/helpers';
+import { ReactNode } from 'react';
+import { useUserProfile, useUserProfileActions } from '.';
+import { UserProfileState } from './types';
 
-.trace {
-  border-block-start: 1px solid $border-subtle-01;
-  block-size: rem(36px);
-  display: flex;
-  align-items: center;
-  padding-inline-start: $spacing-04;
+export function UserProfileInitializer({
+  userProfile,
+  children,
+}: {
+  userProfile: UserProfileState;
+  children: ReactNode;
+}) {
+  const userId = useUserProfile((state) => state.id) as string | undefined;
+  const { setUserProfile } = useUserProfileActions();
+
+  setUserProfile(userProfile);
+
+  return isNotNull(userId) ? children : null;
 }

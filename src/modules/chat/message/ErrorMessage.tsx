@@ -23,12 +23,13 @@ import { ChatMessage } from '../types';
 import classes from './ErrorMessage.module.scss';
 
 interface Props {
-  className?: string;
   error: Error;
   message: ChatMessage;
+  hideRetry?: boolean;
+  className?: string;
 }
 
-export function ErrorMessage({ error, message, className }: Props) {
+export function ErrorMessage({ error, message, hideRetry, className }: Props) {
   const text = message.role === 'user' ? 'Failed to send' : 'An error occurred';
 
   return (
@@ -36,14 +37,16 @@ export function ErrorMessage({ error, message, className }: Props) {
       className={clsx(classes.root, className)}
       title={text}
       subtitle={
-        <RetryButton message={message} className={classes.retryButton} />
+        !hideRetry ? (
+          <RetryButton message={message} className={classes.retryButton} />
+        ) : undefined
       }
       kind="error"
       lowContrast
       hideCloseButton
     >
       {(error.cause != null || error.message) && (
-        <LineClampText numberOfLines={4}>
+        <LineClampText numberOfLines={4} className={classes.message}>
           {getErrorMessage(error, true)}
         </LineClampText>
       )}

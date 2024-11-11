@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
-
-.root {
-  border-radius: $spacing-03;
-  background-color: $layer;
-  border: 1px solid $border-subtle;
-  min-inline-size: 0;
-}
-
-.trace {
-  border-block-start: 1px solid $border-subtle-01;
-  block-size: rem(36px);
-  display: flex;
-  align-items: center;
-  padding-inline-start: $spacing-04;
+.skeleton {
+  margin-block-end: 0;
 }

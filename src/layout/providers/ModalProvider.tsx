@@ -109,9 +109,11 @@ export function ModalProvider({ children }: PropsWithChildren) {
   return (
     <ModalContext.Provider value={openModal}>
       {children}
-      {Object.entries(modals).map(([key, state]) => (
-        <ModalWrapper key={key} {...state} />
-      ))}
+      <div id="modal-root">
+        {Object.entries(modals).map(([key, state]) => (
+          <ModalWrapper key={key} {...state} />
+        ))}
+      </div>
     </ModalContext.Provider>
   );
 }

@@ -20,40 +20,11 @@ import {
   ToolType,
 } from '@/app/api/threads-runs/types';
 import { Tool, ToolId, ToolReference, ToolsUsage } from '@/app/api/tools/types';
-import {
-  Code,
-  DocumentView,
-  PartlyCloudy,
-  SearchLocate,
-  Tools,
-} from '@carbon/react/icons';
+import { DocumentView, PartlyCloudy } from '@carbon/react/icons';
 import { ComponentType } from 'react';
 import Arxiv from './icons/arxiv.svg';
 import DuckDuckGo from './icons/duckduckgo.svg';
 import Wikipedia from './icons/wikipedia.svg';
-
-export function getToolIcon(tool: ToolReference) {
-  if (tool.type === 'system') return SYSTEM_TOOL_ICONS[tool.id];
-  if (tool.type === 'file_search') return SearchLocate;
-  if (tool.type === 'code_interpreter' || tool.type === 'function') return Code;
-
-  return Tools;
-}
-
-export function getToolName(tool: ToolReference) {
-  switch (tool.type) {
-    case 'system':
-      return SYSTEM_TOOL_NAME[tool.id];
-    case 'code_interpreter':
-      return 'Python Intepreter';
-    case 'function':
-      return 'Function';
-    case 'user':
-      return 'Custom Tool';
-    case 'file_search':
-      return 'FileSearch';
-  }
-}
 
 export function getToolReferenceId(tool: ToolReference): string {
   switch (tool.type) {
@@ -114,11 +85,14 @@ export function toolIncluded(
 }
 
 export function getToolReference(tool: Tool): ToolReference {
-  return tool.type === 'system'
-    ? { type: tool.type, id: tool.id as SystemToolId }
-    : tool.type === 'user'
-      ? { type: tool.type, id: tool.id }
-      : { type: tool.type };
+  return {
+    tool,
+    ...(tool.type === 'system'
+      ? { type: tool.type, id: tool.id as SystemToolId }
+      : tool.type === 'user'
+        ? { type: tool.type, id: tool.id }
+        : { type: tool.type, id: tool.type }),
+  };
 }
 
 export function isExternalTool(type: ToolType, id: string) {

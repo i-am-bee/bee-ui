@@ -17,16 +17,40 @@
 @use 'styles/common' as *;
 
 .root {
-  border-radius: $spacing-03;
-  background-color: $layer;
+  block-size: rem(48px);
   border: 1px solid $border-subtle;
-  min-inline-size: 0;
-}
-
-.trace {
-  border-block-start: 1px solid $border-subtle-01;
-  block-size: rem(36px);
+  border-block-start: none;
   display: flex;
   align-items: center;
-  padding-inline-start: $spacing-04;
+  justify-content: space-between;
+  font-size: rem(14px);
+  border-end-start-radius: $block-radius;
+  border-end-end-radius: $block-radius;
+}
+
+.count {
+  color: $text-secondary;
+  padding-inline-start: $spacing-05;
+  display: flex;
+  align-items: center;
+}
+
+.buttons {
+  button {
+    &,
+    &:disabled {
+      border-inline-start: 1px solid $border-subtle;
+      border-radius: 0;
+    }
+  }
+  > :last-child button {
+    border-end-end-radius: $block-radius;
+  }
+}
+
+.countSkeleton {
+  inline-size: 8rem;
+  p {
+    margin-block-end: 0;
+  }
 }
