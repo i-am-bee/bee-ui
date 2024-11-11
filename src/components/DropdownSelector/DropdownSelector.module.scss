@@ -22,25 +22,20 @@
 
 .field {
   position: relative;
-  .clearButton {
-    position: absolute;
-    inset-block-start: rem(8px);
-    inset-inline-end: $spacing-04;
+
+  :global(.#{$prefix}--text-input) {
+    cursor: default;
+    &:hover {
+      border-color: $background-inverse;
+      color: $text-primary;
+    }
+    &:focus {
+      outline: none;
+    }
   }
-}
-.openButton {
-  inline-size: 100%;
-  max-inline-size: none;
-  padding-block: 0;
-  align-items: center;
-  padding-inline-end: $spacing-10;
-  &:hover {
-    background-color: $background;
-    border-color: $background-inverse;
-    color: $text-primary;
-  }
+
   &.isOpen {
-    > svg {
+    .expandButton {
       transform: rotate(-180deg);
     }
   }
@@ -50,6 +45,29 @@
       display: none;
     }
   }
+
+  .clearButton,
+  .expandButton {
+    position: absolute;
+    inset-block-start: rem(8px);
+    inset-inline-end: $spacing-04;
+  }
+  .expandButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    block-size: rem(32px);
+    inline-size: rem(32px);
+  }
+}
+.openButton {
+  inline-size: 100%;
+  max-inline-size: none;
+  padding-block: 0;
+  align-items: center;
+  padding-inline-end: $spacing-10;
 }
 .openButtonPlaceholder {
   color: $text-placeholder;

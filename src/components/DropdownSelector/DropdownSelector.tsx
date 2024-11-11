@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Button, Checkbox, Tag } from '@carbon/react';
+import { Button, Checkbox, Tag, TextInput } from '@carbon/react';
 import classes from './DropdownSelector.module.scss';
 import { Checkmark, ChevronDown, Close } from '@carbon/react/icons';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -62,6 +62,7 @@ export function DropdownSelector<T extends ItemWithId>({
   itemToString,
   itemToElement,
 }: Props<T>) {
+  const id = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<T[]>(
     Array.isArray(controlledSelected)
@@ -125,20 +126,39 @@ export function DropdownSelector<T extends ItemWithId>({
     role,
   ]);
 
+  const isControlledValueSelected =
+    controlledSelected && !Array.isArray(controlledSelected);
+
   return (
     <div className={classes.root}>
-      <div className={classes.field}>
+      <div
+        className={clsx(classes.field, {
+          [classes.isOpen]: isOpen,
+          [classes.isOpenDisabled]: controlledSelected,
+        })}
+      >
+        <TextInput
+          id={`${id}:`}
+          labelText=""
+          size="lg"
+          placeholder={placeholder}
+          // onFocus={() => }
+          ref={mergeRefs([buttonRef, refs.setReference])}
+          {...getReferenceProps()}
+          value={
+            isControlledValueSelected
+              ? itemToString(controlledSelected)
+              : undefined
+          }
+        />
+
         <Button
           kind="tertiary"
           renderIcon={ChevronDown}
-          className={clsx(classes.openButton, {
-            [classes.isOpen]: isOpen,
-            [classes.isOpenDisabled]: controlledSelected,
-          })}
-          ref={mergeRefs([buttonRef, refs.setReference])}
-          {...getReferenceProps()}
+          // ref={mergeRefs([buttonRef, refs.setReference])}
+          // {...getReferenceProps()}
         >
-          {controlledSelected && !Array.isArray(controlledSelected) ? (
+          {isControlledValueSelected ? (
             <span className={classes.openButtonValue}>
               {itemToString(controlledSelected)}
             </span>
@@ -146,12 +166,16 @@ export function DropdownSelector<T extends ItemWithId>({
             <span className={classes.openButtonPlaceholder}>{placeholder}</span>
           )}
         </Button>
-        {controlledSelected && !Array.isArray(controlledSelected) && (
+        {isControlledValueSelected ? (
           <ClearButton
             label="Disconnect knowledge base"
             className={classes.clearButton}
             onClick={() => handleClear()}
           />
+        ) : (
+          <button className={classes.expandButton}>
+            <ChevronDown />
+          </button>
         )}
       </div>
       <AnimatePresence>
