@@ -15,6 +15,7 @@
  */
 
 import { ToolType } from '@/app/api/threads-runs/types';
+import { isExternalTool } from '@/modules/tools/utils';
 import { Tag, Tooltip } from '@carbon/react';
 import classes from './ToolTypeTag.module.scss';
 
@@ -35,16 +36,10 @@ export function ToolTypeTag({
     system: id === 'read_file' ? 'File handling' : 'Public API',
   }[type];
 
-  const isPublic = type === 'system' && id !== 'read_file';
-
-  const tooltip = isPublic
-    ? 'Third-party tools may share your data with external services.'
-    : null;
-
   const content = (
     <Tag
       size="sm"
-      type={isPublic ? 'blue' : 'outline'}
+      type={type === 'system' && id !== 'read_file' ? 'blue' : 'outline'}
       className={classes.root}
     >
       {label}
@@ -52,8 +47,11 @@ export function ToolTypeTag({
   );
 
   return label ? (
-    showTooltip && tooltip ? (
-      <Tooltip align="right" label={tooltip}>
+    showTooltip && isExternalTool(type, id) ? (
+      <Tooltip
+        align="right"
+        label="Third-party tools may share your data with external services."
+      >
         {content}
       </Tooltip>
     ) : (
