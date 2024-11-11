@@ -18,8 +18,6 @@ import { ToolResult } from '@/app/api/tools/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
-import { Button } from '@carbon/react';
-import { Add } from '@carbon/react/icons';
 import { useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from '../builder/AssistantBuilderProvider';
 import classes from './BuilderTools.module.scss';

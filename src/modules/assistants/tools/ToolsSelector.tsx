@@ -25,12 +25,12 @@ import {
   AssistantFormValues,
   useAssistantBuilder,
 } from '../builder/AssistantBuilderProvider';
-import { getToolIcon, getToolName } from '@/modules/tools/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useQuery } from '@tanstack/react-query';
 import { readToolQuery } from '@/modules/tools/queries';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 
 export function ToolsSelector() {
   const prefix = usePrefix();
@@ -91,7 +91,7 @@ function SelectedToolsItem({
   });
 
   const tool = data ? { ...toolProp, tool: data } : toolProp;
-  const Icon = getToolIcon(tool);
+  const { toolName, toolIcon: Icon } = useToolInfo(tool);
 
   return (
     <AnimatePresence key={tool.id}>
@@ -99,7 +99,7 @@ function SelectedToolsItem({
         <span className={classes.selectedIcon}>
           <Icon />
         </span>
-        {getToolName(tool)}
+        {toolName}
         <Tooltip content="Remove tool from bee" asChild placement="top">
           <button
             className={classes.removeButton}

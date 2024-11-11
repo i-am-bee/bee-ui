@@ -34,16 +34,17 @@ import { Edit } from '@carbon/react/icons';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { useMemo } from 'react';
-import {
-  getAssistantToolReference,
-  getToolIcon,
-  getToolName,
-} from '@/modules/tools/utils';
+import { getAssistantToolReference } from '@/modules/tools/utils';
 import { ToolIcon } from '@/modules/tools/ToolCard';
 import { readVectorStoreQuery } from '@/modules/knowledge/queries';
 import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
 import pluralize from 'pluralize';
 import { useRouter } from 'next-nprogress-bar';
+import {
+  getStaticToolName,
+  useToolInfo,
+} from '@/modules/tools/hooks/useToolInfo';
+import { ToolReference } from '@/app/api/tools/types';
 
 export interface AssistantModalProps {
   onDeleteSuccess?: () => void;
@@ -81,18 +82,6 @@ export default function AssistantModal({
     enabled: Boolean(vectorStoreId),
   });
 
-  const tools = useMemo(
-    () =>
-      assistant.tools.map((item) => {
-        const toolReference = getAssistantToolReference(item);
-        return {
-          icon: <ToolIcon tool={toolReference} size="sm" />,
-          name: getToolName(toolReference),
-        };
-      }),
-    [assistant.tools],
-  );
-
   return (
     <SSRSafePortal>
       <Modal
@@ -129,12 +118,10 @@ export default function AssistantModal({
                 <dd>Tools</dd>
                 <dt>
                   <ul className={classes.tools}>
-                    {tools.map(({ icon, name }, index) => (
-                      <li key={index}>
-                        {icon}
-                        {name}
-                      </li>
-                    ))}
+                    {assistant.tools.map((item, index) => {
+                      const tool = getAssistantToolReference(item);
+                      return <ToolListItem key={tool.id} tool={tool} />;
+                    })}
                   </ul>
                 </dt>
               </div>
@@ -189,5 +176,16 @@ export default function AssistantModal({
         </ModalFooter>
       </Modal>
     </SSRSafePortal>
+  );
+}
+
+function ToolListItem({ tool }: { tool: ToolReference }) {
+  const { toolIcon: Icon, toolName } = useToolInfo(tool);
+
+  return (
+    <li>
+      <ToolIcon tool={tool} />
+      {toolName}
+    </li>
   );
 }
