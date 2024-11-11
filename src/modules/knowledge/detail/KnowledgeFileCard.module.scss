@@ -65,3 +65,16 @@
   color: $support-error;
   display: inline-flex;
 }
+
+.listItem {
+  background-color: $layer-02;
+  block-size: rem(48px);
+  padding: $spacing-04;
+  font-size: rem(14px);
+  font-weight: 600;
+  align-items: center;
+  display: flex;
+  &:global(.#{$prefix}--skeleton__placeholder) {
+    inline-size: 100%;
+  }
+}

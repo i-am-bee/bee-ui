@@ -38,7 +38,7 @@ import { ToolNameSkeleton } from '../components/ToolNameSkeleton';
 export function useToolInfo(toolReference: ToolReference) {
   const { tool: toolProp, id, type } = toolReference;
   const { project } = useAppContext();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     ...readToolQuery(project.id, id),
     enabled: !toolProp && (type === 'user' || type === 'system'),
   });
@@ -73,7 +73,7 @@ export function useToolInfo(toolReference: ToolReference) {
     return Tools;
   }, [id, tool, type]);
 
-  return { toolName, toolIcon };
+  return { toolName, toolIcon, error };
 }
 
 const SYSTEM_TOOL_NAME: Record<SystemToolId, string> = {

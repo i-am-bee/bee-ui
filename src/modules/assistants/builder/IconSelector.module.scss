@@ -16,17 +16,19 @@
 
 @use 'styles/common' as *;
 
+$size: rem(56px);
+
 .root {
   position: relative;
-  inline-size: rem(32px);
-  block-size: rem(32px);
+  inline-size: $size;
+  block-size: $size;
 }
 
 .button {
   position: relative;
   background-color: $button-gray;
-  inline-size: rem(32px);
-  block-size: rem(32px);
+  inline-size: $size;
+  block-size: $size;
   border-radius: 50%;
   display: flex;
   align-items: center;

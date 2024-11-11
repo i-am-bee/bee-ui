@@ -16,13 +16,11 @@
 
 import { LazyModalRenderer } from '@/components/LazyRenderer/LazyModalRenderer';
 import { lazy } from 'react';
-import { AssistantBuilderProps } from '../builder/AssistantBuilderModal';
+import { AssistantModalProps } from './AssistantModal';
 
-const AssistantBuilderModal = lazy(
-  () => import('../builder/AssistantBuilderModal'),
-);
+const AssistantModal = lazy(() => import('./AssistantModal'));
 
-interface Props extends AssistantBuilderProps {
+interface Props extends AssistantModalProps {
   isOpened: boolean;
   onModalClose: () => void;
 }
@@ -30,11 +28,11 @@ interface Props extends AssistantBuilderProps {
 export function AssistantModalRenderer({
   isOpened,
   onModalClose,
-  ...builderProps
+  ...detailProps
 }: Props) {
   return (
     <LazyModalRenderer isOpen={isOpened} onRequestClose={() => onModalClose()}>
-      {(props) => <AssistantBuilderModal {...props} {...builderProps} />}
+      {(props) => <AssistantModal {...props} {...detailProps} />}
     </LazyModalRenderer>
   );
 }

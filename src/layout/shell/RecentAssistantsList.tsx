@@ -19,32 +19,28 @@ import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { lastAssistantsQuery } from '@/modules/assistants/library/queries';
 import { SkeletonIcon, SkeletonText } from '@carbon/react';
 import { ArrowRight, Information } from '@carbon/react/icons';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useAppApiContext, useAppContext } from '../providers/AppProvider';
 import { getNewSessionUrl } from './NewSessionButton';
 import classes from './RecentAssistantsList.module.scss';
 import { AssistantBaseIcon } from '@/modules/assistants/icons/AssistantBaseIcon';
-import { AssistantModalRenderer } from '@/modules/assistants/builder/AssistantModalRenderer';
-import { useState } from 'react';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
-import { useModal } from '../providers/ModalProvider';
 import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipContent';
+import { useRouter } from 'next-nprogress-bar';
 
 interface Props {
   enableFetch: boolean;
 }
 
 export function RecentAssistantsList({ enableFetch }: Props) {
-  const [builderOpened, setBuilderOpened] = useState(false);
   const {
     assistant: usedAssistant,
     project,
     isProjectReadOnly,
   } = useAppContext();
   const { selectAssistant } = useAppApiContext();
-  const queryClient = useQueryClient();
-  const { openModal } = useModal();
+  const router = useRouter();
 
   const { data: recentAssistants, isLoading } = useQuery({
     ...lastAssistantsQuery(project.id),
@@ -79,7 +75,7 @@ export function RecentAssistantsList({ enableFetch }: Props) {
         <li key="new">
           <button
             className={clsx(classes.button, classes.newButton)}
-            onClick={() => setBuilderOpened(true)}
+            onClick={() => router.push(`/${project.id}/builder`)}
             disabled={isProjectReadOnly}
           >
             <AssistantBaseIcon
@@ -113,16 +109,6 @@ export function RecentAssistantsList({ enableFetch }: Props) {
 
         <ArrowRight />
       </Link>
-
-      <AssistantModalRenderer
-        isOpened={builderOpened}
-        onModalClose={() => setBuilderOpened(false)}
-        onSaveSuccess={() =>
-          queryClient.invalidateQueries({
-            queryKey: lastAssistantsQuery(project.id).queryKey,
-          })
-        }
-      />
     </div>
   );
 }

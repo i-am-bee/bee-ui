@@ -17,7 +17,7 @@
 'use client';
 import { createContext, PropsWithChildren, use, useState } from 'react';
 import { Assistant } from '../../assistants/types';
-import { AssistantModalRenderer } from '../../assistants/builder/AssistantModalRenderer';
+import { AssistantModalRenderer } from '@/modules/assistants/detail/AssistantModalRenderer';
 
 export interface AssistantModalContextValue {
   openAssistantModal: (assistant: Assistant) => void;
@@ -36,11 +36,13 @@ export function AssistantModalProvider({ children }: PropsWithChildren) {
     >
       {children}
 
-      <AssistantModalRenderer
-        assistant={editAssistant ?? undefined}
-        isOpened={Boolean(editAssistant)}
-        onModalClose={() => setEditAssistant(null)}
-      />
+      {editAssistant && (
+        <AssistantModalRenderer
+          assistant={editAssistant}
+          isOpened={Boolean(editAssistant)}
+          onModalClose={() => setEditAssistant(null)}
+        />
+      )}
     </AssistantModalContext.Provider>
   );
 }

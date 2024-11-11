@@ -91,6 +91,10 @@
     &:disabled {
       color: $border-disabled;
     }
+    svg {
+      block-size: rem(20px);
+      inline-size: rem(20px);
+    }
   }
 }
 

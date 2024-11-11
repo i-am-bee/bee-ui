@@ -30,6 +30,16 @@
   :global(.#{$prefix}--text-area) {
     padding: rem(13px) rem(15px);
   }
+  > div {
+    &::after,
+    textarea {
+      font-size: rem(14px);
+    }
+    textarea {
+      border-radius: $block-radius;
+      border: 1px solid $border-subtle;
+    }
+  }
 }
 
 .bottom {

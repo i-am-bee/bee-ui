@@ -15,7 +15,12 @@
  */
 
 import { AssistantsHome } from '@/modules/assistants/AssistantsHome';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default function HomePage() {
-  return <AssistantsHome />;
+  return (
+    <LayoutInitializer layout={{ sidebarVisible: true }}>
+      <AssistantsHome />
+    </LayoutInitializer>
+  );
 }

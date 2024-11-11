@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { StoreSlice } from '../types';
 
-.form {
-  textarea {
-    inline-size: 100%;
-  }
-}
+export type LayoutState = {
+  sidebarVisible: boolean;
+};
 
-.tabs {
-  margin-block-start: $spacing-05;
+export type LayoutActions = {
+  setLayout: (value: Partial<LayoutState>) => void;
+};
 
-  :global(.#{$prefix}--tabs) {
-    margin-block-end: rem(18px);
-    border-block-end: 1px solid $border-subtle-00;
-    padding-block-end: 0.5px;
-  }
-}
+export type LayoutSlice = StoreSlice<LayoutState, LayoutActions>;

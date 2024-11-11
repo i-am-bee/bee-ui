@@ -15,14 +15,17 @@
  */
 
 import { createStore } from '.';
+import { LayoutSlice, LayoutState } from './layout/types';
 import { UserProfileSlice, UserProfileState } from './user-profile/types';
 
 export type InitialStoreState = {
   userProfile?: UserProfileState;
+  layout?: LayoutState;
 };
 
 export type StoreState = {
   userProfile: UserProfileSlice;
+  layout: LayoutSlice;
 };
 
 export type Store = ReturnType<typeof createStore>;

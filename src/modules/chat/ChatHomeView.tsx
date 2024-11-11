@@ -31,13 +31,14 @@ import { Thread } from '@/app/api/threads/types';
 import { ChatMessage } from './types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 
-interface ChatState {
+export interface ChatState {
   thread: Thread;
   messages: ChatMessage[];
 }
 
 export function ChatHomeView() {
-  const { getMessages, clear, reset, setThread } = useChat();
+  const { getMessages, clear, reset, setThread, builderState, assistant } =
+    useChat();
   const queryClient = useQueryClient();
   const router = useRouter();
   const { project } = useAppContext();
@@ -50,7 +51,7 @@ export function ChatHomeView() {
       // So instead we use history api manually and handle 'popstate' event.
       // Nextjs since 14.1 expects history can be used directly so we are not
       // bypassing nextjs entirelly.
-      window.history.replaceState(
+      window.history.pushState(
         {
           chat: {
             thread,
@@ -58,7 +59,7 @@ export function ChatHomeView() {
           } satisfies ChatState,
         },
         '',
-        `/${project.id}/thread/${thread.id}`,
+        `/${project.id}${builderState ? `/builder/${assistant.data?.id}` : ''}/thread/${thread.id}`,
       );
       queryClient.invalidateQueries({
         queryKey: threadsQuery(project.id).queryKey,

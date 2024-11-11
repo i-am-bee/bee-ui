@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { Tool } from '@/app/api/tools/types';
+import { Tool, ToolReference } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { isNotNull } from '@/utils/helpers';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
+import clsx from 'clsx';
 import Markdown, { Components } from 'react-markdown';
 import { ToolTypeTag } from '../assistants/tools/ToolTypeTag';
 import { useDeleteTool } from './hooks/useDeleteTool';
@@ -54,7 +55,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={<ToolIcon tool={tool} />}
+        icon={<ToolIcon tool={getToolReference(tool)} />}
         onClick={() =>
           openModal((props) =>
             tool.type === 'user' ? (
@@ -109,10 +110,18 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   );
 }
 
-export function ToolIcon({ tool }: { tool: Tool }) {
-  const { toolIcon: Icon } = useToolInfo(getToolReference(tool));
+export function ToolIcon({
+  tool,
+  size = 'md',
+  className,
+}: {
+  tool: ToolReference;
+  className?: string;
+  size?: 'md' | 'sm';
+}) {
+  const { toolIcon: Icon } = useToolInfo(tool);
   return (
-    <span className={classes.icon}>
+    <span className={clsx(classes.icon, className)} data-size={size}>
       <Icon size="20" />
     </span>
   );

@@ -16,6 +16,8 @@
 
 @use 'styles/common' as *;
 
+$line-size: (21 / 14) * 0.875rem;
+
 .root {
   /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */
   display: grid;
@@ -23,6 +25,7 @@
   &::after {
     /* Note the weird space! Needed to preventy jumpy behavior */
     content: attr(data-replicated-value) ' ';
+    max-block-size: calc((var(--max-rows) * $line-size) + (2 * $spacing-04));
 
     /* This is how textarea text behaves */
     white-space: pre-wrap;
@@ -36,6 +39,10 @@
     resize: none;
     /* Hide FF scrollbar on growth */
     overflow: hidden;
+    max-block-size: var(--max-block-size);
+    &::placeholder {
+      color: $text-placeholder;
+    }
   }
 
   > textarea,

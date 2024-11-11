@@ -26,6 +26,7 @@ import { InputBar } from './layout/InputBar';
 import { Message } from './message/Message';
 import { useChat, useChatMessages } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
+import clsx from 'clsx';
 
 export const ConversationView = memo(function ConversationView() {
   const {
@@ -37,7 +38,7 @@ export const ConversationView = memo(function ConversationView() {
 
   const messages = useChatMessages();
 
-  const { assistant } = useChat();
+  const { assistant, builderState } = useChat();
 
   const scrollToBottom = useCallback(() => {
     const scrollElement = scrollRef.current;
@@ -77,10 +78,12 @@ export const ConversationView = memo(function ConversationView() {
   return (
     <div
       {...getRootProps({
-        className: classes.root,
+        className: clsx(classes.root, {
+          [classes.builderMode]: Boolean(builderState),
+        }),
       })}
     >
-      <ConversationHeader />
+      {!builderState && <ConversationHeader />}
 
       <div className={classes.content} ref={scrollRef}>
         <div ref={bottomRef} />

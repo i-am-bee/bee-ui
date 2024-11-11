@@ -33,6 +33,7 @@ export function FilesMenu({ onUploadClick }: Props) {
     <IconButton
       label="Upload file"
       onClick={onUploadClick}
+      autoAlign
       kind="ghost"
       size="sm"
     >

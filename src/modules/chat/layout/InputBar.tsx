@@ -64,7 +64,14 @@ export const InputBar = memo(function InputBar({
     dropzone: { getInputProps, open: openUpload },
     removeFile,
   } = useFilesUpload();
-  const { sendMessage, status, cancel, assistant, disabledTools } = useChat();
+  const {
+    sendMessage,
+    status,
+    cancel,
+    assistant,
+    disabledTools,
+    builderState,
+  } = useChat();
   const { project } = useAppContext();
 
   const { register, watch, handleSubmit, setValue } = useForm<FormValues>({
@@ -161,50 +168,63 @@ export const InputBar = memo(function InputBar({
         )}
 
         <div className={classes.inputContainer}>
-          <div className={classes.actions}>
-            <ThreadSettings buttonRef={threadSettingsButtonRef} />
-
-            {isFileUploadEnabled && (
-              <>
-                <input type="file" {...getInputProps()} />
-                <FilesMenu onUploadClick={openUpload} />
-              </>
-            )}
-          </div>
-
           <TextAreaAutoHeight
             className={classes.textarea}
             rows={1}
-            placeholder="Type your question or drag a document…"
-            autoFocus
+            placeholder="Ask a question…"
+            autoFocus={!builderState}
             ref={mergeRefs([inputFormRef, inputRef])}
             {...inputFormProps}
             onKeyDown={submitFormOnEnter}
+            onFocus={() => builderState?.onAutoSaveAssistant()}
           />
-          <div className={classes.submitBtnContainer}>
-            {!isPending ? (
-              <Button
-                type="submit"
-                renderIcon={Send}
-                kind="ghost"
-                size="sm"
-                hasIconOnly
-                iconDescription="Send"
-                disabled={isFilesPending || !inputValue}
-              />
-            ) : (
-              <Button
-                renderIcon={StopOutlineFilled}
-                kind="ghost"
-                size="sm"
-                hasIconOnly
-                iconDescription="Cancel"
-                disabled={status === 'waiting'}
-                onClick={() => {
-                  cancel();
-                }}
-              />
-            )}
+          <div className={classes.actionBar}>
+            <div className={classes.actions}>
+              {!builderState && (
+                <ThreadSettings buttonRef={threadSettingsButtonRef} />
+              )}
+
+              {isFileUploadEnabled && (
+                <>
+                  <input
+                    type="file"
+                    {...getInputProps()}
+                    disabled={!assistant}
+                  />
+                  <FilesMenu onUploadClick={openUpload} />
+                </>
+              )}
+            </div>
+
+            <div className={classes.submitBtnContainer}>
+              {!isPending ? (
+                <Button
+                  type="submit"
+                  renderIcon={Send}
+                  kind="ghost"
+                  size="sm"
+                  hasIconOnly
+                  iconDescription="Send"
+                  disabled={
+                    isFilesPending ||
+                    !inputValue ||
+                    (builderState && !builderState.isSaved)
+                  }
+                />
+              ) : (
+                <Button
+                  renderIcon={StopOutlineFilled}
+                  kind="ghost"
+                  size="sm"
+                  hasIconOnly
+                  iconDescription="Cancel"
+                  disabled={status === 'waiting'}
+                  onClick={() => {
+                    cancel();
+                  }}
+                />
+              )}
+            </div>
           </div>
 
           {showSuggestions && (

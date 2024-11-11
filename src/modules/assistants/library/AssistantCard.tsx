@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-import { SkeletonIcon, SkeletonText } from '@carbon/react';
 import { MouseEventHandler, useState } from 'react';
 import { useDeleteAssistant } from '../builder/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
 import classes from './AssistantCard.module.scss';
 import BlankAssistantCard from './blank-app-card.svg';
-import { AssistantModalRenderer } from '../builder/AssistantModalRenderer';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
+import { AssistantModalRenderer } from '../detail/AssistantModalRenderer';
 
 interface Props {
   assistant: Assistant;

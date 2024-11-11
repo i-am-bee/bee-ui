@@ -16,7 +16,10 @@
 
 import { listTools, readTool } from '@/app/api/tools';
 import { Tool, ToolsListQuery } from '@/app/api/tools/types';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
+import {
+  decodeEntityWithMetadata,
+  encodeEntityWithMetadata,
+} from '@/app/api/utils';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import {
   QueryClient,
@@ -75,4 +78,5 @@ export const readToolQuery = (projectId: string, id: string) =>
     queryKey: ['tool', projectId, id],
     queryFn: () => readTool(projectId, id),
     staleTime: 60 * 60 * 1_000,
+    select: (data) => data && decodeEntityWithMetadata<Tool>(data),
   });
