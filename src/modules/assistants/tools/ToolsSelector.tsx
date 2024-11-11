@@ -82,28 +82,23 @@ function SelectedToolsItem({
   tool: ToolReference;
   onToggle: (tool: ToolReference, toggled: boolean) => void;
 }) {
-  const { project } = useAppContext();
-  const { data } = useQuery({
-    ...readToolQuery(project.id, toolProp.id),
-    enabled:
-      !toolProp.tool &&
-      (toolProp.type === 'user' || toolProp.type === 'system'),
-  });
-
-  const tool = data ? { ...toolProp, tool: data } : toolProp;
-  const { toolName, toolIcon: Icon } = useToolInfo(tool);
+  const { toolName, toolIcon: Icon, error } = useToolInfo(toolProp);
 
   return (
-    <AnimatePresence key={tool.id}>
+    <AnimatePresence>
       <motion.li {...fadeProps()}>
         <span className={classes.selectedIcon}>
           <Icon />
         </span>
-        {toolName}
+        {error ? (
+          <span className={classes.toolError}>Tool not found</span>
+        ) : (
+          toolName
+        )}
         <Tooltip content="Remove tool from bee" asChild placement="top">
           <button
             className={classes.removeButton}
-            onClick={() => onToggle(tool, false)}
+            onClick={() => onToggle(toolProp, false)}
           >
             <Close size={18} />
           </button>
