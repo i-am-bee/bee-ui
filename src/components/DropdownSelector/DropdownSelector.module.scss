@@ -103,6 +103,17 @@
   overflow: auto;
   max-block-size: 50vh;
 
+  &:not(:has(ul:not(:empty)))::after {
+    content: 'No items available';
+    font-size: rem(14px);
+    color: $text-secondary;
+  }
+  .listGroup {
+    &:has(ul:empty) {
+      display: none;
+    }
+  }
+
   h3 {
     @include type-style('label-01');
     color: $text-secondary;
@@ -172,7 +183,7 @@
     display: flex;
     gap: $spacing-02;
     padding-inline-end: $spacing-06;
-    &:hover {
+    &:hover:not(:disabled) {
       border-color: $text-primary;
       background-color: $background;
       color: $text-primary;

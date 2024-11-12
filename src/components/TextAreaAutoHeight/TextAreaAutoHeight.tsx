@@ -46,8 +46,6 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
     const [manualHeight, setManualHeight] = useState<number | null>(null);
 
     const handleInput = useCallback((event: Event) => {
-      console.log('input!');
-
       setValue((event.target as HTMLTextAreaElement).value);
     }, []);
 

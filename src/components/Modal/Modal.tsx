@@ -34,6 +34,7 @@ import {
   useState,
 } from 'react';
 import classes from './Modal.module.scss';
+import { useModalControl } from '@/layout/providers/ModalControlProvider';
 
 type Props = {
   rootClassName?: string;
@@ -72,6 +73,7 @@ type Props = {
   onRequestClose?: () => void;
   /** Called when modal finished closing and unmounted from DOM */
   onAfterClose?: () => void;
+
   children: ReactNode;
 } & Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -100,22 +102,11 @@ export function Modal({
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
   const [visible, setVisible] = useState(false);
-  const { isBlocked, confirmMessage } = useNavigationControl();
+  const { onRequestCloseSafe } = useModalControl();
 
   useEffect(() => {
     setVisible(isOpen);
   }, [isOpen]);
-
-  const handleRequestClose = () => {
-    if (
-      isBlocked &&
-      !window.confirm(confirmMessage ?? CONFIRM_MESSAGE_DEFAULT)
-    ) {
-      return false;
-    }
-
-    onRequestClose?.();
-  };
 
   const handleAfterClose = () => {
     onAfterClose?.();
@@ -159,7 +150,7 @@ export function Modal({
             ref={ref}
             {...props}
             open={visible}
-            onClose={handleRequestClose}
+            onClose={onRequestCloseSafe}
             className={clsx(classes.modal, props.className)}
           />
         </motion.div>

@@ -60,6 +60,7 @@ export const Message = memo(function Message({
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
   const { project } = useAppContext();
+  const { setMessages } = useChat();
   const { ref: inViewRef, inView } = useInView({
     rootMargin: '30% 0%',
     triggerOnce: true,
@@ -222,7 +223,7 @@ function Content({ message }: { message: ChatMessage }) {
 function Sender({ message }: { message: ChatMessage }) {
   const { role } = message;
   const name = useUserProfile((state) => state.name);
-  const { assistant } = useChat();
+  const { assistant, builderState } = useChat();
   const { openAssistantModal } = useAssistantModal();
 
   const { data: assistantData } = assistant;
@@ -238,7 +239,7 @@ function Sender({ message }: { message: ChatMessage }) {
   if (role === 'assistant') {
     return (
       <figure>
-        {assistantData ? (
+        {assistantData && !builderState ? (
           <BounceButton
             onClick={() => openAssistantModal(assistantData)}
             scale={0.875}

@@ -239,20 +239,24 @@ export const InputBar = memo(function InputBar({
       </div>
 
       <p className={classes.disclaimer}>
-        <AssistantBaseIcon name="Bee" size="sm" />
+        {!builderState && <AssistantBaseIcon name="Bee" size="sm" />}
         <span>
           Bee is an experimental AI that can fly off course. Double check all
           important information.
           {toolsInUse && (
             <>
               {' '}
-              <button
-                className={classes.toolsButton}
-                type="button"
-                onClick={() => threadSettingsButtonRef.current?.click()}
-              >
-                External tools in use
-              </button>
+              {builderState ? (
+                'External tools in use'
+              ) : (
+                <button
+                  className={classes.toolsButton}
+                  type="button"
+                  onClick={() => threadSettingsButtonRef.current?.click()}
+                >
+                  External tools in use
+                </button>
+              )}
               .
             </>
           )}

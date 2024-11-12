@@ -34,6 +34,7 @@ import {
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { v4 as uuid } from 'uuid';
+import { ModalControlProvider } from './ModalControlProvider';
 
 export interface ModalProps {
   /** True if modal is open */
@@ -128,7 +129,9 @@ const ModalWrapper = memo(function ModalWrapper({
         return <FallbackModal {...props} {...fallbackProps} />;
       }}
     >
-      {renderModal(props)}
+      <ModalControlProvider onRequestClose={props.onRequestClose}>
+        {renderModal(props)}
+      </ModalControlProvider>
     </ErrorBoundary>
   );
 });

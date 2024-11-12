@@ -69,6 +69,9 @@ export function Builder({ thread, initialMessages }: Props) {
 
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
     assistant: assistant!,
+    onSuccess: () => {
+      router.push(`/${project.id}`);
+    },
   });
 
   const isSaved = Boolean(assistant && isEmpty(dirtyFields));
@@ -128,16 +131,11 @@ export function Builder({ thread, initialMessages }: Props) {
 
           <Controller
             name="description"
-            rules={{ required: true }}
-            render={({
-              field: { onChange, value, ref },
-              fieldState: { invalid },
-            }) => (
+            render={({ field: { onChange, value, ref } }) => (
               <TextArea
                 labelText="Description (user-facing)"
                 rows={3}
                 placeholder="Describe your bee so users can kow how to use it"
-                invalid={invalid}
                 invalidText="Description is required"
                 value={value}
                 ref={ref}
@@ -239,7 +237,7 @@ function BuilderChat() {
   return (
     <>
       <div className={classes.chatTopBar}>
-        <div>This is preview of your new bee. </div>
+        <div>This is preview of your bee. </div>
 
         <Button
           kind="ghost"

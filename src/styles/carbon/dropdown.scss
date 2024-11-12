@@ -1,0 +1,44 @@
+@use '../common' as *;
+
+.#{$prefix}--dropdown,
+.#{$prefix}--combo-box {
+  &,
+  &:hover {
+    border-block-end: none;
+    background-color: transparent;
+  }
+}
+.#{$prefix}--list-box__field {
+  background-color: $background;
+  border: 1px solid $border-subtle-00;
+  border-radius: $block-radius;
+}
+.#{$prefix}--combo-box {
+  .#{$prefix}--list-box__field {
+    padding-inline-start: 0;
+  }
+  .#{$prefix}--text-input {
+    border: none;
+  }
+}
+.#{$prefix}--list-box__menu {
+  background-color: $background;
+  border-radius: $block-radius;
+  box-shadow: $box-shadow;
+  .#{$prefix}--list-box__menu-item {
+    &:hover {
+      background-color: $layer-hover-01;
+    }
+    &[aria-selected='true'] {
+      background-color: transparent;
+    }
+    &:first-child {
+      border-start-start-radius: $block-radius;
+      border-start-end-radius: $block-radius;
+    }
+    &:last-child {
+      border-end-start-radius: $block-radius;
+      border-end-end-radius: $block-radius;
+    }
+  }
+}
