@@ -156,9 +156,13 @@ export function Builder({ thread, initialMessages }: Props) {
               <Button
                 kind="danger--ghost"
                 onClick={deleteAssistant}
-                disabled={isProjectReadOnly}
+                disabled={isProjectReadOnly || isDeletePending}
               >
-                Delete bee
+                {isDeletePending ? (
+                  <InlineLoading title="Deleting..." />
+                ) : (
+                  'Delete bee'
+                )}
               </Button>
             )}
           </div>
