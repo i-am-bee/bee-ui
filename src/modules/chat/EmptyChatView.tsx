@@ -57,16 +57,16 @@ export const EmptyChatView = memo(function EmptyChatView({
       })}
     >
       <Container size="sm" className={classes.content}>
-        {assistant ? (
-          <AssistantAvatar assistant={assistant} size="xxl" />
-        ) : builderState ? (
-          <AssistantAvatar
-            assistant={null}
+        {builderState ? (
+          <AssistantIcon
+            assistant={assistant}
             initialLetter={builderState.name.at(0) ?? 'N'}
             color={builderState.icon?.color}
             iconName={builderState.icon?.name}
             size="xxl"
           />
+        ) : assistant ? (
+          <AssistantAvatar assistant={assistant} size="xxl" />
         ) : (
           <AssistantIcon assistant={assistant} size="xxl" />
         )}

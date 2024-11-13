@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Button, Checkbox, Tag } from '@carbon/react';
+import { Button, Checkbox, Tag, TextInput } from '@carbon/react';
 import classes from './DropdownSelector.module.scss';
 import { Checkmark, ChevronDown, Close } from '@carbon/react/icons';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -29,7 +29,14 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
-import { ReactElement, useCallback, useId, useRef, useState } from 'react';
+import {
+  ReactElement,
+  useCallback,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { fadeProps } from '@/utils/fadeProps';
 import { mergeRefs } from 'react-merge-refs';
 import clsx from 'clsx';
@@ -62,7 +69,9 @@ export function DropdownSelector<T extends ItemWithId>({
   itemToString,
   itemToElement,
 }: Props<T>) {
+  const id = useId();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState<string>('');
   const [selected, setSelected] = useState<T[]>(
     Array.isArray(controlledSelected)
       ? controlledSelected
@@ -75,6 +84,7 @@ export function DropdownSelector<T extends ItemWithId>({
   const handleClear = useCallback(() => {
     onSubmit(null, noop);
     setSelected([]);
+    setSearchValue('');
   }, [onSubmit]);
 
   const handleSubmit = useCallback(() => {
@@ -125,33 +135,47 @@ export function DropdownSelector<T extends ItemWithId>({
     role,
   ]);
 
+  const isControlledValueSelected =
+    controlledSelected && selected.at(0) === controlledSelected;
+
   return (
     <div className={classes.root}>
-      <div className={classes.field}>
-        <Button
-          kind="tertiary"
-          renderIcon={ChevronDown}
-          className={clsx(classes.openButton, {
-            [classes.isOpen]: isOpen,
-            [classes.isOpenDisabled]: controlledSelected,
-          })}
+      <div
+        className={clsx(classes.field, {
+          [classes.isOpen]: isOpen,
+          [classes.isOpenDisabled]: controlledSelected,
+        })}
+      >
+        <TextInput
+          id={`${id}:`}
+          labelText=""
+          size="lg"
+          placeholder={placeholder}
+          // TODO: onFocus={() => }
           ref={mergeRefs([buttonRef, refs.setReference])}
           {...getReferenceProps()}
-        >
-          {controlledSelected && !Array.isArray(controlledSelected) ? (
-            <span className={classes.openButtonValue}>
-              {itemToString(controlledSelected)}
-            </span>
-          ) : (
-            <span className={classes.openButtonPlaceholder}>{placeholder}</span>
-          )}
-        </Button>
-        {controlledSelected && !Array.isArray(controlledSelected) && (
+          onChange={(e) => {
+            setSearchValue(e.currentTarget.value);
+            setIsOpen(true);
+          }}
+          value={
+            isControlledValueSelected
+              ? itemToString(controlledSelected)
+              : searchValue
+          }
+          readOnly={isControlledValueSelected}
+        />
+
+        {isControlledValueSelected ? (
           <ClearButton
             label="Disconnect knowledge base"
             className={classes.clearButton}
             onClick={() => handleClear()}
           />
+        ) : (
+          <button className={classes.expandButton}>
+            <ChevronDown />
+          </button>
         )}
       </div>
       <AnimatePresence>
@@ -183,34 +207,29 @@ export function DropdownSelector<T extends ItemWithId>({
                 >
                   <div className={classes.list}>
                     {isListItemGroupArray(items) ? (
-                      items.map(({ id, groupTitle, items }) => (
-                        <div key={id}>
+                      items.map(({ id, groupTitle, items: groupItems }) => (
+                        <div className={classes.listGroup} key={id}>
                           <h3>{groupTitle}</h3>
-                          <ul>
-                            {items.map((item, index) => (
-                              <ListOption<T>
-                                key={item.id}
-                                item={item}
-                                selectedItems={selected}
-                                onToggle={handleToggle}
-                                itemToElement={itemToElement ?? itemToString}
-                              />
-                            ))}
-                          </ul>
+
+                          <ItemsList<T>
+                            items={groupItems}
+                            selectedItems={selected}
+                            onToggle={handleToggle}
+                            itemToElement={itemToElement}
+                            itemToString={itemToString}
+                            searchValue={searchValue}
+                          />
                         </div>
                       ))
                     ) : (
-                      <ul role="listbox">
-                        {items.map((item, index) => (
-                          <ListOption<T>
-                            key={item.id}
-                            item={item}
-                            selectedItems={selected}
-                            onToggle={handleToggle}
-                            itemToElement={itemToElement ?? itemToString}
-                          />
-                        ))}
-                      </ul>
+                      <ItemsList<T>
+                        items={items}
+                        selectedItems={selected}
+                        onToggle={handleToggle}
+                        itemToElement={itemToElement}
+                        itemToString={itemToString}
+                        searchValue={searchValue}
+                      />
                     )}
                   </div>
                   <div className={classes.actionBar}>
@@ -234,6 +253,48 @@ export function DropdownSelector<T extends ItemWithId>({
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+interface ListProps<T extends ItemWithId> {
+  items: T[];
+  searchValue: string;
+  selectedItems: T[];
+  onToggle: (item: T, toggled: boolean) => void;
+  itemToElement?: (item: T) => ReactElement;
+  itemToString: (item: T) => string;
+}
+
+function ItemsList<T extends ItemWithId>({
+  items,
+  searchValue,
+  selectedItems,
+  onToggle,
+  itemToElement,
+  itemToString,
+}: ListProps<T>) {
+  const itemsFiltered = useMemo(
+    () =>
+      searchValue
+        ? items.filter((item) =>
+            containsStringCi(itemToString(item), searchValue),
+          )
+        : items,
+    [itemToString, items, searchValue],
+  );
+
+  return (
+    <ul role="listbox">
+      {itemsFiltered.map((item) => (
+        <ListOption<T>
+          key={item.id}
+          item={item}
+          selectedItems={selectedItems}
+          onToggle={onToggle}
+          itemToElement={itemToElement ?? itemToString}
+        />
+      ))}
+    </ul>
   );
 }
 
@@ -288,4 +349,6 @@ function isListItemGroupArray<T>(
   return has(item, 'id') && has(item, 'groupTitle') && has(item, 'items');
 }
 
-type OnItemToggle = <T extends ItemWithId>(item: T, toggled: boolean) => void;
+function containsStringCi(source: string, search: string) {
+  return source.toLocaleLowerCase().includes(search.toLocaleLowerCase());
+}

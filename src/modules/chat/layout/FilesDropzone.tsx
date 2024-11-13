@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  HUMAN_ALLOWED_EXTENSIONS_EXTRACTION,
-  HUMAN_ALLOWED_EXTENSIONS_TEXT,
-  HUMAN_MAX_SIZE,
-} from '@/modules/knowledge/files/KnowledgeFilesUpload';
+import { HUMAN_MAX_SIZE } from '@/modules/knowledge/files/KnowledgeFilesUpload';
 import { CloudUpload } from '@carbon/react/icons';
 import classes from './FilesDropzone.module.scss';
 

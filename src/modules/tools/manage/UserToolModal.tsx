@@ -18,7 +18,6 @@ import { Project } from '@/app/api/projects/types';
 import { createTool, deleteTool, updateTool } from '@/app/api/tools';
 import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
-import { Link } from '@/components/Link/Link';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
@@ -32,12 +31,12 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { ArrowUpRight } from '@carbon/react/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useId } from 'react';
+import { useCallback, useEffect, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toolsQuery } from '../queries';
 import classes from './UserToolModal.module.scss';
+import { useModalControl } from '@/layout/providers/ModalControlProvider';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -78,6 +77,11 @@ export function UserToolModal({
   const { onRequestClose } = props;
   const { openConfirmation } = useModal();
   const id = useId();
+  const {
+    setConfirmOnRequestClose,
+    clearConfirmOnRequestClose,
+    onRequestCloseSafe,
+  } = useModalControl();
 
   const editMode = tool != undefined;
 
@@ -87,7 +91,7 @@ export function UserToolModal({
     control,
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid, isSubmitting, isDirty },
   } = useForm<FormValues>({
     defaultValues: {
       name: tool?.name || '',
@@ -95,6 +99,15 @@ export function UserToolModal({
     },
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    if (isDirty)
+      setConfirmOnRequestClose(
+        'Your tool has unsaved changes, do you really want to leave?',
+      );
+    else clearConfirmOnRequestClose();
+    return () => clearConfirmOnRequestClose();
+  }, [clearConfirmOnRequestClose, isDirty, setConfirmOnRequestClose]);
 
   const {
     mutateAsync: mutateSaveTool,
@@ -250,7 +263,7 @@ export function UserToolModal({
               )}
             </Button>
           ) : (
-            <Button kind="ghost" onClick={() => onRequestClose()}>
+            <Button kind="ghost" onClick={() => onRequestCloseSafe()}>
               Cancel
             </Button>
           )}

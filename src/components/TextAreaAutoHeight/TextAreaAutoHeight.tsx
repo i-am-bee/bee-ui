@@ -28,6 +28,7 @@ import {
 } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 import classes from './TextAreaAutoHeight.module.scss';
+import { Resizable } from 'react-resizable';
 
 type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value'> & {
   maxRows?: number;
@@ -41,6 +42,8 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
   ) {
     const [value, setValue] = useState(rest.defaultValue ?? '');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [manualHeight, setManualHeight] = useState<number | null>(null);
 
     const handleInput = useCallback((event: Event) => {
       setValue((event.target as HTMLTextAreaElement).value);
@@ -55,12 +58,12 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
       return () => element?.removeEventListener('input', handleInput);
     });
 
-    // TODO: add resizable feature
-
-    return (
+    const content = (
       <div
+        ref={containerRef}
         className={clsx(classes.root, className, {
           [classes.resizable]: resizable,
+          [classes.resized]: Boolean(manualHeight),
         })}
         data-replicated-value={value}
         style={
@@ -75,6 +78,31 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
           onChange={onChange}
         />
       </div>
+    );
+
+    return resizable ? (
+      <Resizable
+        width={10}
+        height={manualHeight ?? 0}
+        onResizeStart={() =>
+          setManualHeight(textareaRef.current?.offsetHeight ?? 0)
+        }
+        onResize={(_, data) => {
+          const newHeight = data.size.height;
+          setManualHeight(newHeight);
+          if (textareaRef.current)
+            textareaRef.current.style.blockSize = `${newHeight}px`;
+        }}
+        handle={
+          <button className={classes.resizeHandle}>
+            <span className={classes.resizeHandleContent}></span>
+          </button>
+        }
+      >
+        {content}
+      </Resizable>
+    ) : (
+      content
     );
   },
 );

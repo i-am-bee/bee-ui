@@ -17,14 +17,16 @@
 @use 'styles/common' as *;
 
 .root {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: stretch;
 }
 
 .form {
   display: grid;
   grid-template-rows: max-content 1fr max-content;
   block-size: 100vh;
+  max-inline-size: rem(800px);
+  flex: 1 1 auto;
 
   fieldset {
     display: flex;
@@ -69,6 +71,7 @@
   grid-template-rows: max-content 1fr;
   block-size: 100vh;
   overflow: hidden;
+  flex: 1 0 auto;
 
   > :last-child {
     max-block-size: 100%;

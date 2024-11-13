@@ -44,6 +44,7 @@ import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard'
 import pluralize from 'pluralize';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
+import { Link } from '@/components/Link/Link';
 
 export function KnowledgeSelector() {
   const { openModal } = useModal();
@@ -162,6 +163,12 @@ export function KnowledgeSelector() {
             selected={vectorStore}
             placeholder="Browse knowledge bases"
             itemToString={(item) => item.name}
+            submitButtonTitle="Connect"
+            actionBarContentLeft={
+              <Link href={`/${project.id}/knowledge`} target="_blank">
+                Browse knowledge library
+              </Link>
+            }
           />
         </div>
       )}

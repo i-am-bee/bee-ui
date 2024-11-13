@@ -131,7 +131,7 @@ export function AssistantsHome() {
         </CardsList>
       </ProjectHome>
 
-      <OnboardingModal assistants={data?.assistants} isOpen />
+      <OnboardingModal isOpen />
     </>
   );
 }

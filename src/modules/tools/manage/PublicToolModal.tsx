@@ -17,11 +17,11 @@
 import { Tool } from '@/app/api/tools/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { ToolTypeTag } from '@/modules/assistants/tools/ToolTypeTag';
 import { ModalBody, ModalHeader } from '@carbon/react';
-import classes from './PublicToolModal.module.scss';
 import { ToolDescription, ToolIcon } from '../ToolCard';
-import { ToolExternalTag } from '@/modules/assistants/tools/ToolToggle';
-import { getToolReferenceFromTool, isExternalTool } from '../utils';
+import { getToolReferenceFromTool } from '../utils';
+import classes from './PublicToolModal.module.scss';
 
 interface Props extends ModalProps {
   tool: Tool;
@@ -46,7 +46,9 @@ export function PublicToolModal({ tool, ...props }: Props) {
         <dl className={classes.body}>
           <div>
             <dt>Type of tool</dt>
-            <dd>{isExternalTool(tool.type, tool.id) && <ToolExternalTag />}</dd>
+            <dd>
+              <ToolTypeTag type={tool.type} id={tool.id} showTooltip />
+            </dd>
           </div>
           <div>
             <dt>Detailed description</dt>

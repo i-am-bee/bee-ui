@@ -21,6 +21,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { FallbackModal } from '../FallbackModal/FallbackModal';
 import LazyRenderer from './LazyRenderer';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 
 interface Props {
   isOpen: boolean;
@@ -53,7 +54,9 @@ export function LazyModalRenderer({
       <Suspense fallback={<Loading />}>
         {/* Use LazyRenderer to postpone mount of lazy loaded component modal until user opens it for the first time  */}
         <LazyRenderer trigger={isOpen}>
-          {children({ isOpen, onRequestClose, onAfterClose })}
+          <ModalControlProvider onRequestClose={onRequestClose}>
+            {children({ isOpen, onRequestClose, onAfterClose })}
+          </ModalControlProvider>
         </LazyRenderer>
       </Suspense>
     </ErrorBoundary>

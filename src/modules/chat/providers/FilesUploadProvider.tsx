@@ -42,7 +42,6 @@ import {
   useDropzone,
 } from 'react-dropzone';
 import { v4 as uuid } from 'uuid';
-import { ALLOWED_MIME_TYPES } from '@/modules/knowledge/files/KnowledgeFilesUpload';
 import {
   useVectoreStoreFilesUpload,
   VectoreStoreFileUpload,
@@ -51,6 +50,7 @@ import { Thread } from '@/app/api/threads/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { isMimeTypeReadable } from '@/modules/files/utils';
 
 const FilesUploadContext = createContext<{
   files: VectoreStoreFileUpload[];
@@ -161,7 +161,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
         status: 'new' as const,
         isReadable:
           isFeatureEnabled(FeatureName.Knowledge) &&
-          ALLOWED_MIME_TYPES.some((type) => type === file.type),
+          isMimeTypeReadable(file.type),
       }));
 
       setFiles((files) => [...files, ...newFiles]);

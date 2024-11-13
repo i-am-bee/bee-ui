@@ -22,25 +22,20 @@
 
 .field {
   position: relative;
-  .clearButton {
-    position: absolute;
-    inset-block-start: rem(8px);
-    inset-inline-end: $spacing-04;
+
+  :global(.#{$prefix}--text-input) {
+    cursor: default;
+    &:hover {
+      border-color: $background-inverse;
+      color: $text-primary;
+    }
+    &:focus {
+      outline: none;
+    }
   }
-}
-.openButton {
-  inline-size: 100%;
-  max-inline-size: none;
-  padding-block: 0;
-  align-items: center;
-  padding-inline-end: $spacing-10;
-  &:hover {
-    background-color: $background;
-    border-color: $background-inverse;
-    color: $text-primary;
-  }
+
   &.isOpen {
-    > svg {
+    .expandButton {
       transform: rotate(-180deg);
     }
   }
@@ -50,6 +45,29 @@
       display: none;
     }
   }
+
+  .clearButton,
+  .expandButton {
+    position: absolute;
+    inset-block-start: rem(8px);
+    inset-inline-end: $spacing-04;
+  }
+  .expandButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    block-size: rem(32px);
+    inline-size: rem(32px);
+  }
+}
+.openButton {
+  inline-size: 100%;
+  max-inline-size: none;
+  padding-block: 0;
+  align-items: center;
+  padding-inline-end: $spacing-10;
 }
 .openButtonPlaceholder {
   color: $text-placeholder;
@@ -84,6 +102,17 @@
   padding: $spacing-05 $spacing-04;
   overflow: auto;
   max-block-size: 50vh;
+
+  &:not(:has(ul:not(:empty)))::after {
+    content: 'No items available';
+    font-size: rem(14px);
+    color: $text-secondary;
+  }
+  .listGroup {
+    &:has(ul:empty) {
+      display: none;
+    }
+  }
 
   h3 {
     @include type-style('label-01');
@@ -154,7 +183,7 @@
     display: flex;
     gap: $spacing-02;
     padding-inline-end: $spacing-06;
-    &:hover {
+    &:hover:not(:disabled) {
       border-color: $text-primary;
       background-color: $background;
       color: $text-primary;

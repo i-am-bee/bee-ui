@@ -49,6 +49,10 @@
 @use '@carbon/styles/scss/components/data-table/skeleton';
 @use '@carbon/styles/scss/components/pagination';
 
+// customization of carbon components
+@import './carbon/dropdown.scss';
+@import './carbon/overflow-menu.scss';
+
 html {
   overflow: hidden;
 }
@@ -142,126 +146,6 @@ h1 {
   padding: 0;
 }
 
-.#{$prefix}--modal-footer.#{$prefix}--btn-set {
-  .#{$prefix}--btn {
-    block-size: rem(48px);
-    padding-block: 0;
-    display: flex;
-    align-items: center;
-    flex: 0 1 40%;
-    box-shadow: none !important;
-
-    &:first-child {
-      flex-grow: 1;
-    }
-  }
-  .#{$prefix}--btn--ghost {
-    color: $text-primary;
-  }
-}
-
-.#{$prefix}--dropdown,
-.#{$prefix}--combo-box {
-  &,
-  &:hover {
-    border-block-end: none;
-    background-color: transparent;
-  }
-}
-.#{$prefix}--list-box__field {
-  background-color: $background;
-  border: 1px solid $border-subtle-00;
-  border-radius: $block-radius;
-}
-.#{$prefix}--combo-box {
-  .#{$prefix}--list-box__field {
-    padding-inline-start: 0;
-  }
-  .#{$prefix}--text-input {
-    border: none;
-  }
-}
-.#{$prefix}--list-box__menu {
-  background-color: $background;
-  border-radius: $block-radius;
-  box-shadow: $box-shadow;
-  .#{$prefix}--list-box__menu-item {
-    &:hover {
-      background-color: $layer-hover-01;
-    }
-    &[aria-selected='true'] {
-      background-color: transparent;
-    }
-    &:first-child {
-      border-start-start-radius: $block-radius;
-      border-start-end-radius: $block-radius;
-    }
-    &:last-child {
-      border-end-start-radius: $block-radius;
-      border-end-end-radius: $block-radius;
-    }
-  }
-}
-
-.#{$prefix}--overflow-menu.#{$prefix}--overflow-menu--open,
-.#{$prefix}--overflow-menu-options {
-  box-shadow: $box-shadow;
-}
-.#{$prefix}--overflow-menu-options {
-  padding-block: $spacing-03;
-  border-radius: $spacing-03;
-  z-index: z('modal');
-  &::after {
-    pointer-events: none;
-  }
-  &[data-floating-menu-direction='bottom'] {
-    &.#{$prefix}--overflow-menu--flip {
-      border-start-end-radius: 0;
-    }
-    &:not(.#{$prefix}--breadcrumb-menu-options)::after {
-      block-size: rem(8px);
-      inset-block-start: rem(-8px);
-    }
-  }
-  &[data-floating-menu-direction='bottom']:not(
-      .#{$prefix}--overflow-menu--flip
-    ) {
-    border-start-start-radius: 0;
-  }
-  &[data-floating-menu-direction='top'] {
-    &.#{$prefix}--overflow-menu--flip {
-      border-end-end-radius: 0;
-    }
-    &:not(.#{$prefix}--breadcrumb-menu-options)::after {
-      block-size: rem(8px);
-      inset-block-end: rem(-8px);
-    }
-  }
-  &[data-floating-menu-direction='top']:not(.#{$prefix}--overflow-menu--flip) {
-    border-end-start-radius: 0;
-  }
-}
-.#{$prefix}--overflow-menu-options__btn {
-  border-radius: inherit;
-  text-decoration: none;
-}
-.#{$prefix}--overflow-menu-options__option--danger
-  .#{$prefix}--overflow-menu-options__btn {
-  color: $text-error;
-  text-decoration: none;
-  &:disabled {
-    color: $text-disabled;
-  }
-  &:hover:not(:disabled),
-  &:focus:not(:disabled) {
-    color: $text-on-color;
-  }
-}
-.#{$prefix}--overflow-menu__wrapper {
-  .#{$prefix}--popover {
-    display: none;
-  }
-}
 .#{$prefix}--toggle {
   --cds-support-success: #{$text-primary};
   --cds-icon-on-color: #{$background};

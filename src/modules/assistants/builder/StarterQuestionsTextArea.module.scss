@@ -136,6 +136,7 @@
 }
 
 .removeButton {
+  z-index: 1;
   &:global(.#{$prefix}--popover-container) {
     position: absolute;
     inset-block-start: 0;

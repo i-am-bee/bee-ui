@@ -25,6 +25,11 @@ import { ErrorCode, FileRejection, useDropzone } from 'react-dropzone';
 import { v4 as uuid } from 'uuid';
 import classes from './KnowledgeFilesUpload.module.scss';
 import { VectoreStoreFileUpload } from './VectorStoreFilesUploadProvider';
+import {
+  ALLOWED_MIME_TYPES,
+  HUMAN_ALLOWED_EXTENSIONS_EXTRACTION,
+  HUMAN_ALLOWED_EXTENSIONS_TEXT_EXAMPLE,
+} from '@/modules/files/utils';
 
 interface Props {
   files: VectoreStoreFileUpload[];
@@ -95,8 +100,8 @@ export function KnowledgeFilesUpload({ files, disabled, onSetFiles }: Props) {
           <input type="file" {...getInputProps()} />
 
           <p className={classes.description}>
-            Supports files up to {HUMAN_MAX_SIZE}. Accepted formats: text (
-            {HUMAN_ALLOWED_EXTENSIONS_TEXT})
+            Supports files up to {HUMAN_MAX_SIZE}. Accepted formats: plain text
+            ({HUMAN_ALLOWED_EXTENSIONS_TEXT_EXAMPLE}, ...)
             {isFeatureEnabled(FeatureName.TextExtraction)
               ? ` and other files containing text (
             ${HUMAN_ALLOWED_EXTENSIONS_EXTRACTION})`
@@ -126,42 +131,6 @@ export function KnowledgeFilesUpload({ files, disabled, onSetFiles }: Props) {
 // MAX_SIZE representation for humans
 export const HUMAN_MAX_SIZE = '100 MiB';
 const MAX_SIZE = 100 * 1024 * 1024;
-export const ALLOWED_EXTENSIONS_TEXT = ['txt', 'md', 'html'];
-export const ALLOWED_EXTENSIONS_EXTRACTION = [
-  'pdf',
-  'jpg',
-  'jpeg',
-  'png',
-  'tiff',
-  'bmp',
-  'gif',
-];
-export const ALLOWED_EXTENSIONS = [
-  ...ALLOWED_EXTENSIONS_TEXT,
-  ...(isFeatureEnabled(FeatureName.TextExtraction)
-    ? ALLOWED_EXTENSIONS_EXTRACTION
-    : []),
-];
-export const ALLOWED_MIME_TYPES = ALLOWED_EXTENSIONS.map((ext) =>
-  String(mimeType.lookup(ext)),
-);
-const DROPZONE_ALLOWED_MIME_TYPES = ALLOWED_MIME_TYPES.reduce(
-  (result: { [key: string]: [] }, type) => {
-    result[type] = [];
-    return result;
-  },
-  {},
-);
-
-function getExtensionsReadable(extensions: string[]) {
-  return extensions.map((extension) => `.${extension}`).join(', ');
-}
-export const HUMAN_ALLOWED_EXTENSIONS_TEXT = getExtensionsReadable(
-  ALLOWED_EXTENSIONS_TEXT,
-);
-export const HUMAN_ALLOWED_EXTENSIONS_EXTRACTION = getExtensionsReadable(
-  ALLOWED_EXTENSIONS_EXTRACTION,
-);
 
 interface UploadFileItemProps {
   value: VectoreStoreFileUpload;
@@ -198,3 +167,11 @@ function UploadFileItem({ value, onDelete }: UploadFileItemProps) {
     />
   );
 }
+
+const DROPZONE_ALLOWED_MIME_TYPES = ALLOWED_MIME_TYPES.reduce(
+  (result: { [key: string]: [] }, type) => {
+    result[type] = [];
+    return result;
+  },
+  {},
+);

@@ -26,7 +26,6 @@ import {
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { isNotNull } from '@/utils/helpers';
-import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,
@@ -48,6 +47,7 @@ import {
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
 import { ToolReference } from '@/app/api/tools/types';
+import { isEmpty } from 'lodash';
 
 export type AssistantFormValues = {
   icon: {
@@ -94,7 +94,6 @@ export function AssistantBuilderProvider({
   children,
 }: Props) {
   const { addToast } = useToast();
-  const queryClient = useQueryClient();
   const { project, assistant } = useAppContext();
   const { selectAssistant } = useAppApiContext();
   const { setConfirmOnPageLeave, clearConfirmOnPageLeave } =
@@ -137,7 +136,7 @@ export function AssistantBuilderProvider({
   }, [initialAssistant, isDuplicate, selectAssistant]);
 
   useEffect(() => {
-    if (formState.isDirty)
+    if (!isEmpty(formState.dirtyFields))
       setConfirmOnPageLeave(
         'Your bee has unsaved changes, do you really want to leave?',
       );
@@ -176,7 +175,7 @@ export function AssistantBuilderProvider({
         }, [])
         .filter(isNotNull);
 
-      const result = await saveAssistantAsync({
+      await saveAssistantAsync({
         id: assistant?.id,
         body: {
           name: ownName,

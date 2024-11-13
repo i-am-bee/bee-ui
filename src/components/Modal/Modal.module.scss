@@ -68,7 +68,7 @@
   }
   :global(.#{$prefix}--modal-footer) {
     border-radius: 0 0 $spacing-03 $spacing-03;
-    padding: 0 $spacing-06 $spacing-06 $spacing-06;
+    padding: $spacing-03 $spacing-06 $spacing-06 $spacing-06;
 
     &:global(.#{$prefix}--btn-set) {
       block-size: auto;
@@ -84,7 +84,8 @@
       white-space: nowrap;
       inline-size: auto;
       padding-inline-end: $spacing-10;
-      &:first-child,
+      box-shadow: none !important;
+
       &:last-child {
         flex-grow: 0;
       }

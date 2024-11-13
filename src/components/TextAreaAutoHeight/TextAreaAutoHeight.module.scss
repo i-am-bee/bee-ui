@@ -21,6 +21,7 @@ $line-size: (21 / 14) * 0.875rem;
 .root {
   /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */
   display: grid;
+  position: relative;
 
   &::after {
     /* Note the weird space! Needed to preventy jumpy behavior */
@@ -32,6 +33,13 @@ $line-size: (21 / 14) * 0.875rem;
 
     /* Hidden from view, clicks, and screen readers */
     visibility: hidden;
+  }
+
+  /* Turn off automatic resize feature after the height is manually modified */
+  &.resized {
+    &::after {
+      display: none;
+    }
   }
 
   > textarea {
@@ -53,5 +61,42 @@ $line-size: (21 / 14) * 0.875rem;
     @include type-style(body-02);
     padding: $spacing-04;
     border: 0;
+  }
+}
+
+.resizeHandle {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  z-index: 1;
+  border: none;
+  background-color: transparent;
+  block-size: $spacing-05;
+  inline-size: $spacing-05;
+  padding: $spacing-02;
+  display: flex;
+  align-items: flex-end;
+  gap: 1px;
+  cursor: ns-resize;
+  color: $text-secondary;
+
+  .resizeHandleContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: rotate(-45deg);
+    gap: 2px;
+    &::after,
+    &::before {
+      content: '';
+      display: block;
+      inline-size: rem(12px);
+      block-size: 1px;
+      transform-origin: center;
+      background-color: currentColor;
+    }
+    &::after {
+      inline-size: rem(5px);
+    }
   }
 }

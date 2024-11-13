@@ -85,3 +85,9 @@ export function getAssistantIconName(
 
   return iconName;
 }
+
+export function isAssistant(
+  assistant: Assistant | AssistantTemplate,
+): assistant is Assistant {
+  return 'id' in assistant;
+}
