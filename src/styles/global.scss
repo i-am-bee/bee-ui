@@ -50,8 +50,8 @@
 @use '@carbon/styles/scss/components/pagination';
 
 // customization of carbon components
-@import './carbon/dropdown.scss';
-@import './carbon/overflow-menu.scss';
+@import './carbon/dropdown';
+@import './carbon/overflow-menu';
 
 html {
   overflow: hidden;
