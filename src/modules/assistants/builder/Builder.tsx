@@ -48,6 +48,7 @@ import { Link } from '@/components/Link/Link';
 import isEmpty from 'lodash/isEmpty';
 import { Controller } from 'react-hook-form';
 import { useRouter } from 'next-nprogress-bar';
+import { ToolReference } from '@/app/api/tools/types';
 
 interface Props {
   thread?: Thread;
@@ -264,4 +265,9 @@ export interface AssistantBuilderState {
   description?: string;
   icon?: AssistantFormValues['icon'];
   onAutoSaveAssistant: () => void;
+}
+
+export interface AssistantDeltaParams {
+  instructions: string | null;
+  tools: ToolReference[];
 }

@@ -16,7 +16,7 @@
 
 import { Message, MessageAttachments } from '@/app/api/threads-messages/types';
 import { Assistant } from '../assistants/types';
-import { AssistantPlan } from '@/app/api/threads-runs/types';
+import { AssistantPlan, ThreadRun } from '@/app/api/threads-runs/types';
 import { VectoreStoreFileUpload } from '../knowledge/files/VectorStoreFilesUploadProvider';
 
 export interface ThreadAssistant {
@@ -48,6 +48,8 @@ export type BotChatMessage = ChatMessageBase & {
   role: 'assistant';
   plan?: AssistantPlan;
   pending: boolean;
+  previousRun?: ThreadRun;
+  run?: ThreadRun;
 };
 
 export type ChatMessage = UserChatMessage | BotChatMessage;

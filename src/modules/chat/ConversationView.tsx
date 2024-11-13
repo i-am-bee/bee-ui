@@ -23,10 +23,11 @@ import { ConversationHeader } from './ConversationHeader';
 import classes from './ConversationView.module.scss';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
-import { Message } from './message/Message';
+import { getAssistantDeltaParams, Message } from './message/Message';
 import { useChat, useChatMessages } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
 import clsx from 'clsx';
+import { isBotMessage } from './utils';
 
 export const ConversationView = memo(function ConversationView() {
   const {
@@ -92,12 +93,20 @@ export const ConversationView = memo(function ConversationView() {
             const size = arr.length;
             const evenMessages = size % 2 === 0;
             const isPast = evenMessages ? index < size - 2 : index < size - 1;
+
+            const nextBotMessage = arr.at(index + 2);
+
             return (
               <Message
                 key={msg.key}
                 message={msg}
                 isPast={isPast}
                 isScrolled={isScrolled}
+                nextRunParams={
+                  isBotMessage(nextBotMessage) && nextBotMessage.run
+                    ? getAssistantDeltaParams(nextBotMessage.run)
+                    : undefined
+                }
               />
             );
           })}

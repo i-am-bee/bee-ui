@@ -96,6 +96,29 @@ export function getToolReference(tool: Tool): ToolReference {
   };
 }
 
+export function getToolReferenceFromToolUsage(
+  tool: ToolsUsage[number],
+): ToolReference {
+  const toolReference = {
+    ...(tool.type === 'system'
+      ? {
+          id: tool.system.id,
+          type: tool.type,
+        }
+      : tool.type === 'user'
+        ? {
+            id: tool.user.tool.id,
+            type: tool.type,
+          }
+        : {
+            id: getToolUsageId(tool) ?? tool.type,
+            type: tool.type,
+          }),
+  };
+
+  return toolReference;
+}
+
 export function isExternalTool(type: ToolType, id: string) {
   return !(
     type === 'file_search' ||
