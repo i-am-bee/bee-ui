@@ -27,7 +27,9 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { produce } from 'immer';
+import { noop } from 'lodash';
 import { useRouter } from 'next-nprogress-bar';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { AssistantsList } from '../assistants/library/AssistantsList';
@@ -45,6 +47,9 @@ export function AssistantsHome() {
   const [order, setOrder] = useState<AssistantsListQueryOrderBy>(ORDER_DEFAULT);
   const [search, setSearch] = useDebounceValue('', 200);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const showOnboarding = !isProjectReadOnly && searchParams?.has('onboarding');
 
   const queryClient = useQueryClient();
 
@@ -131,7 +136,9 @@ export function AssistantsHome() {
         </CardsList>
       </ProjectHome>
 
-      <OnboardingModal isOpen />
+      {showOnboarding && (
+        <OnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
+      )}
     </>
   );
 }

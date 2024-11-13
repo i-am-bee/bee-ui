@@ -17,6 +17,7 @@
 'use client';
 import { AssistantModel, AssistantResult } from '@/app/api/assistants/types';
 import { SystemToolId } from '@/app/api/threads-runs/types';
+import { ToolReference } from '@/app/api/tools/types';
 import { AssistantTools } from '@/app/api/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import {
@@ -26,6 +27,7 @@ import {
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { isNotNull } from '@/utils/helpers';
+import { isEmpty } from 'lodash';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,
@@ -40,14 +42,13 @@ import {
   AssistantIconColor,
   AssitantIconName,
 } from '../icons/AssistantBaseIcon';
-import { Assistant, AssistantMetadata } from '../types';
+import { ASSISTANT_TEMPLATES } from '../templates';
+import { Assistant, AssistantMetadata, AssistantTemplate } from '../types';
 import {
   decodeStarterQuestionsMetadata,
   encodeStarterQuestionsMetadata,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
-import { ToolReference } from '@/app/api/tools/types';
-import { isEmpty } from 'lodash';
 
 export type AssistantFormValues = {
   icon: {
@@ -68,6 +69,7 @@ export type StarterQuestion = { id: string; question: string };
 export interface AssistantBuilderContextValue {
   assistant: Assistant | null;
   formReturn: UseFormReturn<AssistantFormValues>;
+  isOnboarding?: boolean;
 }
 
 const AssistantBuilderContext = createContext<AssistantBuilderContextValue>(
@@ -101,12 +103,27 @@ export function AssistantBuilderProvider({
 
   const searchParams = useSearchParams();
   const isDuplicate = searchParams?.has('duplicate');
+  const isOnboarding = searchParams?.has('onboarding');
+  const templateKey = searchParams?.get('template');
+  const assistantTemplate = templateKey
+    ? ASSISTANT_TEMPLATES.find((template) => template.key === templateKey)
+    : undefined;
 
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
       const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
       selectAssistant(assistantFromResult);
+
+      if (isOnboarding) {
+        // updateUser({
+        //   metadata: encodeMetadata<UserMetadata>({
+        //     ...session.userProfile.metadata,
+        //     email: session.userProfile.email,
+        //     tou_accepted_at: Math.floor(Date.now() / 1000),
+        //   }),
+        // })
+      }
 
       if (isNew)
         window.history.pushState(
@@ -120,7 +137,7 @@ export function AssistantBuilderProvider({
   const formReturn = useForm<AssistantFormValues>({
     mode: 'onChange',
     defaultValues: formValuesFromAssistant(
-      initialAssistant ?? null,
+      assistantTemplate ? assistantTemplate : (initialAssistant ?? null),
       isDuplicate,
     ),
   });
@@ -223,7 +240,9 @@ export function AssistantBuilderProvider({
   return (
     <FormProvider {...formReturn}>
       <AssistantBuilderApiContext.Provider value={apiValue}>
-        <AssistantBuilderContext.Provider value={{ assistant, formReturn }}>
+        <AssistantBuilderContext.Provider
+          value={{ assistant, formReturn, isOnboarding }}
+        >
           {children}
         </AssistantBuilderContext.Provider>
       </AssistantBuilderApiContext.Provider>
@@ -256,7 +275,7 @@ export function useAssistantBuilder() {
 }
 
 function formValuesFromAssistant(
-  assistant: Assistant | null,
+  assistant: Assistant | AssistantTemplate | null,
   isDuplicate?: boolean,
 ): AssistantFormValues {
   return {

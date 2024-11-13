@@ -46,6 +46,7 @@ export type AssistantTemplate = Omit<
 > & {
   key: string;
   tool_resources: ToolResources;
+  model?: string;
 };
 
 export interface StarterQuestionsMetadata {

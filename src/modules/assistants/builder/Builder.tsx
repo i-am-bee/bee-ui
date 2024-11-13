@@ -15,15 +15,15 @@
  */
 
 'use client';
-import clsx from 'clsx';
-import {
-  AssistantFormValues,
-  useAssistantBuilder,
-  useAssistantBuilderApi,
-} from './AssistantBuilderProvider';
-import classes from './Builder.module.scss';
-import { useDeleteAssistant } from './useDeleteAssistant';
+import { Thread } from '@/app/api/threads/types';
+import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { ChatHomeView } from '@/modules/chat/ChatHomeView';
+import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
+import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
+import { MessageWithFiles } from '@/modules/chat/types';
+import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
+import { ONBOARDING_PARAM } from '@/utils/constants';
 import {
   Button,
   IconButton,
@@ -32,22 +32,23 @@ import {
   TextInput,
 } from '@carbon/react';
 import { ArrowLeft, ArrowUpRight, CheckmarkFilled } from '@carbon/react/icons';
-import { IconSelector } from './IconSelector';
-import { useId } from 'react';
-import { InstructionsTextArea } from './InstructionsTextArea';
-import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
-import { BuilderTools } from '../tools/BuilderTools';
-import { KnowledgeSelector } from './KnowledgeSelector';
-import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
-import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
-import { ChatHomeView } from '@/modules/chat/ChatHomeView';
-import { Thread } from '@/app/api/threads/types';
-import { MessageWithFiles } from '@/modules/chat/types';
-import { Link } from '@/components/Link/Link';
+import clsx from 'clsx';
 import isEmpty from 'lodash/isEmpty';
-import { Controller } from 'react-hook-form';
 import { useRouter } from 'next-nprogress-bar';
+import { useId } from 'react';
+import { Controller } from 'react-hook-form';
+import { BuilderTools } from '../tools/BuilderTools';
+import {
+  AssistantFormValues,
+  useAssistantBuilder,
+  useAssistantBuilderApi,
+} from './AssistantBuilderProvider';
+import classes from './Builder.module.scss';
+import { IconSelector } from './IconSelector';
+import { InstructionsTextArea } from './InstructionsTextArea';
+import { KnowledgeSelector } from './KnowledgeSelector';
+import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
+import { useDeleteAssistant } from './useDeleteAssistant';
 
 interface Props {
   thread?: Thread;
@@ -61,6 +62,7 @@ export function Builder({ thread, initialMessages }: Props) {
       watch,
       formState: { isSubmitting, dirtyFields },
     },
+    isOnboarding,
   } = useAssistantBuilder();
   const { project, isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
@@ -92,7 +94,9 @@ export function Builder({ thread, initialMessages }: Props) {
     >
       <section className={classes.form}>
         <div className={classes.header}>
-          <Link href={`/${project.id}`}>
+          <Link
+            href={`/${project.id}${isOnboarding ? `?${ONBOARDING_PARAM}` : ''}`}
+          >
             <IconButton
               size="lg"
               kind="tertiary"

@@ -16,9 +16,9 @@
 
 'use client';
 import { AdminView } from '@/components/AdminView/AdminView';
-import { ReactElement, useState } from 'react';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useQueryClient } from '@tanstack/react-query';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { useUserProfile } from '@/store/user-profile';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import {
   Button,
@@ -28,17 +28,18 @@ import {
   TabList,
   Tabs,
 } from '@carbon/react';
-import { prelistVectorStores } from '../knowledge/queries';
-import { ProjectSelector } from './ProjectSelector';
-import classes from './ProjectHome.module.scss';
-import { useRouter } from 'next-nprogress-bar';
-import { UsersCount } from './users/UsersCount';
 import { Add } from '@carbon/react/icons';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { RenameModal } from './manage/RenameModal';
-import { UsersModalRenderer } from './users/UsersModalRenderer';
-import { ArchiveConfirmationModal } from './manage/ArchiveConfirmationModal';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next-nprogress-bar';
+import { ReactElement, useState } from 'react';
+import { prelistVectorStores } from '../knowledge/queries';
 import { prelistDefaultData } from '../tools/ToolsList';
+import { ArchiveConfirmationModal } from './manage/ArchiveConfirmationModal';
+import { RenameModal } from './manage/RenameModal';
+import classes from './ProjectHome.module.scss';
+import { ProjectSelector } from './ProjectSelector';
+import { UsersCount } from './users/UsersCount';
+import { UsersModalRenderer } from './users/UsersModalRenderer';
 
 interface Props {
   section: HomeSection;
@@ -51,6 +52,9 @@ export function ProjectHome({ section, children }: Props) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { openModal } = useModal();
+  const defaultProject = useUserProfile(
+    (state) => state.metadata?.default_project,
+  );
 
   return (
     <>
@@ -85,18 +89,20 @@ export function ProjectHome({ section, children }: Props) {
                       ))
                     }
                   />
-                  <OverflowMenuItem
-                    itemText="Archive"
-                    isDelete
-                    onClick={() =>
-                      openModal((props) => (
-                        <ArchiveConfirmationModal
-                          {...props}
-                          project={project}
-                        />
-                      ))
-                    }
-                  />
+                  {project.id !== defaultProject && (
+                    <OverflowMenuItem
+                      itemText="Archive"
+                      isDelete
+                      onClick={() =>
+                        openModal((props) => (
+                          <ArchiveConfirmationModal
+                            {...props}
+                            project={project}
+                          />
+                        ))
+                      }
+                    />
+                  )}
                 </OverflowMenu>
               )}
             </div>

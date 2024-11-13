@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+import { archiveProject } from '@/app/api/projects';
+import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
+import { ModalProps } from '@/layout/providers/ModalProvider';
+import { useToast } from '@/layout/providers/ToastProvider';
+import { PROJECT_ID_DEFAULT } from '@/utils/constants';
 import {
   Button,
   InlineLoading,
@@ -23,15 +28,10 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { ModalProps } from '@/layout/providers/ModalProvider';
-import { useId } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
-import { Project } from '@/app/api/projects/types';
-import { archiveProject } from '@/app/api/projects';
-import { useToast } from '@/layout/providers/ToastProvider';
 import { useRouter } from 'next-nprogress-bar';
-import { PROJECT_ID_DEFAULT } from '@/utils/constants';
+import { useId } from 'react';
+import { useForm } from 'react-hook-form';
 import { projectsQuery } from '../queries';
 import classes from './ArchiveConfirmationModal.module.scss';
 

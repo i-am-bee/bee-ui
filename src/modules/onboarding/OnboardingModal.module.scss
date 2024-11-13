@@ -17,42 +17,44 @@
 @use 'styles/common' as *;
 
 .root {
-  :global(.#{$prefix}--modal-content) {
-    padding: $spacing-07 $spacing-07 $spacing-09;
-    h2 {
-      font-size: rem(24px);
-      line-height: (28 / 24);
-      font-weight: bold;
-      color: $text-dark;
-    }
-  }
-
-  :global(.#{$prefix}--modal-footer) {
-    padding: 0 $spacing-07 $spacing-07;
-
-    :global(.#{$prefix}--btn) {
-      padding-inline-end: rem(54px);
-      min-inline-size: rem(156px);
-    }
-
-    :global(.#{$prefix}--btn--ghost) {
-      margin-inline-end: auto;
-      padding-inline-end: rem(15px);
-      min-inline-size: 0;
-    }
-  }
-
-  &.step--assistant-selection {
-    :global(.#{$prefix}--modal-container) {
-      max-inline-size: rem(992px);
-    }
-
+  &:global(.#{$prefix}--modal) {
     :global(.#{$prefix}--modal-content) {
-      padding-block-end: $spacing-05;
+      padding: $spacing-07 $spacing-07 $spacing-09;
+      h2 {
+        font-size: rem(24px);
+        line-height: (28 / 24);
+        font-weight: bold;
+        color: $text-dark;
+      }
     }
 
     :global(.#{$prefix}--modal-footer) {
-      padding-block-start: $spacing-05;
+      padding: 0 $spacing-07 $spacing-07;
+
+      :global(.#{$prefix}--btn) {
+        padding-inline-end: rem(54px);
+        min-inline-size: rem(156px);
+      }
+
+      :global(.#{$prefix}--btn--ghost) {
+        margin-inline-end: auto;
+        padding-inline-end: rem(15px);
+        min-inline-size: 0;
+      }
+    }
+
+    &.step--assistant-selection {
+      :global(.#{$prefix}--modal-container) {
+        max-inline-size: rem(992px);
+      }
+
+      :global(.#{$prefix}--modal-content) {
+        padding-block-end: $spacing-05;
+      }
+
+      :global(.#{$prefix}--modal-footer) {
+        padding-block-start: $spacing-05;
+      }
     }
   }
 }

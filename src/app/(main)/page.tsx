@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-import { PROJECT_ID_DEFAULT } from '@/utils/constants';
+import { ONBOARDING_PARAM, PROJECT_ID_DEFAULT } from '@/utils/constants';
 import { redirect } from 'next/navigation';
+import { ensureSession } from '../auth/rsc';
 
-export default function AppsPage() {
-  redirect(`/${PROJECT_ID_DEFAULT}`);
+export default async function AppsPage() {
+  const session = await ensureSession();
+  const {
+    default_project: defaultProject,
+    onboarding_completed_at: onboardingCompletedAt,
+  } = session.userProfile.metadata ?? {};
+
+  redirect(
+    `/${defaultProject ? `${defaultProject}${!Boolean(onboardingCompletedAt) ? `?${ONBOARDING_PARAM}` : ''}` : PROJECT_ID_DEFAULT}`,
+  );
 }

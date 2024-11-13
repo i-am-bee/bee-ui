@@ -16,7 +16,7 @@
 
 'use server';
 
-import { updateUser } from '@/app/api/rsc';
+import { createProject, updateUser } from '@/app/api/rsc';
 import { encodeMetadata } from '@/app/api/utils';
 import { UserMetadata } from '@/store/user-profile/types';
 import { updateSession } from '..';
@@ -32,11 +32,21 @@ export async function acceptTou(prevState: any, formData: FormData) {
 
   // outside of try/catch because it can redirect which mustn't be in try/catch
   const session = await ensureSession();
+  const defaultProject =
+    session.userProfile.metadata?.default_project ??
+    (
+      await createProject({
+        name: `${session.userProfile.firstName}'s personal`,
+        visibility: 'private',
+      })
+    )?.id;
+
   const err = await updateUser({
     metadata: encodeMetadata<UserMetadata>({
       ...session.userProfile.metadata,
       email: session.userProfile.email,
       tou_accepted_at: Math.floor(Date.now() / 1000),
+      default_project: defaultProject,
     }),
   }).then(
     () => null,

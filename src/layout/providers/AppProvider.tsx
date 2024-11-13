@@ -95,7 +95,7 @@ export function AppProvider({
     [],
   );
 
-  const isProjectReadOnly = projectUser?.role === 'reader';
+  const isProjectReadOnly = projectUser ? projectUser.role === 'reader' : true;
 
   return (
     <AppApiContext.Provider value={apiValue}>

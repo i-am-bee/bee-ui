@@ -16,11 +16,15 @@
 
 import { Modal } from '@/components/Modal/Modal';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { ONBOARDING_PARAM } from '@/utils/constants';
+import { noop } from '@/utils/helpers';
 import { ModalBody, ModalFooter } from '@carbon/react';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
+import { ASSISTANT_TEMPLATES } from '../assistants/templates';
 import { AssistantTemplate } from '../assistants/types';
 import { OnboardingAssistantSelection } from './OnboardingAssistantSelection';
 import { OnboardingIntro } from './OnboardingIntro';
@@ -31,7 +35,7 @@ interface Props extends ModalProps {}
 export function OnboardingModal({ ...props }: Props) {
   const router = useRouter();
   const { project } = useAppContext();
-  const [step, setStep] = useState(Steps.ASSISTANT_SELECTION);
+  const [step, setStep] = useState(Steps.INTRO);
   const [selectedTemplate, setSelectedTemplate] =
     useState<AssistantTemplate | null>(null);
 
@@ -52,7 +56,7 @@ export function OnboardingModal({ ...props }: Props) {
       content = {
         body: (
           <OnboardingAssistantSelection
-            templates={TEMPLATE_ASSISTANTS}
+            templates={ASSISTANT_TEMPLATES}
             selected={selectedTemplate}
             onSelect={setSelectedTemplate}
           />
@@ -61,11 +65,9 @@ export function OnboardingModal({ ...props }: Props) {
           <OnboardingAssistantSelection.Footer
             onBackClick={() => setStep(Steps.INTRO)}
             onNextClick={() => {
-              console.log(selectedTemplate);
-
-              // router.push(
-              //   `/${project.id}/builder${selectedTemplate ? `/${selectedTemplate.id}?duplicate` : ''}`,
-              // );
+              router.push(
+                `/${project.id}/builder?${ONBOARDING_PARAM}${selectedTemplate ? `&template=${selectedTemplate.key}` : ''}`,
+              );
             }}
           />
         ),
@@ -76,15 +78,17 @@ export function OnboardingModal({ ...props }: Props) {
   const { body, footer } = content;
 
   return (
-    <Modal
-      {...props}
-      preventCloseOnClickOutside
-      className={clsx(classes.root, classes[`step--${step}`])}
-    >
-      <ModalBody>{body}</ModalBody>
+    <ModalControlProvider onRequestClose={noop}>
+      <Modal
+        {...props}
+        preventCloseOnClickOutside
+        className={clsx(classes.root, classes[`step--${step}`])}
+      >
+        <ModalBody>{body}</ModalBody>
 
-      <ModalFooter>{footer}</ModalFooter>
-    </Modal>
+        <ModalFooter>{footer}</ModalFooter>
+      </Modal>
+    </ModalControlProvider>
   );
 }
 
@@ -92,62 +96,3 @@ enum Steps {
   INTRO = 'intro',
   ASSISTANT_SELECTION = 'assistant-selection',
 }
-
-const TEMPLATE_ASSISTANTS: AssistantTemplate[] = [
-  {
-    key: 'github-issue-write',
-    name: 'GitHub Issue Writer',
-    description:
-      'Report a bug or share a feature idea and this bee will create a well formatted GitHub issue',
-    instructions:
-      'You are an Epic Writer Assistant whose primary role is to help users write well structured GitHub issues.\n\nFollow this step-by-step process:\n1. Carefully review the user’s input to grasp the full context to be able to generate an issue.\n2. Determine which of the following categories best fits the user’s request:\nEpic: A large, overarching goal that can be divided into smaller, actionable tasks.\nBug Report: A malfunction, issue, or defect in the system that needs to be fixed.\nFeature Request: A suggestion for a new feature that could enhance the product.\nMake Better: Suggestions for improving an existing feature or functionality.\n3. Generate the issue content. Be extremely thorough and detailed, ensuring you do not miss any important information.\n4. Present the final issue to the user in markdown format.',
-    tools: [],
-    tool_resources: {
-      file_search: {
-        vector_store_ids: ['vs_66eabcaebf90490c236db2ec'],
-      },
-    },
-    uiMetadata: {
-      icon: 'BeeG',
-      color: 'blue-light',
-    },
-  },
-  {
-    key: 'research-paper-summarizer',
-    name: 'Research Paper Summarizer',
-    description:
-      'Transform research paper PDFs into clear and concise summaries',
-    instructions:
-      'As a Research Summarizer, your primary objective is to distill research papers into concise summaries that convey essential information effectively.\n\nFollow this step-by-step approach:\n1. Read the PDF: Begin by utilizing Python to extract the content from the PDF file provided by the user.\n2. Discover Related Research: Use the ArXiv tool to identify relevant research papers that complement the topic.\n3. Summarize the Paper: Organize your summary into the following sections:\n\n# Title: Include the title of the research paper.\nAuthors: List the names of the authors.\n\n## Abstract\nCopy the abstract verbatim from the paper.\n\n## Key Findings\nHighlight the main contributions or findings of the research, focusing on the most important results.\n\n## Methodology\nBriefly describe the methods used in the study, including any relevant details about the data, experiments, or approaches employed.\n\n## Conclusion\nSummarize the conclusions drawn by the authors, including any implications or recommendations.\n\n## Future Work\nMention any suggestions for future research or open questions identified by the authors.\n\n## Related Research\nInclude links to any relevant ArXiv sources you found that closely relate to the paper being summarized.',
-    tools: [
-      {
-        type: 'code_interpreter',
-      },
-      {
-        type: 'system',
-        system: {
-          id: 'arxiv',
-        },
-      },
-    ],
-    tool_resources: {},
-    uiMetadata: {
-      icon: 'BeeK',
-      color: 'gray-light',
-    },
-  },
-  {
-    key: 'teams-transcript-summarizer',
-    name: 'Teams Transcript Summarizer',
-    description:
-      'Copy & paste your meeting transcript content here for a bullet-point recap',
-    instructions:
-      'As a Teams Transcript Summarizer, your primary responsibility is to provide accurate and concise summaries of playback meeting transcripts, aiming for a total of around 150 words. Your goal is to help users quickly grasp the key takeaways from these meetings, saving them time and effort.\n\nFollow this step-by-step process:\n1. Understand the content of the meeting transcript provided to you by the user.\n2. Create a concise summary in a bullet list format. Each bullet point should capture the main points discussed by a single speaker during the meeting, and you should aim to include all relevant information discussed by each speaker in a single bullet point.\nWhen summarizing, please ensure that you:\n- Include all key points discussed by each speaker, even if they spoke multiple times during the meeting.\n- Avoid duplicating information or mentioning the same speaker in multiple bullet points.\n- Focus on capturing the main ideas and takeaways, rather than just listing every single point mentioned.\n- Use clear and concise language to make it easy for users to quickly understand the main discussion points.',
-    tools: [],
-    tool_resources: {},
-    uiMetadata: {
-      icon: 'BeeJ',
-      color: 'green-light',
-    },
-  },
-];
