@@ -39,7 +39,7 @@ export function NavButton({ isOpen, ...props }: Props) {
 
         <strong>Bee</strong>
 
-        <VersionTag version="alpha" className={classes.tag} />
+        <VersionTag className={classes.tag} />
       </Button>
     </Link>
   );
