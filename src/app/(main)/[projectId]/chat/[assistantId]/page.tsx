@@ -22,6 +22,7 @@ import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { handleApiError } from '@/utils/handleApiError';
 import { notFound } from 'next/navigation';
 
@@ -55,16 +56,19 @@ export default async function AssistantChatPage({
   if (!assistantResult) notFound();
 
   return (
-    <VectorStoreFilesUploadProvider projectId={projectId}>
-      <FilesUploadProvider>
-        <ChatProvider
-          threadAssistant={{
-            data: decodeEntityWithMetadata<Assistant>(assistantResult) ?? null,
-          }}
-        >
-          <ChatHomeView />
-        </ChatProvider>
-      </FilesUploadProvider>
-    </VectorStoreFilesUploadProvider>
+    <LayoutInitializer layout={{ sidebarVisible: true }}>
+      <VectorStoreFilesUploadProvider projectId={projectId}>
+        <FilesUploadProvider>
+          <ChatProvider
+            threadAssistant={{
+              data:
+                decodeEntityWithMetadata<Assistant>(assistantResult) ?? null,
+            }}
+          >
+            <ChatHomeView />
+          </ChatProvider>
+        </FilesUploadProvider>
+      </VectorStoreFilesUploadProvider>
+    </LayoutInitializer>
   );
 }
