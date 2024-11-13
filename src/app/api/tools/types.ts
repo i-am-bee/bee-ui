@@ -60,11 +60,7 @@ export type ToolReference = (
       id: SystemToolId;
     }
   | {
-      type: 'user';
-      id: string;
-    }
-  | {
-      type: Exclude<ToolType, 'system' | 'user'>;
+      type: Exclude<ToolType, 'system'>;
       id: string;
     }
 ) & { tool?: Tool };

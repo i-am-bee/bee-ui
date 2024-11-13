@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Assistant } from '../types';
+import { Assistant, AssistantTemplate } from '../types';
 import { getAssistantIconName } from '../utils';
 import {
   AssistantBaseIcon,
@@ -24,7 +24,7 @@ import {
 } from './AssistantBaseIcon';
 
 export interface AssistantIconProps {
-  assistant: Assistant | null;
+  assistant: Assistant | AssistantTemplate | null;
   size?: AssistantBaseIconProps['size'];
   iconName?: AssitantIconName;
   color?: AssistantIconColor;

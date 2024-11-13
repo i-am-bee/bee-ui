@@ -17,18 +17,18 @@
 import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 import { Dispatch, SetStateAction } from 'react';
-import { AssistantCard } from '../assistants/library/AssistantCard';
-import { Assistant } from '../assistants/types';
+import { AssistantTemplateCard } from '../assistants/library/AssistantTemplateCard';
+import { AssistantTemplate } from '../assistants/types';
 import classes from './OnboardingAssistantSelection.module.scss';
 import { StartFromScratchCard } from './StartFromScratchCard';
 
 interface Props {
-  assistants?: Assistant[];
-  selected: Assistant | null;
-  onSelect: Dispatch<SetStateAction<Assistant | null>>;
+  templates?: AssistantTemplate[];
+  selected: AssistantTemplate | null;
+  onSelect: Dispatch<SetStateAction<AssistantTemplate | null>>;
 }
 export function OnboardingAssistantSelection({
-  assistants,
+  templates,
   selected,
   onSelect,
 }: Props) {
@@ -43,19 +43,17 @@ export function OnboardingAssistantSelection({
         />
       </div>
 
-      {assistants && assistants.length > 0 && (
+      {templates && templates.length > 0 && (
         <>
           <p className={classes.subheading}>Or select a template:</p>
 
           <div className={classes.grid}>
-            {assistants.map((assistant) => (
-              <AssistantCard
-                key={assistant.id}
-                assistant={assistant}
-                selected={assistant.id === selected?.id}
-                onClick={() => onSelect(assistant)}
-                hideActions
-                canHover
+            {templates.map((template) => (
+              <AssistantTemplateCard
+                key={template.key}
+                template={template}
+                selected={template.key === selected?.key}
+                onClick={() => onSelect(template)}
               />
             ))}
           </div>

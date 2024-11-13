@@ -27,7 +27,7 @@ type AssistantCreateBodyApi = NonNullable<
   paths['/v1/assistants']['post']['requestBody']
 >['content']['application/json'];
 
-type ToolResources = Pick<
+export type ToolResources = Pick<
   NonNullable<AssistantCreateBodyApi['tool_resources']>,
   'code_interpreter' | 'file_search'
 >;

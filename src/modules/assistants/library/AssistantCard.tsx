@@ -27,9 +27,6 @@ import classes from './AssistantCard.module.scss';
 interface Props {
   assistant: Assistant;
   cta?: string;
-  hideActions?: boolean;
-  canHover?: boolean;
-  selected?: boolean;
   onClick?: MouseEventHandler;
   onDeleteSuccess?: (assistant: Assistant) => void;
 }
@@ -37,9 +34,6 @@ interface Props {
 export function AssistantCard({
   assistant,
   cta,
-  hideActions,
-  canHover,
-  selected,
   onClick,
   onDeleteSuccess,
 }: Props) {
@@ -62,40 +56,32 @@ export function AssistantCard({
         onClick={onClick}
         isDeletePending={isDeletePending}
         cta={cta ? { title: cta } : undefined}
-        actions={
-          !hideActions
-            ? [
-                {
-                  itemText: 'Bee details',
-                  onClick: () => setBuilderModalOpened(true),
-                },
-                !isProjectReadOnly
-                  ? {
-                      isDelete: true,
-                      itemText: 'Delete',
-                      onClick: () => deleteAssistant(),
-                    }
-                  : null,
-              ].filter(isNotNull)
-            : undefined
-        }
-        canHover={canHover}
-        selected={selected}
+        actions={[
+          {
+            itemText: 'Bee details',
+            onClick: () => setBuilderModalOpened(true),
+          },
+          !isProjectReadOnly
+            ? {
+                isDelete: true,
+                itemText: 'Delete',
+                onClick: () => deleteAssistant(),
+              }
+            : null,
+        ].filter(isNotNull)}
       >
         {description && (
-          <div>
+          <div className={classes.body}>
             <p>{description}</p>
           </div>
         )}
       </CardsListItem>
 
-      {!hideActions && (
-        <AssistantModalRenderer
-          assistant={assistant}
-          isOpened={builderModalOpened}
-          onModalClose={() => setBuilderModalOpened(false)}
-        />
-      )}
+      <AssistantModalRenderer
+        assistant={assistant}
+        isOpened={builderModalOpened}
+        onModalClose={() => setBuilderModalOpened(false)}
+      />
     </>
   );
 }

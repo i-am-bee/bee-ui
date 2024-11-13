@@ -22,7 +22,7 @@ import { Tool, ToolReference } from '@/app/api/tools/types';
 import { useDeleteTool } from './hooks/useDeleteTool';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolExternalTag } from '../assistants/tools/ToolToggle';
-import { getToolReference, isExternalTool, isTool } from './utils';
+import { getToolReferenceFromTool, isExternalTool, isTool } from './utils';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
 import { UserToolModal } from './manage/UserToolModal';
 import { PublicToolModal } from './manage/PublicToolModal';
@@ -55,7 +55,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={<ToolIcon tool={getToolReference(tool)} />}
+        icon={<ToolIcon tool={getToolReferenceFromTool(tool)} />}
         onClick={() =>
           openModal((props) =>
             tool.type === 'user' ? (

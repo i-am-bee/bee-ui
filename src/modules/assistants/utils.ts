@@ -24,6 +24,7 @@ import {
 } from './icons/AssistantBaseIcon';
 import {
   Assistant,
+  AssistantTemplate,
   STARTER_QUESTION_KEY_PREFIX,
   StarterQuestionsMetadata,
 } from './types';
@@ -57,7 +58,7 @@ export function decodeStarterQuestionsMetadata(
 const iconsMap = new Map<string, AssitantIconName>();
 
 export function getAssistantIconName(
-  assistant: Assistant | null,
+  assistant: Assistant | AssistantTemplate | null,
 ): AssitantIconName | undefined {
   const iconName = assistant?.uiMetadata.icon;
 
