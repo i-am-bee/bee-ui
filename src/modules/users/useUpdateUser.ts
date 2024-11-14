@@ -40,7 +40,5 @@ export function useUpdateUser() {
     },
   });
 
-  console.log(session);
-
   return mutation;
 }
