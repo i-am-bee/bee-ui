@@ -26,6 +26,9 @@ import {
 } from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
+import { useUpdateUser } from '@/modules/users/useUpdateUser';
+import { useUserProfile } from '@/store/user-profile';
+import { UserMetadata } from '@/store/user-profile/types';
 import { isNotNull } from '@/utils/helpers';
 import { isEmpty } from 'lodash';
 import { useSearchParams } from 'next/navigation';
@@ -101,6 +104,9 @@ export function AssistantBuilderProvider({
   const { setConfirmOnPageLeave, clearConfirmOnPageLeave } =
     useNavigationControl();
 
+  const { mutate: updateUserMutate } = useUpdateUser();
+  const userMetadata = useUserProfile((state) => state.metadata);
+
   const searchParams = useSearchParams();
   const isDuplicate = searchParams?.has('duplicate');
   const isOnboarding = searchParams?.has('onboarding');
@@ -116,13 +122,12 @@ export function AssistantBuilderProvider({
       selectAssistant(assistantFromResult);
 
       if (isOnboarding) {
-        // updateUser({
-        //   metadata: encodeMetadata<UserMetadata>({
-        //     ...session.userProfile.metadata,
-        //     email: session.userProfile.email,
-        //     tou_accepted_at: Math.floor(Date.now() / 1000),
-        //   }),
-        // })
+        updateUserMutate({
+          metadata: encodeMetadata<UserMetadata>({
+            ...userMetadata,
+            onboarding_completed_at: Math.floor(Date.now() / 1000),
+          }),
+        });
       }
 
       if (isNew)

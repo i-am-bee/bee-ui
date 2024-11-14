@@ -16,6 +16,7 @@
 
 import { ModalProvider } from '@/layout/providers/ModalProvider';
 import { UserProfileInitializer } from '@/store/user-profile/UserProfileInitializer';
+import { SessionProvider } from 'next-auth/react';
 import { PropsWithChildren } from 'react';
 import { QueryProvider } from '../../layout/providers/QueryProvider';
 import { ensureSession } from '../auth/rsc';
@@ -24,10 +25,12 @@ export default async function MainLayout({ children }: PropsWithChildren) {
   const session = await ensureSession();
 
   return (
-    <UserProfileInitializer userProfile={session.userProfile}>
-      <QueryProvider>
-        <ModalProvider>{children}</ModalProvider>
-      </QueryProvider>
-    </UserProfileInitializer>
+    <SessionProvider>
+      <UserProfileInitializer userProfile={session.userProfile}>
+        <QueryProvider>
+          <ModalProvider>{children}</ModalProvider>
+        </QueryProvider>
+      </UserProfileInitializer>
+    </SessionProvider>
   );
 }
