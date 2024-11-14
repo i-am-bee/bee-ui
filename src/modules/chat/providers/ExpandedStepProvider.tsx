@@ -16,7 +16,7 @@
 
 'use client';
 
-import { noop } from 'lodash';
+import { noop } from '@/utils/helpers';
 import {
   Dispatch,
   PropsWithChildren,

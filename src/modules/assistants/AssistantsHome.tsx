@@ -21,13 +21,13 @@ import {
 } from '@/app/api/assistants/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { noop } from '@/utils/helpers';
 import {
   InfiniteData,
   useInfiniteQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { produce } from 'immer';
-import { noop } from 'lodash';
 import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
