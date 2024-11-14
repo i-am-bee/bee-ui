@@ -12,6 +12,23 @@
 
 With Bee UI, users can build and test custom bees that address unique workflows and requirements without requiring extensive coding expertise. This repository contains the source code for the Bee UI [Next.js](https://nextjs.org/) application, which provides a user-friendly interface for interacting with Bee agents and creating custom workflows.
 
+## Preview
+
+![Bee UI Demo Video](./docs/assets/bee-ui-demo.gif)
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="./docs/assets/bee-ui-builder.png"></td>
+      <td><img src="./docs/assets/bee-ui-welcome-screen.png"></td>
+    </tr>
+    <tr>
+      <td><img src="./docs/assets/bee-ui-session.png"></td>
+      <td><img src="./docs/assets/bee-ui-workspace.png"></td>
+    </tr>
+  </tbody>
+</table>
+
 > [!TIP]
 >
 > 🚀 The fastest way to setup Bee (UI + API) is through [Bee Stack](https://github.com/i-am-bee/bee-stack).
