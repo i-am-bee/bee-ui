@@ -1,3 +1,19 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { BounceButton } from '@/components/BounceLink/BounceButton';
 import { Container } from '@/components/Container/Container';
 import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
@@ -23,29 +39,26 @@ import { ActionBar } from './ActionBar';
 import { ErrorMessage } from './ErrorMessage';
 import classes from './Message.module.scss';
 import { AttachmentLink } from './markdown/AttachmentLink';
-import { isBotMessage } from '../utils';
+import { getRunSetup, isBotMessage } from '../utils';
 import { MessageContent } from './MessageContent';
-import { AssistantDeltaParams } from '@/modules/assistants/builder/Builder';
-import { Thread } from '@/app/api/threads/types';
-import { ThreadRun } from '@/app/api/threads-runs/types';
-import {
-  getToolReference,
-  getToolReferenceFromToolUsage,
-  getToolUsageId,
-} from '@/modules/tools/utils';
+import { RunSetup } from '@/modules/assistants/builder/Builder';
+import { RunSetupDelta } from './RunSetupDelta';
+import { isEqual } from 'lodash';
 
 interface Props {
   message: ChatMessage;
   isPast?: boolean;
   isScrolled?: boolean;
-  nextRunParams?: AssistantDeltaParams;
+  nextRunSetup?: RunSetup;
+  currentSetup?: RunSetup;
 }
 
 export const Message = memo(function Message({
   message,
   isPast,
   isScrolled,
-  nextRunParams,
+  nextRunSetup,
+  currentSetup,
 }: Props) {
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
@@ -72,38 +85,20 @@ export const Message = memo(function Message({
     }
   }, [message.id, run, setMessages]);
 
-  // useEffect(() => {
-  //   if (run) {
-  //     setMessages((messages) => {
-  //       const { thisMessage, nextMessage } = messages.reduce(
-  //         (
-  //           {
-  //             thisMessage,
-  //             nextMessage,
-  //           }: {
-  //             thisMessage: ChatMessage | null;
-  //             nextMessage: ChatMessage | null;
-  //           },
-  //           item,
-  //         ) => {
-  //           if (item.id === message.id) {
-  //             return { thisMessage: item, nextMessage: null };
-  //           } else if (thisMessage != null && nextMessage == null) {
-  //             return { thisMessage, nextMessage: null };
-  //           }
-  //           return { thisMessage, nextMessage };
-  //         },
-  //         { thisMessage: null, nextMessage: null },
-  //       );
-  //       if (isBotMessage(messageUpdate)) messageUpdate.run = run;
-  //     });
-  //   }
-  // }, [message.id, run, setMessages]);
-
   const isAssistant = message.role === 'assistant';
   const hasActions = isAssistant && !message.pending;
 
   const contentHover = useHover({});
+
+  const hasOutdatedSetup = useMemo(() => {
+    if (!builderState) return false;
+
+    if (isBotMessage(message)) {
+      return run ? !isEqual(currentSetup, getRunSetup(run)) : false;
+    } else {
+      return nextRunSetup ? !isEqual(currentSetup, nextRunSetup) : false;
+    }
+  }, [builderState, currentSetup, message, nextRunSetup, run]);
 
   const [isFocusWithin, setFocusWithin] = useState(false);
   const { focusWithinProps } = useFocusWithin({
@@ -122,6 +117,7 @@ export const Message = memo(function Message({
           className={clsx(classes.root, {
             [classes.hovered]: showActions,
             [classes.isBuilder]: builderState,
+            [classes.hasOutdatedSetup]: hasOutdatedSetup,
           })}
           {...focusWithinProps}
           {...contentHover.hoverProps}
@@ -180,11 +176,15 @@ export const Message = memo(function Message({
             )}
           </Container>
         </li>
-        <Container size="sm">
-          {run && nextRunParams && (
-            <AssistantDelta run={run} nextRunParams={nextRunParams} />
-          )}
-        </Container>
+
+        {builderState && run && (nextRunSetup || currentSetup) && (
+          <Container size="sm">
+            <RunSetupDelta
+              run={run}
+              nextRunSetup={nextRunSetup || currentSetup}
+            />
+          </Container>
+        )}
       </RunProvider>
     </MessageFeedbackProvider>
   );
@@ -224,40 +224,4 @@ function Sender({ message }: { message: ChatMessage }) {
       </figure>
     );
   }
-}
-
-function AssistantDelta({
-  run,
-  nextRunParams,
-}: {
-  run: ThreadRun;
-  nextRunParams?: AssistantDeltaParams;
-}) {
-  const deltaMessages = useMemo(() => {
-    const deltaMessages = [];
-    if (run.instructions != nextRunParams?.instructions)
-      deltaMessages.push('Instructions updated');
-
-    return deltaMessages;
-  }, [nextRunParams?.instructions, run.instructions]);
-
-  return (
-    <ul className={classes.assistantDelta}>
-      {deltaMessages.map((message, index) => (
-        <li key={index}>
-          <span>{message}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-export function getAssistantDeltaParams({
-  instructions,
-  tools,
-}: ThreadRun): AssistantDeltaParams {
-  return {
-    instructions,
-    tools: tools.map((item) => getToolReferenceFromToolUsage(item)),
-  };
 }

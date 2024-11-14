@@ -16,10 +16,7 @@
 
 import { listTools, readTool } from '@/app/api/tools';
 import { Tool, ToolsListQuery } from '@/app/api/tools/types';
-import {
-  decodeEntityWithMetadata,
-  encodeEntityWithMetadata,
-} from '@/app/api/utils';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import {
   QueryClient,

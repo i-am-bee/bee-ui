@@ -17,6 +17,10 @@
 import { Thread } from '@/app/api/threads/types';
 import { isNotNull } from '@/utils/helpers';
 import { BotChatMessage, ChatMessage, MessageWithFiles } from './types';
+import { Assistant } from '../assistants/types';
+import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
+import { RunSetup } from '../assistants/builder/Builder';
+import { getToolReferenceFromToolUsage } from '../tools/utils';
 
 export function getMessagesFromThreadMessages(
   messages: MessageWithFiles[],
@@ -46,4 +50,46 @@ export function isBotMessage(
   message: ChatMessage | undefined,
 ): message is BotChatMessage {
   return isNotNull(message) && message.role === 'assistant';
+}
+
+export function getRunResources(
+  thread: Thread | null,
+  assistant: Assistant,
+): RunMetadata['resources'] {
+  const assistantVectorStoreId =
+    assistant.tool_resources?.file_search?.vector_store_ids?.at(0);
+  const threadVectorStoreId =
+    thread?.tool_resources?.file_search?.vector_store_ids?.at(0);
+
+  return {
+    ...(assistantVectorStoreId
+      ? { assistant: { vectorStoreId: assistantVectorStoreId } }
+      : null),
+    ...(threadVectorStoreId
+      ? { thread: { vectorStoreId: threadVectorStoreId } }
+      : null),
+  };
+}
+
+export function getRunSetup({
+  instructions,
+  tools,
+  uiMetadata: { resources },
+}: ThreadRun): RunSetup {
+  return {
+    instructions,
+    tools: tools.map((item) => getToolReferenceFromToolUsage(item)),
+    resources,
+  };
+}
+
+export function getNewRunSetup(
+  assistant: Assistant,
+  thread: Thread | null,
+): RunSetup {
+  return {
+    instructions: assistant.instructions,
+    tools: assistant.tools.map((item) => getToolReferenceFromToolUsage(item)),
+    resources: getRunResources(thread, assistant),
+  };
 }

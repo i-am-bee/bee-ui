@@ -19,6 +19,7 @@ import {
   RequiredActionToolApprovals,
   RequiredActionToolOutput,
   RunEventResponse,
+  RunMetadata,
   RunsCreateBody,
   RunsCreateResponse,
 } from '@/app/api/threads-runs/types';
@@ -38,6 +39,7 @@ import {
   SubmitToolOutputsBody,
 } from '@/app/api/tools/types';
 import {
+  encodeEntityWithMetadata,
   getProjectHeaders,
   handleFailedResponse,
   maybeGetJsonBody,
@@ -64,10 +66,19 @@ import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { getToolApprovalId } from '@/modules/tools/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { RunController } from '../providers/ChatProvider';
+import { EntityWithDecodedMetadata } from '@/app/api/types';
+
+type RunsCreateBodyDecoded = EntityWithDecodedMetadata<
+  RunsCreateBody,
+  RunMetadata
+>;
 
 interface ChatStreamParams {
   action:
-    | { id: 'create-run'; body: RunsCreateBody }
+    | {
+        id: 'create-run';
+        body: RunsCreateBodyDecoded;
+      }
     | {
         id: 'process-approval';
         requiredAction: RequiredActionToolApprovals;
@@ -288,7 +299,7 @@ export function useChatStream({
         ? fetchEventStream({
             url: `/api/v1/threads/${getThread().id}/runs`,
             projectId: project.id,
-            body: action.body,
+            body: encodeEntityWithMetadata<RunsCreateBodyDecoded>(action.body),
             abortController,
             setMessages,
             handleRunEventResponse,

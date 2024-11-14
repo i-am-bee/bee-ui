@@ -75,7 +75,11 @@ import {
   ToolApprovalValue,
   UserChatMessage,
 } from '../types';
-import { getThreadVectorStoreId, isBotMessage } from '../utils';
+import {
+  getRunResources,
+  getThreadVectorStoreId,
+  isBotMessage,
+} from '../utils';
 import { AssistantModalProvider } from './AssistantModalProvider';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
@@ -585,6 +589,9 @@ export function ChatProvider({
               assistant_id: assistant.id,
               tools,
               tool_approvals: toolApprovals,
+              uiMetadata: {
+                resources: getRunResources(thread, assistant),
+              },
             },
           },
           onMessageCompleted: (response) => {

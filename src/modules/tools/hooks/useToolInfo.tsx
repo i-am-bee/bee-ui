@@ -16,7 +16,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { ToolReference } from '@/app/api/tools/types';
+import { Tool, ToolReference } from '@/app/api/tools/types';
 import { readToolQuery } from '../queries';
 import { ComponentType, useMemo } from 'react';
 import { SystemToolId } from '@/app/api/threads-runs/types';
@@ -33,17 +33,21 @@ import {
   Tools,
 } from '@carbon/react/icons';
 import { SkeletonIcon } from '@carbon/react';
-import { ToolNameSkeleton } from '../components/ToolNameSkeleton';
+import { ToolName } from '../common/ToolName';
+import { encodeEntityWithMetadata } from '@/app/api/utils';
 
 export function useToolInfo(toolReference: ToolReference) {
   const { tool: toolProp, id, type } = toolReference;
   const { project } = useAppContext();
   const { data, isLoading, error } = useQuery({
     ...readToolQuery(project.id, id),
-    enabled: !toolProp && (type === 'user' || type === 'system'),
+    enabled: type === 'user' || type === 'system',
+    initialData: toolProp
+      ? encodeEntityWithMetadata<Tool>(toolProp)
+      : undefined,
   });
 
-  const tool = toolProp ?? data;
+  const tool = data ?? toolProp;
 
   const toolName = useMemo(() => {
     if (tool) return tool.name;
@@ -52,7 +56,7 @@ export function useToolInfo(toolReference: ToolReference) {
       isLoading &&
       ((type === 'system' && id === 'web_search') || type === 'user')
     ) {
-      return <ToolNameSkeleton />;
+      return <ToolName.Skeleton />;
     }
 
     return getStaticToolName({ ...toolReference, tool });
@@ -73,7 +77,7 @@ export function useToolInfo(toolReference: ToolReference) {
     return Tools;
   }, [id, tool, type]);
 
-  return { toolName, toolIcon, error };
+  return { toolName, toolIcon, tool: data, error };
 }
 
 const SYSTEM_TOOL_NAME: Record<SystemToolId, string> = {

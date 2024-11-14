@@ -34,7 +34,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { toolsQuery } from '../queries';
+import { readToolQuery, toolsQuery } from '../queries';
 import classes from './UserToolModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 
@@ -125,6 +125,10 @@ export function UserToolModal({
       });
 
       if (tool) {
+        queryClient.invalidateQueries({
+          queryKey: readToolQuery(project.id, tool.id).queryKey,
+        });
+
         if (!id) {
           onCreateSuccess?.(tool);
         }

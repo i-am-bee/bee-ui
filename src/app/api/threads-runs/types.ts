@@ -36,6 +36,10 @@ export type ThreadRunResult = NonNullable<Awaited<ReturnType<typeof readRun>>>;
 
 export type RunMetadata = {
   feedback?: MessageFeedback;
+  resources?: {
+    thread?: { vectorStoreId: string };
+    assistant?: { vectorStoreId: string };
+  };
 };
 
 export type ThreadRun = EntityWithDecodedMetadata<ThreadRunResult, RunMetadata>;

@@ -103,21 +103,29 @@
     flex-wrap: wrap;
     gap: $spacing-05;
     li {
-      block-size: rem(48px);
+      position: relative;
       max-inline-size: 50%;
+      &:hover {
+        .removeButton {
+          opacity: 1;
+        }
+      }
+    }
+    .selectedToolButton {
+      background-color: $background;
+      border: none;
+      block-size: rem(48px);
       display: flex;
       gap: $spacing-02;
       align-items: center;
       box-shadow: $box-shadow;
       padding: $spacing-03;
-      padding-inline-end: $spacing-02;
+      padding-inline-end: rem(30px);
       border-radius: $block-radius;
       font-size: rem(14px);
 
-      &:hover {
-        .removeButton {
-          opacity: 1;
-        }
+      &.isUserTool {
+        cursor: pointer;
       }
 
       .selectedIcon {
@@ -129,19 +137,21 @@
         justify-content: center;
         fill: currentColor;
       }
-
-      .removeButton {
-        block-size: rem(24px);
-        inline-size: rem(24px);
-        border-radius: $block-radius;
-        border: none;
-        background-color: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        opacity: 0;
-      }
+    }
+    .removeButton {
+      position: absolute;
+      inset-block-start: $spacing-04;
+      inset-inline-end: $spacing-02;
+      block-size: rem(24px);
+      inline-size: rem(24px);
+      border-radius: $block-radius;
+      border: none;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      opacity: 0;
     }
   }
 }

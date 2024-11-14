@@ -23,11 +23,11 @@ import { ConversationHeader } from './ConversationHeader';
 import classes from './ConversationView.module.scss';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
-import { getAssistantDeltaParams, Message } from './message/Message';
+import { Message } from './message/Message';
 import { useChat, useChatMessages } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
 import clsx from 'clsx';
-import { isBotMessage } from './utils';
+import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
 
 export const ConversationView = memo(function ConversationView() {
   const {
@@ -39,7 +39,7 @@ export const ConversationView = memo(function ConversationView() {
 
   const messages = useChatMessages();
 
-  const { assistant, builderState } = useChat();
+  const { assistant, thread, builderState } = useChat();
 
   const scrollToBottom = useCallback(() => {
     const scrollElement = scrollRef.current;
@@ -94,7 +94,9 @@ export const ConversationView = memo(function ConversationView() {
             const evenMessages = size % 2 === 0;
             const isPast = evenMessages ? index < size - 2 : index < size - 1;
 
-            const nextBotMessage = arr.at(index + 2);
+            const nextBotMessage = isBotMessage(msg)
+              ? arr.at(index + 2)
+              : arr.at(index + 1);
 
             return (
               <Message
@@ -102,9 +104,14 @@ export const ConversationView = memo(function ConversationView() {
                 message={msg}
                 isPast={isPast}
                 isScrolled={isScrolled}
-                nextRunParams={
+                nextRunSetup={
                   isBotMessage(nextBotMessage) && nextBotMessage.run
-                    ? getAssistantDeltaParams(nextBotMessage.run)
+                    ? getRunSetup(nextBotMessage.run)
+                    : undefined
+                }
+                currentSetup={
+                  assistant.data && thread
+                    ? getNewRunSetup(assistant.data, thread)
                     : undefined
                 }
               />

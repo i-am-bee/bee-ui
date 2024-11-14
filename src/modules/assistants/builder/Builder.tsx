@@ -49,6 +49,8 @@ import isEmpty from 'lodash/isEmpty';
 import { Controller } from 'react-hook-form';
 import { useRouter } from 'next-nprogress-bar';
 import { ToolReference } from '@/app/api/tools/types';
+import { VectorStore } from '@/app/api/vector-stores/types';
+import { RunMetadata } from '@/app/api/threads-runs/types';
 
 interface Props {
   thread?: Thread;
@@ -267,7 +269,8 @@ export interface AssistantBuilderState {
   onAutoSaveAssistant: () => void;
 }
 
-export interface AssistantDeltaParams {
+export interface RunSetup {
   instructions: string | null;
   tools: ToolReference[];
+  resources: RunMetadata['resources'];
 }

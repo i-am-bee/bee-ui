@@ -26,6 +26,11 @@
       opacity: 1;
     }
   }
+  &.hasOutdatedSetup {
+    .holder {
+      opacity: 0.3;
+    }
+  }
 }
 
 @keyframes pulse {
@@ -152,34 +157,5 @@
   > svg {
     block-size: rem(24px);
     inline-size: rem(24px);
-  }
-}
-
-.assistantDelta {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-03;
-  margin-block: $spacing-04;
-
-  li {
-    color: $text-secondary;
-    font-size: rem(14px);
-    display: flex;
-    justify-content: center;
-    position: relative;
-
-    &::before {
-      content: '';
-      position: absolute;
-      border-block-start: 1px solid $border-subtle;
-      inline-size: 100%;
-      inset-block-start: 0.5rem;
-    }
-
-    span {
-      background-color: $layer-02;
-      position: relative;
-      padding-inline: $spacing-05;
-    }
   }
 }

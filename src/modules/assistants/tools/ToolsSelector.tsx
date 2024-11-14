@@ -31,6 +31,10 @@ import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useQuery } from '@tanstack/react-query';
 import { readToolQuery } from '@/modules/tools/queries';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
+import clsx from 'clsx';
 
 export function ToolsSelector() {
   const prefix = usePrefix();
@@ -82,19 +86,39 @@ function SelectedToolsItem({
   tool: ToolReference;
   onToggle: (tool: ToolReference, toggled: boolean) => void;
 }) {
-  const { toolName, toolIcon: Icon, error } = useToolInfo(toolProp);
+  const { project } = useAppContext();
+  const { toolName, toolIcon: Icon, tool, error } = useToolInfo(toolProp);
+  const { openModal } = useModal();
+
+  const isUserTool = tool && tool.type === 'user';
+
+  console.log({ tool });
 
   return (
     <AnimatePresence>
       <motion.li {...fadeProps()}>
-        <span className={classes.selectedIcon}>
-          <Icon />
-        </span>
-        {error ? (
-          <span className={classes.toolError}>Tool not found</span>
-        ) : (
-          toolName
-        )}
+        <button
+          className={clsx(classes.selectedToolButton, {
+            [classes.isUserTool]: isUserTool,
+          })}
+          onClick={() =>
+            openModal(
+              (props) =>
+                isUserTool && (
+                  <UserToolModal project={project} tool={tool} {...props} />
+                ),
+            )
+          }
+        >
+          <span className={classes.selectedIcon}>
+            <Icon />
+          </span>
+          {error ? (
+            <span className={classes.toolError}>Tool not found</span>
+          ) : (
+            toolName
+          )}
+        </button>
         <Tooltip content="Remove tool from bee" asChild placement="top">
           <button
             className={classes.removeButton}

@@ -173,7 +173,7 @@ export function KnowledgeSelector() {
         </div>
       )}
 
-      {vectorStore && dataFiles && (
+      {vectorStore && dataFiles?.files.length ? (
         <>
           <ul className={classes.files}>
             {dataFiles.files.map((item) => (
@@ -186,17 +186,17 @@ export function KnowledgeSelector() {
             ))}
           </ul>
           {dataFiles.totalCount &&
-            dataFiles.totalCount > VECTOR_STORE_FILES_QUERY_PARAMS.limit && (
-              <p className={classes.filesMore}>
-                ...and {dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT} more{' '}
-                {pluralize(
-                  'file',
-                  dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT,
-                )}
-              </p>
-            )}
+          dataFiles.totalCount > VECTOR_STORE_FILES_QUERY_PARAMS.limit ? (
+            <p className={classes.filesMore}>
+              ...and {dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT} more{' '}
+              {pluralize(
+                'file',
+                dataFiles.totalCount - VECTOR_STORE_FILES_LIMIT,
+              )}
+            </p>
+          ) : null}
         </>
-      )}
+      ) : null}
 
       {!data && isFetching && <DropdownSkeleton />}
 
