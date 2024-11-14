@@ -30,7 +30,7 @@ import { useUpdateUser } from '@/modules/users/useUpdateUser';
 import { useUserProfile } from '@/store/user-profile';
 import { UserMetadata } from '@/store/user-profile/types';
 import { isNotNull } from '@/utils/helpers';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,

@@ -15,7 +15,7 @@
  */
 
 import { simpleHashInRange } from '@/utils/helpers';
-import { has } from 'lodash';
+import has from 'lodash/has';
 import { StarterQuestion } from './builder/AssistantBuilderProvider';
 import {
   ASSISTANT_ICONS,
