@@ -92,8 +92,6 @@ function SelectedToolsItem({
 
   const isUserTool = tool && tool.type === 'user';
 
-  console.log({ tool });
-
   return (
     <AnimatePresence>
       <motion.li {...fadeProps()}>
