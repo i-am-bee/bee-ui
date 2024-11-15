@@ -36,7 +36,7 @@ export async function acceptTou(prevState: any, formData: FormData) {
     session.userProfile.metadata?.default_project ??
     (
       await createProject({
-        name: `${session.userProfile.firstName}'s personal`,
+        name: `${session.userProfile.firstName}'s workspace`,
         visibility: 'private',
       })
     )?.id;

@@ -42,7 +42,7 @@ interface Props {
 
 export function AssistantTemplateCard({ template, selected, onClick }: Props) {
   const { name, description, tools, tool_resources } = template;
-  const vectorStoreId = tool_resources?.file_search?.vector_store_ids?.[0];
+  const vectorStoreId = tool_resources?.file_search?.vector_store_ids?.at(0);
 
   return (
     <CardsListItem
