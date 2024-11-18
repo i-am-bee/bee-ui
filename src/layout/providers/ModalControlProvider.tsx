@@ -16,6 +16,7 @@
 
 'use client';
 
+import { noop } from '@/utils/helpers';
 import { PropsWithChildren, createContext, use, useState } from 'react';
 
 interface ModalControlContextValue {
@@ -26,9 +27,13 @@ interface ModalControlContextValue {
   onRequestCloseSafe: () => void;
 }
 
-const ModalControlContext = createContext<ModalControlContextValue>(
-  null as unknown as ModalControlContextValue,
-);
+const ModalControlContext = createContext<ModalControlContextValue>({
+  isBlocked: false,
+  confirmMessage: null,
+  setConfirmOnRequestClose: noop,
+  clearConfirmOnRequestClose: noop,
+  onRequestCloseSafe: noop,
+});
 
 interface Props {
   onRequestClose: () => void;
@@ -77,15 +82,7 @@ export function ModalControlProvider({
 }
 
 export function useModalControl() {
-  const context = use(ModalControlContext);
-
-  if (!context) {
-    throw new Error(
-      'useModalControl must be used within a ModalControlProvider',
-    );
-  }
-
-  return context;
+  return use(ModalControlContext);
 }
 
 export const CONFIRM_MESSAGE_DEFAULT = 'Do you really want to close the form?';
