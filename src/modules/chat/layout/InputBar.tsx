@@ -113,6 +113,9 @@ export const InputBar = memo(function InputBar({
     required: true,
   });
 
+  const isSubmitDisabled =
+    isFilesPending || !inputValue || (builderState && !builderState.isSaved);
+
   return (
     <form
       className={clsx(classes.root, {
@@ -175,7 +178,7 @@ export const InputBar = memo(function InputBar({
             autoFocus={!builderState}
             ref={mergeRefs([inputFormRef, inputRef])}
             {...inputFormProps}
-            onKeyDown={submitFormOnEnter}
+            onKeyDown={(e) => !isSubmitDisabled && submitFormOnEnter(e)}
             onFocus={() => builderState?.onAutoSaveAssistant()}
           />
           <div className={classes.actionBar}>
@@ -205,11 +208,7 @@ export const InputBar = memo(function InputBar({
                   size="sm"
                   hasIconOnly
                   iconDescription="Send"
-                  disabled={
-                    isFilesPending ||
-                    !inputValue ||
-                    (builderState && !builderState.isSaved)
-                  }
+                  disabled={isSubmitDisabled}
                 />
               ) : (
                 <Button

@@ -43,7 +43,7 @@ import { getRunSetup, isBotMessage } from '../utils';
 import { MessageContent } from './MessageContent';
 import { RunSetup } from '@/modules/assistants/builder/Builder';
 import { RunSetupDelta } from './RunSetupDelta';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 interface Props {
   message: ChatMessage;
@@ -178,12 +178,14 @@ export const Message = memo(function Message({
         </li>
 
         {builderState && run && (nextRunSetup || currentSetup) && (
-          <Container size="sm">
-            <RunSetupDelta
-              run={run}
-              nextRunSetup={nextRunSetup || currentSetup}
-            />
-          </Container>
+          <li>
+            <Container size="sm">
+              <RunSetupDelta
+                run={run}
+                nextRunSetup={nextRunSetup || currentSetup}
+              />
+            </Container>
+          </li>
         )}
       </RunProvider>
     </MessageFeedbackProvider>

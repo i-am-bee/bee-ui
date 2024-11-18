@@ -122,19 +122,6 @@
       overflow-wrap: anywhere;
       line-height: 1.625;
       color: $message-color;
-
-      &.noContent {
-        color: $text-placeholder;
-      }
-      &.loading {
-        color: $text-placeholder;
-        fill: currentColor;
-        animation: pulse 2.5s infinite;
-        svg {
-          inline-size: 1.25rem;
-          block-size: 1.25rem;
-        }
-      }
     }
 
     img {
