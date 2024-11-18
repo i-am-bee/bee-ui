@@ -23,7 +23,7 @@
 
 .modal {
   &:global(.#{$prefix}--modal) {
-    background-color: $overlay;
+    background-color: $modal-background;
     scrollbar-gutter: stable;
     overflow-y: auto;
   }

@@ -22,7 +22,7 @@ import {
   AssistantFormValues,
   useAssistantBuilder,
 } from '../builder/AssistantBuilderProvider';
-import { getToolReference } from '@/modules/tools/utils';
+import { getToolReferenceFromTool } from '@/modules/tools/utils';
 import { ToolIcon } from '@/modules/tools/ToolCard';
 import uniq from 'lodash/uniq';
 import {
@@ -104,5 +104,5 @@ function filterToolsBySelectedValue(tools: Tool[], selected: ToolReference[]) {
       (tool) =>
         !selected.some(({ type, id }) => type === tool.type && id === tool.id),
     )
-    .map(getToolReference);
+    .map(getToolReferenceFromTool);
 }

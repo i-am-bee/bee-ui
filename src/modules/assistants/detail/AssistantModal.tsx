@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
+import { ToolReference } from '@/app/api/tools/types';
+import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Modal } from '@/components/Modal/Modal';
+import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { ToolIcon } from '@/modules/tools/ToolCard';
+import { getAssistantToolReference } from '@/modules/tools/utils';
 import {
   Button,
   ModalBody,
@@ -23,28 +31,16 @@ import {
   ModalHeader,
   SkeletonText,
 } from '@carbon/react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Edit } from '@carbon/react/icons';
+import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
+import { useRouter } from 'next-nprogress-bar';
+import pluralize from 'pluralize';
+import { useDeleteAssistant } from '../builder/useDeleteAssistant';
+import { AssistantIcon } from '../icons/AssistantIcon';
 import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
 import classes from './AssistantModal.module.scss';
-import { useDeleteAssistant } from '../builder/useDeleteAssistant';
-import { AssistantIcon } from '../icons/AssistantIcon';
-import { Edit } from '@carbon/react/icons';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { LineClampText } from '@/components/LineClampText/LineClampText';
-import { useMemo } from 'react';
-import { getAssistantToolReference } from '@/modules/tools/utils';
-import { ToolIcon } from '@/modules/tools/ToolCard';
-import { readVectorStoreQuery } from '@/modules/knowledge/queries';
-import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
-import pluralize from 'pluralize';
-import { useRouter } from 'next-nprogress-bar';
-import {
-  getStaticToolName,
-  useToolInfo,
-} from '@/modules/tools/hooks/useToolInfo';
-import { ToolReference } from '@/app/api/tools/types';
 
 export interface AssistantModalProps {
   onDeleteSuccess?: () => void;
@@ -76,11 +72,7 @@ export default function AssistantModal({
 
   const vectorStoreId =
     assistant.tool_resources?.file_search?.vector_store_ids?.at(0);
-  const { data: vectorStore, isLoading: isVectorStoreLoading } = useQuery({
-    // We support only one vector store per assistant
-    ...readVectorStoreQuery(project.id, vectorStoreId ?? ''),
-    enabled: Boolean(vectorStoreId),
-  });
+  const { data: vectorStore } = useVectorStore(vectorStoreId);
 
   return (
     <SSRSafePortal>

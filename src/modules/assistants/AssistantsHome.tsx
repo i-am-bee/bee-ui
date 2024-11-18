@@ -15,35 +15,41 @@
  */
 
 'use client';
-import { useDebounceValue } from 'usehooks-ts';
-import { useState } from 'react';
+import {
+  AssistantsListQueryOrderBy,
+  ListAssistantsResponse,
+} from '@/app/api/assistants/types';
+import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { noop } from '@/utils/helpers';
 import {
   InfiniteData,
   useInfiniteQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import { produce } from 'immer';
+import { useRouter } from 'next-nprogress-bar';
+import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useDebounceValue } from 'usehooks-ts';
+import { AssistantsList } from '../assistants/library/AssistantsList';
 import {
   assistantsQuery,
   lastAssistantsQuery,
 } from '../assistants/library/queries';
-import { AssistantsList } from '../assistants/library/AssistantsList';
 import { Assistant } from '../assistants/types';
-import {
-  AssistantsListQueryOrderBy,
-  ListAssistantsResponse,
-} from '@/app/api/assistants/types';
-import { produce } from 'immer';
-import { CardsList } from '@/components/CardsList/CardsList';
+import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { HomeSection, ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
-import { useRouter } from 'next-nprogress-bar';
 
 export function AssistantsHome() {
   const { project, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<AssistantsListQueryOrderBy>(ORDER_DEFAULT);
   const [search, setSearch] = useDebounceValue('', 200);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const showOnboarding = !isProjectReadOnly && searchParams?.has('onboarding');
 
   const queryClient = useQueryClient();
 
@@ -129,6 +135,10 @@ export function AssistantsHome() {
           />
         </CardsList>
       </ProjectHome>
+
+      {showOnboarding && (
+        <OnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
+      )}
     </>
   );
 }

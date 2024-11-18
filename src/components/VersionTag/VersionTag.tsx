@@ -19,10 +19,10 @@ import classes from './VersionTag.module.scss';
 import clsx from 'clsx';
 
 export function VersionTag({
-  version,
+  version = 'beta',
   className,
 }: {
-  version: string;
+  version?: string;
   className?: string;
 }) {
   return (

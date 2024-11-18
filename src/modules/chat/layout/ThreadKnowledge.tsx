@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-import { toolsEqual } from '@/modules/tools/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import {
-  readVectorStoreQuery,
-  vectorStoresFilesQuery,
-} from '@/modules/knowledge/queries';
+import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
+import { vectorStoresFilesQuery } from '@/modules/knowledge/queries';
+import { toolsEqual } from '@/modules/tools/utils';
 import { SkeletonText, Toggle } from '@carbon/react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { useId, useMemo } from 'react';
 import { useChat } from '../providers/ChatProvider';
-import classes from './ThreadKnowledge.module.scss';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import classes from './ThreadKnowledge.module.scss';
 
 interface Props {
   assistantVectorStores: string[];
@@ -70,10 +68,8 @@ export function ThreadKnowledge({
   );
 
   const { data: assistantKnowledge, isLoading: isAssistantKnowledgeLoading } =
-    useQuery({
-      // We support only one vector store per assistant
-      ...readVectorStoreQuery(project.id, assistantVectorStores.at(0)!),
-      enabled: enableFetch && assistantVectorStores.length > 0,
+    useVectorStore(assistantVectorStores.at(0), {
+      enabled: enableFetch,
     });
 
   const assistantKnowledgeTotal = assistantKnowledge?.file_counts.total ?? 0;

@@ -16,6 +16,7 @@
 
 'use client';
 
+import { noop } from '@/utils/helpers';
 import { ToastNotification, usePrefix } from '@carbon/react';
 import {
   createContext,
@@ -60,7 +61,7 @@ interface ToastContextValue {
 }
 
 const ToastContext = createContext<ToastContextValue>({
-  addToast: () => {},
+  addToast: noop,
 });
 
 interface ToastWithKey extends Toast {

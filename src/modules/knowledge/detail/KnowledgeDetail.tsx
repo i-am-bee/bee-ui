@@ -15,39 +15,39 @@
  */
 
 'use client';
+import { VectorStore } from '@/app/api/vector-stores/types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InfiniteData,
   keepPreviousData,
   useInfiniteQuery,
-  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { VectorStore } from '@/app/api/vector-stores/types';
 // import { useDebounceValue } from 'usehooks-ts';
+import {
+  ListVectorStoreFilesResponse,
+  VectorStoreFile,
+} from '@/app/api/vector-stores-files/types';
+import { CardsList } from '@/components/CardsList/CardsList';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { HomeSection, ProjectHome } from '@/modules/projects/ProjectHome';
+import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipContent';
+import { IconButton } from '@carbon/react';
+import { ArrowLeft } from '@carbon/react/icons';
+import { produce } from 'immer';
+import { useRouter } from 'next-nprogress-bar';
+import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVectorStoreFiles';
+import { useVectorStore } from '../hooks/useVectorStore';
+import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
 import {
   PAGE_SIZE,
   readVectorStoreQuery,
   vectorStoresFilesQuery,
 } from '../queries';
-import { produce } from 'immer';
-import { CardsList } from '@/components/CardsList/CardsList';
-import { KnowledgeFileCard } from './KnowledgeFileCard';
-import { IconButton } from '@carbon/react';
-import classes from './KnowledgeDetail.module.scss';
-import { Add, ArrowLeft } from '@carbon/react/icons';
-import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
-import { useRouter } from 'next-nprogress-bar';
 import { AddContentModal } from './AddContentModal';
-import {
-  ListVectorStoreFilesResponse,
-  VectorStoreFile,
-} from '@/app/api/vector-stores-files/types';
 import { KnowledgeAppsInfo } from './KnowledgeAppsInfo';
-import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVectorStoreFiles';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { HomeSection, ProjectHome } from '@/modules/projects/ProjectHome';
-import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipContent';
+import classes from './KnowledgeDetail.module.scss';
+import { KnowledgeFileCard } from './KnowledgeFileCard';
 
 interface Props {
   vectorStore: VectorStore;
@@ -64,10 +64,10 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
     // search, TODO: api not ready
   };
 
-  const { data: vectorStoreFetched } = useQuery({
-    ...readVectorStoreQuery(project.id, vectorStoreProps.id),
+  const { data: vectorStoreFetched } = useVectorStore(vectorStoreProps.id, {
     initialData: vectorStoreProps,
   });
+
   const vectorStore = vectorStoreFetched ?? vectorStoreProps;
 
   const {

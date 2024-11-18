@@ -39,6 +39,8 @@ interface Props {
   onClick?: MouseEventHandler;
   isDeletePending?: boolean;
   actions?: ComponentProps<typeof OverflowMenuItem>[];
+  canHover?: boolean;
+  selected?: boolean;
   className?: string;
 }
 
@@ -49,6 +51,8 @@ export function CardsListItem({
   onClick,
   actions,
   isDeletePending,
+  canHover,
+  selected,
   className,
   children,
 }: PropsWithChildren<Props>) {
@@ -73,6 +77,8 @@ export function CardsListItem({
       className={clsx(classes.root, className, {
         [classes.focusWithin]: optionsOpen,
         [classes.isDeletePending]: isDeletePending,
+        [classes.canHover]: canHover,
+        [classes.selected]: selected,
       })}
     >
       <div className={classes.header}>

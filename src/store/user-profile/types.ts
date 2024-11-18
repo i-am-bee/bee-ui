@@ -19,6 +19,8 @@ import { StoreSlice } from '../types';
 export type UserMetadata = {
   email?: string;
   tou_accepted_at?: number;
+  default_project?: string;
+  onboarding_completed_at?: number;
 };
 
 export type UserProfileState = {
@@ -32,6 +34,7 @@ export type UserProfileState = {
 
 export type UserProfileAction = {
   setUserProfile: (userProfile: UserProfileState) => void;
+  setMetadata: (metadata?: UserMetadata) => void;
 };
 
 export type UserProfileSlice = StoreSlice<UserProfileState, UserProfileAction>;

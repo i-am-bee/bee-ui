@@ -33,6 +33,7 @@ export const userProfileSlice = (initialState?: Partial<UserProfileState>) =>
     ...initialState,
     actions: {
       setUserProfile: (userProfile) => set(userProfile),
+      setMetadata: (metadata) => set({ metadata }),
     },
   }));
 

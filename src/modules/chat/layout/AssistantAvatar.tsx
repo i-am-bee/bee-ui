@@ -19,14 +19,19 @@ import {
   AssistantIcon,
   AssistantIconProps,
 } from '@/modules/assistants/icons/AssistantIcon';
+import { isAssistant } from '@/modules/assistants/utils';
 import { useAssistantModal } from '../providers/AssistantModalProvider';
 
 export function AssistantAvatar(props: AssistantIconProps) {
   const { openAssistantModal } = useAssistantModal();
+  const { assistant } = props;
+
   return (
     <BounceButton
       scale={0.875}
-      onClick={() => props.assistant && openAssistantModal(props.assistant)}
+      onClick={() =>
+        assistant && isAssistant(assistant) && openAssistantModal(assistant)
+      }
     >
       <AssistantIcon {...props} />
     </BounceButton>

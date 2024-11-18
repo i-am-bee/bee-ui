@@ -28,21 +28,21 @@
   margin-inline-end: rem(-6px);
 }
 
+.body {
+  flex-grow: 1;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  row-gap: $spacing-02;
+}
+
 .description {
   @include type-style(label-02);
   &:global(.#{$prefix}--skeleton__text) {
     margin-block-end: $spacing-02;
   }
-  .blank & {
-    color: $text-secondary;
-  }
-}
-
-.illustration {
-  block-size: rem(80px);
-  inline-size: rem(80px);
-  margin-block-start: rem(56px);
-  margin-inline: auto;
 }
 
 .cta {
@@ -53,4 +53,19 @@
   align-items: center;
   justify-content: space-between;
   column-gap: $spacing-05;
+}
+
+.root .info {
+  @include type-style(label-01);
+  strong {
+    margin-inline-end: $spacing-02;
+  }
+  &:global(.#{$prefix}--skeleton__text) {
+    margin-block-end: 0;
+  }
+
+  &.loading {
+    position: absolute;
+    visibility: hidden;
+  }
 }

@@ -19,7 +19,7 @@ import { Realm } from '@/app/auth/signin/actions';
 import { useTheme } from '@/layout/providers/ThemeProvider';
 import { Button, InlineNotification, Loading } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import classes from './SignIn.module.scss';
 import { VersionTag } from '@/components/VersionTag/VersionTag';
@@ -119,7 +119,7 @@ export function SignIn({ error, action }: Props) {
 
           <h1 className={classes.heading}>
             IBM {APP_NAME}
-            <VersionTag version="alpha" className={classes.versionTag} />
+            <VersionTag className={classes.versionTag} />
           </h1>
 
           <form className={classes.form} action={() => action('ent.ibm.com')}>
@@ -128,14 +128,14 @@ export function SignIn({ error, action }: Props) {
             <LoginButton label="IBMid" />
           </form>
 
-          {/* <form
-              className={classes.form}
-              action={() => action('www.google.com')}
-            >
-              <p className={classes.label}>Log in with Google</p>
+          <form
+            className={classes.form}
+            action={() => action('www.google.com')}
+          >
+            <p className={classes.label}>Log in with Google</p>
 
-              <LoginButton label="Google" />
-            </form> */}
+            <LoginButton label="Google" />
+          </form>
         </div>
 
         <div className={classes.video}>

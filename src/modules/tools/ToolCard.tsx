@@ -28,7 +28,7 @@ import { useToolInfo } from './hooks/useToolInfo';
 import { PublicToolModal } from './manage/PublicToolModal';
 import { UserToolModal } from './manage/UserToolModal';
 import classes from './ToolCard.module.scss';
-import { getToolReference } from './utils';
+import { getToolReferenceFromTool } from './utils';
 
 interface Props {
   tool: Tool;
@@ -55,7 +55,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={<ToolIcon tool={getToolReference(tool)} />}
+        icon={<ToolIcon tool={getToolReferenceFromTool(tool)} />}
         onClick={() =>
           openModal((props) =>
             tool.type === 'user' ? (

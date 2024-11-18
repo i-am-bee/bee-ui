@@ -25,4 +25,8 @@
   position: relative;
   block-size: 100vh;
   min-block-size: 0;
+  // Fixes an unresolved bug where an element would sometimes gain focus automatically (at least we're removing styling)
+  &:focus-visible {
+    outline: none;
+  }
 }

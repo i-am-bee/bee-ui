@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-import { MouseEventHandler, useState } from 'react';
-import { useDeleteAssistant } from '../builder/useDeleteAssistant';
-import { AssistantIcon } from '../icons/AssistantIcon';
-import { Assistant } from '../types';
-import classes from './AssistantCard.module.scss';
-import BlankAssistantCard from './blank-app-card.svg';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
+import { MouseEventHandler, useState } from 'react';
+import { useDeleteAssistant } from '../builder/useDeleteAssistant';
 import { AssistantModalRenderer } from '../detail/AssistantModalRenderer';
+import { AssistantIcon } from '../icons/AssistantIcon';
+import { Assistant } from '../types';
+import classes from './AssistantCard.module.scss';
 
 interface Props {
   assistant: Assistant;
   cta?: string;
-  blank?: boolean;
   onClick?: MouseEventHandler;
-  onDeleteSuccess: (assistant: Assistant) => void;
+  onDeleteSuccess?: (assistant: Assistant) => void;
 }
 
 export function AssistantCard({
   assistant,
   cta,
-  blank,
   onClick,
   onDeleteSuccess,
 }: Props) {
@@ -44,7 +41,7 @@ export function AssistantCard({
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
     assistant,
     onSuccess: async () => {
-      onDeleteSuccess(assistant);
+      onDeleteSuccess?.(assistant);
     },
   });
   const { isProjectReadOnly } = useAppContext();
@@ -73,16 +70,13 @@ export function AssistantCard({
             : null,
         ].filter(isNotNull)}
       >
-        <div className={classes.body}>
-          {description && <p className={classes.description}>{description}</p>}
-
-          {blank && (
-            <div className={classes.illustration}>
-              <BlankAssistantCard />
-            </div>
-          )}
-        </div>
+        {description && (
+          <div className={classes.body}>
+            <p>{description}</p>
+          </div>
+        )}
       </CardsListItem>
+
       <AssistantModalRenderer
         assistant={assistant}
         isOpened={builderModalOpened}

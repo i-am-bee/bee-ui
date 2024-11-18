@@ -15,7 +15,7 @@
  */
 
 import { simpleHashInRange } from '@/utils/helpers';
-import { has } from 'lodash';
+import has from 'lodash/has';
 import { StarterQuestion } from './builder/AssistantBuilderProvider';
 import {
   ASSISTANT_ICONS,
@@ -24,6 +24,7 @@ import {
 } from './icons/AssistantBaseIcon';
 import {
   Assistant,
+  AssistantTemplate,
   STARTER_QUESTION_KEY_PREFIX,
   StarterQuestionsMetadata,
 } from './types';
@@ -57,7 +58,7 @@ export function decodeStarterQuestionsMetadata(
 const iconsMap = new Map<string, AssitantIconName>();
 
 export function getAssistantIconName(
-  assistant: Assistant | null,
+  assistant: Assistant | AssistantTemplate | null,
 ): AssitantIconName | undefined {
   const iconName = assistant?.uiMetadata.icon;
 
@@ -83,4 +84,10 @@ export function getAssistantIconName(
   }
 
   return iconName;
+}
+
+export function isAssistant(
+  assistant: Assistant | AssistantTemplate,
+): assistant is Assistant {
+  return 'id' in assistant;
 }

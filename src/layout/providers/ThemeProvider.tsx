@@ -17,8 +17,8 @@
 'use client';
 
 import { useAfterMount } from '@/hooks/useAfterMount';
+import { noop } from '@/utils/helpers';
 import { usePrefix } from '@carbon/react';
-import { noop } from 'lodash';
 import {
   PropsWithChildren,
   createContext,

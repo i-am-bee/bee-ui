@@ -26,6 +26,10 @@
   :global(.#{$prefix}--tabs) {
     margin-block-end: $spacing-08;
   }
+  // Fixes an unresolved bug where an element would sometimes gain focus automatically (at least we're removing styling)
+  &:focus-visible {
+    outline: none;
+  }
 }
 
 .heading {

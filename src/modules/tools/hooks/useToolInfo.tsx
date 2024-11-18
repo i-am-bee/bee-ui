@@ -77,7 +77,7 @@ export function useToolInfo(toolReference: ToolReference) {
     return Tools;
   }, [id, tool, type]);
 
-  return { toolName, toolIcon, tool: data, error };
+  return { toolName, toolIcon, tool: data, isLoading, error };
 }
 
 const SYSTEM_TOOL_NAME: Record<SystemToolId, string> = {

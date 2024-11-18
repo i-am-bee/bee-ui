@@ -21,7 +21,7 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import { ToolDisableModal } from '@/modules/tools/manage/ToolDisableModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { TOOLS_DEFAULT_PAGE_SIZE, toolsQuery } from '@/modules/tools/queries';
-import { getToolReference } from '@/modules/tools/utils';
+import { getToolReferenceFromTool } from '@/modules/tools/utils';
 import { Button, InlineLoading } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -93,7 +93,7 @@ export function ToolsList({ enableFetch }: Props) {
       {data?.tools?.map((tool) => (
         <li key={tool.id}>
           <ToolToggle
-            tool={getToolReference(tool)}
+            tool={getToolReferenceFromTool(tool)}
             heading={tool.name}
             description={tool.uiMetadata.description_short || tool.description}
             disabled={isSubmitting || isProjectReadOnly}

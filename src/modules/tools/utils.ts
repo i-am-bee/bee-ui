@@ -33,9 +33,7 @@ export function getToolReferenceId(tool: ToolReference): string {
   }
 }
 
-export function getToolUsageId(
-  tool: ToolsUsage[number],
-): ToolId | string | null {
+export function getToolUsageId(tool: ToolsUsage[number]): ToolId | string {
   switch (tool.type) {
     case 'code_interpreter':
       return tool.type;
@@ -45,8 +43,8 @@ export function getToolUsageId(
       return tool.system.id;
     case 'user':
       return tool.user.tool.id;
-    default:
-      return null;
+    case 'function':
+      return tool.function.name;
   }
 }
 
@@ -85,7 +83,7 @@ export function toolIncluded(
   return tools.some((t) => toolsEqual(t, tool));
 }
 
-export function getToolReference(tool: Tool): ToolReference {
+export function getToolReferenceFromTool(tool: Tool): ToolReference {
   return {
     tool,
     ...(tool.type === 'system'
@@ -105,15 +103,10 @@ export function getToolReferenceFromToolUsage(
           id: tool.system.id,
           type: tool.type,
         }
-      : tool.type === 'user'
-        ? {
-            id: tool.user.tool.id,
-            type: tool.type,
-          }
-        : {
-            id: getToolUsageId(tool) ?? tool.type,
-            type: tool.type,
-          }),
+      : {
+          id: getToolUsageId(tool),
+          type: tool.type,
+        }),
   };
 
   return toolReference;

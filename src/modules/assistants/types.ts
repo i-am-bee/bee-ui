@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { AssistantResult } from '@/app/api/assistants/types';
+import { AssistantResult, ToolResources } from '@/app/api/assistants/types';
+import { EntityWithDecodedMetadata } from '@/app/api/types';
 import {
   AssistantIconColor,
   AssitantIconName,
 } from './icons/AssistantBaseIcon';
-import { EntityWithDecodedMetadata } from '@/app/api/types';
 
 export const STARTER_QUESTION_KEY_PREFIX = 'starterQuestion_';
 
@@ -32,6 +32,22 @@ export type Assistant = EntityWithDecodedMetadata<
   AssistantResult,
   AssistantMetadata
 >;
+
+export type AssistantTemplate = Omit<
+  Assistant,
+  | 'created_at'
+  | 'object'
+  | 'id'
+  | 'model'
+  | 'system_prompt_overwrite'
+  | 'temperature'
+  | 'tool_resources'
+  | 'top_p'
+> & {
+  key: string;
+  tool_resources: ToolResources;
+  model?: string;
+};
 
 export interface StarterQuestionsMetadata {
   [key: `${typeof STARTER_QUESTION_KEY_PREFIX}${string}`]: string;

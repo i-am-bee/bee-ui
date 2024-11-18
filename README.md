@@ -16,6 +16,23 @@ With Bee UI, users can build and test custom bees that address unique workflows 
 >
 > 🚀 The fastest way to setup Bee (UI + API) is through [Bee Stack](https://github.com/i-am-bee/bee-stack).
 
+## Preview
+
+![Bee UI Demo Video](./docs/assets/bee-ui-demo.gif)
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="./docs/assets/bee-ui-builder.png"></td>
+      <td><img src="./docs/assets/bee-ui-welcome-screen.png"></td>
+    </tr>
+    <tr>
+      <td><img src="./docs/assets/bee-ui-session.png"></td>
+      <td><img src="./docs/assets/bee-ui-workspace.png"></td>
+    </tr>
+  </tbody>
+</table>
+
 ## Getting Started
 
 The simplest way to run bee-ui is by using our [bee-stack](https://github.com/i-am-bee/bee-stack), which lets you set up the entire bee application stack locally via docker compose.
