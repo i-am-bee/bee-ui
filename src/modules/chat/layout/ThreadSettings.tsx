@@ -51,15 +51,11 @@ import { ThreadTools } from './ThreadTools';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useAssistantModal } from '../providers/AssistantModalProvider';
 
-interface Props {
-  buttonRef: RefObject<HTMLButtonElement>;
-}
-
-export function ThreadSettings({ buttonRef }: Props) {
+export function ThreadSettings() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState(TabsIds.TOOLS);
   const { assistant } = useAppContext();
-  const { thread } = useChat();
+  const { thread, threadSettingsButtonRef } = useChat();
   const { files } = useFilesUpload();
   const { openAssistantModal } = useAssistantModal();
 
@@ -109,7 +105,7 @@ export function ThreadSettings({ buttonRef }: Props) {
         size="sm"
         label="Customize Tools & Knowledge"
         autoAlign
-        ref={mergeRefs([buttonRef, refs.setReference])}
+        ref={mergeRefs([threadSettingsButtonRef, refs.setReference])}
         {...getReferenceProps()}
       >
         <Settings />
@@ -205,8 +201,8 @@ export function ThreadSettings({ buttonRef }: Props) {
 }
 
 const OFFSET = {
-  mainAxis: 40,
-  crossAxis: -12,
+  mainAxis: 70,
+  crossAxis: -5,
 };
 
 enum TabsIds {

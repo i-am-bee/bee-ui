@@ -89,32 +89,6 @@
   }
 }
 
-.disclaimer {
-  @include type-style(label-01);
-  color: $text-muted;
-  display: flex;
-  column-gap: $spacing-02;
-  svg {
-    fill: currentColor;
-  }
-}
-
-.toolsButton {
-  @include button-reset.reset();
-  text-decoration: underline;
-  color: inherit;
-  letter-spacing: inherit;
-  inline-size: auto;
-  border-radius: $spacing-02;
-  &:hover {
-    text-decoration: none;
-  }
-  &:focus-visible {
-    @include focus-outline('outline');
-    outline-offset: 0;
-  }
-}
-
 .fileFailed {
   > span > svg {
     color: $support-warning;

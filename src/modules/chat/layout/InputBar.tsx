@@ -55,7 +55,6 @@ export const InputBar = memo(function InputBar({
 }: Props) {
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [promptSuggestionsOpen, setPromptSuggestionsOpen] = useState(false);
   const {
@@ -183,9 +182,7 @@ export const InputBar = memo(function InputBar({
           />
           <div className={classes.actionBar}>
             <div className={classes.actions}>
-              {!builderState && (
-                <ThreadSettings buttonRef={threadSettingsButtonRef} />
-              )}
+              {!builderState && <ThreadSettings />}
 
               {isFileUploadEnabled && (
                 <>
@@ -236,31 +233,6 @@ export const InputBar = memo(function InputBar({
           )}
         </div>
       </div>
-
-      <p className={classes.disclaimer}>
-        {!builderState && <AssistantBaseIcon name="Bee" size="sm" />}
-        <span>
-          Bee is an experimental AI that can fly off course. Double check all
-          important information.
-          {toolsInUse && (
-            <>
-              {' '}
-              {builderState ? (
-                'External tools in use'
-              ) : (
-                <button
-                  className={classes.toolsButton}
-                  type="button"
-                  onClick={() => threadSettingsButtonRef.current?.click()}
-                >
-                  External tools in use
-                </button>
-              )}
-              .
-            </>
-          )}
-        </span>
-      </p>
     </form>
   );
 });

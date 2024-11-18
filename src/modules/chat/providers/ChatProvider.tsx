@@ -133,6 +133,7 @@ export function ChatProvider({
   const { assistant, onPageLeaveRef, project } = useAppContext();
   const { selectAssistant } = useAppApiContext();
   const queryClient = useQueryClient();
+  const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const [getMessages, setMessages] = useMessages({
@@ -678,6 +679,7 @@ export function ChatProvider({
             : assistant,
       },
       disabledTools,
+      threadSettingsButtonRef,
     }),
     [
       controller.status,
@@ -717,6 +719,7 @@ export type SendMessageResult = {
 
 type ChatContextValue = {
   status: ChatStatus;
+  threadSettingsButtonRef: MutableRefObject<HTMLButtonElement | null>;
   getMessages: () => ChatMessage[];
   cancel: () => void;
   clear: () => void;

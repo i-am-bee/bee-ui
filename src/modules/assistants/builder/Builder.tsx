@@ -176,16 +176,6 @@ export function Builder({ thread, initialMessages }: Props) {
 
           <div>
             <Button
-              kind="tertiary"
-              onClick={() =>
-                assistant && router.push(`/${project.id}/chat/${assistant.id}`)
-              }
-              renderIcon={ArrowUpRight}
-              disabled={isProjectReadOnly || !assistant || isSubmitting}
-            >
-              Launch in chat
-            </Button>
-            <Button
               kind="secondary"
               onClick={() => onSubmit()}
               renderIcon={isSaved ? CheckmarkFilled : undefined}

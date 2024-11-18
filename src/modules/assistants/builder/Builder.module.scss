@@ -72,11 +72,6 @@
   block-size: 100vh;
   overflow: hidden;
   flex: 1 0 auto;
-
-  > :last-child {
-    max-block-size: 100%;
-    overflow: hidden;
-  }
 }
 
 .chatTopBar {

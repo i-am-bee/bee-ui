@@ -15,45 +15,33 @@
  */
 
 @use 'styles/common' as *;
+@use '@carbon/styles/scss/utilities/visually-hidden' as *;
+@use '@carbon/styles/scss/utilities/button-reset';
 
 .root {
-  display: grid;
-  grid-template-rows: 1fr max-content;
-  block-size: 100%;
-  overflow-y: auto;
+  padding-bottom: $spacing-07;
 }
-
-.content {
-  display: flex;
-  flex-direction: column;
-  padding-block: rem(48px);
-  block-size: 100%;
-  > * {
-    margin-block: auto;
-  }
-}
-
-.chat {
-  display: flex;
-  flex-direction: column;
-  row-gap: $spacing-06;
-}
-
-.heading {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-03;
-  @include font-family(serif);
-
-  h1 {
-    @include type-style(heading-06);
-
-    line-height: (60 / 42);
-    text-wrap: balance;
-    margin: 0;
-  }
+.disclaimer {
   p {
-    color: $text-secondary;
-    line-height: (24 / 16);
+    @include type-style(label-01);
+    color: $text-muted-light;
+    display: flex;
+    column-gap: $spacing-02;
+  }
+}
+
+.toolsButton {
+  @include button-reset.reset();
+  text-decoration: underline;
+  color: inherit;
+  letter-spacing: inherit;
+  inline-size: auto;
+  border-radius: $spacing-02;
+  &:hover {
+    text-decoration: none;
+  }
+  &:focus-visible {
+    @include focus-outline('outline');
+    outline-offset: 0;
   }
 }

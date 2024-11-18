@@ -22,6 +22,9 @@
   block-size: 100%;
 
   &.builderMode {
+    max-block-size: 100%;
+    overflow: hidden;
+
     .content {
       padding-block-start: 0;
     }

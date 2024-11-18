@@ -26,6 +26,8 @@ import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
 import { SendMessageResult, useChat } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
+import { Disclaimer } from './layout/Disclaimer';
+import clsx from 'clsx';
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 
@@ -53,35 +55,39 @@ export const EmptyChatView = memo(function EmptyChatView({
   return (
     <div
       {...getRootProps({
-        className: classes.root,
+        className: clsx(classes.root, { [classes.builderMode]: builderState }),
       })}
     >
-      <Container size="sm" className={classes.content}>
-        {builderState ? (
-          <AssistantIcon
-            assistant={assistant}
-            initialLetter={builderState.name.at(0) ?? 'N'}
-            color={builderState.icon?.color}
-            iconName={builderState.icon?.name}
-            size="xxl"
-          />
-        ) : assistant ? (
-          <AssistantAvatar assistant={assistant} size="xxl" />
-        ) : (
-          <AssistantIcon assistant={assistant} size="xxl" />
-        )}
+      <div className={classes.content}>
+        <Container size="sm" className={classes.chat}>
+          {builderState ? (
+            <AssistantIcon
+              assistant={assistant}
+              initialLetter={builderState.name.at(0) ?? 'N'}
+              color={builderState.icon?.color}
+              iconName={builderState.icon?.name}
+              size="xxl"
+            />
+          ) : assistant ? (
+            <AssistantAvatar assistant={assistant} size="xxl" />
+          ) : (
+            <AssistantIcon assistant={assistant} size="xxl" />
+          )}
 
-        <div className={classes.heading}>
-          <h1>
-            Hi {firstName}, I&apos;m {assistantName}!
-          </h1>
-          <p>{assistantDescription}</p>
-        </div>
+          <div className={classes.heading}>
+            <h1>
+              Hi {firstName}, I&apos;m {assistantName}!
+            </h1>
+            <p>{assistantDescription}</p>
+          </div>
 
-        <div>
-          <InputBar onMessageSent={onMessageSent} showSuggestions />
-        </div>
-      </Container>
+          <div>
+            <InputBar onMessageSent={onMessageSent} showSuggestions />
+          </div>
+        </Container>
+      </div>
+
+      <Disclaimer />
 
       {isDragActive && <FilesDropzone />}
     </div>
