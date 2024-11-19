@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-import { readAssistant } from '@/app/api/rsc';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
+import { fetchAssistant } from '@/app/api/rsc';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { Builder } from '@/modules/assistants/builder/Builder';
-import { Assistant } from '@/modules/assistants/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
-import { handleApiError } from '@/utils/handleApiError';
+
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -34,26 +31,9 @@ interface Props {
 export default async function AssistantBuilderPage({
   params: { assistantId, projectId },
 }: Props) {
-  let assistant;
-  if (assistantId) {
-    try {
-      const result = await readAssistant(projectId, assistantId);
-      if (!result) notFound();
+  const assistant = await fetchAssistant(projectId, assistantId);
 
-      assistant = decodeEntityWithMetadata<Assistant>(result);
-    } catch (e) {
-      const apiError = handleApiError(e);
-
-      if (apiError) {
-        return (
-          <ErrorPage
-            statusCode={apiError.error.code}
-            title={apiError.error.message}
-          />
-        );
-      }
-    }
-  }
+  if (!assistant) notFound();
 
   return (
     <LayoutInitializer layout={{ sidebarVisible: false }}>

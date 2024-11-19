@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-import { ApiErrorCode, ApiErrorResponse } from './types';
+import { ApiError } from '@/app/api/errors';
+import { handleApiError } from './handleApiError';
 
-export function createApiErrorResponse(
-  code: ApiErrorCode,
-  message?: string,
-): ApiErrorResponse {
-  return {
-    error: {
-      code,
-      message: message ?? 'Error',
-    },
-  };
+export async function fetchEntity<T>(
+  fetchFn: () => Promise<T>,
+): Promise<T | undefined> {
+  try {
+    return await fetchFn();
+  } catch (error) {
+    const apiError = handleApiError(error);
+
+    if (apiError) {
+      throw new ApiError(null, apiError);
+    }
+
+    return undefined;
+  }
 }

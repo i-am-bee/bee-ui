@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-import { headers } from 'next/headers';
-import { BaseFetchOptions, client } from '../client';
-import { assertSuccessResponse, getRequestHeaders } from '../utils';
+import { Assistant } from '@/modules/assistants/types';
+import { ThreadAssistant } from '@/modules/chat/types';
+import { fetchEntity } from '@/utils/fetchEntity';
+import { handleApiError } from '@/utils/handleApiError';
+import { client } from '../client';
+import { ApiError } from '../errors';
+import { listRuns } from '../threads-runs';
+import {
+  assertSuccessResponse,
+  decodeEntityWithMetadata,
+  getRequestHeaders,
+} from '../utils';
 import { AssistantCreateBody, AssistantsListQuery } from './types';
 
 export async function createAssistant(
@@ -45,17 +54,10 @@ export async function updateAssistant(
   return res.data;
 }
 
-export async function readAssistant(
-  projectId: string,
-  id: string,
-  options?: BaseFetchOptions,
-) {
+export async function readAssistant(projectId: string, id: string) {
   const res = await client.GET('/v1/assistants/{assistant_id}', {
     params: { path: { assistant_id: id } },
-    ...{
-      ...options,
-      headers: getRequestHeaders(projectId, options?.headers),
-    },
+    headers: getRequestHeaders(projectId),
   });
 
   assertSuccessResponse(res);
@@ -92,4 +94,47 @@ export async function deleteAssistant(projectId: string, id: string) {
     headers: getRequestHeaders(projectId),
   });
   assertSuccessResponse(res);
+}
+
+export async function fetchAssistant(projectId: string, id?: string) {
+  if (!id) return;
+
+  const assistant = await fetchEntity(() => readAssistant(projectId, id));
+
+  return assistant ? decodeEntityWithMetadata<Assistant>(assistant) : assistant;
+}
+
+export async function fetchThreadAssistant(
+  projectId: string,
+  threadId: string,
+  threadAssistantId?: string,
+) {
+  const threadAssistant: ThreadAssistant = { data: null };
+
+  try {
+    const assistantId =
+      threadAssistantId ??
+      (
+        await listRuns(projectId, threadId, {
+          limit: 1,
+          order: 'desc',
+          order_by: 'created_at',
+        })
+      )?.data.at(0)?.assistant_id;
+
+    threadAssistant.data =
+      (await fetchAssistant(projectId, assistantId)) ?? null;
+  } catch (error) {
+    if (error instanceof ApiError && error.code === 'not_found') {
+      threadAssistant.isDeleted = true;
+    } else {
+      const apiError = handleApiError(error);
+
+      if (apiError) {
+        throw new ApiError(null, apiError);
+      }
+    }
+  }
+
+  return threadAssistant;
 }

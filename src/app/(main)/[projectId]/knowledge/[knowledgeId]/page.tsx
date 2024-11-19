@@ -14,39 +14,21 @@
  * limitations under the License.
  */
 
-import { readVectorStore } from '@/app/api/rsc';
-import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
+import { fetchVectorStore } from '@/app/api/rsc';
 import { KnowledgeDetail } from '@/modules/knowledge/detail/KnowledgeDetail';
-import { handleApiError } from '@/utils/handleApiError';
 import { notFound } from 'next/navigation';
 
 interface Props {
   params: {
-    knowledgeId?: string;
     projectId: string;
+    knowledgeId?: string;
   };
 }
 
 export default async function KnowledgeDetailPage({
-  params: { knowledgeId, projectId },
+  params: { projectId, knowledgeId },
 }: Props) {
-  let vectorStore;
-  if (knowledgeId) {
-    try {
-      vectorStore = await readVectorStore(projectId, knowledgeId);
-    } catch (e) {
-      const apiError = handleApiError(e);
-
-      if (apiError) {
-        return (
-          <ErrorPage
-            statusCode={apiError.error.code}
-            title={apiError.error.message}
-          />
-        );
-      }
-    }
-  }
+  const vectorStore = await fetchVectorStore(projectId, knowledgeId);
 
   if (!vectorStore) notFound();
 

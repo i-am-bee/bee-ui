@@ -19,6 +19,7 @@ import {
   UnauthenticatedError,
   UnauthorizedError,
 } from '@/app/api/errors';
+import { createApiErrorResponse } from '@/app/api/server-utils';
 import { ApiErrorResponse } from '@/app/api/types';
 import { SIGN_IN_PAGE } from '@/app/auth';
 import { notFound, redirect } from 'next/navigation';
@@ -47,33 +48,31 @@ export function handleApiError(error: unknown): void | ApiErrorResponse {
       redirect(SIGN_IN_PAGE);
     } else if (error.code === 'not_found') {
       notFound();
-    } else {
-      console.error(error);
-
-      return {
-        error: {
-          code: 'internal_server_error',
-          message: 'Unknown server error.',
-        },
-      };
     }
+
+    console.error(error);
+
+    return createApiErrorResponse(
+      'internal_server_error',
+      'Unknown server error.',
+    );
   } else {
     console.error(error);
 
-    if (error instanceof Error && checkErrorCode(error) === 'ECONNREFUSED') {
-      return {
-        error: {
-          code: 'service_unavailable',
-          message: 'The API server is probably unavailable.',
-        },
-      };
+    if (error instanceof Error) {
+      const errorCode = checkErrorCode(error);
+
+      if (errorCode === 'ECONNREFUSED' || errorCode === 'ENOTFOUND') {
+        return createApiErrorResponse(
+          'service_unavailable',
+          'The API server is probably unavailable.',
+        );
+      }
     }
 
-    return {
-      error: {
-        code: 'internal_server_error',
-        message: 'Unknown server error.',
-      },
-    };
+    return createApiErrorResponse(
+      'internal_server_error',
+      'Unknown server error.',
+    );
   }
 }

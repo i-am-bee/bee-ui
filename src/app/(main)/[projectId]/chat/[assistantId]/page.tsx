@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import { readAssistant } from '@/app/api/rsc';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
-import { Assistant } from '@/modules/assistants/types';
+import { fetchAssistant } from '@/app/api/rsc';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
-import { handleApiError } from '@/utils/handleApiError';
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -36,24 +32,9 @@ interface Props {
 export default async function AssistantChatPage({
   params: { assistantId, projectId },
 }: Props) {
-  let assistantResult;
-  if (assistantId) {
-    try {
-      assistantResult = await readAssistant(projectId, assistantId);
-    } catch (e) {
-      const apiError = handleApiError(e);
+  const assistant = await fetchAssistant(projectId, assistantId);
 
-      if (apiError) {
-        return (
-          <ErrorPage
-            statusCode={apiError.error.code}
-            title={apiError.error.message}
-          />
-        );
-      }
-    }
-  }
-  if (!assistantResult) notFound();
+  if (!assistant) notFound();
 
   return (
     <LayoutInitializer layout={{ sidebarVisible: true }}>
@@ -61,8 +42,7 @@ export default async function AssistantChatPage({
         <FilesUploadProvider>
           <ChatProvider
             threadAssistant={{
-              data:
-                decodeEntityWithMetadata<Assistant>(assistantResult) ?? null,
+              data: assistant ?? null,
             }}
           >
             <ChatHomeView />

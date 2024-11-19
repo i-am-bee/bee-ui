@@ -17,18 +17,12 @@
 'use client';
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
 
-export default function Error({
+export default function GlobalError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
+  error: Error;
   reset: () => void;
 }) {
-  return (
-    <ErrorPage
-      title={error.message}
-      digest={error.digest}
-      onResetClick={reset}
-    />
-  );
+  return <ErrorPage title={error.message} onRetry={reset} />;
 }

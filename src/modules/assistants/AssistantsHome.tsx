@@ -21,6 +21,7 @@ import {
 } from '@/app/api/assistants/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import {
   InfiniteData,
@@ -49,7 +50,8 @@ export function AssistantsHome() {
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const showOnboarding = !isProjectReadOnly && searchParams?.has('onboarding');
+  const showOnboarding =
+    !isProjectReadOnly && searchParams?.has(ONBOARDING_PARAM);
 
   const queryClient = useQueryClient();
 
