@@ -28,18 +28,23 @@ import { useChat, useChatMessages } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
 import clsx from 'clsx';
 import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
+import { BotChatMessage, ChatMessage } from './types';
 
 export const ConversationView = memo(function ConversationView() {
-  const {
-    dropzone: { isDragActive, getRootProps },
-  } = useFilesUpload();
+  const { dropzone } = useFilesUpload();
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const messages = useChatMessages();
 
-  const { assistant, thread, builderState } = useChat();
+  const {
+    assistant,
+    thread,
+    builderState,
+    topBarEnabled,
+    initialAssistantMessage,
+  } = useChat();
 
   const scrollToBottom = useCallback(() => {
     const scrollElement = scrollRef.current;
@@ -76,19 +81,24 @@ export const ConversationView = memo(function ConversationView() {
     };
   }, []);
 
+  const className = clsx(classes.root, {
+    [classes.builderMode]: Boolean(builderState),
+  });
+
   return (
-    <div
-      {...getRootProps({
-        className: clsx(classes.root, {
-          [classes.builderMode]: Boolean(builderState),
-        }),
-      })}
-    >
-      {!builderState && <ConversationHeader />}
+    <div {...(dropzone ? dropzone.getRootProps({ className }) : { className })}>
+      {topBarEnabled && <ConversationHeader />}
 
       <div className={classes.content} ref={scrollRef}>
         <div ref={bottomRef} />
         <ol className={classes.messages} aria-label="messages">
+          {initialAssistantMessage && (
+            <InitialBuilderMessage
+              isPast={messages.length > 2}
+              isScrolled={isScrolled}
+              initialAssistantMessage={initialAssistantMessage}
+            />
+          )}
           {messages.map((msg, index, arr) => {
             const size = arr.length;
             const evenMessages = size % 2 === 0;
@@ -145,7 +155,7 @@ export const ConversationView = memo(function ConversationView() {
                 />
               </Container>
             </div>
-            {isDragActive && <FilesDropzone />}
+            {dropzone?.isDragActive && <FilesDropzone />}
           </>
         ) : (
           <div className={classes.deletedAppBanner}>
@@ -156,3 +166,24 @@ export const ConversationView = memo(function ConversationView() {
     </div>
   );
 });
+
+function InitialBuilderMessage({
+  isPast,
+  isScrolled,
+  initialAssistantMessage,
+}: {
+  isPast: boolean;
+  isScrolled: boolean;
+  initialAssistantMessage: string;
+}) {
+  const message: BotChatMessage = {
+    content: initialAssistantMessage,
+    created_at: 0,
+    id: 'initial',
+    key: 'initial',
+    pending: false,
+    role: 'assistant',
+  };
+
+  return <Message message={message} isPast={isPast} isScrolled={isScrolled} />;
+}

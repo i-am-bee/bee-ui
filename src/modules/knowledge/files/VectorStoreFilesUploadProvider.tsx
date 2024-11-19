@@ -22,7 +22,7 @@ import { createVectorStoreFile } from '@/app/api/vector-stores-files';
 import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { isNotNull } from '@/utils/helpers';
+import { isNotNull, noop } from '@/utils/helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Dispatch,
@@ -57,7 +57,16 @@ const Context = createContext<{
   setVectorStoreId: Dispatch<SetStateAction<string | null>>;
   setFiles: Dispatch<SetStateAction<VectoreStoreFileUpload[]>>;
   onFileSubmit: (file: VectoreStoreFileUpload, thread?: Thread) => void;
-} | null>(null);
+}>({
+  files: [],
+  isPending: false,
+  vectorStoreId: null,
+  removeFile: noop,
+  clearFiles: noop,
+  setVectorStoreId: noop,
+  setFiles: noop,
+  onFileSubmit: noop,
+});
 
 interface Props {
   vectorStoreId?: string;
@@ -257,10 +266,5 @@ export const VectorStoreFilesUploadProvider = ({
 export const useVectoreStoreFilesUpload = () => {
   const context = useContext(Context);
 
-  if (!context) {
-    throw new Error(
-      'useVectoreStoreFiles must be used within a VectorStoreFilesUploadProvider',
-    );
-  }
   return context;
 };

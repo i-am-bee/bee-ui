@@ -103,17 +103,26 @@ const RUN_CONTROLLER_DEFAULT: RunController = {
   runId: null,
 };
 
-interface Props {
-  thread?: Thread;
-  threadAssistant?: ThreadAssistant;
-  initialData?: MessageWithFiles[];
+interface ChatSetup {
+  topBarEnabled?: boolean;
+  threadSettingsEnabled?: boolean;
   builderState?: AssistantBuilderState;
+  initialAssistantMessage?: string;
+}
+
+interface Props extends ChatSetup {
+  thread?: Thread;
+  assistant?: ThreadAssistant;
+  initialData?: MessageWithFiles[];
 }
 
 export function ChatProvider({
   thread: initialThread,
-  threadAssistant: initialThreadAssistant,
+  assistant: initialThreadAssistant,
   initialData,
+  topBarEnabled,
+  threadSettingsEnabled,
+  initialAssistantMessage,
   builderState,
   children,
 }: PropsWithChildren<Props>) {
@@ -301,7 +310,7 @@ export function ChatProvider({
     ],
   );
 
-  ensureThreadRef.current = ensureThread;
+  if (ensureThreadRef) ensureThreadRef.current = ensureThread;
 
   const handleError = useHandleError();
 
@@ -680,6 +689,9 @@ export function ChatProvider({
       },
       disabledTools,
       threadSettingsButtonRef,
+      topBarEnabled,
+      threadSettingsEnabled,
+      initialAssistantMessage,
     }),
     [
       controller.status,
@@ -696,6 +708,9 @@ export function ChatProvider({
       threadAssistant,
       assistant,
       disabledTools,
+      topBarEnabled,
+      threadSettingsEnabled,
+      initialAssistantMessage,
     ],
   );
 
@@ -717,7 +732,7 @@ export type SendMessageResult = {
   thread: Thread | null;
 };
 
-type ChatContextValue = {
+type ChatContextValue = ChatSetup & {
   status: ChatStatus;
   threadSettingsButtonRef: MutableRefObject<HTMLButtonElement | null>;
   getMessages: () => ChatMessage[];

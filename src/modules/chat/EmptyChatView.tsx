@@ -38,9 +38,7 @@ interface Props {
 export const EmptyChatView = memo(function EmptyChatView({
   onMessageSent,
 }: Props) {
-  const {
-    dropzone: { isDragActive, getRootProps },
-  } = useFilesUpload();
+  const { dropzone } = useFilesUpload();
   const firstName = useUserProfile((state) => state.firstName);
   const { assistant: appAssistant } = useAppContext();
   const { assistant: chatAssistant, builderState } = useChat();
@@ -52,12 +50,10 @@ export const EmptyChatView = memo(function EmptyChatView({
     (builderState ? builderState.description : assistant?.description) ??
     'How can I assist you?';
 
+  const className = clsx(classes.root, { [classes.builderMode]: builderState });
+
   return (
-    <div
-      {...getRootProps({
-        className: clsx(classes.root, { [classes.builderMode]: builderState }),
-      })}
-    >
+    <div {...(dropzone ? dropzone.getRootProps({ className }) : { className })}>
       <div className={classes.content}>
         <Container size="sm" className={classes.chat}>
           {builderState ? (
@@ -89,7 +85,7 @@ export const EmptyChatView = memo(function EmptyChatView({
 
       <Disclaimer />
 
-      {isDragActive && <FilesDropzone />}
+      {dropzone?.isDragActive && <FilesDropzone />}
     </div>
   );
 });

@@ -15,7 +15,6 @@
  */
 
 import { Container } from '@/components/Container/Container';
-import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
@@ -41,7 +40,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { RefObject, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 import { useChat } from '../providers/ChatProvider';
 import { useFilesUpload } from '../providers/FilesUploadProvider';

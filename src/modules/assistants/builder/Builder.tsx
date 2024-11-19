@@ -31,7 +31,7 @@ import {
   TextArea,
   TextInput,
 } from '@carbon/react';
-import { ArrowLeft, ArrowUpRight, CheckmarkFilled } from '@carbon/react/icons';
+import { ArrowLeft, CheckmarkFilled } from '@carbon/react/icons';
 import clsx from 'clsx';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next-nprogress-bar';
@@ -47,7 +47,6 @@ import classes from './Builder.module.scss';
 import { IconSelector } from './IconSelector';
 import { InstructionsTextArea } from './InstructionsTextArea';
 import { ToolReference } from '@/app/api/tools/types';
-import { VectorStore } from '@/app/api/vector-stores/types';
 import { RunMetadata } from '@/app/api/threads-runs/types';
 import { useDeleteAssistant } from './useDeleteAssistant';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
@@ -196,7 +195,7 @@ export function Builder({ thread, initialMessages }: Props) {
         <VectorStoreFilesUploadProvider projectId={project.id}>
           <FilesUploadProvider>
             <ChatProvider
-              threadAssistant={{
+              assistant={{
                 data: assistant,
               }}
               thread={thread}

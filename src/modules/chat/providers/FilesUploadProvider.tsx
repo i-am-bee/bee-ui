@@ -51,19 +51,30 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { isMimeTypeReadable } from '@/modules/files/utils';
+import { noop } from 'lodash';
 
 const FilesUploadContext = createContext<{
   files: VectoreStoreFileUpload[];
   attachments: MessageAttachments | null;
   isPending: boolean;
-  dropzone: DropzoneState;
+  dropzone?: DropzoneState;
   vectorStoreId: string | null;
   removeFile: (id: string) => void;
   reset: () => void;
   clearFiles: () => void;
   setVectorStoreId: Dispatch<SetStateAction<string | null>>;
-  ensureThreadRef: MutableRefObject<() => Promise<Thread>>;
-} | null>(null);
+  ensureThreadRef: MutableRefObject<() => Promise<Thread>> | null;
+}>({
+  files: [],
+  attachments: null,
+  isPending: false,
+  vectorStoreId: null,
+  removeFile: noop,
+  reset: noop,
+  clearFiles: noop,
+  setVectorStoreId: noop,
+  ensureThreadRef: null,
+});
 
 export const CHAT_MAX_FILES_UPLOAD = 5;
 

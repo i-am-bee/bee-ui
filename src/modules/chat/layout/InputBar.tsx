@@ -60,7 +60,7 @@ export const InputBar = memo(function InputBar({
   const {
     files,
     isPending: isFilesPending,
-    dropzone: { getInputProps, open: openUpload },
+    dropzone,
     removeFile,
   } = useFilesUpload();
   const {
@@ -70,6 +70,7 @@ export const InputBar = memo(function InputBar({
     assistant,
     disabledTools,
     builderState,
+    threadSettingsEnabled,
   } = useChat();
   const { project } = useAppContext();
 
@@ -101,11 +102,7 @@ export const InputBar = memo(function InputBar({
   };
 
   const isPending = status !== 'ready';
-
-  const toolsInUse = assistant.data?.tools?.length !== disabledTools.length;
-
   const inputValue = watch('input');
-
   const isFileUploadEnabled = isFeatureEnabled(FeatureName.Files);
 
   const { ref: inputFormRef, ...inputFormProps } = register('input', {
@@ -182,16 +179,16 @@ export const InputBar = memo(function InputBar({
           />
           <div className={classes.actionBar}>
             <div className={classes.actions}>
-              {!builderState && <ThreadSettings />}
+              {threadSettingsEnabled && <ThreadSettings />}
 
-              {isFileUploadEnabled && (
+              {isFileUploadEnabled && dropzone && (
                 <>
                   <input
                     type="file"
-                    {...getInputProps()}
+                    {...dropzone.getInputProps()}
                     disabled={!assistant}
                   />
-                  <FilesMenu onUploadClick={openUpload} />
+                  <FilesMenu onUploadClick={dropzone.open} />
                 </>
               )}
             </div>
