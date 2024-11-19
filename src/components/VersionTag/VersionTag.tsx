@@ -16,17 +16,10 @@
 
 import { Tag } from '@carbon/react';
 import classes from './VersionTag.module.scss';
-import clsx from 'clsx';
 
-export function VersionTag({
-  version = 'beta',
-  className,
-}: {
-  version?: string;
-  className?: string;
-}) {
+export function VersionTag({ version = 'beta' }: { version?: string }) {
   return (
-    <Tag type="green" className={clsx(classes.root, className)}>
+    <Tag type="green" className={classes.root}>
       {version}
     </Tag>
   );

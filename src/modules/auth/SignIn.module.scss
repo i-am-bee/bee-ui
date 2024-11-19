@@ -55,6 +55,9 @@
   @include font-family(serif);
   display: flex;
   align-items: flex-start;
+  :global(.#{$prefix}--tag) {
+    margin-inline-start: $spacing-03;
+  }
 }
 
 .form {
@@ -107,10 +110,6 @@
     inline-size: 100%;
     block-size: 100%;
   }
-}
-
-.versionTag {
-  margin-inline-start: $spacing-03;
 }
 
 .unauthCtaButton {

@@ -67,14 +67,3 @@ export function prefetchAssistants(
 ) {
   return client.prefetchInfiniteQuery(assistantsQuery(projectId, params));
 }
-
-export const lastAssistantsQuery = (projectId: string) =>
-  queryOptions({
-    queryKey: ['lastAssistants', projectId],
-    queryFn: () => listLastAssistants(projectId),
-    select(data) {
-      return data
-        ?.map((item) => decodeEntityWithMetadata<Assistant>(item))
-        .slice(0, 3);
-    },
-  });

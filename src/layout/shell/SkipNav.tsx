@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-'use client';
+import { MAIN_ELEMENT_ID } from '@/utils/constants';
+import classes from './SkipNav.module.scss';
 
-import { useId } from 'react';
-import { useUserSetting } from '../hooks/useUserSetting';
-import { Navbar } from './Navbar';
-import { Sidebar } from './Sidebar';
-
-export function AppHeader() {
-  const id = useId();
-  const sidebarId = `${id}:sidebar`;
-
-  const { getUserSetting } = useUserSetting();
-  const sidebarOpen = getUserSetting('sidebarPinned');
-
+export function SkipNav() {
   return (
-    <>
-      <Navbar sidebarId={sidebarId} sidebarOpen={sidebarOpen} />
-
-      <Sidebar id={sidebarId} isOpen={sidebarOpen} />
-    </>
+    <a className={classes.root} href={`#${MAIN_ELEMENT_ID}`} tabIndex={0}>
+      Skip to main content
+    </a>
   );
 }

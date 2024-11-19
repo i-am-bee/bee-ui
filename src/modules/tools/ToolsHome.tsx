@@ -16,12 +16,12 @@
 
 'use client';
 import { AdminView } from '@/components/AdminView/AdminView';
-import { HomeSection, ProjectHome } from '../projects/ProjectHome';
+import { ProjectHome } from '../projects/ProjectHome';
 import { ToolsList } from './ToolsList';
 
 export function ToolsHome() {
   return (
-    <ProjectHome section={HomeSection.Tools}>
+    <ProjectHome>
       <ToolsList type="user" />
     </ProjectHome>
   );

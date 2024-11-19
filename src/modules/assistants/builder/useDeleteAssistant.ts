@@ -15,11 +15,11 @@
  */
 
 import { deleteAssistant } from '@/app/api/assistants';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { assistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
 
 interface Props {
   assistant: Assistant;
@@ -39,9 +39,6 @@ export function useDeleteAssistant({ assistant, onSuccess }: Props) {
       // invalidate all queries on GET:/assistants
       queryClient.invalidateQueries({
         queryKey: [assistantsQuery(project.id).queryKey.at(0)],
-      });
-      queryClient.invalidateQueries({
-        queryKey: lastAssistantsQuery(project.id).queryKey,
       });
     },
     meta: {

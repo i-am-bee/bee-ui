@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import classes from './ThreadsHeader.module.scss';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useQueryClient } from '@tanstack/react-query';
+import { threadsQuery } from './queries';
 
-export function ThreadsHeader() {
-  return (
-    <div className={classes.root}>
-      <h2 className={classes.heading}>Find&hellip;</h2>
-    </div>
-  );
+export function usePrefetchThreads() {
+  const { project } = useAppContext();
+  const queryClient = useQueryClient();
+
+  return () => queryClient.prefetchInfiniteQuery(threadsQuery(project.id));
 }

@@ -15,17 +15,6 @@
  */
 
 'use client';
-import { useState } from 'react';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import {
-  InfiniteData,
-  QueryClient,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { produce } from 'immer';
-import { CardsList } from '@/components/CardsList/CardsList';
-import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import {
   Tool,
   ToolResult,
@@ -33,12 +22,22 @@ import {
   ToolsListResponse,
   ToosListQueryOrderBy,
 } from '@/app/api/tools/types';
-import { prelistTools, toolsQuery } from './queries';
-import { ToolCard } from './ToolCard';
+import { CardsList } from '@/components/CardsList/CardsList';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { produce } from 'immer';
+import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
+import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import { UserToolModal } from './manage/UserToolModal';
+import { toolsQuery } from './queries';
+import { ToolCard } from './ToolCard';
 
 interface Props {
   type: 'user' | 'public';
@@ -57,7 +56,7 @@ export function ToolsList({ type }: Props) {
       type === 'user'
         ? ['user']
         : ['code_interpreter', 'file_search', 'system'],
-    limit: PAGE_SIZE,
+    limit: TOOLS_PAGE_SIZE,
     ...order,
     search: search.length ? search : undefined,
   };
@@ -157,14 +156,14 @@ export function ToolsList({ type }: Props) {
       ))}
 
       {(isPending || isFetchingNextPage) &&
-        Array.from({ length: PAGE_SIZE }, (_, i) => (
+        Array.from({ length: TOOLS_PAGE_SIZE }, (_, i) => (
           <CardsListItem.Skeleton key={i} />
         ))}
     </CardsList>
   );
 }
 
-const PAGE_SIZE = 6;
+export const TOOLS_PAGE_SIZE = 6;
 export const TOOLS_ORDER_DEFAULT = {
   order: 'asc',
   order_by: 'name',
@@ -176,14 +175,3 @@ const ORDER_OPTIONS = [
   { order: 'desc', order_by: 'created_at', label: 'Recently added' } as const,
   { order: 'asc', order_by: 'created_at', label: 'Oldest' } as const,
 ];
-
-export function prelistDefaultData(
-  projectId: string,
-  queryClient: QueryClient,
-) {
-  return prelistTools(projectId, queryClient, {
-    type: ['user'],
-    limit: PAGE_SIZE,
-    ...TOOLS_ORDER_DEFAULT,
-  });
-}

@@ -18,7 +18,7 @@
 
 .root {
   position: relative;
-  z-index: 2;
+  min-inline-size: rem(176px);
 
   :global(.#{$prefix}--list-box__menu) {
     max-block-size: calc(100vh - rem(150px));

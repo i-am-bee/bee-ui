@@ -19,7 +19,7 @@ import { forwardRef, HTMLAttributes } from 'react';
 import classes from './Container.module.scss';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  size?: 'sm' | 'lg';
+  size?: 'sm' | 'lg' | 'full';
 }
 
 export const Container = forwardRef<HTMLDivElement, Props>(function Container(

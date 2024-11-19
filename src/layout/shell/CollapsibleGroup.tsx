@@ -22,12 +22,12 @@ import classes from './CollapsibleGroup.module.scss';
 
 interface Props {
   heading: ReactNode;
-  shrink?: boolean;
+  className?: string;
 }
 
 export function CollapsibleGroup({
   heading,
-  shrink,
+  className,
   children,
 }: PropsWithChildren<Props>) {
   const id = useId();
@@ -37,7 +37,7 @@ export function CollapsibleGroup({
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className={clsx(classes.root, { [classes.shrink]: shrink })}>
+    <div className={clsx(classes.root, className)}>
       <header className={classes.header}>
         <h3 className={classes.heading}>{heading}</h3>
 

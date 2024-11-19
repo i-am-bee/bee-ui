@@ -16,13 +16,13 @@
 
 import { createAssistant, updateAssistant } from '@/app/api/assistants';
 import {
-  AssistantResult,
   AssistantCreateBody,
+  AssistantResult,
 } from '@/app/api/assistants/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
-import { readAssistantQuery } from '../queries';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { assistantsQuery } from '../library/queries';
+import { readAssistantQuery } from '../queries';
 
 interface Props {
   onSuccess?: (assistant: AssistantResult, isNew: boolean) => void;
@@ -44,9 +44,6 @@ export function useSaveAssistant({ onSuccess }: Props) {
     onSuccess: (data, values) => {
       queryClient.invalidateQueries({
         queryKey: [assistantsQuery(project.id).queryKey.at(0)],
-      });
-      queryClient.invalidateQueries({
-        queryKey: lastAssistantsQuery(project.id).queryKey,
       });
       if (data)
         queryClient.invalidateQueries({

@@ -66,4 +66,7 @@
 
 :root {
   @include emit-grid-tokens;
+  @include breakpoint-up(xlg) {
+    --grid-margin: 2rem;
+  }
 }

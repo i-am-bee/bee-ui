@@ -19,21 +19,9 @@ import { AdminView } from '@/components/AdminView/AdminView';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useUserProfile } from '@/store/user-profile';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
-import {
-  Button,
-  OverflowMenu,
-  OverflowMenuItem,
-  Tab,
-  TabList,
-  Tabs,
-} from '@carbon/react';
+import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
-import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next-nprogress-bar';
 import { ReactElement, useState } from 'react';
-import { prelistVectorStores } from '../knowledge/queries';
-import { prelistDefaultData } from '../tools/ToolsList';
 import { ArchiveConfirmationModal } from './manage/ArchiveConfirmationModal';
 import { RenameModal } from './manage/RenameModal';
 import classes from './ProjectHome.module.scss';
@@ -42,15 +30,12 @@ import { UsersCount } from './users/UsersCount';
 import { UsersModalRenderer } from './users/UsersModalRenderer';
 
 interface Props {
-  section: HomeSection;
   children: ReactElement;
 }
 
-export function ProjectHome({ section, children }: Props) {
+export function ProjectHome({ children }: Props) {
   const [usersModalOpened, setUsersModalOpened] = useState(false);
   const { project, isProjectReadOnly, role } = useAppContext();
-  const queryClient = useQueryClient();
-  const router = useRouter();
   const { openModal } = useModal();
   const defaultProject = useUserProfile(
     (state) => state.metadata?.default_project,
@@ -61,10 +46,7 @@ export function ProjectHome({ section, children }: Props) {
       <AdminView
         header={
           <div className={classes.header}>
-            <h1 className={classes.heading}>
-              Home
-              <ProjectSelector hideReadOnlyTag />
-            </h1>
+            <h1 className={classes.heading}>{project.name}</h1>
             <div className={classes.sharing}>
               {!isProjectReadOnly && (
                 <>
@@ -109,26 +91,7 @@ export function ProjectHome({ section, children }: Props) {
           </div>
         }
       >
-        <div className={classes.root}>
-          <Tabs selectedIndex={TABS.findIndex(({ id }) => id === section)}>
-            <TabList aria-label="Project sections">
-              {TABS.filter(
-                ({ featureName }) =>
-                  !featureName || isFeatureEnabled(featureName),
-              ).map(({ id, url, title, onPrelistData }) => (
-                <Tab
-                  key={id}
-                  onClick={() => router.push(`/${project.id}${url}`)}
-                  onMouseEnter={() => onPrelistData?.(project.id, queryClient)}
-                >
-                  {title}
-                </Tab>
-              ))}
-            </TabList>
-          </Tabs>
-
-          {children}
-        </div>
+        {children}
       </AdminView>
       <UsersModalRenderer
         isOpened={usersModalOpened}
@@ -143,24 +106,3 @@ export enum HomeSection {
   Tools = 'Tools',
   Knowledge = 'Knowledge',
 }
-
-const TABS = [
-  {
-    id: HomeSection.Bees,
-    title: 'Bees',
-    url: '/',
-  },
-  {
-    id: HomeSection.Tools,
-    title: 'Tools',
-    url: '/tools',
-    onPrelistData: prelistDefaultData,
-  },
-  {
-    id: HomeSection.Knowledge,
-    title: 'Knowledge',
-    url: '/knowledge',
-    featureName: FeatureName.Knowledge,
-    onPrelistData: prelistVectorStores,
-  },
-];

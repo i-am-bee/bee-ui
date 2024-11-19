@@ -24,7 +24,6 @@
 .form {
   display: grid;
   grid-template-rows: max-content 1fr max-content;
-  block-size: 100vh;
   max-inline-size: rem(800px);
   flex: 1 1 auto;
 
@@ -69,7 +68,6 @@
   background-color: $layer-02;
   display: grid;
   grid-template-rows: max-content 1fr;
-  block-size: 100vh;
   overflow: hidden;
   flex: 1 0 auto;
 }

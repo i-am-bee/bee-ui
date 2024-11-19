@@ -17,14 +17,11 @@
 @use 'styles/common' as *;
 
 .root {
-  border-block-start: 1px solid $border-subtle;
-  padding-block-start: $spacing-04;
   display: grid;
   row-gap: $spacing-03;
   background-color: $layer;
   position: relative;
   z-index: 1;
-  padding-block-end: $spacing-04;
 }
 
 .nav {

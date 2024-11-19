@@ -22,11 +22,7 @@ import {
 import { VectorStoreFilesListQuery } from '@/app/api/vector-stores-files/types';
 import { VectorStoresListQuery } from '@/app/api/vector-stores/types';
 import { isNotNull } from '@/utils/helpers';
-import {
-  infiniteQueryOptions,
-  QueryClient,
-  queryOptions,
-} from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export const PAGE_SIZE = 6;
 
@@ -64,14 +60,6 @@ export const vectorStoresQuery = (
     },
   });
 };
-
-export function prelistVectorStores(
-  projectId: string,
-  client: QueryClient,
-  params?: VectorStoresListQuery,
-) {
-  return client.prefetchInfiniteQuery(vectorStoresQuery(projectId, params));
-}
 
 export const vectorStoresFilesQuery = (
   projectId: string,

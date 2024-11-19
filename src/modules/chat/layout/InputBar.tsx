@@ -20,7 +20,6 @@ import { Spinner } from '@/components/Spinner/Spinner';
 import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { AssistantBaseIcon } from '@/modules/assistants/icons/AssistantBaseIcon';
-import { lastAssistantsQuery } from '@/modules/assistants/library/queries';
 import {
   dispatchInputEventOnFormTextarea,
   submitFormOnEnter,
@@ -129,10 +128,6 @@ export const InputBar = memo(function InputBar({
           onMessageSubmit?.();
           resetForm();
           sendMessage(input).then((result) => {
-            queryClient.invalidateQueries({
-              queryKey: lastAssistantsQuery(project.id).queryKey,
-            });
-
             onMessageSent?.(result);
           });
         })();

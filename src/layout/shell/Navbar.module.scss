@@ -17,16 +17,18 @@
 @use 'styles/common' as *;
 
 .root {
-  display: flex;
-  align-items: center;
-  column-gap: $spacing-04;
-  border-block: 1px solid $border-subtle;
-  padding: rem(7px) 0 rem(7px) $spacing-03;
-  min-block-size: rem(48px);
+  position: relative;
+  z-index: z('header') + 1;
+  grid-area: navbar;
+  background-color: $layer;
+  border-block-end: 1px solid $border-subtle-00;
+  display: grid;
+  padding-block: rem(16px) rem(15px);
 }
 
-.heading {
-  @include type-style(label-01);
-  color: $text-secondary;
-  flex-grow: 1;
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: $spacing-04;
 }

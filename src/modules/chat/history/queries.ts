@@ -15,18 +15,10 @@
  */
 
 import { listThreads, readThread } from '@/app/api/threads';
-import {
-  Thread,
-  ThreadMetadata,
-  ThreadsListResponse,
-} from '@/app/api/threads/types';
+import { Thread, ThreadsListResponse } from '@/app/api/threads/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { isNotNull } from '@/utils/helpers';
-import {
-  QueryClient,
-  infiniteQueryOptions,
-  queryOptions,
-} from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export const PAGE_SIZE = 20;
 
@@ -58,10 +50,6 @@ export function threadsQuery(projectId: string) {
       errorToast: false,
     },
   });
-}
-
-export function prefetchThreads(projectId: string, client: QueryClient) {
-  return client.prefetchInfiniteQuery(threadsQuery(projectId));
 }
 
 export function lastThreadQuery(projectId: string) {

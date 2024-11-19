@@ -52,6 +52,9 @@
 .viewMore {
   margin-block-start: $spacing-05;
   min-block-size: $spacing-08;
+  &:empty {
+    display: none;
+  }
   :global(.#{$prefix}--btn) {
     align-items: center;
     column-gap: $spacing-03;

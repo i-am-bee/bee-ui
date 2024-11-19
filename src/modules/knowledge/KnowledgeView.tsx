@@ -15,42 +15,43 @@
  */
 
 'use client';
-import { useDebounceValue } from 'usehooks-ts';
-import { CardsList } from '@/components/CardsList/CardsList';
-import {
-  InfiniteData,
-  keepPreviousData,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
 import {
   ListVectorStoresResponse,
   VectorStore,
   VectorStoreCreateResponse,
   VectorStoresListQueryOrderBy,
 } from '@/app/api/vector-stores/types';
-import { useState } from 'react';
-import { PAGE_SIZE, vectorStoresQuery } from './queries';
-import { produce, WritableDraft } from 'immer';
-import { KnowledgeCard } from './list/KnowledgeCard';
+import { CardsList } from '@/components/CardsList/CardsList';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import {
+  InfiniteData,
+  keepPreviousData,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { produce, WritableDraft } from 'immer';
+import { useState } from 'react';
+import { useDebounceValue } from 'usehooks-ts';
+import { ProjectHome } from '../projects/ProjectHome';
+import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import { CreateKnowledgeModal } from './create/CreateKnowledgeModal';
 import { useUpdatePendingVectorStore } from './hooks/useUpdatePendingVectorStore';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { HomeSection, ProjectHome } from '../projects/ProjectHome';
-import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
+import { KnowledgeCard } from './list/KnowledgeCard';
+import { PAGE_SIZE, vectorStoresQuery } from './queries';
 
 export function KnowledgeView() {
   const [search, setSearch] = useDebounceValue('', 200);
-  const [order, setOrder] =
-    useState<VectorStoresListQueryOrderBy>(ORDER_DEFAULT);
+  const [order, setOrder] = useState<VectorStoresListQueryOrderBy>(
+    VECTOR_STORES_ORDER_DEFAULT,
+  );
   const { project, isProjectReadOnly } = useAppContext();
   const queryClient = useQueryClient();
   const { openModal } = useModal();
 
   const params = {
-    search,
     ...order,
+    search: search.length ? search : undefined,
   };
 
   const {
@@ -123,7 +124,7 @@ export function KnowledgeView() {
   const isLoading = isPending || isFetchingNextPage;
 
   return (
-    <ProjectHome section={HomeSection.Knowledge}>
+    <ProjectHome>
       <CardsList<VectorStoresListQueryOrderBy>
         heading="Knowledge"
         noItemsText="You haven't created any knowledge bases yet."
@@ -180,7 +181,7 @@ type ListVectorStoresDataUpdater = (
   page: WritableDraft<ListVectorStoresResponse>,
 ) => void;
 
-const ORDER_DEFAULT = {
+export const VECTOR_STORES_ORDER_DEFAULT = {
   order: 'desc',
   order_by: 'created_at',
 } as const;

@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-'use client';
+@use 'styles/common' as *;
+@use '@carbon/styles/scss/utilities/visually-hidden' as *;
 
-import { useId } from 'react';
-import { useUserSetting } from '../hooks/useUserSetting';
-import { Navbar } from './Navbar';
-import { Sidebar } from './Sidebar';
-
-export function AppHeader() {
-  const id = useId();
-  const sidebarId = `${id}:sidebar`;
-
-  const { getUserSetting } = useUserSetting();
-  const sidebarOpen = getUserSetting('sidebarPinned');
-
-  return (
-    <>
-      <Navbar sidebarId={sidebarId} sidebarOpen={sidebarOpen} />
-
-      <Sidebar id={sidebarId} isOpen={sidebarOpen} />
-    </>
-  );
+.root {
+  @include visually-hidden;
+  &:focus {
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    z-index: z('modal');
+    display: flex;
+    align-items: center;
+    inline-size: auto;
+    block-size: 3rem;
+    padding-inline: 1rem;
+    padding-block: 0;
+    border: 4px solid $focus;
+    background-color: $skip-to-content-background;
+    color: $text-inverse;
+    clip: auto;
+  }
 }

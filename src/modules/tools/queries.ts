@@ -18,11 +18,7 @@ import { listTools, readTool } from '@/app/api/tools';
 import { Tool, ToolsListQuery } from '@/app/api/tools/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
-import {
-  QueryClient,
-  infiniteQueryOptions,
-  queryOptions,
-} from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export const TOOLS_DEFAULT_PAGE_SIZE = 20;
 
@@ -61,14 +57,6 @@ export const toolsQuery = (projectId: string, params?: ToolsListQuery) =>
       errorToast: false,
     },
   });
-
-export function prelistTools(
-  projectId: string,
-  client: QueryClient,
-  params?: ToolsListQuery,
-) {
-  return client.prefetchInfiniteQuery(toolsQuery(projectId, params));
-}
 
 export const readToolQuery = (projectId: string, id: string) =>
   queryOptions({

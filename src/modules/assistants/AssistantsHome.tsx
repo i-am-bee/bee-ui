@@ -34,13 +34,10 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { AssistantsList } from '../assistants/library/AssistantsList';
-import {
-  assistantsQuery,
-  lastAssistantsQuery,
-} from '../assistants/library/queries';
+import { assistantsQuery } from '../assistants/library/queries';
 import { Assistant } from '../assistants/types';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
-import { HomeSection, ProjectHome } from '../projects/ProjectHome';
+import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 
 export function AssistantsHome() {
@@ -78,9 +75,6 @@ export function AssistantsHome() {
     queryClient.invalidateQueries({
       queryKey: [assistantsQuery(project.id).queryKey.at(0)],
     });
-    queryClient.invalidateQueries({
-      queryKey: lastAssistantsQuery(project.id).queryKey,
-    });
   };
 
   const handleDeleteAssistantSuccess = (assistant: Assistant) => {
@@ -101,7 +95,7 @@ export function AssistantsHome() {
 
   return (
     <>
-      <ProjectHome section={HomeSection.Bees}>
+      <ProjectHome>
         <CardsList<AssistantsListQueryOrderBy>
           heading="Bees"
           totalCount={data?.totalCount ?? 0}

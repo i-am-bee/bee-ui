@@ -16,24 +16,22 @@
 
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import { Link } from '@/components/Link/Link';
+import { DOCUMENTATION_URL } from '@/utils/constants';
 import { ArrowUpRight } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { HTMLAttributes } from 'react';
+import { useAppContext } from '../providers/AppProvider';
 import classes from './UserNav.module.scss';
 import { UserProfile } from './UserProfile';
-import { useAppContext } from '../providers/AppProvider';
-import { DOCUMENTATION_URL } from '@/utils/constants';
 
 interface Props extends HTMLAttributes<HTMLElement> {}
 
 export function UserNav({ className }: Props) {
   const { project } = useAppContext();
+
   return (
     <nav className={clsx(classes.root, className)} aria-label="User menu">
       <ul className={classes.nav}>
-        <li>
-          <Link href={`/${project.id}`}>Home</Link>
-        </li>
         <li>
           <Link href={`/${project.id}/tools/public`}>Public tools</Link>
         </li>

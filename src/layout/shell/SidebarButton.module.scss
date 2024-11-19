@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-'use client';
+@use 'styles/common' as *;
 
-import { useId } from 'react';
-import { useUserSetting } from '../hooks/useUserSetting';
-import { Navbar } from './Navbar';
-import { Sidebar } from './Sidebar';
+.root {
+  &:global(.#{$prefix}--btn) {
+    color: $text-dark;
+    column-gap: $spacing-04;
+    font-size: rem(16px);
+    line-height: (18 / 16);
+    margin-inline-start: calc(rem(16px) - $grid-margin);
+  }
 
-export function AppHeader() {
-  const id = useId();
-  const sidebarId = `${id}:sidebar`;
-
-  const { getUserSetting } = useUserSetting();
-  const sidebarOpen = getUserSetting('sidebarPinned');
-
-  return (
-    <>
-      <Navbar sidebarId={sidebarId} sidebarOpen={sidebarOpen} />
-
-      <Sidebar id={sidebarId} isOpen={sidebarOpen} />
-    </>
-  );
+  :global(.#{$prefix}--tag) {
+    margin-inline-start: rem(-4px);
+    pointer-events: none;
+  }
 }
