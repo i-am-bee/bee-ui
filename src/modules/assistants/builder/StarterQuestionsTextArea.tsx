@@ -122,7 +122,7 @@ export function StarterQuestionsTextArea() {
       {!hasMaxQuestions && !isProjectReadOnly && (
         <div className={classes.addHolder}>
           <TextAreaAutoHeight
-            className={clsx(classes.textarea, classes.addTextarea)}
+            className={classes.addTextarea}
             placeholder="Type and add a question that users can select at the start of a new session"
             rows={1}
             maxLength={MAX_QUESTION_LENGTH}
@@ -148,7 +148,7 @@ export function StarterQuestionsTextArea() {
           {questions.map(({ id, question }) => (
             <li key={id} className={classes.item}>
               <TextAreaAutoHeight
-                className={clsx(classes.textarea, classes.itemTextarea, {
+                className={clsx(classes.itemTextarea, {
                   [classes.readOnlyTextarea]: isProjectReadOnly,
                 })}
                 rows={1}

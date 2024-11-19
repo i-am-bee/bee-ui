@@ -16,22 +16,11 @@
 
 @use 'styles/common' as *;
 
-.root {
-  :global(.#{$prefix}--label) {
-    margin-block-end: $spacing-03;
-  }
-}
-
-.addHolder {
-  display: flex;
-  align-items: stretch;
-}
-
-.textarea {
-  position: relative;
+@mixin textarea-auto-height() {
   flex-grow: 1;
   z-index: 1;
   min-inline-size: 0;
+
   &::after,
   > textarea {
     @include type-style(body-01);
@@ -51,15 +40,28 @@
   }
 }
 
-.addTextarea {
-  &::after,
-  > textarea {
-    border-start-end-radius: 0;
-    border-end-end-radius: 0;
-    border: 1px solid $border-subtle-00;
+.root {
+  :global(.#{$prefix}--label) {
+    margin-block-end: $spacing-03;
   }
-  > textarea {
-    background-color: transparent;
+}
+
+.addHolder {
+  display: flex;
+  align-items: stretch;
+
+  > .addTextarea {
+    @include textarea-auto-height();
+
+    &::after,
+    > textarea {
+      border-start-end-radius: 0;
+      border-end-end-radius: 0;
+      border: 1px solid $border-subtle-00;
+    }
+    > textarea {
+      background-color: transparent;
+    }
   }
 }
 
@@ -86,7 +88,6 @@
     color: $text-dark;
     &:hover {
       background-color: $border-subtle-00;
-      color: $text-muted;
     }
     &:disabled {
       color: $border-disabled;
@@ -109,28 +110,30 @@
 
 .item {
   position: relative;
-}
 
-.itemTextarea {
-  &::after,
-  > textarea {
-    border: 1px solid $border-subtle-01;
-    padding-inline-end: rem(47px);
-  }
-  > textarea {
-    background-color: $border-subtle-01;
-  }
-}
+  > .itemTextarea {
+    @include textarea-auto-height();
 
-.readOnlyTextarea {
-  &::after,
-  > textarea {
-    padding-inline-end: rem(15px);
-  }
-  > textarea {
-    &:active,
-    &:focus {
-      outline: none;
+    &::after,
+    > textarea {
+      border: 1px solid $border-subtle-01;
+      padding-inline-end: rem(47px);
+    }
+    > textarea {
+      background-color: $border-subtle-01;
+    }
+
+    &.readOnlyTextarea {
+      &::after,
+      > textarea {
+        padding-inline-end: rem(15px);
+      }
+      > textarea {
+        &:active,
+        &:focus {
+          outline: none;
+        }
+      }
     }
   }
 }
