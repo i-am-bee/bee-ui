@@ -36,18 +36,6 @@
   }
 }
 
-@keyframes pulse {
-  0% {
-    color: $color-cool-gray-30;
-  }
-  30% {
-    color: $color-cool-gray-50;
-  }
-  100% {
-    color: $color-cool-gray-30;
-  }
-}
-
 .container {
   position: relative;
 }

@@ -21,6 +21,7 @@ import { Assistant } from '../assistants/types';
 import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
 import { RunSetup } from '../assistants/builder/Builder';
 import { getToolReferenceFromToolUsage } from '../tools/utils';
+import { ToolReference } from '@/app/api/tools/types';
 
 export function getMessagesFromThreadMessages(
   messages: MessageWithFiles[],
@@ -89,7 +90,17 @@ export function getNewRunSetup(
 ): RunSetup {
   return {
     instructions: assistant.instructions,
-    tools: assistant.tools.map((item) => getToolReferenceFromToolUsage(item)),
+    tools: [
+      ...assistant.tools.map((item) => getToolReferenceFromToolUsage(item)),
+      ...getToolsFromThread(thread),
+    ],
     resources: getRunResources(thread, assistant),
   };
+}
+
+export function getToolsFromThread(thread: Thread | null): ToolReference[] {
+  if (thread?.tool_resources?.file_search)
+    return [{ type: 'file_search', id: 'file_search' }];
+
+  return [];
 }
