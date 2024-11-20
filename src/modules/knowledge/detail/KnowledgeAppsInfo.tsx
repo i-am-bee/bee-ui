@@ -15,24 +15,19 @@
  */
 
 import { VectorStore } from '@/app/api/vector-stores/types';
-import { assistantsQuery } from '@/modules/assistants/library/queries';
-import { FormLabel, SkeletonText } from '@carbon/react';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import classes from './KnowledgeAppsInfo.module.scss';
-import { useMemo } from 'react';
+import { useAssistants } from '@/modules/assistants/hooks/useAssistants';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
+import { SkeletonText } from '@carbon/react';
 import pluralize from 'pluralize';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMemo } from 'react';
+import classes from './KnowledgeAppsInfo.module.scss';
 
 interface Props {
   vectorStore: VectorStore;
 }
 
 export function KnowledgeAppsInfo({ vectorStore }: Props) {
-  const { project } = useAppContext();
-  const { data, isLoading } = useInfiniteQuery({
-    ...assistantsQuery(project.id, { limit: PAGE_SIZE }),
-  });
+  const { data, isLoading } = useAssistants({ params: { limit: PAGE_SIZE } });
 
   const assistants = useMemo(
     () =>

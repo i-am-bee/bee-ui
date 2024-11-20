@@ -16,18 +16,12 @@
 
 import { Tool } from '@/app/api/tools/types';
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { toolsQuery } from '@/modules/tools/queries';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useTools } from '@/modules/tools/hooks/useTools';
 import { useEffect, useMemo } from 'react';
 
 export function useListAllTools() {
-  const { project } = useAppContext();
-
   const { data, error, hasNextPage, fetchNextPage, isFetching, isLoading } =
-    useInfiniteQuery({
-      ...toolsQuery(project.id, { limit: MAX_API_FETCH_LIMIT }),
-    });
+    useTools({ params: { limit: MAX_API_FETCH_LIMIT } });
 
   useEffect(() => {
     if (!isFetching && hasNextPage) fetchNextPage();

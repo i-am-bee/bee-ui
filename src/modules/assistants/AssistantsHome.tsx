@@ -23,11 +23,7 @@ import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
@@ -39,10 +35,13 @@ import { Assistant } from '../assistants/types';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
+import { useAssistants } from './hooks/useAssistants';
 
 export function AssistantsHome() {
   const { project, isProjectReadOnly } = useAppContext();
-  const [order, setOrder] = useState<AssistantsListQueryOrderBy>(ORDER_DEFAULT);
+  const [order, setOrder] = useState<AssistantsListQueryOrderBy>(
+    ASSISTANTS_ORDER_DEFAULT,
+  );
   const [search, setSearch] = useDebounceValue('', 200);
   const router = useRouter();
 
@@ -53,8 +52,8 @@ export function AssistantsHome() {
   const queryClient = useQueryClient();
 
   const params = {
-    search,
     ...order,
+    search: search.length ? search : undefined,
   };
 
   const {
@@ -66,9 +65,7 @@ export function AssistantsHome() {
     isFetching,
     isPending,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    ...assistantsQuery(project.id, params),
-  });
+  } = useAssistants({ params });
 
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/assistants
@@ -139,7 +136,7 @@ export function AssistantsHome() {
   );
 }
 
-const ORDER_DEFAULT = {
+export const ASSISTANTS_ORDER_DEFAULT = {
   order: 'asc',
   order_by: 'name',
 } as const;

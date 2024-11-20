@@ -27,7 +27,6 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InfiniteData,
   keepPreviousData,
-  useInfiniteQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { produce, WritableDraft } from 'immer';
@@ -37,6 +36,7 @@ import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import { CreateKnowledgeModal } from './create/CreateKnowledgeModal';
 import { useUpdatePendingVectorStore } from './hooks/useUpdatePendingVectorStore';
+import { useVectorStores } from './hooks/useVectorStores';
 import { KnowledgeCard } from './list/KnowledgeCard';
 import { PAGE_SIZE, vectorStoresQuery } from './queries';
 
@@ -62,8 +62,8 @@ export function KnowledgeView() {
     isPending,
     isFetchingNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
-    ...vectorStoresQuery(project.id, params),
+  } = useVectorStores({
+    params,
     placeholderData: keepPreviousData,
   });
 

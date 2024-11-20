@@ -26,15 +26,12 @@ import { CardsList } from '@/components/CardsList/CardsList';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
+import { useTools } from './hooks/useTools';
 import { UserToolModal } from './manage/UserToolModal';
 import { toolsQuery } from './queries';
 import { ToolCard } from './ToolCard';
@@ -70,9 +67,7 @@ export function ToolsList({ type }: Props) {
     isFetching,
     isPending,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    ...toolsQuery(project.id, params),
-  });
+  } = useTools({ params });
 
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/tools
