@@ -15,7 +15,9 @@
  */
 
 'use client';
+import { RunMetadata } from '@/app/api/threads-runs/types';
 import { Thread } from '@/app/api/threads/types';
+import { ToolReference } from '@/app/api/tools/types';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
@@ -31,7 +33,7 @@ import {
   TextArea,
   TextInput,
 } from '@carbon/react';
-import { ArrowLeft, ArrowUpRight, CheckmarkFilled } from '@carbon/react/icons';
+import { ArrowLeft, CheckmarkFilled } from '@carbon/react/icons';
 import clsx from 'clsx';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next-nprogress-bar';
@@ -46,12 +48,9 @@ import {
 import classes from './Builder.module.scss';
 import { IconSelector } from './IconSelector';
 import { InstructionsTextArea } from './InstructionsTextArea';
-import { ToolReference } from '@/app/api/tools/types';
-import { VectorStore } from '@/app/api/vector-stores/types';
-import { RunMetadata } from '@/app/api/threads-runs/types';
-import { useDeleteAssistant } from './useDeleteAssistant';
-import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 import { KnowledgeSelector } from './KnowledgeSelector';
+import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
+import { useDeleteAssistant } from './useDeleteAssistant';
 
 interface Props {
   thread?: Thread;
@@ -104,7 +103,7 @@ export function Builder({ thread, initialMessages }: Props) {
               size="lg"
               kind="tertiary"
               label="Back to home"
-              autoAlign
+              align="bottom-left"
             >
               <ArrowLeft />
             </IconButton>

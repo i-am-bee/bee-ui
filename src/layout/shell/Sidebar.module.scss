@@ -25,16 +25,16 @@ $width: rem(272px);
   position: relative;
   z-index: z('header');
   inline-size: 0;
-  transform: translateX(-100%);
+  // transform: translateX(-100%);
   transition:
     inline-size $duration-fast-02 motion(exit, productive),
     translate $duration-fast-02 motion(exit, productive);
-  &.sidebarPinned.visible {
+  &.sidebarPinned {
     inline-size: $width;
   }
-  &.visible {
-    transform: translateX(0);
-  }
+  // &.visible {
+  //   transform: translateX(0);
+  // }
 }
 
 .panel {
