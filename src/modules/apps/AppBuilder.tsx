@@ -20,12 +20,15 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
-import { Button } from '@carbon/react';
-import { useId } from 'react';
+import { Button, Tab, TabList, Tabs } from '@carbon/react';
+import { useId, useState } from 'react';
 import classes from './AppBuilder.module.scss';
 import { Assistant } from '../assistants/types';
 import { FilesUploadProvider } from '../chat/providers/FilesUploadProvider';
 import { ConversationView } from '../chat/ConversationView';
+import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
+import { AppPreview } from './AppPreview';
+import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 
 interface Props {
   thread?: Thread;
@@ -34,6 +37,11 @@ interface Props {
 }
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
+  const [selectedTab, setSelectedTab] = useState(TabsIds.Preview);
+  const id = useId();
+
+  const { onMessageCompleted } = useAppBuilderApi();
+
   return (
     <div className={classes.root}>
       <section className={classes.chat}>
@@ -44,22 +52,44 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
           thread={thread}
           initialData={initialMessages}
           initialAssistantMessage="What do you want to build today?"
+          onMessageCompleted={onMessageCompleted}
         >
-          <BuilderChat />
+          <ConversationView />
         </ChatProvider>
       </section>
-      <section className={classes.app}>Place for the app...</section>
+      <section className={classes.appPane}>
+        <div className={classes.appPaneHeader}>
+          <Tabs
+            defaultSelectedIndex={selectedTab}
+            onChange={({ selectedIndex }) => {
+              setSelectedTab(selectedIndex);
+            }}
+          >
+            <TabList aria-label="App View mode">
+              <Tab>UI Preview</Tab>
+              <Tab>Source code</Tab>
+            </TabList>
+          </Tabs>
+        </div>
+        <div className={classes.appPaneContent}>
+          {selectedTab === TabsIds.SourceCode ? (
+            <EditableSyntaxHighlighter
+              id={`${id}:code`}
+              value="No code available"
+              onChange={() => {}}
+              required
+              rows={16}
+            />
+          ) : (
+            <AppPreview />
+          )}
+        </div>
+      </section>
     </div>
   );
 }
 
-function BuilderChat() {
-  const { thread, assistant, reset, getMessages } = useChat();
-  const { project } = useAppContext();
-
-  return (
-    <>
-      <ConversationView />
-    </>
-  );
+enum TabsIds {
+  Preview,
+  SourceCode,
 }

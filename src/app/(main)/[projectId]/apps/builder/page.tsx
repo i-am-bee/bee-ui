@@ -17,6 +17,7 @@
 import { listAssistants, readAssistant } from '@/app/api/rsc';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { AppBuilder } from '@/modules/apps/AppBuilder';
+import { AppBuilderProvider } from '@/modules/apps/AppBuilderProvider';
 import { Assistant } from '@/modules/assistants/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
@@ -42,7 +43,9 @@ export default async function AppsBuilderPage({
 
   return (
     <LayoutInitializer layout={{ sidebarVisible: false }}>
-      <AppBuilder assistant={assistant} />
+      <AppBuilderProvider>
+        <AppBuilder assistant={assistant} />
+      </AppBuilderProvider>
     </LayoutInitializer>
   );
 }

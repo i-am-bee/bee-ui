@@ -19,15 +19,60 @@
 .root {
   display: flex;
   justify-content: stretch;
+  align-items: stretch;
+  block-size: 100%;
 }
 
 .chat {
   display: flex;
-  block-size: 100vh;
   max-inline-size: rem(800px);
   flex: 1 1 auto;
   border-inline-end: 1px solid $border-subtle;
   > div {
     inline-size: 100%;
   }
+}
+
+.appPane {
+  block-size: 100%;
+  flex: 1 0 auto;
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+.appPaneHeader {
+  block-size: rem(56px);
+  border-block-end: 1px solid $border-subtle;
+  padding-inline: $spacing-06;
+  display: flex;
+  align-items: center;
+
+  :global(.#{$prefix}--tabs) {
+    border: none;
+    min-block-size: rem(32px);
+  }
+  :global(.#{$prefix}--tab--list) {
+    gap: $spacing-02;
+  }
+  :global(.#{$prefix}--tabs__nav-link) {
+    border-radius: $block-radius;
+    block-size: rem(32px);
+    &,
+    &:hover {
+      border: none !important;
+    }
+    &:hover {
+      background-color: $layer-hover;
+    }
+  }
+  :global(.#{$prefix}--tabs__nav-item--selected) {
+    font-weight: 400;
+    background-color: $layer-hover;
+  }
+}
+.appPaneContent {
+  background: linear-gradient(
+    -40deg,
+    rgba(255, 255, 255, 1) 50%,
+    $background-green 100%
+  );
 }

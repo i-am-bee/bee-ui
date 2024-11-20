@@ -114,6 +114,7 @@ interface Props extends ChatSetup {
   thread?: Thread;
   assistant?: ThreadAssistant;
   initialData?: MessageWithFiles[];
+  onMessageCompleted?: (content: string) => void;
 }
 
 export function ChatProvider({
@@ -124,6 +125,7 @@ export function ChatProvider({
   threadSettingsEnabled,
   initialAssistantMessage,
   builderState,
+  onMessageCompleted,
   children,
 }: PropsWithChildren<Props>) {
   const [controller, setController, controllerRef] =
@@ -616,6 +618,8 @@ export function ChatProvider({
                 queryKey: threadQuery(project.id, thread?.id ?? '').queryKey,
               });
             }
+
+            onMessageCompleted?.(response.data?.content.join('') ?? '');
           },
         });
       } catch (err) {
