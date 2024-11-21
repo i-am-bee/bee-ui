@@ -22,7 +22,7 @@ import { getLastCompletedStep } from '../assistant-plan/utils';
 import { useRunContext } from '../providers/RunProvider';
 import { ChatMessage } from '../types';
 import { MarkdownContent } from './MarkdownContent';
-import classes from './Message.module.scss';
+import classes from './MessageContent.module.scss';
 
 export function MessageContent({ message }: { message: ChatMessage }) {
   const { run } = useRunContext();
