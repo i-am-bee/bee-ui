@@ -104,6 +104,7 @@ export function Builder({ thread, initialMessages }: Props) {
               kind="tertiary"
               label="Back to home"
               align="bottom-left"
+              autoAlign
             >
               <ArrowLeft />
             </IconButton>
