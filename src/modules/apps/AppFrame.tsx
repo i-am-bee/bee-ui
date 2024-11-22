@@ -16,32 +16,32 @@
 
 'use client';
 import { useEffect, useRef } from 'react';
-import classes from './AppBuilder.module.scss';
+import classes from './AppFrame.module.scss';
 import { useAppBuilder } from './AppBuilderProvider';
 
 interface Props {}
 
-export function AppPreview({}: Props) {
-  const { sourceCode } = useAppBuilder();
+export function AppFrame({}: Props) {
+  const { code } = useAppBuilder();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     iframeRef?.current?.contentWindow?.postMessage?.(
       {
         type: MESSAGE_TYPE_UPDATE_CODE,
-        code: sourceCode,
+        code,
       },
       '*', // TODO: set origin for production
     );
-  }, [sourceCode]);
+  }, [code]);
 
   return (
     <iframe
-      src=""
+      src="/stlite.html"
       ref={iframeRef}
       title="Bee App preview"
       className={classes.app}
-      sandbox="allow-scripts allow-downloads"
+      sandbox="allow-scripts allow-downloads allow-same-origin"
     />
   );
 }

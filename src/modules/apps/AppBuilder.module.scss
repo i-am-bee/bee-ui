@@ -38,17 +38,14 @@
   flex: 1 0 auto;
   display: grid;
   grid-template-rows: max-content 1fr;
-}
-.appPaneHeader {
-  block-size: rem(56px);
-  border-block-end: 1px solid $border-subtle;
-  padding-inline: $spacing-06;
-  display: flex;
-  align-items: center;
 
   :global(.#{$prefix}--tabs) {
+    block-size: rem(56px);
+    border-block-end: 1px solid $border-subtle;
+    padding-inline: $spacing-06;
+    display: flex;
+    align-items: center;
     border: none;
-    min-block-size: rem(32px);
   }
   :global(.#{$prefix}--tab--list) {
     gap: $spacing-02;

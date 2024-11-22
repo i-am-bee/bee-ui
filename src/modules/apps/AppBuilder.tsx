@@ -16,18 +16,22 @@
 
 'use client';
 import { Thread } from '@/app/api/threads/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { ChatHomeView } from '@/modules/chat/ChatHomeView';
-import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
+import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
-import { Button, Tab, TabList, Tabs } from '@carbon/react';
-import { useId, useState } from 'react';
+import {
+  Tab,
+  TabContent,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@carbon/react';
+import { useCallback, useId, useState } from 'react';
 import classes from './AppBuilder.module.scss';
 import { Assistant } from '../assistants/types';
-import { FilesUploadProvider } from '../chat/providers/FilesUploadProvider';
 import { ConversationView } from '../chat/ConversationView';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
-import { AppPreview } from './AppPreview';
+import { AppFrame } from './AppFrame';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 
 interface Props {
@@ -37,10 +41,18 @@ interface Props {
 }
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
-  const [selectedTab, setSelectedTab] = useState(TabsIds.Preview);
+  const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
   const id = useId();
 
-  const { onMessageCompleted } = useAppBuilderApi();
+  const { setCode } = useAppBuilderApi();
+  const { code } = useAppBuilder();
+
+  const handleMessageCompleted = useCallback((content: string) => {
+    const pythonAppCode = content.match(/```python-app\n([\s\S]*?)```/)?.at(-1);
+    if (pythonAppCode) setCode(pythonAppCode);
+    // TODO: remove
+    setCode(TEST_SOURCE_CODE);
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -52,44 +64,60 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
           thread={thread}
           initialData={initialMessages}
           initialAssistantMessage="What do you want to build today?"
-          onMessageCompleted={onMessageCompleted}
+          onMessageCompleted={handleMessageCompleted}
         >
           <ConversationView />
         </ChatProvider>
       </section>
       <section className={classes.appPane}>
-        <div className={classes.appPaneHeader}>
-          <Tabs
-            defaultSelectedIndex={selectedTab}
-            onChange={({ selectedIndex }) => {
-              setSelectedTab(selectedIndex);
-            }}
-          >
-            <TabList aria-label="App View mode">
-              <Tab>UI Preview</Tab>
-              <Tab>Source code</Tab>
-            </TabList>
-          </Tabs>
-        </div>
-        <div className={classes.appPaneContent}>
-          {selectedTab === TabsIds.SourceCode ? (
-            <EditableSyntaxHighlighter
-              id={`${id}:code`}
-              value="No code available"
-              onChange={() => {}}
-              required
-              rows={16}
-            />
-          ) : (
-            <AppPreview />
-          )}
-        </div>
+        <Tabs
+          defaultSelectedIndex={selectedTab}
+          onChange={({ selectedIndex }) => {
+            setSelectedTab(selectedIndex);
+          }}
+        >
+          <TabList aria-label="App View mode">
+            <Tab>UI Preview</Tab>
+            <Tab>Source code</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel key={TabsKeys.Preview}>
+              <AppFrame />
+            </TabPanel>
+            <div className={classes.appPaneContent}>
+              <TabPanel key={TabsKeys.SourceCode}>
+                <EditableSyntaxHighlighter
+                  id={`${id}:code`}
+                  value={code ?? 'No code available'}
+                  onChange={setCode}
+                  required
+                  rows={16}
+                />
+              </TabPanel>
+            </div>
+          </TabPanels>
+        </Tabs>
       </section>
     </div>
   );
 }
 
-enum TabsIds {
+enum TabsKeys {
   Preview,
   SourceCode,
 }
+
+const TEST_SOURCE_CODE = `import streamlit as st
+
+st.title("Hello World App")
+st.header("This is a simple Streamlit app")
+st.write("Hello, world!")
+
+name = st.text_input("What's your name?")
+if name:
+    st.success(f"Hello, {name}!")
+
+button = st.button("Click me!")
+if button:
+    st.info("Button clicked!")
+`;

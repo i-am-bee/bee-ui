@@ -25,23 +25,13 @@ import {
 } from 'react';
 
 export function AppBuilderProvider({ children }: PropsWithChildren) {
-  const [sourceCode, setSourceCode] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(null);
 
-  const handleMessageCompleted = useCallback((content: string) => {
-    const pythonAppCode = content.match(/```python-app\n([\s\S]*?)```/)?.at(-1);
-    if (pythonAppCode) setSourceCode(pythonAppCode);
-  }, []);
-
-  const apiValue = useMemo(
-    () => ({
-      onMessageCompleted: handleMessageCompleted,
-    }),
-    [],
-  );
+  const apiValue = useMemo(() => ({ setCode }), []);
 
   return (
     <AppBuilderApiContext.Provider value={apiValue}>
-      <AppBuilderContext.Provider value={{ sourceCode }}>
+      <AppBuilderContext.Provider value={{ code }}>
         {children}
       </AppBuilderContext.Provider>
     </AppBuilderApiContext.Provider>
@@ -49,11 +39,11 @@ export function AppBuilderProvider({ children }: PropsWithChildren) {
 }
 
 const AppBuilderContext = createContext<{
-  sourceCode: string | null;
+  code: string | null;
 } | null>(null);
 
 const AppBuilderApiContext = createContext<{
-  onMessageCompleted: (content: string) => void;
+  setCode: (content: string) => void;
 } | null>(null);
 
 export function useAppBuilderApi() {

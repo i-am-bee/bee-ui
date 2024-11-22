@@ -17,4 +17,6 @@
 @use 'styles/common' as *;
 
 .app {
+  block-size: 100%;
+  inline-size: 100%;
 }
