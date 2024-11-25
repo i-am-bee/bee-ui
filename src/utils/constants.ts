@@ -23,3 +23,5 @@ export const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL!;
 export const DOCUMENTATION_URL = process.env.NEXT_PUBLIC_DOCUMENTATION_URL!;
 
 export const ONBOARDING_PARAM = 'onboarding';
+
+export const MAIN_ELEMENT_ID = 'main-content';

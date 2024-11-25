@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { ApiErrorResponse } from './types';
+import { ApiErrorCode, ApiErrorResponse } from './types';
 
 export function createApiErrorResponse(
-  code: ApiErrorResponse['error']['code'],
+  code: ApiErrorCode,
   message?: string,
 ): ApiErrorResponse {
   return {

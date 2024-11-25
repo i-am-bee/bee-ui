@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-'use client';
-
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import { Link } from '@/components/Link/Link';
 import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';

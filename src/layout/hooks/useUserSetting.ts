@@ -19,7 +19,7 @@ import useLocalStorageState from 'use-local-storage-state';
 
 export const STORAGE_KEY = '@bee/USER_SETTING';
 
-type UserSetting = {
+export type UserSetting = {
   chatDebugMode?: boolean;
   theme?: Theme;
   sidebarPinned?: boolean;

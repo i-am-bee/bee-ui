@@ -48,9 +48,9 @@ import { IconSelector } from './IconSelector';
 import { InstructionsTextArea } from './InstructionsTextArea';
 import { ToolReference } from '@/app/api/tools/types';
 import { RunMetadata } from '@/app/api/threads-runs/types';
-import { useDeleteAssistant } from './useDeleteAssistant';
-import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 import { KnowledgeSelector } from './KnowledgeSelector';
+import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
+import { useDeleteAssistant } from './useDeleteAssistant';
 
 interface Props {
   thread?: Thread;
@@ -103,6 +103,7 @@ export function Builder({ thread, initialMessages }: Props) {
               size="lg"
               kind="tertiary"
               label="Back to home"
+              align="bottom-left"
               autoAlign
             >
               <ArrowLeft />

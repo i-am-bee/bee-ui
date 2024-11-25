@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import classes from './ThreadsHeader.module.scss';
+import { useAssistants } from './useAssistants';
 
-export function ThreadsHeader() {
-  return (
-    <div className={classes.root}>
-      <h2 className={classes.heading}>Find&hellip;</h2>
-    </div>
-  );
+export function useAssistantsCount() {
+  const { data } = useAssistants();
+
+  return data?.totalCount;
 }

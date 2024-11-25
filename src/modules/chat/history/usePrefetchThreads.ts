@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useQueryClient } from '@tanstack/react-query';
+import { threadsQuery } from './queries';
 
-.root {
-  display: flex;
-  align-items: center;
-  column-gap: $spacing-04;
-  border-block: 1px solid $border-subtle;
-  padding: rem(7px) 0 rem(7px) $spacing-03;
-  min-block-size: rem(48px);
-}
+export function usePrefetchThreads() {
+  const { project } = useAppContext();
+  const queryClient = useQueryClient();
 
-.heading {
-  @include type-style(label-01);
-  color: $text-secondary;
-  flex-grow: 1;
+  return () => queryClient.prefetchInfiniteQuery(threadsQuery(project.id));
 }

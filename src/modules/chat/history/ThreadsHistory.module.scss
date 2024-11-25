@@ -19,11 +19,10 @@
 .noHistory {
   @include type-style(body-01);
   color: $text-secondary;
-  padding-inline-start: $spacing-04;
+  padding-inline: $spacing-04;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  row-gap: $spacing-02;
 }

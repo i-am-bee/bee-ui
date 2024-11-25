@@ -17,12 +17,10 @@
 @use 'styles/common' as *;
 
 .root {
-  padding-block-start: $spacing-12;
-  padding-block-end: $spacing-10;
+  padding-block: $spacing-08;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-gutter: stable;
-  block-size: 100vh;
   :global(.#{$prefix}--tabs) {
     margin-block-end: $spacing-08;
   }

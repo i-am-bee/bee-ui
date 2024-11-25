@@ -30,7 +30,7 @@ import {
 } from '@/app/api/vector-stores-files/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { HomeSection, ProjectHome } from '@/modules/projects/ProjectHome';
+import { ProjectHome } from '@/modules/projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipContent';
 import { IconButton } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
@@ -141,7 +141,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
   const isLoading = isPending || isFetchingNextPage;
 
   return (
-    <ProjectHome section={HomeSection.Knowledge}>
+    <ProjectHome>
       <div className={classes.root}>
         <div className={classes.header}>
           <IconButton

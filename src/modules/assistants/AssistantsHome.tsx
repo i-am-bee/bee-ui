@@ -21,41 +21,39 @@ import {
 } from '@/app/api/assistants/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { AssistantsList } from '../assistants/library/AssistantsList';
-import {
-  assistantsQuery,
-  lastAssistantsQuery,
-} from '../assistants/library/queries';
+import { assistantsQuery } from '../assistants/library/queries';
 import { Assistant } from '../assistants/types';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
-import { HomeSection, ProjectHome } from '../projects/ProjectHome';
+import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
+import { useAssistants } from './hooks/useAssistants';
 
 export function AssistantsHome() {
   const { project, isProjectReadOnly } = useAppContext();
-  const [order, setOrder] = useState<AssistantsListQueryOrderBy>(ORDER_DEFAULT);
+  const [order, setOrder] = useState<AssistantsListQueryOrderBy>(
+    ASSISTANTS_ORDER_DEFAULT,
+  );
   const [search, setSearch] = useDebounceValue('', 200);
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  const showOnboarding = !isProjectReadOnly && searchParams?.has('onboarding');
+  const showOnboarding =
+    !isProjectReadOnly && searchParams?.has(ONBOARDING_PARAM);
 
   const queryClient = useQueryClient();
 
   const params = {
-    search,
     ...order,
+    search: search.length ? search : undefined,
   };
 
   const {
@@ -67,17 +65,12 @@ export function AssistantsHome() {
     isFetching,
     isPending,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    ...assistantsQuery(project.id, params),
-  });
+  } = useAssistants({ params });
 
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/assistants
     queryClient.invalidateQueries({
       queryKey: [assistantsQuery(project.id).queryKey.at(0)],
-    });
-    queryClient.invalidateQueries({
-      queryKey: lastAssistantsQuery(project.id).queryKey,
     });
   };
 
@@ -99,7 +92,7 @@ export function AssistantsHome() {
 
   return (
     <>
-      <ProjectHome section={HomeSection.Bees}>
+      <ProjectHome>
         <CardsList<AssistantsListQueryOrderBy>
           heading="Bees"
           totalCount={data?.totalCount ?? 0}
@@ -143,7 +136,7 @@ export function AssistantsHome() {
   );
 }
 
-const ORDER_DEFAULT = {
+export const ASSISTANTS_ORDER_DEFAULT = {
   order: 'asc',
   order_by: 'name',
 } as const;

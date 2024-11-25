@@ -23,27 +23,22 @@ import classes from './ErrorPage.module.scss';
 export interface ErrorPageProps {
   statusCode?: number | string;
   title: string;
-  digest?: string;
-  onResetClick?: () => void;
+  onRetry?: () => void;
 }
 
-export function ErrorPage({
-  statusCode,
-  title,
-  digest,
-  onResetClick,
-}: ErrorPageProps) {
+export function ErrorPage({ statusCode, title, onRetry }: ErrorPageProps) {
   return (
     <div className={classes.root}>
       <div className={classes.content}>
         {statusCode && <span className={classes.error}>{statusCode}</span>}
+
         <h1>{title}</h1>
-        {onResetClick && (
-          <Button renderIcon={Restart} size="md" onClick={onResetClick}>
+
+        {onRetry && (
+          <Button renderIcon={Restart} size="md" onClick={onRetry}>
             Try again
           </Button>
         )}
-        {digest && <p>Digest: {digest}</p>}
       </div>
     </div>
   );

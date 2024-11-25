@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { BaseFetchOptions, client } from '../client';
+import { fetchEntity } from '@/utils/fetchEntity';
+import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { ProjectCreateBody, ProjectsListQuery } from './types';
 
@@ -37,13 +38,10 @@ export async function updateProject(id: string, body: ProjectCreateBody) {
   return res.data;
 }
 
-export async function readProject(id: string, options?: BaseFetchOptions) {
+export async function readProject(id: string) {
   const res = await client.GET('/v1/organization/projects/{project_id}', {
     params: { path: { project_id: id } },
-    ...{
-      ...options,
-      headers: getRequestHeaders(id, options?.headers),
-    },
+    headers: getRequestHeaders(),
   });
 
   assertSuccessResponse(res);
@@ -71,4 +69,8 @@ export async function listProjects(query: ProjectsListQuery) {
   });
   assertSuccessResponse(res);
   return res.data;
+}
+
+export async function fetchProject(id: string) {
+  return await fetchEntity(() => readProject(id));
 }

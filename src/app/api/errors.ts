@@ -15,12 +15,12 @@
  */
 
 import { CustomError } from '@/utils/custom-error';
-import { ApiErrorResponse } from './types';
+import { ApiErrorCode, ApiErrorResponse } from './types';
 
 export class ApiError extends CustomError {
   response!: Response | null;
   data!: ApiErrorResponse;
-  code!: string;
+  code!: ApiErrorCode;
 
   constructor(response: Response | null, data: ApiErrorResponse) {
     super(data.error.message);

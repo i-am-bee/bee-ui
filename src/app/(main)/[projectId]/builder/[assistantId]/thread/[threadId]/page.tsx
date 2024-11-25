@@ -15,57 +15,31 @@
  */
 
 import {
+  fetchAssistant,
+  fetchThread,
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
-  readAssistant,
-  readThread,
 } from '@/app/api/rsc';
-import { Thread } from '@/app/api/threads/types';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { Builder } from '@/modules/assistants/builder/Builder';
-import { Assistant } from '@/modules/assistants/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
-import { handleApiError } from '@/utils/handleApiError';
 import { notFound } from 'next/navigation';
 
 interface Props {
   params: {
-    assistantId: string;
     projectId: string;
     threadId: string;
+    assistantId: string;
   };
 }
 
 export default async function AssistantBuilderPage({
-  params: { assistantId, projectId, threadId },
+  params: { projectId, threadId, assistantId },
 }: Props) {
-  let assistant;
-  let thread;
+  const assistant = await fetchAssistant(projectId, assistantId);
+  const thread = await fetchThread(projectId, threadId);
 
-  try {
-    const assistantResult = await readAssistant(projectId, assistantId);
-    if (!assistantResult) notFound();
-
-    assistant = decodeEntityWithMetadata<Assistant>(assistantResult);
-
-    const threadResult = await readThread(projectId, threadId);
-    if (!threadResult) notFound();
-
-    thread = decodeEntityWithMetadata<Thread>(threadResult);
-  } catch (e) {
-    const apiError = handleApiError(e);
-
-    if (apiError) {
-      return (
-        <ErrorPage
-          statusCode={apiError.error.code}
-          title={apiError.error.message}
-        />
-      );
-    }
-  }
+  if (!(assistant && thread)) notFound();
 
   const initialMessages = await listMessagesWithFiles(projectId, threadId, {
     limit: MESSAGES_PAGE_SIZE,

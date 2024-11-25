@@ -29,6 +29,7 @@ import { useToast } from '@/layout/providers/ToastProvider';
 import { useUpdateUser } from '@/modules/users/useUpdateUser';
 import { useUserProfile } from '@/store/user-profile';
 import { UserMetadata } from '@/store/user-profile/types';
+import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';
 import { useSearchParams } from 'next/navigation';
@@ -109,7 +110,7 @@ export function AssistantBuilderProvider({
 
   const searchParams = useSearchParams();
   const isDuplicate = searchParams?.has('duplicate');
-  const isOnboarding = searchParams?.has('onboarding');
+  const isOnboarding = searchParams?.has(ONBOARDING_PARAM);
   const templateKey = searchParams?.get('template');
   const assistantTemplate = templateKey
     ? ASSISTANT_TEMPLATES.find((template) => template.key === templateKey)

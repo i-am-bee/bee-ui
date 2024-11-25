@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import createClient, { FetchOptions } from 'openapi-fetch';
 import fetchRetry from 'fetch-retry';
 import { StatusCodes } from 'http-status-codes';
+import createClient from 'openapi-fetch';
 import type { paths } from './extended-schema';
-
-export type BaseFetchOptions = Pick<FetchOptions<any>, 'headers' | 'next'>;
 
 export let API_URL = process.env.API_URL ?? '/api/';
 if (!API_URL.endsWith('/')) {

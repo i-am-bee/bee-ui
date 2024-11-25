@@ -38,7 +38,7 @@ import { useRouter } from 'next-nprogress-bar';
 import pluralize from 'pluralize';
 import { useDeleteAssistant } from '../builder/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
-import { assistantsQuery, lastAssistantsQuery } from '../library/queries';
+import { assistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
 import classes from './AssistantModal.module.scss';
 
@@ -63,9 +63,6 @@ export default function AssistantModal({
       // invalidate all queries on GET:/assistants
       queryClient.invalidateQueries({
         queryKey: [assistantsQuery(project.id).queryKey.at(0)],
-      });
-      queryClient.invalidateQueries({
-        queryKey: lastAssistantsQuery(project.id).queryKey,
       });
     },
   });

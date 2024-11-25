@@ -44,4 +44,7 @@ $max-width-bp: rem(1584px);
   &.size-lg {
     max-inline-size: rem(1248px);
   }
+  &.size-full {
+    max-inline-size: none;
+  }
 }

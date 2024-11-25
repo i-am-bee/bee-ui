@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
+import { fetchEntity } from '@/utils/fetchEntity';
 import { client } from '../client';
-import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { ThreadCreateBody, ThreadsListQuery, ThreadUpdateBody } from './types';
+import {
+  assertSuccessResponse,
+  decodeEntityWithMetadata,
+  getRequestHeaders,
+} from '../utils';
+import {
+  Thread,
+  ThreadCreateBody,
+  ThreadsListQuery,
+  ThreadUpdateBody,
+} from './types';
 
 export async function listThreads(projectId: string, query: ThreadsListQuery) {
   const res = await client.GET('/v1/threads', {
@@ -73,4 +83,10 @@ export async function deleteThread(projectId: string, id: string) {
   });
   assertSuccessResponse(res);
   return res.data;
+}
+
+export async function fetchThread(projectId: string, id: string) {
+  const thread = await fetchEntity(() => readThread(projectId, id));
+
+  return thread ? decodeEntityWithMetadata<Thread>(thread) : thread;
 }

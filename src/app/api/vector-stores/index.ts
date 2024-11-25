@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { fetchEntity } from '@/utils/fetchEntity';
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { VectorStoreCreateBody, VectorStoresListQuery } from './types';
@@ -75,4 +76,10 @@ export async function deleteVectorStore(projectId: string, id: string) {
     headers: getRequestHeaders(projectId),
   });
   assertSuccessResponse(res);
+}
+
+export async function fetchVectorStore(projectId: string, id?: string) {
+  if (!id) return;
+
+  return await fetchEntity(() => readVectorStore(projectId, id));
 }

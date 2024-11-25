@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import {
   ListVectorStoresResponse,
   VectorStore,
   VectorStoreCreateResponse,
 } from '@/app/api/vector-stores/types';
+import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
+import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
+import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
+import { useVectorStores } from '@/modules/knowledge/hooks/useVectorStores';
 import {
   vectorStoresFilesQuery,
   vectorStoresQuery,
 } from '@/modules/knowledge/queries';
+import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
+import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import {
   InfiniteData,
   useInfiniteQuery,
-  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { produce } from 'immer';
+import pluralize from 'pluralize';
 import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from './AssistantBuilderProvider';
-import classes from './KnowledgeSelector.module.scss';
-import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 import { BuilderSectionHeading } from './BuilderSectionHeading';
-import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
-import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
-import pluralize from 'pluralize';
-import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
-import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
-import { Link } from '@/components/Link/Link';
+import classes from './KnowledgeSelector.module.scss';
 
 export function KnowledgeSelector() {
   const { openModal } = useModal();
@@ -114,9 +114,9 @@ export function KnowledgeSelector() {
     });
   };
 
-  const { data, isFetching } = useInfiniteQuery(
-    vectorStoresQuery(project.id, VECTOR_STORES_QUERY_PARAMS),
-  );
+  const { data, isFetching } = useVectorStores({
+    params: VECTOR_STORES_QUERY_PARAMS,
+  });
 
   const { data: dataFiles } = useInfiniteQuery({
     ...vectorStoresFilesQuery(

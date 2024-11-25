@@ -16,44 +16,38 @@
 
 @use 'styles/common' as *;
 
-.root {
-  display: block;
-  text-decoration: none;
-  block-size: 100%;
-  :global(.#{$prefix}--btn) {
-    @include type-style(label-02);
+.list {
+  a {
+    @include type-style(body-01);
+    line-height: (18 / 14);
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
-    column-gap: $spacing-03;
-    min-block-size: 0;
-    inline-size: 100%;
-    block-size: 100%;
+    column-gap: $spacing-04;
     color: $text-dark;
-    background-color: $layer;
-    padding: 0 rem(23px) 0 rem(11px);
+    text-decoration: none;
+    padding: $spacing-03 $spacing-04;
     border-radius: $spacing-03;
-    &:hover,
-    &:active {
-      color: $text-dark;
+    position: relative;
+    &::before {
+      content: '';
+      border-radius: inherit;
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+    &:hover::before,
+    &[aria-current='page']::before {
       background-color: $border-subtle-01;
     }
-
-    strong {
-      @include truncate();
+    &:hover:not([aria-current='page'])::before {
+      opacity: 0.5;
+    }
+    &:focus {
+      outline: none;
+    }
+    &:focus-visible::before {
+      @include focus-outline('outline');
     }
   }
-
-  &.isOpen {
-    :global(.#{$prefix}--btn) {
-      padding-inline-end: rem(51px);
-      border-end-start-radius: 0;
-      border-end-end-radius: 0;
-    }
-  }
-}
-
-.icon {
-  flex-shrink: 0;
-  fill: currentColor;
 }

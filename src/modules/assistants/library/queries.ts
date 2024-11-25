@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import { listAssistants, listLastAssistants } from '@/app/api/assistants';
+import { listAssistants } from '@/app/api/assistants';
 import { AssistantsListQuery } from '@/app/api/assistants/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { isNotNull } from '@/utils/helpers';
-import {
-  infiniteQueryOptions,
-  QueryClient,
-  queryOptions,
-} from '@tanstack/react-query';
+import { infiniteQueryOptions } from '@tanstack/react-query';
 import { Assistant } from '../types';
 
 export const PAGE_SIZE = 6;
@@ -57,24 +53,5 @@ export const assistantsQuery = (
     },
     meta: {
       errorToast: false,
-    },
-  });
-
-export function prefetchAssistants(
-  projectId: string,
-  client: QueryClient,
-  params?: AssistantsListQuery,
-) {
-  return client.prefetchInfiniteQuery(assistantsQuery(projectId, params));
-}
-
-export const lastAssistantsQuery = (projectId: string) =>
-  queryOptions({
-    queryKey: ['lastAssistants', projectId],
-    queryFn: () => listLastAssistants(projectId),
-    select(data) {
-      return data
-        ?.map((item) => decodeEntityWithMetadata<Assistant>(item))
-        .slice(0, 3);
     },
   });

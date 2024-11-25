@@ -119,7 +119,7 @@ export function SignIn({ error, action }: Props) {
 
           <h1 className={classes.heading}>
             IBM {APP_NAME}
-            <VersionTag className={classes.versionTag} />
+            <VersionTag />
           </h1>
 
           <form className={classes.form} action={() => action('ent.ibm.com')}>

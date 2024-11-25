@@ -17,14 +17,21 @@
 @use 'styles/common' as *;
 
 .root {
-  display: flex;
+  display: grid;
+  grid-template-areas:
+    'navbar navbar'
+    'sidebar main';
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: rem(72px) minmax(0, 1fr);
+  block-size: 100vh;
 }
 
 .content {
-  flex-grow: 1;
+  grid-area: main;
   position: relative;
-  block-size: 100vh;
-  min-block-size: 0;
+  > div {
+    block-size: 100%;
+  }
   // Fixes an unresolved bug where an element would sometimes gain focus automatically (at least we're removing styling)
   &:focus-visible {
     outline: none;

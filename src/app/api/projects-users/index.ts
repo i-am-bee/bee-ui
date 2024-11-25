@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BaseFetchOptions, client } from '../client';
+import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import {
   ProjectUserCreateBody,

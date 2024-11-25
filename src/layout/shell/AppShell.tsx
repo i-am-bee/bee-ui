@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { readProject } from '@/app/api/rsc';
-import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
-import { handleApiError } from '@/utils/handleApiError';
+import { fetchProject } from '@/app/api/rsc';
+import { MAIN_ELEMENT_ID } from '@/utils/constants';
 import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
@@ -31,22 +30,7 @@ export async function AppShell({
   projectId,
   children,
 }: PropsWithChildren<Props>) {
-  let project;
-
-  try {
-    project = await readProject(projectId);
-  } catch (e) {
-    const apiError = handleApiError(e);
-
-    if (apiError) {
-      return (
-        <ErrorPage
-          statusCode={apiError.error.code}
-          title={apiError.error.message}
-        />
-      );
-    }
-  }
+  const project = await fetchProject(projectId);
 
   if (!project) notFound();
 
@@ -55,7 +39,7 @@ export async function AppShell({
       <div className={classes.root}>
         <AppHeader />
 
-        <main id="main-content" className={classes.content}>
+        <main id={MAIN_ELEMENT_ID} className={classes.content}>
           {children}
         </main>
       </div>

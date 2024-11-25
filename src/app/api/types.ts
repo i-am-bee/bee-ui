@@ -18,6 +18,8 @@ import type { components, paths } from './schema';
 
 export type ApiErrorResponse = components['schemas']['ErrorResponse'];
 
+export type ApiErrorCode = ApiErrorResponse['error']['code'];
+
 export type GenerateChatBody = NonNullable<
   paths['/v1/threads/{thread_id}/runs']['post']['requestBody']
 >['content']['application/json'];
