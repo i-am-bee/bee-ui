@@ -111,7 +111,10 @@ export const Message = memo(function Message({
 
   return (
     <MessageFeedbackProvider run={run}>
-      <RunProvider run={run}>
+      <RunProvider
+        run={run}
+        message={isBotMessage(message) ? message : undefined}
+      >
         <li
           ref={mergeRefs([contentRef, inViewRef])}
           className={clsx(classes.root, {

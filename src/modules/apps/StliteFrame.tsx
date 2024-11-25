@@ -16,12 +16,12 @@
 
 'use client';
 import { useEffect, useRef } from 'react';
-import classes from './AppFrame.module.scss';
+import classes from './StliteFrame.module.scss';
 import { useAppBuilder } from './AppBuilderProvider';
 
 interface Props {}
 
-export function AppFrame({}: Props) {
+export function StliteFrame({}: Props) {
   const { code } = useAppBuilder();
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -37,7 +37,7 @@ export function AppFrame({}: Props) {
 
   return (
     <iframe
-      src="/stlite.html"
+      src="/stlite/index.html"
       ref={iframeRef}
       title="Bee App preview"
       className={classes.app}

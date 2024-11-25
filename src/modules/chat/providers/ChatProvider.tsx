@@ -344,8 +344,11 @@ export function ChatProvider({
         lastMessage.pending = false;
       }
     });
+
+    onMessageCompleted?.(lastMessage?.content ?? '');
   }, [
     getMessages,
+    onMessageCompleted,
     project.id,
     queryClient,
     setController,
@@ -618,8 +621,6 @@ export function ChatProvider({
                 queryKey: threadQuery(project.id, thread?.id ?? '').queryKey,
               });
             }
-
-            onMessageCompleted?.(response.data?.content.join('') ?? '');
           },
         });
       } catch (err) {
@@ -639,7 +640,6 @@ export function ChatProvider({
       };
     },
     [
-      queryClient,
       controllerRef,
       setController,
       handleCancelCurrentRun,
@@ -653,6 +653,7 @@ export function ChatProvider({
       getUsedTools,
       chatStream,
       setMessagesWithFilesQueryData,
+      queryClient,
       handleError,
       handlRunCompleted,
     ],

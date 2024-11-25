@@ -4,9 +4,10 @@
   "license": "Apache-2.0",
   "author": "IBM Corp.",
   "scripts": {
+    "build-stlite": "npx sass public/stlite/styles/index.scss public/stlite/dist/style.css --watch",
     "build": "next build",
     "start": "next start",
-    "start:dev": "next dev",
+    "start:dev": "pnpm build-stlite & next dev",
     "lint": "next lint && pnpm lint:css",
     "lint:css": "stylelint '**/*.scss'",
     "format": "prettier --write .",

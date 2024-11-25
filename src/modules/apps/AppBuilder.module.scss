@@ -38,6 +38,16 @@
   flex: 1 0 auto;
   display: grid;
   grid-template-rows: max-content 1fr;
+  position: relative;
+
+  &.empty::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    block-size: 100%;
+    inline-size: 100%;
+    background-color: $layer-02;
+  }
 
   :global(.#{$prefix}--tabs) {
     block-size: rem(56px);
@@ -45,7 +55,6 @@
     padding-inline: $spacing-06;
     display: flex;
     align-items: center;
-    border: none;
   }
   :global(.#{$prefix}--tab--list) {
     gap: $spacing-02;
@@ -65,11 +74,14 @@
     font-weight: 400;
     background-color: $layer-hover;
   }
-}
-.appPaneContent {
-  background: linear-gradient(
-    -40deg,
-    rgba(255, 255, 255, 1) 50%,
-    $background-green 100%
-  );
+
+  :global(.#{$prefix}--tab-content) {
+    block-size: 100%;
+    inline-size: 100%;
+
+    > div {
+      block-size: 100%;
+      inline-size: 100%;
+    }
+  }
 }

@@ -47,6 +47,7 @@
   border-radius: $spacing-03;
   overflow: hidden;
   min-block-size: rem(124px);
+  block-size: 100%;
 
   > pre,
   > .textarea {

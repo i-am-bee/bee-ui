@@ -29,6 +29,8 @@ import { AttachmentLink } from './markdown/AttachmentLink';
 import { Code } from './markdown/Code';
 import { PreviewLink } from './markdown/PreviewLink';
 import { Table } from './markdown/Table';
+import { remarkPythonAppCode } from './markdown-plugins/remarkPythonAppCode';
+import { PythonAppCode } from './markdown/PythonAppCode';
 
 interface Props {
   content: string;
@@ -58,6 +60,7 @@ const REMARK_PLUGINS = [
   remarkAttachmentLink,
   remarkAttachmentImage,
   remarkPreviewLink,
+  remarkPythonAppCode,
   remarkGfm,
 ] satisfies PluggableList;
 
@@ -65,6 +68,7 @@ interface ExtendedComponents extends Components {
   attachmentLink?: (props: any) => JSX.Element;
   attachmentImage?: (props: any) => JSX.Element;
   previewLink?: (props: any) => JSX.Element;
+  pythonAppCode?: (props: any) => JSX.Element;
 }
 
 const COMPONENTS = {
@@ -73,4 +77,5 @@ const COMPONENTS = {
   attachmentLink: AttachmentLink,
   attachmentImage: AttachmentImage,
   previewLink: PreviewLink,
+  pythonAppCode: PythonAppCode,
 } satisfies ExtendedComponents;

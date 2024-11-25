@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import { Root } from 'hast';
+import { Code } from 'mdast';
+import { visit } from 'unist-util-visit';
 
-p.noContent {
-  color: $text-placeholder;
+export const ATTACHMENT_FILE_PREFIX = 'urn:bee:file:';
+
+export function remarkPythonAppCode() {
+  return (tree: Root) => {
+    visit(tree, 'code', (node: Code) => {
+      node.data = {
+        ...node.data,
+        hName: 'pythonAppCode',
+      };
+    });
+  };
 }

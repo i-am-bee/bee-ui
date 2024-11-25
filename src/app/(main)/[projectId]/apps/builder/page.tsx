@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import { listAssistants, readAssistant } from '@/app/api/rsc';
+import { ApiError } from '@/app/api/errors';
+import { createAssistant, listAssistants, readAssistant } from '@/app/api/rsc';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { AppBuilder } from '@/modules/apps/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/AppBuilderProvider';
 import { Assistant } from '@/modules/assistants/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+import { handleApiError } from '@/utils/handleApiError';
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -31,14 +33,7 @@ interface Props {
 export default async function AppsBuilderPage({
   params: { projectId },
 }: Props) {
-  let assistant;
-  try {
-    // TODO: find/create app builder assistant
-    const result = (await listAssistants(projectId, { limit: 1 }))?.data.at(0);
-    if (!result) notFound();
-    assistant = decodeEntityWithMetadata<Assistant>(result);
-  } catch (e) {}
-
+  const assistant = await ensureAppBuilderAssistant(projectId);
   if (!assistant) notFound();
 
   return (
@@ -48,4 +43,30 @@ export default async function AppsBuilderPage({
       </AppBuilderProvider>
     </LayoutInitializer>
   );
+}
+
+async function ensureAppBuilderAssistant(projectId: string) {
+  let result = null;
+  try {
+    result = (
+      await listAssistants(projectId, { limit: 1, agent: 'streamlit' })
+    )?.data.at(0);
+
+    if (!result) {
+      result = await createAssistant(projectId, {
+        agent: 'streamlit',
+        name: 'App Builder',
+        tool_resources: {},
+        // tools: [],
+      });
+    }
+  } catch (error) {
+    const apiError = handleApiError(error);
+
+    if (apiError) {
+      throw new ApiError(null, apiError);
+    }
+  }
+
+  return result ? decodeEntityWithMetadata<Assistant>(result) : null;
 }

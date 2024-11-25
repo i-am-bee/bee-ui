@@ -17,25 +17,26 @@
 'use client';
 import { ThreadRun } from '@/app/api/threads-runs/types';
 import { createContext, PropsWithChildren, use, useMemo } from 'react';
+import { BotChatMessage } from '../types';
 
-export interface RunContextValue {
-  run?: ThreadRun;
-}
-
-const RunContext = createContext<RunContextValue>(
-  null as unknown as RunContextValue,
-);
+const RunContext = createContext<Props>(null as unknown as Props);
 
 interface Props {
   run?: ThreadRun;
+  message?: BotChatMessage;
 }
 
-export function RunProvider({ run, children }: PropsWithChildren<Props>) {
+export function RunProvider({
+  run,
+  message,
+  children,
+}: PropsWithChildren<Props>) {
   const contextValue = useMemo(
     () => ({
       run,
+      message,
     }),
-    [run],
+    [message, run],
   );
 
   return (

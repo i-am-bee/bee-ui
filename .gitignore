@@ -40,3 +40,6 @@ next-env.d.ts
 
 # IDEA
 .idea
+
+# stlite app
+public/stlite/dist

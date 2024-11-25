@@ -23,6 +23,7 @@ import { useRunContext } from '../providers/RunProvider';
 import { ChatMessage } from '../types';
 import { MarkdownContent } from './MarkdownContent';
 import classes from './MessageContent.module.scss';
+import { MessageLoading } from './MessageLoading';
 
 export function MessageContent({ message }: { message: ChatMessage }) {
   const { run } = useRunContext();
@@ -111,16 +112,11 @@ function PendingThought({ plan }: { plan?: AssistantPlan }) {
 
   return thought ? (
     <blockquote>
-      <p className={classes.loading}>
-        <span>{thought}</span>
-      </p>
+      <MessageLoading message={thought} />
     </blockquote>
   ) : (
     <blockquote>
-      <p className={classes.loading}>
-        <span>Thinking</span>&nbsp;
-        <Spinner />
-      </p>
+      <MessageLoading message="Thinking" showSpinner />
     </blockquote>
   );
 }

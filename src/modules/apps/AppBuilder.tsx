@@ -31,8 +31,10 @@ import classes from './AppBuilder.module.scss';
 import { Assistant } from '../assistants/types';
 import { ConversationView } from '../chat/ConversationView';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
-import { AppFrame } from './AppFrame';
+import { StliteFrame } from './StliteFrame';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
+import clsx from 'clsx';
+import { extractCodeFromMessageContent } from './utils';
 
 interface Props {
   thread?: Thread;
@@ -47,12 +49,13 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
   const { setCode } = useAppBuilderApi();
   const { code } = useAppBuilder();
 
-  const handleMessageCompleted = useCallback((content: string) => {
-    const pythonAppCode = content.match(/```python-app\n([\s\S]*?)```/)?.at(-1);
-    if (pythonAppCode) setCode(pythonAppCode);
-    // TODO: remove
-    setCode(TEST_SOURCE_CODE);
-  }, []);
+  const handleMessageCompleted = useCallback(
+    (content: string) => {
+      const pythonAppCode = extractCodeFromMessageContent(content);
+      if (pythonAppCode) setCode(pythonAppCode);
+    },
+    [setCode],
+  );
 
   return (
     <div className={classes.root}>
@@ -69,7 +72,9 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
           <ConversationView />
         </ChatProvider>
       </section>
-      <section className={classes.appPane}>
+      <section
+        className={clsx(classes.appPane, { [classes.empty]: code == null })}
+      >
         <Tabs
           defaultSelectedIndex={selectedTab}
           onChange={({ selectedIndex }) => {
@@ -82,19 +87,17 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
           </TabList>
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
-              <AppFrame />
+              <StliteFrame />
             </TabPanel>
-            <div className={classes.appPaneContent}>
-              <TabPanel key={TabsKeys.SourceCode}>
-                <EditableSyntaxHighlighter
-                  id={`${id}:code`}
-                  value={code ?? 'No code available'}
-                  onChange={setCode}
-                  required
-                  rows={16}
-                />
-              </TabPanel>
-            </div>
+            <TabPanel key={TabsKeys.SourceCode}>
+              <EditableSyntaxHighlighter
+                id={`${id}:code`}
+                value={code ?? 'No code available'}
+                onChange={setCode}
+                required
+                rows={16}
+              />
+            </TabPanel>
           </TabPanels>
         </Tabs>
       </section>
@@ -106,18 +109,3 @@ enum TabsKeys {
   Preview,
   SourceCode,
 }
-
-const TEST_SOURCE_CODE = `import streamlit as st
-
-st.title("Hello World App")
-st.header("This is a simple Streamlit app")
-st.write("Hello, world!")
-
-name = st.text_input("What's your name?")
-if name:
-    st.success(f"Hello, {name}!")
-
-button = st.button("Click me!")
-if button:
-    st.info("Button clicked!")
-`;

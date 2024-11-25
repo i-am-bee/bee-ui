@@ -16,6 +16,31 @@
 
 @use 'styles/common' as *;
 
-p.noContent {
-  color: $text-placeholder;
+.root {
+  display: flex;
+  align-items: center;
+  padding: $spacing-05;
+  background-color: $background;
+  border-radius: $block-radius;
+  box-shadow: $box-shadow;
+  min-block-size: rem(64px);
+}
+
+.app {
+  display: flex;
+  gap: $spacing-04;
+  align-items: center;
+  .icon {
+    block-size: rem(40px);
+    inline-size: rem(40px);
+    border-radius: $block-radius;
+    background-color: $layer-02;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  strong {
+    font-size: rem(14px);
+  }
 }
