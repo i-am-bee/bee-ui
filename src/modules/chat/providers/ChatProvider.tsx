@@ -114,7 +114,7 @@ interface Props extends ChatSetup {
   thread?: Thread;
   assistant?: ThreadAssistant;
   initialData?: MessageWithFiles[];
-  onMessageCompleted?: (content: string) => void;
+  onMessageCompleted?: (thread: Thread, content: string) => void;
 }
 
 export function ChatProvider({
@@ -328,14 +328,6 @@ export function ChatProvider({
   const handlRunCompleted = useCallback(() => {
     const lastMessage = getMessages().at(-1);
 
-    queryClient.invalidateQueries({
-      queryKey: readRunQuery(
-        project.id,
-        thread?.id ?? '',
-        lastMessage?.run_id ?? '',
-      ).queryKey,
-    });
-
     setController(RUN_CONTROLLER_DEFAULT);
 
     setMessages((messages) => {
@@ -345,7 +337,17 @@ export function ChatProvider({
       }
     });
 
-    onMessageCompleted?.(lastMessage?.content ?? '');
+    if (threadRef.current) {
+      queryClient.invalidateQueries({
+        queryKey: readRunQuery(
+          project.id,
+          threadRef.current.id,
+          lastMessage?.run_id ?? '',
+        ).queryKey,
+      });
+
+      onMessageCompleted?.(threadRef.current, lastMessage?.content ?? '');
+    }
   }, [
     getMessages,
     onMessageCompleted,
@@ -353,7 +355,6 @@ export function ChatProvider({
     queryClient,
     setController,
     setMessages,
-    thread?.id,
   ]);
 
   const requireUserApproval = useCallback(

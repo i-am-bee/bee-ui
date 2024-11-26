@@ -1,5 +1,158 @@
+// @use 'carbon' as *;
+@use 'common' as *;
 
+@use '@carbon/styles/scss/reset';
+@use '@carbon/styles/scss/fonts';
+@use '@carbon/styles/scss/layer';
+@use '@carbon/styles/scss/layout';
+@use '@carbon/styles/scss/zone';
 
-#stDecoration {
-  display: none;
+// @use '@carbon/styles/scss/reset';
+// @use '../../../src/styles/theme';
+// @use '@carbon/styles/scss/fonts';
+
+@use 'form';
+
+.stApp {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  @include font-family(serif);
+  font-size: 16px;
+  letter-spacing: 0.16px;
+  line-height: 1.75;
+  background-color: $layer-02 !important;
+  color: $text-primary !important;
+  margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cds-border-subtle-00) transparent;
+
+  &::-webkit-scrollbar {
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border: solid transparent;
+    border-width: 0.25rem;
+    border-radius: 0.5rem;
+    background: var(--cds-border-subtle-00);
+    background-clip: padding-box;
+  }
+  * {
+    font-family: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  .stMain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stMainBlockContainer {
+    padding: $spacing-06;
+    background-color: $background;
+    box-shadow: $box-shadow;
+    border-radius: $block-radius;
+  }
+
+  .stHeading {
+    h1 {
+      font-size: rem(20px);
+      line-height: 28 / 20;
+      font-weight: 600;
+      padding: 0;
+      margin-block: 0 $spacing-06;
+    }
+  }
+
+  ol,
+  ul,
+  dl {
+    font-size: 0.875rem;
+  }
+
+  a {
+    color: var(--cds-link-primary);
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .stTable {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.5rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--cds-border-subtle-01);
+    }
+  }
+
+  .stAlert {
+    > div {
+      border-radius: 0;
+      box-shadow: none;
+    }
+    p {
+      font-size: 0.875rem;
+    }
+  }
+
+  .stFileUploader {
+    [role='button'] {
+      border-radius: 0;
+      background-color: transparent;
+      border: 1px dashed var(--cds-border-strong);
+      padding: 1rem;
+    }
+
+    [data-testid='stFileUploaderDropzoneInstructions'] > :first-child {
+      display: none;
+    }
+    [data-testid='stFileUploaderDropzone'] {
+      button {
+        background: transparent;
+        padding-inline: 0.625rem;
+
+        &:hover,
+        &:active,
+        &:focus {
+          color: var(--cds-text-on-color);
+          background-color: var(--cds-background-inverse);
+        }
+      }
+    }
+  }
+
+  [data-baseweb='tag'] {
+    background-color: var(--cds-tag-background-blue);
+    color: var(--cds-tag-color-blue);
+    border-radius: 1rem;
+    margin: 0.25rem;
+    padding-inline: 0.5rem;
+    vertical-align: middle;
+    font-size: 0.75rem;
+
+    span {
+      font-size: 0.75rem;
+    }
+  }
+
+  .stApp code {
+    @include font-family(mono);
+  }
+
+  .stAppHeader {
+    display: none;
+  }
+  .stAppToolbar {
+    display: none;
+  }
 }

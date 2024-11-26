@@ -16,9 +16,15 @@ importers:
       '@ai-zen/node-fetch-event-source':
         specifier: ^2.1.4
         version: 2.1.4
+      '@carbon/colors':
+        specifier: ^11.28.0
+        version: 11.28.0
       '@carbon/grid':
         specifier: ^11.22.0
         version: 11.29.0
+      '@carbon/layout':
+        specifier: ^11.28.0
+        version: 11.28.0
       '@carbon/motion':
         specifier: ^11.22.0
         version: 11.24.0
@@ -26,8 +32,14 @@ importers:
         specifier: ^1.64.0
         version: 1.69.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.80.5)
       '@carbon/styles':
-        specifier: ^1.63.0
+        specifier: ^1.68.0
         version: 1.68.0(sass@1.80.5)
+      '@carbon/themes':
+        specifier: ^11.43.0
+        version: 11.43.0
+      '@carbon/type':
+        specifier: ^11.33.0
+        version: 11.33.0
       '@dhmk/zustand-lens':
         specifier: ^5.0.0
         version: 5.0.0(zustand@5.0.1(@types/react@18.3.12)(immer@10.1.1)(react@18.3.1))

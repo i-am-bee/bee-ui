@@ -16,6 +16,14 @@
 
 @use 'styles/common' as *;
 
+.root {
+  position: relative;
+
+  :global(.#{$prefix}--loading-overlay) {
+    position: absolute;
+    background-color: $layer-02;
+  }
+}
 .app {
   block-size: 100%;
   inline-size: 100%;

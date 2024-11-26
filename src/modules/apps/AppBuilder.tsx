@@ -17,7 +17,7 @@
 'use client';
 import { Thread } from '@/app/api/threads/types';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
-import { MessageWithFiles } from '@/modules/chat/types';
+import { ChatMessage, MessageWithFiles } from '@/modules/chat/types';
 import {
   Tab,
   TabContent,
@@ -26,7 +26,7 @@ import {
   TabPanels,
   Tabs,
 } from '@carbon/react';
-import { useCallback, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import classes from './AppBuilder.module.scss';
 import { Assistant } from '../assistants/types';
 import { ConversationView } from '../chat/ConversationView';
@@ -35,6 +35,10 @@ import { StliteFrame } from './StliteFrame';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import clsx from 'clsx';
 import { extractCodeFromMessageContent } from './utils';
+import { ChatState } from '../chat/ChatHomeView';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useQueryClient } from '@tanstack/react-query';
+import { threadsQuery } from '../chat/history/queries';
 
 interface Props {
   thread?: Thread;
@@ -44,15 +48,28 @@ interface Props {
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
   const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
+  const { project } = useAppContext();
+  const queryClient = useQueryClient();
   const id = useId();
 
   const { setCode } = useAppBuilderApi();
   const { code } = useAppBuilder();
 
   const handleMessageCompleted = useCallback(
-    (content: string) => {
+    (newThread: Thread, content: string) => {
       const pythonAppCode = extractCodeFromMessageContent(content);
       if (pythonAppCode) setCode(pythonAppCode);
+
+      if (newThread && !thread) {
+        window.history.pushState(
+          null,
+          '',
+          `/${project.id}/apps/builder/${newThread.id}`,
+        );
+        queryClient.invalidateQueries({
+          queryKey: threadsQuery(project.id).queryKey,
+        });
+      }
     },
     [setCode],
   );

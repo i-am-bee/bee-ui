@@ -138,3 +138,29 @@ export async function fetchThreadAssistant(
 
   return threadAssistant;
 }
+
+export async function ensureAppBuilderAssistant(projectId: string) {
+  let result = null;
+  try {
+    result = (
+      await listAssistants(projectId, { limit: 1, agent: 'streamlit' })
+    )?.data.at(0);
+
+    if (!result) {
+      result = await createAssistant(projectId, {
+        agent: 'streamlit',
+        name: 'App Builder',
+        tool_resources: {},
+        // tools: [],
+      });
+    }
+  } catch (error) {
+    const apiError = handleApiError(error);
+
+    if (apiError) {
+      throw new ApiError(null, apiError);
+    }
+  }
+
+  return result ? decodeEntityWithMetadata<Assistant>(result) : null;
+}

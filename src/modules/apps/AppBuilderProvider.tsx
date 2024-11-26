@@ -15,6 +15,8 @@
  */
 
 'use client';
+import { useStateWithGetter } from '@/hooks/useStateWithGetter';
+import { useStateWithRef } from '@/hooks/useStateWithRef';
 import {
   createContext,
   PropsWithChildren,
@@ -24,10 +26,22 @@ import {
   useState,
 } from 'react';
 
-export function AppBuilderProvider({ children }: PropsWithChildren) {
-  const [code, setCode] = useState<string | null>(null);
+interface Props {
+  code?: string;
+}
 
-  const apiValue = useMemo(() => ({ setCode }), []);
+export function AppBuilderProvider({
+  code: initialCode,
+  children,
+}: PropsWithChildren<Props>) {
+  const [code, setCode, codeRef] = useStateWithRef<string | null>(
+    initialCode ?? null,
+  );
+
+  const apiValue = useMemo(
+    () => ({ setCode, getCode: () => codeRef.current }),
+    [],
+  );
 
   return (
     <AppBuilderApiContext.Provider value={apiValue}>
@@ -44,6 +58,7 @@ const AppBuilderContext = createContext<{
 
 const AppBuilderApiContext = createContext<{
   setCode: (content: string) => void;
+  getCode: () => string | null;
 } | null>(null);
 
 export function useAppBuilderApi() {

@@ -70,7 +70,9 @@ export function useBuildTraceData({
         const customEventData = iteration.children.find(
           (span) => span.name === 'startCustom',
         )?.attributes.data;
-        const rawPrompt = String(customEventData?.rawPrompt);
+        const rawPrompt = customEventData?.rawPrompt
+          ? String(customEventData.rawPrompt)
+          : undefined;
 
         return {
           groupId: iteration.span.context.span_id,

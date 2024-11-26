@@ -15,17 +15,20 @@
  */
 
 'use client';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './StliteFrame.module.scss';
-import { useAppBuilder } from './AppBuilderProvider';
+import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
+import { Loading } from '@carbon/react';
 
 interface Props {}
 
 export function StliteFrame({}: Props) {
   const { code } = useAppBuilder();
+  const { getCode } = useAppBuilderApi();
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [state, setState] = useState<StliteState>('loading');
 
-  useEffect(() => {
+  const triggerCodeUpdate = useCallback((code: string | null) => {
     iframeRef?.current?.contentWindow?.postMessage?.(
       {
         type: MESSAGE_TYPE_UPDATE_CODE,
@@ -33,18 +36,52 @@ export function StliteFrame({}: Props) {
       },
       '*', // TODO: set origin for production
     );
-  }, [code]);
+  }, []);
+
+  useEffect(() => triggerCodeUpdate(code), [code]);
+
+  useEffect(() => {
+    if (state === 'ready') {
+      triggerCodeUpdate(getCode());
+    }
+  }, [state]);
+
+  useEffect(() => {
+    const handleStliteMessage = (e: MessageEvent<StliteMessage>) => {
+      if (e.data.type === STLITE_MESSAGE_TYPE_STATE_CHANGED) {
+        if (e.data.scriptRunState === 'running') setState('ready');
+      }
+    };
+
+    window.removeEventListener('message', handleStliteMessage);
+    window.addEventListener('message', handleStliteMessage);
+
+    return () => {
+      window.removeEventListener('message', handleStliteMessage);
+    };
+  }, []);
 
   return (
-    <iframe
-      src="/stlite/index.html"
-      ref={iframeRef}
-      title="Bee App preview"
-      className={classes.app}
-      sandbox="allow-scripts allow-downloads allow-same-origin"
-    />
+    <div className={classes.root}>
+      <iframe
+        src="/stlite/index.html"
+        ref={iframeRef}
+        title="Bee App preview"
+        className={classes.app}
+        sandbox="allow-scripts allow-downloads allow-same-origin"
+      />
+      {state === 'loading' && <Loading />}
+    </div>
   );
 }
 
 const MESSAGE_TYPE_UPDATE_CODE = 'updateCode';
 const MESSAGE_TYPE_ERROR = 'error';
+
+const STLITE_MESSAGE_TYPE_STATE_CHANGED = 'SCRIPT_RUN_STATE_CHANGED';
+
+type StliteState = 'loading' | 'ready';
+interface StliteMessage {
+  type: typeof STLITE_MESSAGE_TYPE_STATE_CHANGED;
+  scriptRunState: 'notRunning' | 'running' | 'initial';
+}

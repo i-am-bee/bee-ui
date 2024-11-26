@@ -26,7 +26,7 @@
 .chat {
   display: flex;
   max-inline-size: rem(800px);
-  flex: 1 1 auto;
+  flex: 1 1 50%;
   border-inline-end: 1px solid $border-subtle;
   > div {
     inline-size: 100%;
@@ -35,7 +35,7 @@
 
 .appPane {
   block-size: 100%;
-  flex: 1 0 auto;
+  flex: 1 0 50%;
   display: grid;
   grid-template-rows: max-content 1fr;
   position: relative;
