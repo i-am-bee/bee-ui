@@ -85,7 +85,9 @@ export const config = {
 const getCspHeader = (nonce: string) => {
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${
+      process.env.NODE_ENV === 'production' ? '' : `'unsafe-eval'`
+    };
     style-src 'self' 'nonce-${nonce}';
     img-src 'self' blob: data: www.ibm.com/;
     font-src 'self';
