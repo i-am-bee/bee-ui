@@ -19,7 +19,14 @@
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import { PropsWithChildren } from 'react';
 
-export function ProgressBarProvider({ children }: PropsWithChildren) {
+interface Props {
+  nonce?: string;
+}
+
+export function ProgressBarProvider({
+  children,
+  nonce,
+}: PropsWithChildren<Props>) {
   return (
     <>
       <ProgressBar
@@ -27,6 +34,7 @@ export function ProgressBarProvider({ children }: PropsWithChildren) {
         height="3px"
         options={{ showSpinner: false }}
         shallowRouting
+        nonce={nonce}
       />
 
       {children}

@@ -20,6 +20,7 @@ import { ThemeProvider } from '@/layout/providers/ThemeProvider';
 import { ToastProvider } from '@/layout/providers/ToastProvider';
 import { StoreProvider } from '@/store/StoreProvider';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { PropsWithChildren, ReactNode } from 'react';
 import { IncludeGlobalStyles } from './IncludeGlobalStyles';
 
@@ -34,20 +35,21 @@ export default function RootLayout({
   children,
   modal,
 }: PropsWithChildren<{ modal: ReactNode }>) {
+  const nonce = headers().get('x-nonce') ?? undefined;
   return (
     // suppressHydrationWarning is added because of ThemeProvider
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
-        <script>
+        <script nonce={nonce}>
           /*! For license information please see app.LICENSE.txt */
         </script>
       </head>
       <body>
         <StoreProvider>
-          <ThemeProvider>
+          <ThemeProvider nonce={nonce}>
             <ToastProvider>
-              <ProgressBarProvider>
+              <ProgressBarProvider nonce={nonce}>
                 <NavigationControlProvider>
                   <IncludeGlobalStyles />
 

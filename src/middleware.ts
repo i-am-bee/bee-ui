@@ -26,9 +26,18 @@ const middleware: NextMiddleware = (...args) => {
   const correlationId = uuid();
 
   const onEnd = () => {
+    const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+    const csp = getCspHeader(nonce);
+
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-correlation-id', correlationId);
-    return NextResponse.next({ request: { headers: requestHeaders } });
+    requestHeaders.set('x-nonce', nonce);
+    requestHeaders.set('Content-Security-Policy', csp);
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    });
+    response.headers.set('Content-Security-Policy', csp);
+    return response;
   };
 
   // For protected pages run an next-auth middleware too
@@ -71,4 +80,20 @@ export const protectedPages = /^(?!\/auth(\/|$)|\/api(\/|$)).*$/; // all pages e
 export const config = {
   // ignore _next/static, _next/image and any url with an extension, which are files in public folder
   matcher: ['/((?!_next/static|_next/image|.*\\..*).*)'],
+};
+
+const getCspHeader = (nonce: string) => {
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+    style-src 'self' 'nonce-${nonce}';
+    img-src 'self' blob: data: www.ibm.com/;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;`;
+
+  return cspHeader.replace(/\s{2,}/g, ' ').trim();
 };

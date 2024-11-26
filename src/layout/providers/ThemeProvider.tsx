@@ -54,7 +54,11 @@ const ThemeContext = createContext<ThemeContextValue>({
   setTheme: noop,
 });
 
-export function ThemeProvider({ children }: PropsWithChildren) {
+interface Props {
+  nonce?: string;
+}
+
+export function ThemeProvider({ children, nonce }: PropsWithChildren<Props>) {
   const prefix = usePrefix();
   const MATCH_MEDIA = '(prefers-color-scheme: dark)';
   const DEFAULT_THEME = Theme.System;
@@ -137,6 +141,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   return (
     <ThemeContext.Provider value={contextValue}>
       <ThemeScript
+        nonce={nonce}
         storageKey={STORAGE_KEY}
         themes={THEMES}
         defaultTheme={DEFAULT_THEME}
@@ -151,13 +156,15 @@ interface ThemeScriptProps {
   storageKey: string;
   themes: { [key in AppliedTheme]: string };
   defaultTheme: Theme;
+  nonce?: string;
 }
 
-function ThemeScript({ ...props }: ThemeScriptProps) {
+function ThemeScript({ nonce, ...props }: ThemeScriptProps) {
   const scriptArgs = JSON.stringify({ ...props });
 
   return (
     <script
+      nonce={nonce}
       suppressHydrationWarning
       dangerouslySetInnerHTML={{
         __html: `(${script.toString()})(${scriptArgs})`,

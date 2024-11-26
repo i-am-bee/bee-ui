@@ -1,5 +1,28 @@
 import { fileURLToPath } from 'node:url';
 
+const headers = [
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
+  },
+  {
+    key: 'X-XSS-Protection',
+    value: '1',
+  },
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=63072000; includeSubDomains; preload',
+  },
+  {
+    key: 'X-Frame-Options',
+    value: 'DENY',
+  },
+  {
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin',
+  },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -7,6 +30,13 @@ const nextConfig = {
   },
   sassOptions: {
     includePaths: [fileURLToPath(new URL('src/', import.meta.url))],
+  },
+  async headers() {
+    return [
+      // Default headers for all pages.
+      { source: '/', headers },
+      { source: '/:path*', headers },
+    ];
   },
   webpack(config) {
     // Grab the existing rule that handles SVG imports
