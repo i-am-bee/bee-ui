@@ -37,6 +37,20 @@ export function checkErrorCode(error: Error): ErrorCode {
   return null;
 }
 
+export function checkErrorDigest(
+  error: unknown | (Error & { digest?: unknown }),
+) {
+  if (
+    error instanceof Error &&
+    'digest' in error &&
+    typeof error.digest === 'string'
+  ) {
+    return error.digest;
+  }
+
+  return null;
+}
+
 export function handleApiError(error: unknown): void | ApiErrorResponse {
   if (
     error instanceof UnauthenticatedError ||

@@ -17,7 +17,7 @@
 import { Assistant } from '@/modules/assistants/types';
 import { ThreadAssistant } from '@/modules/chat/types';
 import { fetchEntity } from '@/utils/fetchEntity';
-import { handleApiError } from '@/utils/handleApiError';
+import { checkErrorDigest, handleApiError } from '@/utils/handleApiError';
 import { client } from '../client';
 import { ApiError } from '../errors';
 import { listRuns } from '../threads-runs';
@@ -125,7 +125,10 @@ export async function fetchThreadAssistant(
     threadAssistant.data =
       (await fetchAssistant(projectId, assistantId)) ?? null;
   } catch (error) {
-    if (error instanceof ApiError && error.code === 'not_found') {
+    if (
+      (error instanceof ApiError && error.code === 'not_found') ||
+      checkErrorDigest(error) === 'NEXT_NOT_FOUND'
+    ) {
       threadAssistant.isDeleted = true;
     } else {
       const apiError = handleApiError(error);
