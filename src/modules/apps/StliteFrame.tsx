@@ -19,6 +19,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './StliteFrame.module.scss';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { Loading } from '@carbon/react';
+import { STLITE_SITE_URL } from '@/utils/constants';
 
 interface Props {}
 
@@ -38,13 +39,14 @@ export function StliteFrame({}: Props) {
     );
   }, []);
 
-  useEffect(() => triggerCodeUpdate(code), [code]);
+  useEffect(() => triggerCodeUpdate(code), [code, triggerCodeUpdate]);
 
   useEffect(() => {
     if (state === 'ready') {
-      triggerCodeUpdate(getCode());
+      const code = getCode();
+      if (code) triggerCodeUpdate(getCode());
     }
-  }, [state]);
+  }, [getCode, state, triggerCodeUpdate]);
 
   useEffect(() => {
     const handleStliteMessage = (e: MessageEvent<StliteMessage>) => {
@@ -64,13 +66,13 @@ export function StliteFrame({}: Props) {
   return (
     <div className={classes.root}>
       <iframe
-        src="/stlite/index.html"
+        src={STLITE_SITE_URL}
         ref={iframeRef}
         title="Bee App preview"
         className={classes.app}
         sandbox="allow-scripts allow-downloads allow-same-origin"
       />
-      {state === 'loading' && <Loading />}
+      {state === 'loading' && code && <Loading />}
     </div>
   );
 }

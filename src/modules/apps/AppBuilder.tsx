@@ -17,16 +17,9 @@
 'use client';
 import { Thread } from '@/app/api/threads/types';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
-import { ChatMessage, MessageWithFiles } from '@/modules/chat/types';
-import {
-  Tab,
-  TabContent,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from '@carbon/react';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { MessageWithFiles } from '@/modules/chat/types';
+import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
+import { useCallback, useId, useState } from 'react';
 import classes from './AppBuilder.module.scss';
 import { Assistant } from '../assistants/types';
 import { ConversationView } from '../chat/ConversationView';
@@ -35,7 +28,6 @@ import { StliteFrame } from './StliteFrame';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import clsx from 'clsx';
 import { extractCodeFromMessageContent } from './utils';
-import { ChatState } from '../chat/ChatHomeView';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { threadsQuery } from '../chat/history/queries';
@@ -71,7 +63,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
         });
       }
     },
-    [setCode],
+    [project.id, queryClient, setCode, thread],
   );
 
   return (
@@ -98,10 +90,17 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
             setSelectedTab(selectedIndex);
           }}
         >
-          <TabList aria-label="App View mode">
-            <Tab>UI Preview</Tab>
-            <Tab>Source code</Tab>
-          </TabList>
+          <div className={classes.appPaneHeader}>
+            <TabList aria-label="App View mode">
+              <Tab>UI Preview</Tab>
+              <Tab>Source code</Tab>
+            </TabList>
+            <div className={classes.appActions}>
+              <Button kind="secondary" size="sm">
+                Save to Apps
+              </Button>
+            </div>
+          </div>
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
               <StliteFrame />

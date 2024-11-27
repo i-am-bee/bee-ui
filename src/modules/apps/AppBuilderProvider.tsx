@@ -40,7 +40,7 @@ export function AppBuilderProvider({
 
   const apiValue = useMemo(
     () => ({ setCode, getCode: () => codeRef.current }),
-    [],
+    [codeRef, setCode],
   );
 
   return (

@@ -49,10 +49,23 @@
     background-color: $layer-02;
   }
 
-  :global(.#{$prefix}--tabs) {
-    block-size: rem(56px);
+  .appPaneHeader {
+    display: flex;
+    align-items: center;
     border-block-end: 1px solid $border-subtle;
     padding-inline: $spacing-06;
+  }
+
+  .appActions {
+    button {
+      padding-inline-end: $spacing-05;
+    }
+  }
+
+  :global(.#{$prefix}--tabs) {
+    block-size: rem(56px);
+    border: none;
+    padding-inline-end: $spacing-06;
     display: flex;
     align-items: center;
   }

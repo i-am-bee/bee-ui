@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-export const ORGANIZATION_ID_DEFAULT =
-  process.env.NEXT_PUBLIC_ORGANIZATION_ID_DEFAULT!;
-export const PROJECT_ID_DEFAULT = process.env.NEXT_PUBLIC_PROJECT_ID_DEFAULT!;
+@use 'styles/common' as *;
 
-export const TOU_TEXT = process.env.NEXT_PUBLIC_TOU_TEXT!;
-export const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL!;
-export const DOCUMENTATION_URL = process.env.NEXT_PUBLIC_DOCUMENTATION_URL!;
-export const STLITE_SITE_URL = process.env.NEXT_PUBLIC_STLITE_SITE_URL!;
+.modal {
+}
 
-export const ONBOARDING_PARAM = 'onboarding';
-
-export const MAIN_ELEMENT_ID = 'main-content';

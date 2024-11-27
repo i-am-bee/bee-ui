@@ -36,7 +36,7 @@ export type AssistantCreateBody = Omit<
   AssistantCreateBodyApi,
   'tool_resources'
 > & {
-  tool_resources: ToolResources;
+  tool_resources?: ToolResources;
 };
 
 export type AssistantsListQuery = NonNullable<

@@ -150,8 +150,6 @@ export async function ensureAppBuilderAssistant(projectId: string) {
       result = await createAssistant(projectId, {
         agent: 'streamlit',
         name: 'App Builder',
-        tool_resources: {},
-        // tools: [],
       });
     }
   } catch (error) {
