@@ -37,9 +37,7 @@ export function checkErrorCode(error: Error): ErrorCode {
   return null;
 }
 
-export function checkErrorDigest(
-  error: unknown | (Error & { digest?: unknown }),
-) {
+export function checkErrorDigest(error: unknown) {
   if (
     error instanceof Error &&
     'digest' in error &&
