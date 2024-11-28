@@ -21,7 +21,8 @@ export const PROJECT_ID_DEFAULT = process.env.NEXT_PUBLIC_PROJECT_ID_DEFAULT!;
 export const TOU_TEXT = process.env.NEXT_PUBLIC_TOU_TEXT!;
 export const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL!;
 export const DOCUMENTATION_URL = process.env.NEXT_PUBLIC_DOCUMENTATION_URL!;
-export const STLITE_SITE_URL = process.env.NEXT_PUBLIC_STLITE_SITE_URL!;
+export const USERCONTENT_SITE_URL =
+  process.env.NEXT_PUBLIC_USERCONTENT_SITE_URL!;
 
 export const ONBOARDING_PARAM = 'onboarding';
 

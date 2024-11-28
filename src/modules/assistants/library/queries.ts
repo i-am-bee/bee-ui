@@ -32,6 +32,7 @@ export const assistantsQuery = (
     queryFn: ({ pageParam }: { pageParam?: string }) =>
       listAssistants(projectId, {
         ...params,
+        agent: 'bee',
         limit: params?.limit || PAGE_SIZE,
         after: pageParam,
       }),

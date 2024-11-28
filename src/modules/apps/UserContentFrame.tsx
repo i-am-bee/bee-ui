@@ -16,14 +16,14 @@
 
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import classes from './StliteFrame.module.scss';
+import classes from './UserContentFrame.module.scss';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { Loading } from '@carbon/react';
-import { STLITE_SITE_URL } from '@/utils/constants';
+import { USERCONTENT_SITE_URL } from '@/utils/constants';
 
 interface Props {}
 
-export function StliteFrame({}: Props) {
+export function UserContentFrame({}: Props) {
   const { code } = useAppBuilder();
   const { getCode } = useAppBuilderApi();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -66,7 +66,7 @@ export function StliteFrame({}: Props) {
   return (
     <div className={classes.root}>
       <iframe
-        src={STLITE_SITE_URL}
+        src={USERCONTENT_SITE_URL}
         ref={iframeRef}
         title="Bee App preview"
         className={classes.app}

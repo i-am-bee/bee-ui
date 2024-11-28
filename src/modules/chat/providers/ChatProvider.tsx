@@ -355,6 +355,7 @@ export function ChatProvider({
     queryClient,
     setController,
     setMessages,
+    threadRef,
   ]);
 
   const requireUserApproval = useCallback(

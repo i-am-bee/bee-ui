@@ -19,6 +19,7 @@ import { AssistantTemplate } from './types';
 export const ASSISTANT_TEMPLATES: AssistantTemplate[] = [
   {
     key: 'github-issue-write',
+    agent: 'bee',
     name: 'GitHub Issue Writer',
     description:
       'Report a bug or share a feature idea and this bee will create a well formatted GitHub issue',
@@ -33,6 +34,7 @@ export const ASSISTANT_TEMPLATES: AssistantTemplate[] = [
   },
   {
     key: 'research-paper-summarizer',
+    agent: 'bee',
     name: 'Research Paper Summarizer',
     description:
       'Transform research paper PDFs into clear and concise summaries',
@@ -57,6 +59,7 @@ export const ASSISTANT_TEMPLATES: AssistantTemplate[] = [
   },
   {
     key: 'teams-transcript-summarizer',
+    agent: 'bee',
     name: 'Teams Transcript Summarizer',
     description:
       'Copy & paste your meeting transcript content here for a bullet-point recap',

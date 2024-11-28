@@ -51,6 +51,7 @@ export function PythonAppCode({
           <span className={classes.icon}>
             {message?.pending ? <InlineLoading /> : <Rocket />}
           </span>
+          {/* TODO: handle app error */}
           <strong>{appName ?? 'The app is ready'}</strong>
         </div>
       )}

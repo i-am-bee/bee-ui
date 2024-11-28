@@ -16,12 +16,8 @@
 
 import { fetchEntity } from '@/utils/fetchEntity';
 import { client } from '../client';
-import {
-  assertSuccessResponse,
-  decodeEntityWithMetadata,
-  getRequestHeaders,
-} from '../utils';
-import { Artifact, ArtifactCreateBody, ArtifactsListQuery } from './types';
+import { assertSuccessResponse, getRequestHeaders } from '../utils';
+import { ArtifactCreateBody, ArtifactsListQuery } from './types';
 
 export async function createArtifact(
   projectId: string,

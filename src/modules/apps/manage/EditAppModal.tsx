@@ -15,28 +15,27 @@
  */
 
 import { Project } from '@/app/api/projects/types';
-import { ToolsCreateBody } from '@/app/api/tools/types';
-import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
 import {
   Button,
-  FormLabel,
   InlineLoading,
   InlineNotification,
   ModalBody,
   ModalFooter,
   ModalHeader,
+  TextArea,
   TextInput,
 } from '@carbon/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useId } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import classes from './UserToolModal.module.scss';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import classes from './EditAppModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { Artifact } from '../types';
 import { useSaveApp } from '../hooks/useSaveApp';
+import { ArtifactCreateBody } from '@/app/api/artifacts/types';
+import isEmpty from 'lodash/isEmpty';
 
 interface FormValues {
   icon: string;
@@ -47,17 +46,20 @@ interface FormValues {
 interface Props extends ModalProps {
   artifact?: Artifact;
   project: Project;
+  messageId: string;
+  code: string;
   onSaveSuccess?: (artifact: Artifact) => void;
 }
 
 export function EditAppModal({
   artifact,
   project,
+  messageId,
+  code,
   onSaveSuccess,
   ...props
 }: Props) {
   const { onRequestClose } = props;
-  const { openConfirmation } = useModal();
   const id = useId();
   const {
     setConfirmOnRequestClose,
@@ -65,17 +67,19 @@ export function EditAppModal({
     onRequestCloseSafe,
   } = useModalControl();
 
-  const { mutate: mutateSave } = useSaveApp({ project });
+  const {
+    mutate: mutateSave,
+    isError: isSaveError,
+    error: saveError,
+  } = useSaveApp({ project, onSaveSuccess: () => onRequestClose() });
 
   const editMode = artifact != undefined;
-
-  const queryClient = useQueryClient();
 
   const {
     control,
     register,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting, isDirty },
+    formState: { errors, isValid, isSubmitting, dirtyFields },
   } = useForm<FormValues>({
     defaultValues: {
       name: artifact?.name || '',
@@ -84,82 +88,55 @@ export function EditAppModal({
   });
 
   useEffect(() => {
-    if (isDirty)
+    if (!isEmpty(dirtyFields))
       setConfirmOnRequestClose(
         'Your app has unsaved changes, do you really want to leave?',
       );
     else clearConfirmOnRequestClose();
     return () => clearConfirmOnRequestClose();
-  }, [clearConfirmOnRequestClose, isDirty, setConfirmOnRequestClose]);
+  }, [clearConfirmOnRequestClose, dirtyFields, setConfirmOnRequestClose]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
       await mutateSave({
         id: artifact?.id,
-        body: createSaveArtifactBody(data),
+        body: createSaveArtifactBody(messageId, code, data),
       });
     },
-    [artifact?.id, mutateSave],
+    [artifact?.id, code, messageId, mutateSave],
   );
 
   return (
     <Modal {...props} preventCloseOnClickOutside className={classes.modal}>
       <ModalHeader>
-        <h2>{editMode ? 'Edit custom tool' : 'Create a custom tool'}</h2>
+        <h2>Save</h2>
       </ModalHeader>
       <ModalBody>
         <form onSubmit={handleSubmit(onSubmit)}>
           <SettingsFormGroup>
+            {/* TODO: icon */}
+
             <div className={classes.group}>
               <TextInput
                 size="lg"
                 id={`${id}:name`}
-                labelText="Name of tool"
-                placeholder="Type tool name"
+                labelText="Name"
+                placeholder="Name your app"
                 invalid={errors.name != null}
                 {...register('name', {
                   required: true,
                 })}
               />
-
-              <p className={classes.helperText}>
-                This is your tool’s display name, it can be a real name or
-                pseudonym.
-              </p>
             </div>
 
             <div className={classes.group}>
-              <div className={classes.groupHeader}>
-                <FormLabel id={`${id}:code`}>Python code</FormLabel>
-
-                {/* <Link href="/" className={classes.link}>
-                  <span>View documentation</span>
-                  <ArrowUpRight />
-                </Link> */}
-              </div>
-
-              <Controller
-                name="sourceCode"
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field }) => (
-                  <EditableSyntaxHighlighter
-                    id={`${id}:code`}
-                    value={field.value}
-                    onChange={field.onChange}
-                    required
-                    invalid={errors.sourceCode != null}
-                    rows={16}
-                  />
-                )}
+              <TextArea
+                id={`${id}:description`}
+                labelText="Description"
+                placeholder="Name your app"
+                invalid={errors.description != null}
+                {...register('description')}
               />
-
-              <p className={classes.helperText}>
-                Do not share any authentication token in your Python function.
-                Exposing it can compromise any account.
-              </p>
             </div>
 
             {isSaveError && (
@@ -176,39 +153,39 @@ export function EditAppModal({
       </ModalBody>
 
       <ModalFooter>
-        <div className={classes.actions}>
-          <Button kind="ghost" onClick={() => onRequestCloseSafe()}>
-            Cancel
-          </Button>
+        <Button kind="ghost" onClick={() => onRequestCloseSafe()}>
+          Cancel
+        </Button>
 
-          <Button
-            kind="secondary"
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            onClick={handleSubmit(onSubmit)}
-          >
-            {isSubmitting ? (
-              <InlineLoading
-                description={editMode ? 'Saving...' : 'Creating...'}
-              />
-            ) : editMode ? (
-              'Save edit'
-            ) : (
-              'Create tool'
-            )}
-          </Button>
-        </div>
+        <Button
+          kind="secondary"
+          type="submit"
+          disabled={!isValid || isSubmitting}
+          onClick={handleSubmit(onSubmit)}
+        >
+          {isSubmitting ? (
+            <InlineLoading
+              description={editMode ? 'Saving...' : 'Creating...'}
+            />
+          ) : (
+            'Save'
+          )}
+        </Button>
       </ModalFooter>
     </Modal>
   );
 }
 
-function createSaveArtifactBody({
-  name,
-  description,
-}: FormValues): ToolsCreateBody {
+function createSaveArtifactBody(
+  messageId: string,
+  code: string,
+  { name, description }: FormValues,
+): ArtifactCreateBody {
   return {
     name,
     description,
+    message_id: messageId,
+    source_code: code,
+    type: 'app',
   };
 }
