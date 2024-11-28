@@ -20,7 +20,7 @@ import { MessageAttachments } from '@/app/api/threads-messages/types';
 import { createVectorStore } from '@/app/api/vector-stores';
 import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
 import { useHandleError } from '@/layout/hooks/useHandleError';
-import { isNotNull } from '@/utils/helpers';
+import { isNotNull, noop } from '@/utils/helpers';
 import { useMutation } from '@tanstack/react-query';
 import {
   Dispatch,
@@ -51,7 +51,6 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { isMimeTypeReadable } from '@/modules/files/utils';
-import { noop } from 'lodash';
 
 const FilesUploadContext = createContext<{
   files: VectoreStoreFileUpload[];

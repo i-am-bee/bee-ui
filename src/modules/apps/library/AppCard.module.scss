@@ -16,6 +16,14 @@
 
 @use 'styles/common' as *;
 
-.modal {
-}
+$card-size: rem(197px);
 
+.root {
+  block-size: $card-size;
+  min-block-size: $card-size;
+}
+.body {
+  p {
+    @include truncateMultiline(2);
+  }
+}

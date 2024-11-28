@@ -17,7 +17,7 @@
 import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
-import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   InlineLoading,
@@ -30,12 +30,12 @@ import {
 } from '@carbon/react';
 import { useCallback, useEffect, useId } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import classes from './EditAppModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { Artifact } from '../types';
-import { useSaveApp } from '../hooks/useSaveApp';
-import { ArtifactCreateBody } from '@/app/api/artifacts/types';
+import { ArtifactResult, ArtifactUpdateBody } from '@/app/api/artifacts/types';
 import isEmpty from 'lodash/isEmpty';
+import { useUpdateArtifact } from '../hooks/useUpdateArtifact';
+import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
 
 interface FormValues {
   icon: string;
@@ -44,18 +44,14 @@ interface FormValues {
 }
 
 interface Props extends ModalProps {
-  artifact?: Artifact;
+  artifact: Artifact;
   project: Project;
-  messageId: string;
-  code: string;
-  onSaveSuccess?: (artifact: Artifact) => void;
+  onSaveSuccess?: (artifact: ArtifactResult) => void;
 }
 
-export function EditAppModal({
+export function UpdateAppModal({
   artifact,
   project,
-  messageId,
-  code,
   onSaveSuccess,
   ...props
 }: Props) {
@@ -68,55 +64,50 @@ export function EditAppModal({
   } = useModalControl();
 
   const {
-    mutate: mutateSave,
+    mutateAsync: mutateSave,
     isError: isSaveError,
     error: saveError,
-  } = useSaveApp({ project, onSaveSuccess: () => onRequestClose() });
-
-  const editMode = artifact != undefined;
+  } = useUpdateArtifact({
+    project,
+    artifact,
+    onSaveSuccess: (artifact) => {
+      onRequestClose();
+      onSaveSuccess?.(artifact);
+    },
+  });
 
   const {
-    control,
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting, dirtyFields },
   } = useForm<FormValues>({
     defaultValues: {
       name: artifact?.name || '',
+      description: artifact?.description || '',
     },
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    if (!isEmpty(dirtyFields))
-      setConfirmOnRequestClose(
-        'Your app has unsaved changes, do you really want to leave?',
-      );
-    else clearConfirmOnRequestClose();
-    return () => clearConfirmOnRequestClose();
-  }, [clearConfirmOnRequestClose, dirtyFields, setConfirmOnRequestClose]);
+  useConfirmModalCloseOnDirty(!isEmpty(dirtyFields), 'app');
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
-      await mutateSave({
-        id: artifact?.id,
-        body: createSaveArtifactBody(messageId, code, data),
-      });
+      await mutateSave(createUpdateArtifactBody(artifact, data));
     },
-    [artifact?.id, code, messageId, mutateSave],
+    [artifact, mutateSave],
   );
 
   return (
-    <Modal {...props} preventCloseOnClickOutside className={classes.modal}>
+    <Modal {...props} preventCloseOnClickOutside>
       <ModalHeader>
-        <h2>Save</h2>
+        <h2>Edit app</h2>
       </ModalHeader>
       <ModalBody>
         <form onSubmit={handleSubmit(onSubmit)}>
           <SettingsFormGroup>
             {/* TODO: icon */}
 
-            <div className={classes.group}>
+            <div>
               <TextInput
                 size="lg"
                 id={`${id}:name`}
@@ -129,11 +120,11 @@ export function EditAppModal({
               />
             </div>
 
-            <div className={classes.group}>
+            <div>
               <TextArea
                 id={`${id}:description`}
                 labelText="Description"
-                placeholder="Name your app"
+                placeholder="Describe your app"
                 invalid={errors.description != null}
                 {...register('description')}
               />
@@ -141,7 +132,6 @@ export function EditAppModal({
 
             {isSaveError && (
               <InlineNotification
-                className={classes.error}
                 kind="error"
                 title={saveError.message}
                 lowContrast
@@ -163,29 +153,20 @@ export function EditAppModal({
           disabled={!isValid || isSubmitting}
           onClick={handleSubmit(onSubmit)}
         >
-          {isSubmitting ? (
-            <InlineLoading
-              description={editMode ? 'Saving...' : 'Creating...'}
-            />
-          ) : (
-            'Save'
-          )}
+          {isSubmitting ? <InlineLoading description="Saving..." /> : 'Save'}
         </Button>
       </ModalFooter>
     </Modal>
   );
 }
 
-function createSaveArtifactBody(
-  messageId: string,
-  code: string,
+function createUpdateArtifactBody(
+  artifact: Artifact,
   { name, description }: FormValues,
-): ArtifactCreateBody {
+): ArtifactUpdateBody {
   return {
     name,
     description,
-    message_id: messageId,
-    source_code: code,
-    type: 'app',
+    shared: Boolean(artifact.share_url),
   };
 }

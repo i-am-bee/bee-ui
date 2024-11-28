@@ -16,16 +16,13 @@
 
 import {
   ensureAppBuilderAssistant,
-  fetchAssistant,
   fetchThread,
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
-import { AppBuilder } from '@/modules/apps/AppBuilder';
-import { AppBuilderProvider } from '@/modules/apps/AppBuilderProvider';
+import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
+import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { extractCodeFromMessageContent } from '@/modules/apps/utils';
-import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
-import { Builder } from '@/modules/assistants/builder/Builder';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 

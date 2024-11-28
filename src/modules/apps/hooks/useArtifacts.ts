@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-import { Root } from 'hast';
-import { Code } from 'mdast';
-import { visit } from 'unist-util-visit';
+import { ArtifactsListQuery } from '@/app/api/artifacts/types';
+import { AssistantsListQuery } from '@/app/api/assistants/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { listArtifactsQuery } from '../queries';
 
-export function remarkPythonAppCode() {
-  return (tree: Root) => {
-    visit(tree, 'code', (node: Code) => {
-      node.data = {
-        ...node.data,
-        hName: 'pythonAppCode',
-      };
-    });
-  };
+export function useArtifacts({ params }: { params?: ArtifactsListQuery } = {}) {
+  const { project } = useAppContext();
+
+  const query = useInfiniteQuery({
+    ...listArtifactsQuery(project.id, params),
+  });
+
+  return query;
 }

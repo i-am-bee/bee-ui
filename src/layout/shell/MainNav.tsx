@@ -25,6 +25,7 @@ import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { usePathname } from 'next/navigation';
 import { useAppContext } from '../providers/AppProvider';
 import classes from './MainNav.module.scss';
+import { useArtifactsTotalCount } from '@/modules/apps/hooks/useArtifactsTotalCount';
 
 export function MainNav() {
   const pathname = usePathname();
@@ -34,6 +35,7 @@ export function MainNav() {
   const assistantsCount = useAssistantsCount();
   const toolsCount = useToolsCount({ type: ['user'] });
   const vectorStoresCount = useVectorStoresCount();
+  const artifactsCount = useArtifactsTotalCount();
 
   const prefetchAssistants = usePrefetchAssistants({ useDefaultParams: true });
   const prefetchTools = usePrefetchTools({ useDefaultParams: true });
@@ -42,6 +44,12 @@ export function MainNav() {
   });
 
   const ITEMS = [
+    {
+      label: 'Apps',
+      href: `/${project.id}/apps`,
+      count: artifactsCount,
+      prefetchData: prefetchAssistants,
+    },
     {
       label: 'Bees',
       href: `/${project.id}`,

@@ -15,26 +15,30 @@
  */
 
 import { createArtifact, updateArtifact } from '@/app/api/artifacts';
-import { ArtifactCreateBody, ArtifactResult } from '@/app/api/artifacts/types';
+import {
+  ArtifactCreateBody,
+  ArtifactResult,
+  ArtifactUpdateBody,
+} from '@/app/api/artifacts/types';
 import { Project } from '@/app/api/projects/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { listArtifactsQuery, readArtifactQuery } from '../queries';
+import { Artifact } from '../types';
 
 interface Props {
   project: Project;
+  artifact: Artifact;
   onSaveSuccess?: (artifact: ArtifactResult) => void;
 }
 
-export function useSaveApp({ project, onSaveSuccess }: Props) {
+export function useUpdateArtifact({ project, artifact, onSaveSuccess }: Props) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, body }: { id?: string; body: ArtifactCreateBody }) => {
-      return id
-        ? updateArtifact(project.id, id, body)
-        : createArtifact(project.id, body);
+    mutationFn: (body: ArtifactUpdateBody) => {
+      return updateArtifact(project.id, artifact.id, body);
     },
-    onSuccess: (artifact, { id }) => {
+    onSuccess: (artifactResult) => {
       queryClient.invalidateQueries({
         queryKey: [listArtifactsQuery(project.id).queryKey.at(0)],
       });
@@ -44,7 +48,7 @@ export function useSaveApp({ project, onSaveSuccess }: Props) {
           queryKey: readArtifactQuery(project.id, artifact.id).queryKey,
         });
 
-        onSaveSuccess?.(artifact);
+        artifactResult && onSaveSuccess?.(artifactResult);
       }
     },
     meta: {

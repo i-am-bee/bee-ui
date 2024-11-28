@@ -35,7 +35,7 @@ export function UserContentFrame({}: Props) {
         type: MESSAGE_TYPE_UPDATE_CODE,
         code,
       },
-      '*', // TODO: set origin for production
+      USERCONTENT_SITE_URL,
     );
   }, []);
 
@@ -50,12 +50,14 @@ export function UserContentFrame({}: Props) {
 
   useEffect(() => {
     const handleStliteMessage = (e: MessageEvent<StliteMessage>) => {
-      if (e.data.type === STLITE_MESSAGE_TYPE_STATE_CHANGED) {
+      if (
+        e.data.type === STLITE_MESSAGE_TYPE_STATE_CHANGED &&
+        e.origin === USERCONTENT_SITE_URL
+      ) {
         if (e.data.scriptRunState === 'running') setState('ready');
       }
     };
 
-    window.removeEventListener('message', handleStliteMessage);
     window.addEventListener('message', handleStliteMessage);
 
     return () => {

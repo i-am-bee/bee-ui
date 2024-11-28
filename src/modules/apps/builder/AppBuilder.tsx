@@ -21,19 +21,19 @@ import { MessageWithFiles } from '@/modules/chat/types';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { useCallback, useId, useMemo, useState } from 'react';
 import classes from './AppBuilder.module.scss';
-import { Assistant } from '../assistants/types';
-import { ConversationView } from '../chat/ConversationView';
+import { Assistant } from '../../assistants/types';
+import { ConversationView } from '../../chat/ConversationView';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import clsx from 'clsx';
-import { extractCodeFromMessageContent } from './utils';
+import { extractCodeFromMessageContent } from '../utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useQueryClient } from '@tanstack/react-query';
-import { threadsQuery } from '../chat/history/queries';
+import { threadsQuery } from '../../chat/history/queries';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { EditAppModal } from './manage/EditAppModal';
-import { useMessages } from '../chat/providers/useMessages';
+import { useMessages } from '../../chat/providers/useMessages';
 import { UserContentFrame } from './UserContentFrame';
+import { CreateAppModal } from '../manage/CreateAppModal';
 
 interface Props {
   thread?: Thread;
@@ -55,7 +55,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
         window.history.pushState(
           null,
           '',
-          `/${project.id}/apps/builder/${newThread.id}`,
+          `/${project.id}/apps/builder/t/${newThread.id}`,
         );
         queryClient.invalidateQueries({
           queryKey: threadsQuery(project.id).queryKey,
@@ -123,9 +123,10 @@ function AppBuilderContent() {
                 size="sm"
                 onClick={() => {
                   const message = getLastMessageWithCode();
+
                   if (message?.id && code) {
                     openModal((props) => (
-                      <EditAppModal
+                      <CreateAppModal
                         project={project}
                         messageId={message.id ?? ''}
                         code={code}

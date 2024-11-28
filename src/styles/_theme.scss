@@ -112,7 +112,6 @@ themes.$white: map.merge(
     skip-to-content-background: $cool-gray-70,
     files-dropzone-background: rgba($white, 0.95),
     modal-background: rgba($cool-gray-60, 0.5),
-    background-green: rgba(222, 251, 230, 0.5),
   )
 );
 
@@ -186,7 +185,6 @@ themes.$g90: map.merge(
     skip-to-content-background: $white,
     files-dropzone-background: rgba($cool-gray-90, 0.95),
     modal-background: rgba($cool-gray-100, 0.75),
-    background-green: rgba(222, 251, 230, 0.5),
   )
 );
 
@@ -206,7 +204,6 @@ $tag-color-cool-gray: var(--cds-tag-color-cool-gray);
 
 $body-background: var(--cds-body-background);
 $body-background-transparent: var(--cds-body-background-transparent);
-$background-green: var(--cds-background-green);
 $box-shadow-color: var(--cds-box-shadow-color);
 $conversation-starter-btn-background-hover: var(
   --cds-conversation-starter-btn-background-hover

@@ -47,7 +47,6 @@ export function ModalControlProvider({
   const [confirmMessage, setConfirmMessage] = useState<string | null>(null);
 
   const setConfirmOnRequestClose = (confirmMessage?: string) => {
-    console.trace();
     setBlocked(true);
     setConfirmMessage(confirmMessage ?? null);
   };

@@ -17,7 +17,11 @@
 import { fetchEntity } from '@/utils/fetchEntity';
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { ArtifactCreateBody, ArtifactsListQuery } from './types';
+import {
+  ArtifactCreateBody,
+  ArtifactsListQuery,
+  ArtifactUpdateBody,
+} from './types';
 
 export async function createArtifact(
   projectId: string,
@@ -34,7 +38,7 @@ export async function createArtifact(
 export async function updateArtifact(
   projectId: string,
   id: string,
-  body: ArtifactCreateBody,
+  body: ArtifactUpdateBody,
 ) {
   const res = await client.POST('/v1/artifacts/{artifact_id}', {
     params: { path: { artifact_id: id } },

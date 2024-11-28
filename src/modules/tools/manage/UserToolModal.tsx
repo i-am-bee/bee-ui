@@ -37,6 +37,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { readToolQuery, toolsQuery } from '../queries';
 import classes from './UserToolModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
+import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -100,14 +101,7 @@ export function UserToolModal({
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    if (isDirty)
-      setConfirmOnRequestClose(
-        'Your tool has unsaved changes, do you really want to leave?',
-      );
-    else clearConfirmOnRequestClose();
-    return () => clearConfirmOnRequestClose();
-  }, [clearConfirmOnRequestClose, isDirty, setConfirmOnRequestClose]);
+  useConfirmModalCloseOnDirty(isDirty, 'tool');
 
   const {
     mutateAsync: mutateSaveTool,
