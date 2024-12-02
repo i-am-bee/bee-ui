@@ -67,7 +67,7 @@ export function AppProvider({
   const [project, setProject] = useState<Project>(initialProject);
   const [assistant, setAssistant] = useState<Assistant | null>(null);
   const onPageLeaveRef = useRef(() => null);
-  const id = useUserProfile((state) => state.id);
+  const userId = useUserProfile((state) => state.id);
 
   const { data: projectData } = useQuery({
     ...readProjectQuery(project.id),
@@ -83,7 +83,8 @@ export function AppProvider({
   });
 
   const { data: projectUser } = useQuery({
-    ...readProjectUserQuery(project.id, id),
+    ...readProjectUserQuery(project.id, userId),
+    enabled: Boolean(userId),
   });
 
   const apiValue = useMemo(
@@ -95,7 +96,9 @@ export function AppProvider({
     [],
   );
 
-  const isProjectReadOnly = projectUser ? projectUser.role === 'reader' : true;
+  const isProjectReadOnly = projectUser
+    ? projectUser.role === 'reader'
+    : Boolean(userId);
 
   return (
     <AppApiContext.Provider value={apiValue}>

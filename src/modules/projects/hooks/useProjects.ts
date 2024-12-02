@@ -30,7 +30,7 @@ export function useProjects({ withRole }: { withRole?: boolean }) {
 
   const queries = useQueries({
     queries:
-      withRole && query.data
+      withRole && query.data && userId
         ? query.data.projects.map((project) => {
             return {
               ...readProjectUserQuery(project.id, userId),
