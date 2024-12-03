@@ -115,3 +115,12 @@
 .unauthCtaButton {
   margin-block-start: $spacing-05;
 }
+
+.divider {
+  width: 100%;
+  border: 1px solid $border-subtle
+}
+
+.loginButtonLabel {
+  margin-left: $spacing-04;
+}
