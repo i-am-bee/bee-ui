@@ -206,6 +206,8 @@ const authResult = NextAuth(() => ({
         firstName: token.first_name,
         lastName: token.last_name,
         metadata: token.userEntity.uiMetadata,
+        default_organization: '',
+        default_project: '',
       };
 
       return session;

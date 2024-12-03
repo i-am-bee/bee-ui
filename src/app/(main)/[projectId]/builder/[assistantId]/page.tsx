@@ -15,6 +15,7 @@
  */
 
 import { fetchAssistant } from '@/app/api/rsc';
+import { ensureSession } from '@/app/auth/rsc';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { Builder } from '@/modules/assistants/builder/Builder';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
@@ -31,7 +32,15 @@ interface Props {
 export default async function AssistantBuilderPage({
   params: { assistantId, projectId },
 }: Props) {
-  const assistant = await fetchAssistant(projectId, assistantId);
+  const session = await ensureSession();
+  if (!session) {
+    throw new Error('Session not found.');
+  }
+  const assistant = await fetchAssistant(
+    session.userProfile.default_organization,
+    projectId,
+    assistantId,
+  );
 
   if (!assistant) notFound();
 

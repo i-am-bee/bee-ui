@@ -31,16 +31,16 @@ interface Props {
 }
 
 export function ProjectUserRow({ user }: Props) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const userId = useUserProfile((state) => state.id);
   const queryClient = useQueryClient();
 
   const { mutateAsync: mutateDelete, isPending: isDeletePending } = useMutation(
     {
-      mutationFn: () => deleteProjectUser(project.id, user.id),
+      mutationFn: () => deleteProjectUser(organization.id, project.id, user.id),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: projectUsersQuery(project.id).queryKey,
+          queryKey: projectUsersQuery(organization.id, project.id).queryKey,
         });
       },
       meta: {
@@ -55,10 +55,10 @@ export function ProjectUserRow({ user }: Props) {
   const { mutateAsync: mutateUpdate, isPending: isUpdatePending } = useMutation(
     {
       mutationFn: (role: ProjectUserRole) =>
-        updateProjectUser(project.id, user.id, role),
+        updateProjectUser(organization.id, project.id, user.id, role),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: projectUsersQuery(project.id).queryKey,
+          queryKey: projectUsersQuery(organization.id, project.id).queryKey,
         });
       },
       meta: {

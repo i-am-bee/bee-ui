@@ -33,11 +33,16 @@ import { decodeEntityWithMetadata } from '@/app/api/utils';
 
 export function useThreadApi(thread: Thread | null) {
   const queryClient = useQueryClient();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const updateMutation = useMutation({
     mutationFn: async (body: ThreadUpdateBody) => {
-      const result = await updateThread(project.id, thread?.id ?? '', body);
+      const result = await updateThread(
+        organization.id,
+        project.id,
+        thread?.id ?? '',
+        body,
+      );
       return {
         result,
         thread: result && decodeEntityWithMetadata<Thread>(result),
@@ -45,7 +50,7 @@ export function useThreadApi(thread: Thread | null) {
     },
     onSuccess: ({ result }) => {
       queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-        threadsQuery(project.id).queryKey,
+        threadsQuery(organization.id, project.id).queryKey,
         produce((draft) => {
           if (!draft?.pages) return null;
           for (const page of draft.pages) {
@@ -59,11 +64,12 @@ export function useThreadApi(thread: Thread | null) {
       );
 
       queryClient.invalidateQueries({
-        queryKey: threadsQuery(project.id).queryKey,
+        queryKey: threadsQuery(organization.id, project.id).queryKey,
       });
 
       queryClient.invalidateQueries({
-        queryKey: threadQuery(project.id, thread?.id ?? '').queryKey,
+        queryKey: threadQuery(organization.id, project.id, thread?.id ?? '')
+          .queryKey,
       });
     },
     meta: {
@@ -76,7 +82,7 @@ export function useThreadApi(thread: Thread | null) {
 
   const createMutation = useMutation({
     mutationFn: async (body: ThreadCreateBody) => {
-      const result = await createThread(project.id, body);
+      const result = await createThread(organization.id, project.id, body);
       return {
         result,
         thread: result && decodeEntityWithMetadata<Thread>(result),
@@ -91,7 +97,7 @@ export function useThreadApi(thread: Thread | null) {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteThread(project.id, id),
+    mutationFn: (id: string) => deleteThread(organization.id, project.id, id),
     meta: {
       errorToast: false,
     },

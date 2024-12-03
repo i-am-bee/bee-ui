@@ -28,6 +28,7 @@ import { MessageWithFiles } from '@/modules/chat/types';
 export const MESSAGES_PAGE_SIZE = 100;
 
 export async function createMessage(
+  organizationId: string,
   projectId: string,
   threadId: string,
   body: MessageCreateBody,
@@ -35,13 +36,14 @@ export async function createMessage(
   const res = await client.POST('/v1/threads/{thread_id}/messages', {
     params: { path: { thread_id: threadId } },
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function listMessages(
+  organizationId: string,
   projectId: string,
   threadId: string,
   query?: MessagesListQuery,
@@ -54,18 +56,21 @@ export async function listMessages(
         ...query,
       },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function listMessagesWithFiles(
+  organizationId: string,
   projectId: string,
   threadId: string,
   query?: MessagesListQuery,
 ): Promise<MessageWithFiles[]> {
-  const messages = (await listMessages(projectId, threadId, query))?.data ?? [];
+  const messages =
+    (await listMessages(organizationId, projectId, threadId, query))?.data ??
+    [];
 
   const messagesWithFiles = await Promise.all(
     messages.map(async (message) => {
@@ -74,7 +79,11 @@ export async function listMessagesWithFiles(
       const files = (
         await Promise.all(
           attachments?.map(async (attachment) => {
-            const response = await readFile(projectId, attachment.file_id);
+            const response = await readFile(
+              organizationId,
+              projectId,
+              attachment.file_id,
+            );
 
             return {
               file: response,
@@ -94,6 +103,7 @@ export async function listMessagesWithFiles(
 }
 
 export async function updateMessage(
+  organizationId: string,
   projectId: string,
   threadId: string,
   messageId: string,
@@ -109,7 +119,7 @@ export async function updateMessage(
         },
       },
       body,
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
@@ -117,6 +127,7 @@ export async function updateMessage(
 }
 
 export async function deleteMessage(
+  organizationId: string,
   projectId: string,
   threadId: string,
   messageId: string,
@@ -125,7 +136,7 @@ export async function deleteMessage(
     '/v1/threads/{thread_id}/messages/{message_id}',
     {
       params: { path: { thread_id: threadId, message_id: messageId } },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);

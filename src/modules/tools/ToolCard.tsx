@@ -42,7 +42,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
     tool,
     onSuccess: () => onDeleteSuccess(tool),
   });
-  const { isProjectReadOnly, project } = useAppContext();
+  const { isProjectReadOnly, project, organization } = useAppContext();
   const { openModal } = useModal();
 
   const toolDescription =
@@ -65,6 +65,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
                 <UserToolModal
                   {...props}
                   project={project}
+                  organization={organization}
                   tool={tool}
                   onDeleteSuccess={onDeleteSuccess}
                   onSaveSuccess={onSaveSuccess}

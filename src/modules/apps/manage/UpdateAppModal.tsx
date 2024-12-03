@@ -36,6 +36,7 @@ import { ArtifactResult, ArtifactUpdateBody } from '@/app/api/artifacts/types';
 import isEmpty from 'lodash/isEmpty';
 import { useUpdateArtifact } from '../hooks/useUpdateArtifact';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { Organization } from '@/app/api/organization/types';
 
 interface FormValues {
   icon: string;
@@ -45,6 +46,7 @@ interface FormValues {
 
 interface Props extends ModalProps {
   artifact: Artifact;
+  organization: Organization;
   project: Project;
   onSaveSuccess?: (artifact: ArtifactResult) => void;
 }
@@ -52,16 +54,13 @@ interface Props extends ModalProps {
 export function UpdateAppModal({
   artifact,
   project,
+  organization,
   onSaveSuccess,
   ...props
 }: Props) {
   const { onRequestClose } = props;
   const id = useId();
-  const {
-    setConfirmOnRequestClose,
-    clearConfirmOnRequestClose,
-    onRequestCloseSafe,
-  } = useModalControl();
+  const { onRequestCloseSafe } = useModalControl();
 
   const {
     mutateAsync: mutateSave,
@@ -69,6 +68,7 @@ export function UpdateAppModal({
     error: saveError,
   } = useUpdateArtifact({
     project,
+    organization,
     artifact,
     onSaveSuccess: (artifact) => {
       onRequestClose();

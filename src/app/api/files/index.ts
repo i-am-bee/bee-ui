@@ -19,12 +19,13 @@ import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { FileCreateBody } from './types';
 
 export async function createFile(
+  organizationId: string,
   projectId: string,
   body: Omit<FileCreateBody, 'file'> & { file: File },
 ) {
   const res = await client.POST('/v1/files', {
     body: body as unknown as FileCreateBody,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
     bodySerializer: (body) => {
       const formData = new FormData();
 
@@ -40,33 +41,42 @@ export async function createFile(
   return res.data;
 }
 
-export async function readFile(projectId: string, id: string) {
+export async function readFile(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET('/v1/files/{file_id}', {
     params: {
       path: {
         file_id: id,
       },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteFile(projectId: string, id: string) {
+export async function deleteFile(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.DELETE('/v1/files/{file_id}', {
     params: {
       path: {
         file_id: id,
       },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function readFileContent(
+  organizationId: string,
   projectId: string,
   id: string,
 ): Promise<string | null> {
@@ -76,7 +86,7 @@ export async function readFileContent(
         file_id: id,
       },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
     parseAs: 'blob',
   });
   assertSuccessResponse(res);

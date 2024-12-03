@@ -24,13 +24,14 @@ import { Assistant } from '../types';
 export const PAGE_SIZE = 6;
 
 export const assistantsQuery = (
+  organizationId: string,
   projectId: string,
   params?: AssistantsListQuery,
 ) =>
   infiniteQueryOptions({
     queryKey: ['assistants', projectId, params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listAssistants(projectId, {
+      listAssistants(organizationId, projectId, {
         ...params,
         agent: 'bee',
         limit: params?.limit || PAGE_SIZE,

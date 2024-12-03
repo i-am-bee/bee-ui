@@ -69,7 +69,7 @@ export function PlanStep({ step, toolCall }: Props) {
 
   const { run } = useRunContext();
   const { assistant, thread, onToolApprovalSubmitRef, setThread } = useChat();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { trace } = useTraceData();
 
   const queryClient = useQueryClient();
@@ -136,7 +136,8 @@ export function PlanStep({ step, toolCall }: Props) {
     onToolApprovalSubmitRef.current?.(value);
 
     queryClient.setQueryData(
-      readRunQuery(project.id, thread?.id ?? '', run?.id ?? '').queryKey,
+      readRunQuery(organization.id, project.id, thread?.id ?? '', run?.id ?? '')
+        .queryKey,
       (run) =>
         run
           ? {

@@ -15,11 +15,10 @@
  */
 
 'use client';
-import { Button, InlineNotification } from '@carbon/react';
+import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 import classes from './SignIn.module.scss';
 import { useRouter } from 'next-nprogress-bar';
-import { PROJECT_ID_DEFAULT } from '@/utils/constants';
 import { LoginError } from './SignIn';
 
 interface Props {
@@ -38,7 +37,7 @@ export function Unauthorized({ error }: Props) {
           <Button
             renderIcon={ArrowRight}
             className={classes.unauthCtaButton}
-            onClick={() => router.push(`/${PROJECT_ID_DEFAULT}`)}
+            onClick={() => router.push(`/`)}
           >
             Go to the default workspace
           </Button>

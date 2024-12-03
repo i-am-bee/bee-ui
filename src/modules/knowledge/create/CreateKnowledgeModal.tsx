@@ -46,12 +46,14 @@ export interface CreateKnowledgeValues {
 
 interface Props {
   projectId: string;
+  organizationId: string;
   onCreateVectorStore: (vectorStore: VectorStore) => void;
   onSuccess: () => void;
 }
 
 export function CreateKnowledgeModal({
   projectId,
+  organizationId,
   onCreateVectorStore,
   onSuccess,
   ...props
@@ -67,6 +69,7 @@ export function CreateKnowledgeModal({
       </ModalHeader>
       <VectorStoreFilesUploadProvider projectId={projectId}>
         <CreateKnowledgeModalContent
+          organizationId={organizationId}
           projectId={projectId}
           onCreateVectorStore={onCreateVectorStore}
           onSuccess={handleSucces}
@@ -78,12 +81,14 @@ export function CreateKnowledgeModal({
 
 interface ContentProps {
   projectId: string;
+  organizationId: string;
   onSuccess: () => void;
   onCreateVectorStore: (vectorStore: VectorStore) => void;
 }
 
 function CreateKnowledgeModalContent({
   projectId,
+  organizationId,
   onCreateVectorStore,
   onSuccess,
 }: ContentProps) {
@@ -95,7 +100,7 @@ function CreateKnowledgeModalContent({
 
   const { mutateAsync } = useMutation({
     mutationFn: (body: VectorStoreCreateBody) =>
-      createVectorStore(projectId, body),
+      createVectorStore(organizationId, projectId, body),
     onSuccess: (response) => {
       if (response) {
         setVectorStoreId(response.id);

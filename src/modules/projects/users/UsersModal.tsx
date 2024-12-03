@@ -32,9 +32,9 @@ import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import { useAppContext } from '@/layout/providers/AppProvider';
 
 export default function UsersModal(props: ModalProps) {
-  const { project, role } = useAppContext();
+  const { project, organization, role } = useAppContext();
   const prefix = usePrefix();
-  const { totalCount } = useProjectUsersCount(project);
+  const { totalCount } = useProjectUsersCount(organization, project);
 
   const {
     data,
@@ -45,7 +45,7 @@ export default function UsersModal(props: ModalProps) {
     hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
-    ...projectUsersQuery(project.id),
+    ...projectUsersQuery(organization.id, project.id),
   });
 
   const { ref: fetchMoreAnchorRef } = useFetchNextPageInView({

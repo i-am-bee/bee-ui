@@ -20,6 +20,7 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
+import { ensureSession } from '@/app/auth/rsc';
 import { ConversationView } from '@/modules/chat/ConversationView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -36,19 +37,37 @@ interface Props {
 export default async function ThreadPage({
   params: { projectId, threadId },
 }: Props) {
-  const thread = await fetchThread(projectId, threadId);
+  const session = await ensureSession();
+  if (!session) {
+    throw new Error('Session not found.');
+  }
+  const thread = await fetchThread(
+    session.userProfile.default_organization,
+    projectId,
+    threadId,
+  );
 
   if (!thread) notFound();
 
   const { assistantName, assistantId } = thread.uiMetadata;
   const threadAssistant = {
     name: assistantName,
-    ...(await fetchThreadAssistant(projectId, threadId, assistantId)),
+    ...(await fetchThreadAssistant(
+      session.userProfile.default_organization,
+      projectId,
+      threadId,
+      assistantId,
+    )),
   };
 
-  const initialMessages = await listMessagesWithFiles(projectId, threadId, {
-    limit: MESSAGES_PAGE_SIZE,
-  });
+  const initialMessages = await listMessagesWithFiles(
+    session.userProfile.default_organization,
+    projectId,
+    threadId,
+    {
+      limit: MESSAGES_PAGE_SIZE,
+    },
+  );
 
   return (
     <VectorStoreFilesUploadProvider projectId={projectId}>

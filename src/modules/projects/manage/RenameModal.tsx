@@ -37,25 +37,28 @@ import { projectsQuery, readProjectQuery } from '../queries';
 import { produce } from 'immer';
 import { PROJECTS_QUERY_PARAMS } from '../ProjectSelector';
 import { useProjects } from '../hooks/useProjects';
+import { Organization } from '@/app/api/organization/types';
 
 interface Props extends ModalProps {
   project: Project;
+  organization: Organization;
 }
 
 // TODO: refactor - a lot of the same code as in CreateProjectModal.tsx
-export function RenameModal({ project, ...props }: Props) {
+export function RenameModal({ project, organization, ...props }: Props) {
   const htmlId = useId();
   const { id, name } = project;
   const queryClient = useQueryClient();
 
-  const { data: projects } = useProjects({});
+  const { data: projects } = useProjects({ organization });
 
   const { mutateAsync } = useMutation({
-    mutationFn: (newName: string) => updateProject(id, { name: newName }),
+    mutationFn: (newName: string) =>
+      updateProject(organization.id, id, { name: newName }),
     onSuccess: (result, newName) => {
       if (result) {
         queryClient.setQueryData<InfiniteData<ProjectsListResponse>>(
-          projectsQuery(PROJECTS_QUERY_PARAMS).queryKey,
+          projectsQuery(organization.id, PROJECTS_QUERY_PARAMS).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -67,10 +70,10 @@ export function RenameModal({ project, ...props }: Props) {
         );
       }
       queryClient.invalidateQueries({
-        queryKey: [projectsQuery().queryKey.at(0)],
+        queryKey: [projectsQuery(organization.id).queryKey.at(0)],
       });
       queryClient.invalidateQueries({
-        queryKey: readProjectQuery(id).queryKey,
+        queryKey: readProjectQuery(organization.id, id).queryKey,
       });
       props.onRequestClose();
     },

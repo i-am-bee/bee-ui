@@ -57,7 +57,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
   // const [search, setSearch] = useDebounceValue('', 200);
   const queryClient = useQueryClient();
   const { openModal } = useModal();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
   const params = {
@@ -79,7 +79,12 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    ...vectorStoresFilesQuery(project.id, vectorStore.id, params),
+    ...vectorStoresFilesQuery(
+      organization.id,
+      project.id,
+      vectorStore.id,
+      params,
+    ),
     placeholderData: keepPreviousData,
   });
 
@@ -87,7 +92,12 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
 
   const onDeleteSuccess = (file: VectorStoreFile) => {
     queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
-      vectorStoresFilesQuery(project.id, vectorStore.id, params).queryKey,
+      vectorStoresFilesQuery(
+        organization.id,
+        project.id,
+        vectorStore.id,
+        params,
+      ).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -103,7 +113,11 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
     // invalidate all queries on GET:/vector_stores/{id}/files
     queryClient.invalidateQueries({
       queryKey: [
-        vectorStoresFilesQuery(project.id, vectorStore.id).queryKey.at(0),
+        vectorStoresFilesQuery(
+          organization.id,
+          project.id,
+          vectorStore.id,
+        ).queryKey.at(0),
       ],
     });
   };
@@ -111,7 +125,8 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
   const onCreateSuccess = (vectorStoreFile?: VectorStoreFile) => {
     if (vectorStoreFile)
       queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
-        vectorStoresFilesQuery(project.id, vectorStore.id, {}).queryKey,
+        vectorStoresFilesQuery(organization.id, project.id, vectorStore.id, {})
+          .queryKey,
         produce((draft) => {
           if (
             !draft?.pages ||
@@ -126,11 +141,19 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
       );
 
     queryClient.invalidateQueries({
-      queryKey: vectorStoresFilesQuery(project.id, vectorStore.id, params)
-        .queryKey,
+      queryKey: vectorStoresFilesQuery(
+        organization.id,
+        project.id,
+        vectorStore.id,
+        params,
+      ).queryKey,
     });
     queryClient.invalidateQueries({
-      queryKey: readVectorStoreQuery(project.id, vectorStore.id).queryKey,
+      queryKey: readVectorStoreQuery(
+        organization.id,
+        project.id,
+        vectorStore.id,
+      ).queryKey,
     });
   };
 
@@ -175,6 +198,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
               openModal((props) => (
                 <AddContentModal
                   {...props}
+                  organizationId={organization.id}
                   projectId={project.id}
                   vectorStore={vectorStore}
                   onCreateSuccess={onCreateSuccess}

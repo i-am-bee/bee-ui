@@ -42,12 +42,13 @@ export function KnowledgeCard({
 }: Props) {
   const { id, name } = vectorStore;
   const { openConfirmation, openModal } = useModal();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
   const { mutateAsync: mutateDeleteStore, isPending: isDeletePending } =
     useMutation({
-      mutationFn: (id: string) => deleteVectorStore(project.id, id),
+      mutationFn: (id: string) =>
+        deleteVectorStore(organization.id, project.id, id),
       onSuccess: () => onDeleteSuccess(vectorStore),
       meta: {
         errorToast: {
@@ -75,6 +76,7 @@ export function KnowledgeCard({
                 onClick: () =>
                   openModal((props) => (
                     <RenameModal
+                      organization={organization}
                       project={project}
                       vectorStore={vectorStore}
                       onSuccess={onUpdateSuccess}

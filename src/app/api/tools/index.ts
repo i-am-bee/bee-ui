@@ -18,38 +18,51 @@ import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { ToolsCreateBody, ToolsListQuery } from './types';
 
-export async function createTool(projectId: string, body: ToolsCreateBody) {
+export async function createTool(
+  organizationId: string,
+  projectId: string,
+  body: ToolsCreateBody,
+) {
   const res = await client.POST('/v1/tools', {
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function listTools(projectId: string, query: ToolsListQuery) {
+export async function listTools(
+  organizationId: string,
+  projectId: string,
+  query: ToolsListQuery,
+) {
   const res = await client.GET('/v1/tools', {
     params: {
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readTool(projectId: string, id: string) {
+export async function readTool(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET('/v1/tools/{tool_id}', {
     params: {
       path: { tool_id: id },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function updateTool(
+  organizationId: string,
   projectId: string,
   id: string,
   body: ToolsCreateBody,
@@ -59,18 +72,22 @@ export async function updateTool(
       path: { tool_id: id },
     },
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteTool(projectId: string, id: string) {
+export async function deleteTool(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.DELETE('/v1/tools/{tool_id}', {
     params: {
       path: { tool_id: id },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
 }

@@ -19,14 +19,6 @@ import { useStore } from '..';
 import { StoreSelector } from '../types';
 import { UserProfileSlice, UserProfileState } from './types';
 
-export const dummyUserProfileState: UserProfileState = {
-  id: '',
-  name: 'Test User',
-  firstName: 'Test',
-  lastName: 'User',
-  email: 'test@example.com',
-};
-
 export const userProfileSlice = (initialState?: Partial<UserProfileState>) =>
   lens<UserProfileSlice>((set, get) => ({
     ...({} as UserProfileState),

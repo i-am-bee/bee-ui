@@ -14,32 +14,41 @@
  * limitations under the License.
  */
 
-import { createArtifact, updateArtifact } from '@/app/api/artifacts';
+import { createArtifact } from '@/app/api/artifacts';
 import { ArtifactCreateBody, ArtifactResult } from '@/app/api/artifacts/types';
 import { Project } from '@/app/api/projects/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { listArtifactsQuery, readArtifactQuery } from '../queries';
+import { Organization } from '@/app/api/organization/types';
 
 interface Props {
   project: Project;
+  organization: Organization;
   onSaveSuccess?: (artifact: ArtifactResult) => void;
 }
 
-export function useCreateArtifact({ project, onSaveSuccess }: Props) {
+export function useCreateArtifact({
+  project,
+  organization,
+  onSaveSuccess,
+}: Props) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (body: ArtifactCreateBody) => {
-      return createArtifact(project.id, body);
+      return createArtifact(organization.id, project.id, body);
     },
     onSuccess: (artifact) => {
       queryClient.invalidateQueries({
-        queryKey: [listArtifactsQuery(project.id).queryKey.at(0)],
+        queryKey: [
+          listArtifactsQuery(organization.id, project.id).queryKey.at(0),
+        ],
       });
 
       if (artifact) {
         queryClient.invalidateQueries({
-          queryKey: readArtifactQuery(project.id, artifact.id).queryKey,
+          queryKey: readArtifactQuery(organization.id, project.id, artifact.id)
+            .queryKey,
         });
 
         onSaveSuccess?.(artifact);

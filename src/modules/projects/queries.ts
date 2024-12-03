@@ -21,11 +21,14 @@ import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 const PAGE_SIZE = 10;
 
-export const projectsQuery = (params?: ProjectsListQuery) =>
+export const projectsQuery = (
+  organizationId: string,
+  params?: ProjectsListQuery,
+) =>
   infiniteQueryOptions({
     queryKey: ['projects', params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listProjects({
+      listProjects(organizationId, {
         ...params,
         limit: params?.limit || PAGE_SIZE,
         order: 'asc',
@@ -53,9 +56,9 @@ export const projectsQuery = (params?: ProjectsListQuery) =>
     },
   });
 
-export const readProjectQuery = (id: string) =>
+export const readProjectQuery = (organizationId: string, id: string) =>
   queryOptions({
     queryKey: ['project', id],
-    queryFn: () => readProject(id),
+    queryFn: () => readProject(organizationId, id),
     staleTime: 10 * 60 * 1000,
   });

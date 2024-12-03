@@ -25,7 +25,6 @@ import { ReactElement, useState } from 'react';
 import { ArchiveConfirmationModal } from './manage/ArchiveConfirmationModal';
 import { RenameModal } from './manage/RenameModal';
 import classes from './ProjectHome.module.scss';
-import { ProjectSelector } from './ProjectSelector';
 import { UsersCount } from './users/UsersCount';
 import { UsersModalRenderer } from './users/UsersModalRenderer';
 
@@ -35,11 +34,9 @@ interface Props {
 
 export function ProjectHome({ children }: Props) {
   const [usersModalOpened, setUsersModalOpened] = useState(false);
-  const { project, isProjectReadOnly, role } = useAppContext();
+  const { project, organization, isProjectReadOnly, role } = useAppContext();
   const { openModal } = useModal();
-  const defaultProject = useUserProfile(
-    (state) => state.metadata?.default_project,
-  );
+  const defaultProject = useUserProfile((state) => state.default_project);
 
   return (
     <>
@@ -50,7 +47,7 @@ export function ProjectHome({ children }: Props) {
             <div className={classes.sharing}>
               {!isProjectReadOnly && (
                 <>
-                  <UsersCount project={project} />
+                  <UsersCount project={project} organization={organization} />
                   <Button
                     renderIcon={Add}
                     kind="tertiary"
@@ -67,7 +64,11 @@ export function ProjectHome({ children }: Props) {
                     itemText="Rename"
                     onClick={() =>
                       openModal((props) => (
-                        <RenameModal project={project} {...props} />
+                        <RenameModal
+                          organization={organization}
+                          project={project}
+                          {...props}
+                        />
                       ))
                     }
                   />
@@ -78,6 +79,7 @@ export function ProjectHome({ children }: Props) {
                       onClick={() =>
                         openModal((props) => (
                           <ArchiveConfirmationModal
+                            organization={organization}
                             {...props}
                             project={project}
                           />

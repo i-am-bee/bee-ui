@@ -41,7 +41,7 @@ interface Props {
 }
 
 export function ToolsList({ type }: Props) {
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<ToosListQueryOrderBy>(TOOLS_ORDER_DEFAULT);
   const { openModal } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
@@ -72,13 +72,13 @@ export function ToolsList({ type }: Props) {
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/tools
     queryClient.invalidateQueries({
-      queryKey: [toolsQuery(project.id).queryKey.at(0)],
+      queryKey: [toolsQuery(organization.id, project.id).queryKey.at(0)],
     });
   };
 
   const handleCreateSuccess = (tool: ToolResult) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-      toolsQuery(project.id, params).queryKey,
+      toolsQuery(organization.id, project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         const firstPage = draft.pages.at(0);
@@ -90,7 +90,7 @@ export function ToolsList({ type }: Props) {
 
   const handleDeleteSuccess = (tool: Tool) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-      toolsQuery(project.id, params).queryKey,
+      toolsQuery(organization.id, project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -130,6 +130,7 @@ export function ToolsList({ type }: Props) {
                   <UserToolModal
                     {...props}
                     project={project}
+                    organization={organization}
                     onSaveSuccess={handleCreateSuccess}
                   />
                 )),

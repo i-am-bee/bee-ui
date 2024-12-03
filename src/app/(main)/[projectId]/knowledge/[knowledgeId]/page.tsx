@@ -15,6 +15,7 @@
  */
 
 import { fetchVectorStore } from '@/app/api/rsc';
+import { ensureSession } from '@/app/auth/rsc';
 import { KnowledgeDetail } from '@/modules/knowledge/detail/KnowledgeDetail';
 import { notFound } from 'next/navigation';
 
@@ -28,7 +29,15 @@ interface Props {
 export default async function KnowledgeDetailPage({
   params: { projectId, knowledgeId },
 }: Props) {
-  const vectorStore = await fetchVectorStore(projectId, knowledgeId);
+  const session = await ensureSession();
+  if (!session) {
+    throw new Error('Session not found.');
+  }
+  const vectorStore = await fetchVectorStore(
+    session.userProfile.default_organization,
+    projectId,
+    knowledgeId,
+  );
 
   if (!vectorStore) notFound();
 

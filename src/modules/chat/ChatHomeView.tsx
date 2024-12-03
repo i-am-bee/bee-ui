@@ -41,7 +41,7 @@ export function ChatHomeView() {
     useChat();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const handleMessageSent = ({ thread }: SendMessageResult) => {
     if (thread) {
       // We could use normal nextjs router and navigate to /thread/[threadId] page
@@ -62,7 +62,7 @@ export function ChatHomeView() {
         `/${project.id}${builderState ? `/builder/${assistant.data?.id}` : ''}/thread/${thread.id}`,
       );
       queryClient.invalidateQueries({
-        queryKey: threadsQuery(project.id).queryKey,
+        queryKey: threadsQuery(organization.id, project.id).queryKey,
       });
     }
   };

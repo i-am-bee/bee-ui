@@ -54,7 +54,7 @@ import { EmptyDataInfo } from '@/components/CardsList/CardsList';
 
 export function ApiKeysHome() {
   const id = useId();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { openModal, openConfirmation } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
   const userId = useUserProfile((state) => state.id);
@@ -74,7 +74,7 @@ export function ApiKeysHome() {
   }, [resetPagination, search]);
 
   const { data, isPending, isFetching } = useQuery(
-    apiKeysQuery({
+    apiKeysQuery(organization.id, {
       search,
       limit: PAGE_SIZE,
       after,
@@ -102,7 +102,12 @@ export function ApiKeysHome() {
               defaultValue={name}
               required
               onConfirm={(value) =>
-                mutateRename({ id, projectId: project.id, name: value })
+                mutateRename({
+                  id,
+                  projectId: project.id,
+                  organizationId: organization.id,
+                  name: value,
+                })
               }
             />
           ),
@@ -145,7 +150,14 @@ export function ApiKeysHome() {
           ),
         };
       }) ?? [],
-    [data?.data, mutateRename, openConfirmation, openModal, userId],
+    [
+      data?.data,
+      mutateRename,
+      openConfirmation,
+      openModal,
+      userId,
+      organization.id,
+    ],
   );
 
   return (

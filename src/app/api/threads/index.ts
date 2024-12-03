@@ -28,41 +28,54 @@ import {
   ThreadUpdateBody,
 } from './types';
 
-export async function listThreads(projectId: string, query: ThreadsListQuery) {
+export async function listThreads(
+  organizationId: string,
+  projectId: string,
+  query: ThreadsListQuery,
+) {
   const res = await client.GET('/v1/threads', {
     params: {
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readThread(projectId: string, id: string) {
+export async function readThread(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET('/v1/threads/{thread_id}', {
     params: {
       path: {
         thread_id: id,
       },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function createThread(projectId: string, body: ThreadCreateBody) {
+export async function createThread(
+  organizationId: string,
+  projectId: string,
+  body: ThreadCreateBody,
+) {
   const res = await client.POST('/v1/threads', {
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function updateThread(
+  organizationId: string,
   projectId: string,
   id: string,
   body: ThreadUpdateBody,
@@ -70,23 +83,33 @@ export async function updateThread(
   const res = await client.POST('/v1/threads/{thread_id}', {
     body,
     params: { path: { thread_id: id } },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteThread(projectId: string, id: string) {
+export async function deleteThread(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.DELETE('/v1/threads/{thread_id}', {
     params: { path: { thread_id: id } },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function fetchThread(projectId: string, id: string) {
-  const thread = await fetchEntity(() => readThread(projectId, id));
+export async function fetchThread(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
+  const thread = await fetchEntity(() =>
+    readThread(organizationId, projectId, id),
+  );
 
   return thread ? decodeEntityWithMetadata<Thread>(thread) : thread;
 }

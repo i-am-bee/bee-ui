@@ -15,6 +15,7 @@
  */
 
 'use client';
+import { Organization } from '@/app/api/organization/types';
 import { ProjectUser } from '@/app/api/projects-users/types';
 import { Project } from '@/app/api/projects/types';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
@@ -37,6 +38,7 @@ import {
 export interface AppContextValue {
   assistant: Assistant | null;
   project: Project;
+  organization: Organization;
   role: ProjectUser['role'] | null;
   isProjectReadOnly?: boolean;
   onPageLeaveRef: MutableRefObject<() => void>;
@@ -64,18 +66,19 @@ export function AppProvider({
   project: initialProject,
   children,
 }: PropsWithChildren<Props>) {
+  const { organization } = useAppContext();
   const [project, setProject] = useState<Project>(initialProject);
   const [assistant, setAssistant] = useState<Assistant | null>(null);
   const onPageLeaveRef = useRef(() => null);
   const userId = useUserProfile((state) => state.id);
 
   const { data: projectData } = useQuery({
-    ...readProjectQuery(project.id),
+    ...readProjectQuery(organization.id, project.id),
     initialData: project,
   });
 
   const { data: assistantData } = useQuery({
-    ...readAssistantQuery(project.id, assistant?.id ?? ''),
+    ...readAssistantQuery(organization.id, project.id, assistant?.id ?? ''),
     enabled: Boolean(assistant),
     initialData: assistant
       ? encodeEntityWithMetadata<Assistant>(assistant)
@@ -83,7 +86,7 @@ export function AppProvider({
   });
 
   const { data: projectUser } = useQuery({
-    ...readProjectUserQuery(project.id, userId),
+    ...readProjectUserQuery(organization.id, project.id, userId),
     enabled: Boolean(userId),
   });
 
@@ -106,6 +109,7 @@ export function AppProvider({
         value={{
           assistant: assistantData ?? assistant,
           project: projectData ?? project,
+          organization: organization,
           isProjectReadOnly,
           role: projectUser?.role ?? null,
           onPageLeaveRef,

@@ -38,9 +38,9 @@ import { encodeEntityWithMetadata } from '@/app/api/utils';
 
 export function useToolInfo(toolReference: ToolReference) {
   const { tool: toolProp, id, type } = toolReference;
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { data, isLoading, error } = useQuery({
-    ...readToolQuery(project.id, id),
+    ...readToolQuery(organization.id, project.id, id),
     enabled: type === 'user' || type === 'system',
     initialData: toolProp
       ? encodeEntityWithMetadata<Tool>(toolProp)

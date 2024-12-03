@@ -24,28 +24,38 @@ import { Project } from '@/app/api/projects/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { listArtifactsQuery, readArtifactQuery } from '../queries';
 import { Artifact } from '../types';
+import { Organization } from '@/app/api/organization/types';
 
 interface Props {
   project: Project;
+  organization: Organization;
   artifact: Artifact;
   onSaveSuccess?: (artifact: ArtifactResult) => void;
 }
 
-export function useUpdateArtifact({ project, artifact, onSaveSuccess }: Props) {
+export function useUpdateArtifact({
+  project,
+  organization,
+  artifact,
+  onSaveSuccess,
+}: Props) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (body: ArtifactUpdateBody) => {
-      return updateArtifact(project.id, artifact.id, body);
+      return updateArtifact(organization.id, project.id, artifact.id, body);
     },
     onSuccess: (artifactResult) => {
       queryClient.invalidateQueries({
-        queryKey: [listArtifactsQuery(project.id).queryKey.at(0)],
+        queryKey: [
+          listArtifactsQuery(organization.id, project.id).queryKey.at(0),
+        ],
       });
 
       if (artifact) {
         queryClient.invalidateQueries({
-          queryKey: readArtifactQuery(project.id, artifact.id).queryKey,
+          queryKey: readArtifactQuery(organization.id, project.id, artifact.id)
+            .queryKey,
         });
 
         artifactResult && onSaveSuccess?.(artifactResult);

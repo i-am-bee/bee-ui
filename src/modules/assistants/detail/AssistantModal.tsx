@@ -52,7 +52,7 @@ export default function AssistantModal({
   onDeleteSuccess,
   ...props
 }: AssistantModalProps & ModalProps) {
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const queryClient = useQueryClient();
   const router = useRouter();
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
@@ -62,7 +62,7 @@ export default function AssistantModal({
 
       // invalidate all queries on GET:/assistants
       queryClient.invalidateQueries({
-        queryKey: [assistantsQuery(project.id).queryKey.at(0)],
+        queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
       });
     },
   });

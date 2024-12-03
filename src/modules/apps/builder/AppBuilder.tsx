@@ -19,7 +19,7 @@ import { Thread } from '@/app/api/threads/types';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
-import { useCallback, useId, useMemo, useState } from 'react';
+import { useCallback, useId, useState } from 'react';
 import classes from './AppBuilder.module.scss';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
@@ -31,7 +31,6 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { threadsQuery } from '../../chat/history/queries';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useMessages } from '../../chat/providers/useMessages';
 import { UserContentFrame } from './UserContentFrame';
 import { CreateAppModal } from '../manage/CreateAppModal';
 
@@ -42,7 +41,7 @@ interface Props {
 }
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
   const { setCode } = useAppBuilderApi();
 
@@ -58,11 +57,11 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
           `/${project.id}/apps/builder/t/${newThread.id}`,
         );
         queryClient.invalidateQueries({
-          queryKey: threadsQuery(project.id).queryKey,
+          queryKey: threadsQuery(organization.id, project.id).queryKey,
         });
       }
     },
-    [project.id, queryClient, setCode, thread],
+    [organization.id, project.id, queryClient, setCode, thread],
   );
 
   return (
@@ -82,7 +81,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
 
 function AppBuilderContent() {
   const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { openModal } = useModal();
   const id = useId();
   const { getMessages } = useChat();
@@ -127,6 +126,7 @@ function AppBuilderContent() {
                   if (message?.id && code) {
                     openModal((props) => (
                       <CreateAppModal
+                        organization={organization}
                         project={project}
                         messageId={message.id ?? ''}
                         code={code}

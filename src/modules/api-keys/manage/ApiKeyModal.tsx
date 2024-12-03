@@ -43,6 +43,7 @@ import { apiKeysQuery } from '../api/queries';
 import { useDeleteApiKey } from '../api/useDeleteApiKey';
 import { useRegenerateApiKey } from '../api/useRegenerateApiKey';
 import classes from './ApiKeyModal.module.scss';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface FormValues {
   name: string;
@@ -60,13 +61,14 @@ export function ApiKeyModal({
   ...props
 }: Props) {
   const { onRequestClose } = props;
+  const { organization } = useAppContext();
   const id = useId();
   const { openModal } = useModal();
 
   const queryClient = useQueryClient();
 
   const { projects, isLoading, isFetching, hasNextPage, fetchNextPage } =
-    useProjects({ withRole: true });
+    useProjects({ organization, withRole: true });
 
   useEffect(() => {
     if (!isFetching && hasNextPage) fetchNextPage();
@@ -87,10 +89,10 @@ export function ApiKeyModal({
 
   const { mutateAsync: mutateSaveTool } = useMutation({
     mutationFn: ({ project, ...body }: FormValues) =>
-      createApiKey(project?.id ?? '', body),
+      createApiKey(organization.id, project?.id ?? '', body),
     onSuccess: (result) => {
       queryClient.invalidateQueries({
-        queryKey: [apiKeysQuery().queryKey.at(0)],
+        queryKey: [apiKeysQuery(organization.id).queryKey.at(0)],
       });
 
       if (result) {
@@ -193,8 +195,10 @@ ApiKeyModal.Regenerate = function RegenerateModal({
   apiKey: ApiKey;
 } & ModalProps) {
   const { openModal } = useModal();
+  const { organization } = useAppContext();
 
   const { mutate } = useRegenerateApiKey({
+    organization,
     onSuccess: (result) => {
       if (result) {
         openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
@@ -251,8 +255,10 @@ ApiKeyModal.Delete = function DeleteModal({
 }: {
   apiKey: ApiKey;
 } & ModalProps) {
+  const { organization } = useAppContext();
   const { mutate, isPending } = useDeleteApiKey({
     onSuccess: () => props.onRequestClose(),
+    organization,
   });
 
   return (
@@ -278,7 +284,10 @@ ApiKeyModal.Delete = function DeleteModal({
           type="submit"
           disabled={isPending}
           onClick={() =>
-            mutate({ id: apiKey.id, projectId: apiKey.project.id })
+            mutate({
+              id: apiKey.id,
+              projectId: apiKey.project.id,
+            })
           }
         >
           {isPending ? <InlineLoading title="Deleting..." /> : 'Delete key'}

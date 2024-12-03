@@ -23,21 +23,26 @@ import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 const PAGE_SIZE = 10;
 
-export const readProjectUserQuery = (projectId: string, userId: string) =>
+export const readProjectUserQuery = (
+  organizationId: string,
+  projectId: string,
+  userId: string,
+) =>
   queryOptions({
-    queryKey: ['project-user', projectId, userId],
-    queryFn: () => readProjectUser(projectId, userId),
+    queryKey: ['project-user', organizationId, projectId, userId],
+    queryFn: () => readProjectUser(organizationId, projectId, userId),
     staleTime: 60 * 60 * 1000,
   });
 
 export const projectUsersQuery = (
+  organizationId: string,
   projectId: string,
   params?: ProjectUsersListQuery,
 ) =>
   infiniteQueryOptions({
     queryKey: ['project-users', projectId, params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listProjectUsers(projectId, {
+      listProjectUsers(organizationId, projectId, {
         limit: PAGE_SIZE,
         order: 'asc',
         order_by: 'created_at',
@@ -62,11 +67,11 @@ export const projectUsersQuery = (
     },
   });
 
-export const usersQuery = (params?: UsersListQuery) =>
+export const usersQuery = (organizationId: string, params?: UsersListQuery) =>
   infiniteQueryOptions({
     queryKey: ['organization-users', params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listUsers({
+      listUsers(organizationId, {
         limit: PAGE_SIZE,
         order: 'asc',
         order_by: 'created_at',

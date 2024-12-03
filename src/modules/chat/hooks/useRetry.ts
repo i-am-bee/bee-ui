@@ -25,11 +25,11 @@ import { ChatMessage } from '../types';
 export function useRetry(message: ChatMessage) {
   const { status, thread, sendMessage, getMessages, setMessages } = useChat();
   const { addToast } = useToast();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const { mutateAsync, isPending: isDeleting } = useMutation({
     mutationFn: ({ threadId, messageId }: DeleteMutationParams) =>
-      deleteMessage(project.id, threadId, messageId),
+      deleteMessage(organization.id, project.id, threadId, messageId),
   });
 
   const retry = async () => {

@@ -86,7 +86,7 @@ function SelectedToolsItem({
   tool: ToolReference;
   onToggle: (tool: ToolReference, toggled: boolean) => void;
 }) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { toolName, toolIcon: Icon, tool, error } = useToolInfo(toolProp);
   const { openModal } = useModal();
 
@@ -103,7 +103,12 @@ function SelectedToolsItem({
             openModal(
               (props) =>
                 isUserTool && (
-                  <UserToolModal project={project} tool={tool} {...props} />
+                  <UserToolModal
+                    organization={organization}
+                    project={project}
+                    tool={tool}
+                    {...props}
+                  />
                 ),
             )
           }

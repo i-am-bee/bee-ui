@@ -31,12 +31,12 @@ export function usePrefetchTools({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   return (params?: ToolsListQuery) =>
     queryClient.prefetchInfiniteQuery(
-      toolsQuery(project.id, {
+      toolsQuery(organization.id, project.id, {
         ...(useDefaultParams ? DEFAULT_PARAMS : {}),
         ...params,
       }),

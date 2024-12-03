@@ -22,11 +22,11 @@ import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export const PAGE_SIZE = 20;
 
-export function threadsQuery(projectId: string) {
+export function threadsQuery(organizationId: string, projectId: string) {
   return infiniteQueryOptions({
     queryKey: ['threads', projectId],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listThreads(projectId, {
+      listThreads(organizationId, projectId, {
         limit: PAGE_SIZE,
         after: pageParam,
       }),
@@ -52,11 +52,11 @@ export function threadsQuery(projectId: string) {
   });
 }
 
-export function lastThreadQuery(projectId: string) {
+export function lastThreadQuery(organizationId: string, projectId: string) {
   return {
     queryKey: ['threads', 'last', projectId],
     queryFn: () =>
-      listThreads(projectId, {
+      listThreads(organizationId, projectId, {
         limit: 1,
         order: 'desc',
         order_by: 'created_at',
@@ -75,10 +75,14 @@ export function lastThreadQuery(projectId: string) {
   };
 }
 
-export function threadQuery(projectId: string, threadId: string) {
+export function threadQuery(
+  organizationId: string,
+  projectId: string,
+  threadId: string,
+) {
   return queryOptions({
     queryKey: ['thread', projectId, threadId],
-    queryFn: () => readThread(projectId, threadId),
+    queryFn: () => readThread(organizationId, projectId, threadId),
     select: (data) => (data ? decodeEntityWithMetadata<Thread>(data) : null),
     meta: {
       errorToast: {

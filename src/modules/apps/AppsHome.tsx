@@ -45,7 +45,7 @@ import { Artifact } from './types';
 import { AdminView } from '@/components/AdminView/AdminView';
 
 export function AppsHome() {
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<ArtifactsListQueryOrderBy>(
     ARTIFACTS_ORDER_DEFAULT,
   );
@@ -77,13 +77,13 @@ export function AppsHome() {
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/assistants
     queryClient.invalidateQueries({
-      queryKey: [assistantsQuery(project.id).queryKey.at(0)],
+      queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
     });
   };
 
   const handleDeleteArtifactSuccess = (artifact: Artifact) => {
     queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-      assistantsQuery(project.id, params).queryKey,
+      assistantsQuery(organization.id, project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {

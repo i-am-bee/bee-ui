@@ -22,11 +22,15 @@ import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export const TOOLS_DEFAULT_PAGE_SIZE = 20;
 
-export const toolsQuery = (projectId: string, params?: ToolsListQuery) =>
+export const toolsQuery = (
+  organizationId: string,
+  projectId: string,
+  params?: ToolsListQuery,
+) =>
   infiniteQueryOptions({
-    queryKey: ['tools', projectId, params],
+    queryKey: ['tools', organizationId, projectId, params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listTools(projectId, {
+      listTools(organizationId, projectId, {
         limit: TOOLS_DEFAULT_PAGE_SIZE,
         after: pageParam,
         order_by: 'type',
@@ -58,10 +62,14 @@ export const toolsQuery = (projectId: string, params?: ToolsListQuery) =>
     },
   });
 
-export const readToolQuery = (projectId: string, id: string) =>
+export const readToolQuery = (
+  organizationId: string,
+  projectId: string,
+  id: string,
+) =>
   queryOptions({
-    queryKey: ['tool', projectId, id],
-    queryFn: () => readTool(projectId, id),
+    queryKey: ['tool', organizationId, projectId, id],
+    queryFn: () => readTool(organizationId, projectId, id),
     staleTime: 60 * 60 * 1_000,
     select: (data) => data && decodeEntityWithMetadata<Tool>(data),
   });

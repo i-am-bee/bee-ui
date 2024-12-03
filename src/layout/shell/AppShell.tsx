@@ -21,6 +21,7 @@ import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
 import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
+import { ensureSession } from '@/app/auth/rsc';
 
 interface Props {
   projectId: string;
@@ -30,7 +31,14 @@ export async function AppShell({
   projectId,
   children,
 }: PropsWithChildren<Props>) {
-  const project = await fetchProject(projectId);
+  const session = await ensureSession();
+  if (!session) {
+    throw new Error('Session not found.');
+  }
+  const project = await fetchProject(
+    session.userProfile.default_organization,
+    projectId,
+  );
 
   if (!project) notFound();
 

@@ -17,9 +17,13 @@
 import { readFile } from '@/app/api/files';
 import { queryOptions } from '@tanstack/react-query';
 
-export const readFileQuery = (projectId: string, id: string) =>
+export const readFileQuery = (
+  organizationId: string,
+  projectId: string,
+  id: string,
+) =>
   queryOptions({
-    queryKey: ['files/{file_id}', projectId, id],
-    queryFn: () => readFile(projectId, id),
+    queryKey: ['files/{file_id}', organizationId, projectId, id],
+    queryFn: () => readFile(organizationId, projectId, id),
     staleTime: 60 * 60 * 1000,
   });

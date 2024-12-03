@@ -19,8 +19,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { threadsQuery } from './queries';
 
 export function usePrefetchThreads() {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
-  return () => queryClient.prefetchInfiniteQuery(threadsQuery(project.id));
+  return () =>
+    queryClient.prefetchInfiniteQuery(
+      threadsQuery(organization.id, project.id),
+    );
 }

@@ -15,6 +15,7 @@
  */
 
 import { fetchAssistant } from '@/app/api/rsc';
+import { ensureSession } from '@/app/auth/rsc';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -32,7 +33,15 @@ interface Props {
 export default async function AssistantChatPage({
   params: { assistantId, projectId },
 }: Props) {
-  const assistant = await fetchAssistant(projectId, assistantId);
+  const session = await ensureSession();
+  if (!session) {
+    throw new Error('Session not found.');
+  }
+  const assistant = await fetchAssistant(
+    session.userProfile.default_organization,
+    projectId,
+    assistantId,
+  );
 
   if (!assistant) notFound();
 

@@ -36,7 +36,7 @@ export const useUpdatePendingVectorStoreFiles = (
   data: VectorStoreFile[],
   params: VectorStoreFilesListQuery,
 ) => {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({
@@ -54,7 +54,12 @@ export const useUpdatePendingVectorStoreFiles = (
       .filter((file) => file.status === 'in_progress')
       .map((file) => {
         return {
-          ...readVectorStoreFileQuery(project.id, vectorStore.id, file.id),
+          ...readVectorStoreFileQuery(
+            organization.id,
+            project.id,
+            vectorStore.id,
+            file.id,
+          ),
           refetchInterval: getDuration,
         };
       }),
@@ -74,7 +79,12 @@ export const useUpdatePendingVectorStoreFiles = (
         isSomeUpdated = true;
 
         queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
-          vectorStoresFilesQuery(project.id, vectorStore.id, params).queryKey,
+          vectorStoresFilesQuery(
+            organization.id,
+            project.id,
+            vectorStore.id,
+            params,
+          ).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -94,9 +104,21 @@ export const useUpdatePendingVectorStoreFiles = (
     if (isSomeUpdated) {
       queryClient.invalidateQueries({
         queryKey: [
-          vectorStoresFilesQuery(project.id, vectorStore.id).queryKey.at(0),
+          vectorStoresFilesQuery(
+            organization.id,
+            project.id,
+            vectorStore.id,
+          ).queryKey.at(0),
         ],
       });
     }
-  }, [data, params, project.id, queries, queryClient, vectorStore.id]);
+  }, [
+    data,
+    params,
+    organization.id,
+    project.id,
+    queries,
+    queryClient,
+    vectorStore.id,
+  ]);
 };

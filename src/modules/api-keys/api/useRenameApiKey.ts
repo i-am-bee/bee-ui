@@ -24,12 +24,14 @@ export function useRenameApiKey({ onSuccess }: { onSuccess?: () => void }) {
     mutationFn: ({
       id,
       projectId,
+      organizationId,
       name,
     }: {
       id: string;
       projectId: string;
+      organizationId: string;
       name: string;
-    }) => updateApiKey(projectId, id, { name }),
+    }) => updateApiKey(organizationId, projectId, id, { name }),
     onSuccess,
     meta: {
       errorToast: {

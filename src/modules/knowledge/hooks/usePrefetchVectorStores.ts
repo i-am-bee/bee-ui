@@ -29,12 +29,12 @@ export function usePrefetchVectorStores({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   return (params?: VectorStoresListQuery) =>
     queryClient.prefetchInfiniteQuery(
-      vectorStoresQuery(project.id, {
+      vectorStoresQuery(organization.id, project.id, {
         ...(useDefaultParams ? DEFAULT_PARAMS : {}),
         ...params,
       }),

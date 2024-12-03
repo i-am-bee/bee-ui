@@ -22,10 +22,10 @@ import { assistantsQuery } from '../library/queries';
 export function useAssistants({
   params,
 }: { params?: AssistantsListQuery } = {}) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const query = useInfiniteQuery({
-    ...assistantsQuery(project.id, params),
+    ...assistantsQuery(organization.id, project.id, params),
   });
 
   return query;

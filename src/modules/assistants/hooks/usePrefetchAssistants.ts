@@ -29,12 +29,12 @@ export function usePrefetchAssistants({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   return (params?: AssistantsListQuery) =>
     queryClient.prefetchInfiniteQuery(
-      assistantsQuery(project.id, {
+      assistantsQuery(organization.id, project.id, {
         ...(useDefaultParams ? DEFAULT_PARAMS : {}),
         ...params,
       }),

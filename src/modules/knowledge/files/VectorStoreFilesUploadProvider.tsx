@@ -38,6 +38,7 @@ import {
 import { useWatchPendingVectorStoreFiles } from '../hooks/useWatchPendingVectoreStoreFiles';
 import { vectorStoresFilesQuery } from '../queries';
 import { Thread } from '@/app/api/threads/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export type VectoreStoreFileUpload = {
   id: string;
@@ -86,8 +87,10 @@ export const VectorStoreFilesUploadProvider = ({
   >(propsVectorStoreId ?? null);
   const { addToast } = useToast();
   const queryClient = useQueryClient();
+  const { organization } = useAppContext();
 
   const vectorStoreFiles = useWatchPendingVectorStoreFiles(
+    organization.id,
     projectId,
     vectorStoreId,
     files.map(({ vectorStoreFile }) => vectorStoreFile).filter(isNotNull),
@@ -116,7 +119,11 @@ export const VectorStoreFilesUploadProvider = ({
           if (vectorStoreId) {
             queryClient.invalidateQueries({
               queryKey: [
-                vectorStoresFilesQuery(projectId, vectorStoreId).queryKey.at(0),
+                vectorStoresFilesQuery(
+                  organization.id,
+                  projectId,
+                  vectorStoreId,
+                ).queryKey.at(0),
               ],
             });
           }
@@ -141,6 +148,7 @@ export const VectorStoreFilesUploadProvider = ({
     queryClient,
     vectorStoreId,
     projectId,
+    organization.id,
   ]);
 
   const { mutateAsync: mutateAddToVectorStore } = useMutation({
@@ -151,7 +159,7 @@ export const VectorStoreFilesUploadProvider = ({
       vectorStoreId: string;
       inputFile: VectoreStoreFileUpload;
     }) =>
-      createVectorStoreFile(projectId, vectorStoreId, {
+      createVectorStoreFile(organization.id, projectId, vectorStoreId, {
         file_id: inputFile.file?.id ?? '',
       }),
     onSuccess: (response, { inputFile }) => {
@@ -184,7 +192,7 @@ export const VectorStoreFilesUploadProvider = ({
       inputFile: VectoreStoreFileUpload;
       thread?: Thread;
     }) => {
-      return await createFile(projectId, {
+      return await createFile(organization.id, projectId, {
         file: inputFile.originalFile,
         purpose: 'assistants',
         depends_on_thread_id: thread?.id,

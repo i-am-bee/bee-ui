@@ -105,7 +105,7 @@ export function useChatStream({
   updateController,
 }: Props) {
   const queryClient = useQueryClient();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const getThread = () => {
     const thread = threadRef.current;
@@ -158,6 +158,7 @@ export function useChatStream({
           tool_outputs: outputs,
         },
         projectId: project.id,
+        organizationId: organization.id,
         abortController,
         setMessages,
         handleRunEventResponse,
@@ -181,11 +182,16 @@ export function useChatStream({
       let approve = toolId && approvedTools?.includes(toolId);
       if (!approve) {
         queryClient.setQueryData(
-          readRunQuery(project.id, thread.id, runId).queryKey,
+          readRunQuery(organization.id, project.id, thread.id, runId).queryKey,
           (run) => (run ? { ...run, required_action: action } : undefined),
         );
         queryClient.invalidateQueries({
-          queryKey: readRunQuery(project.id, thread.id, getRunId()).queryKey,
+          queryKey: readRunQuery(
+            organization.id,
+            project.id,
+            thread.id,
+            getRunId(),
+          ).queryKey,
         });
 
         const waitForApproval = new Promise<ToolApprovalValue>((resolve) => {
@@ -220,6 +226,7 @@ export function useChatStream({
           ],
         },
         projectId: project.id,
+        organizationId: organization.id,
         abortController,
         setMessages,
         handleRunEventResponse,
@@ -298,6 +305,7 @@ export function useChatStream({
       action.id === 'create-run'
         ? fetchEventStream({
             url: `/api/v1/threads/${getThread().id}/runs`,
+            organizationId: organization.id,
             projectId: project.id,
             body: encodeEntityWithMetadata<RunsCreateBodyDecoded>(action.body),
             abortController,
@@ -320,6 +328,7 @@ export function useChatStream({
 
 async function fetchEventStream({
   projectId,
+  organizationId,
   url,
   body,
   abortController,
@@ -327,6 +336,7 @@ async function fetchEventStream({
   handleRunEventResponse,
 }: {
   projectId: string;
+  organizationId: string;
   url: string;
   handleRunEventResponse: (response: RunsCreateResponse) => void;
   body: RunsCreateBody | SubmitToolOutputsBody | SubmitToolApprovalsBody;
@@ -337,7 +347,7 @@ async function fetchEventStream({
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...getProjectHeaders(projectId),
+      ...getProjectHeaders(organizationId, projectId),
     },
     body: JSON.stringify({ ...body, stream: true }),
     signal: abortController?.signal,

@@ -31,16 +31,19 @@ import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { CODE_ENTER } from 'keycode-js';
 import { Project } from '@/app/api/projects/types';
+import { Organization } from '@/app/api/organization/types';
 
 interface Props extends ModalProps {
   vectorStore: VectorStore;
   project: Project;
+  organization: Organization;
   onSuccess: (store: VectorStore) => void;
 }
 
 export function RenameModal({
   vectorStore,
   project,
+  organization,
   onSuccess,
   ...props
 }: Props) {
@@ -49,7 +52,7 @@ export function RenameModal({
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (newName: string) =>
-      updateVectorStore(project.id, id, { name: newName }),
+      updateVectorStore(organization.id, project.id, id, { name: newName }),
     onSuccess: (store) => {
       store && onSuccess(store);
       props.onRequestClose();

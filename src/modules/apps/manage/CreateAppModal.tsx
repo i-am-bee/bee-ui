@@ -40,6 +40,7 @@ import {
 import isEmpty from 'lodash/isEmpty';
 import { useCreateArtifact } from '../hooks/useCreateArtifact';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { Organization } from '@/app/api/organization/types';
 
 interface FormValues {
   icon: string;
@@ -49,6 +50,7 @@ interface FormValues {
 
 interface Props extends ModalProps {
   project: Project;
+  organization: Organization;
   messageId?: string;
   code?: string;
   onSaveSuccess?: (artifact: ArtifactResult) => void;
@@ -56,6 +58,7 @@ interface Props extends ModalProps {
 
 export function CreateAppModal({
   project,
+  organization,
   messageId,
   code,
   onSaveSuccess,
@@ -63,11 +66,7 @@ export function CreateAppModal({
 }: Props) {
   const { onRequestClose } = props;
   const id = useId();
-  const {
-    setConfirmOnRequestClose,
-    clearConfirmOnRequestClose,
-    onRequestCloseSafe,
-  } = useModalControl();
+  const { onRequestCloseSafe } = useModalControl();
 
   const {
     mutateAsync: mutateSave,
@@ -75,6 +74,7 @@ export function CreateAppModal({
     error: saveError,
   } = useCreateArtifact({
     project,
+    organization,
     onSaveSuccess: (artifact) => {
       onRequestClose();
       onSaveSuccess?.(artifact);

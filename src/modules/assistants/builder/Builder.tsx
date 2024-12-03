@@ -66,7 +66,7 @@ export function Builder({ thread, initialMessages }: Props) {
     },
     isOnboarding,
   } = useAssistantBuilder();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
   const id = useId();
   const router = useRouter();

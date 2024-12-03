@@ -38,7 +38,7 @@ import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import { useAssistants } from './hooks/useAssistants';
 
 export function AssistantsHome() {
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<AssistantsListQueryOrderBy>(
     ASSISTANTS_ORDER_DEFAULT,
   );
@@ -70,13 +70,13 @@ export function AssistantsHome() {
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/assistants
     queryClient.invalidateQueries({
-      queryKey: [assistantsQuery(project.id).queryKey.at(0)],
+      queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
     });
   };
 
   const handleDeleteAssistantSuccess = (assistant: Assistant) => {
     queryClient.setQueryData<InfiniteData<ListAssistantsResponse>>(
-      assistantsQuery(project.id, params).queryKey,
+      assistantsQuery(organization.id, project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {

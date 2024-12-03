@@ -15,26 +15,29 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createApiKey, deleteApiKey, updateApiKey } from '@/app/api/api-keys';
+import { createApiKey, deleteApiKey } from '@/app/api/api-keys';
 import { ApiKey } from '@/app/api/api-keys/types';
 import { apiKeysQuery } from './queries';
+import { Organization } from '@/app/api/organization/types';
 
 export function useRegenerateApiKey({
+  organization,
   onSuccess,
 }: {
   onSuccess?: (apiKey?: ApiKey) => void;
+  organization: Organization;
 }) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async ({ id, name, project }: ApiKey) => {
-      const result = await createApiKey(project.id, { name });
-      await deleteApiKey(project.id, id);
+      const result = await createApiKey(organization.id, project.id, { name });
+      await deleteApiKey(organization.id, project.id, id);
       return result;
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries({
-        queryKey: [apiKeysQuery().queryKey.at(0)],
+        queryKey: [apiKeysQuery(organization.id).queryKey.at(0)],
       });
       onSuccess?.(result);
     },
