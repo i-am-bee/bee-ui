@@ -18,5 +18,6 @@ import { ensureSession } from '@/app/auth/rsc';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  return NextResponse.json(await ensureSession());
+  const { expires, userProfile } = await ensureSession();
+  return NextResponse.json({ expires, userProfile });
 }

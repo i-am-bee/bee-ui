@@ -25,3 +25,7 @@ export function getLocaleDateString(
       : new Date(Number.isInteger(date) ? Number(date) * 1000 : date);
   return dateObject.toLocaleString(locales, options);
 }
+
+export function addDaysToDate(date: Date, days: number) {
+  return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+}
