@@ -36,7 +36,7 @@ export default async function AssistantBuilderPage({
   if (!assistant) notFound();
 
   return (
-    <LayoutInitializer layout={{ sidebarVisible: false }}>
+    <LayoutInitializer layout={{ sidebarVisible: false, navbarProps: null }}>
       <AssistantBuilderProvider assistant={assistant}>
         <Builder />
       </AssistantBuilderProvider>

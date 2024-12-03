@@ -17,13 +17,19 @@
 import { isNotNull } from '@/utils/helpers';
 import { client } from '../client';
 import { readFile } from '../files';
-import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import {
+  assertSuccessResponse,
+  decodeEntityWithMetadata,
+  getRequestHeaders,
+} from '../utils';
+import {
+  Message,
   MessageCreateBody,
   MessagesListQuery,
   MessageUpdateBody,
 } from './types';
 import { MessageWithFiles } from '@/modules/chat/types';
+import { fetchEntity } from '@/utils/fetchEntity';
 
 export const MESSAGES_PAGE_SIZE = 100;
 
@@ -37,6 +43,22 @@ export async function createMessage(
     body,
     headers: getRequestHeaders(projectId),
   });
+  assertSuccessResponse(res);
+  return res.data;
+}
+
+export async function readMessage(
+  projectId: string,
+  threadId: string,
+  messageId: string,
+) {
+  const res = await client.GET(
+    '/v1/threads/{thread_id}/messages/{message_id}',
+    {
+      params: { path: { thread_id: threadId, message_id: messageId } },
+      headers: getRequestHeaders(projectId),
+    },
+  );
   assertSuccessResponse(res);
   return res.data;
 }

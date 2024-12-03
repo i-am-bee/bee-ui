@@ -15,12 +15,16 @@
  */
 
 import { Container } from '@/components/Container/Container';
-import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
 import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
 import { SkipNav } from './SkipNav';
+import { useLayout } from '@/store/layout';
+import { AppBuilderNavbarActions } from '@/modules/apps/builder/AppBuilderNavbarActions';
+import { ReactElement, useMemo } from 'react';
+import { Link } from '@/components/Link/Link';
+import { useAppContext } from '../providers/AppProvider';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -29,6 +33,26 @@ interface Props {
 
 export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const { setUserSetting } = useUserSetting();
+  const { project } = useAppContext();
+  const navbarProps = useLayout((state) => state.navbarProps);
+
+  const headingItems = useMemo(() => {
+    switch (navbarProps?.type) {
+      case 'app-builder':
+        return navbarProps.artifact
+          ? [
+              { title: 'Apps', url: `/${project.id}/apps` },
+              { title: navbarProps.artifact.name },
+            ]
+          : [{ title: 'App Builder' }];
+      case 'assistant-builder':
+        return [{ title: 'Bee builder' }];
+      case 'common':
+        return [{ title: navbarProps.title ?? '' }];
+      default:
+        return undefined;
+    }
+  }, [navbarProps, project]);
 
   return (
     <header className={classes.root}>
@@ -43,8 +67,35 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
           }}
         />
 
-        <ProjectSelector />
+        <NavbarHeading items={headingItems} />
+
+        <div className={classes.actions}>
+          {navbarProps?.type === 'app-builder' && (
+            <AppBuilderNavbarActions artifact={navbarProps.artifact} />
+          )}
+        </div>
+
+        {/* TODO: Remove. Let's keep it for testing purposes for now. */}
+        {/* <ProjectSelector /> */}
       </Container>
     </header>
   );
+}
+
+export function NavbarHeading({ items }: { items?: HeadingItem[] }) {
+  if (!items?.length) return null;
+
+  return (
+    <ul className={classes.heading}>
+      {items.map(({ url, title }, key) => (
+        <li key={key}>{url ? <Link href={url}>{title}</Link> : title}</li>
+      ))}
+    </ul>
+  );
+}
+
+interface HeadingItem {
+  title: string;
+  url?: string;
+  icon?: ReactElement;
 }

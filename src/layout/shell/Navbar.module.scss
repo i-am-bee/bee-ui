@@ -32,3 +32,31 @@
   justify-content: space-between;
   column-gap: $spacing-04;
 }
+
+.heading {
+  display: flex;
+  gap: $spacing-03;
+  li {
+    &:not(:last-child)::after {
+      content: '/';
+      margin-inline-start: $spacing-03;
+    }
+    a {
+      color: $text-primary;
+      text-decoration: none;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-03;
+
+  button {
+    padding-inline-end: $spacing-05;
+    &:global(.#{$prefix}--overflow-menu) {
+      padding-inline-end: 0;
+      border: 1px solid $border-subtle;
+    }
+  }
+}

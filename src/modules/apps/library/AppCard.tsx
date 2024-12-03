@@ -17,13 +17,13 @@
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
-import { MouseEventHandler, useState } from 'react';
+import { MouseEventHandler } from 'react';
 import classes from './AppCard.module.scss';
 import { Artifact } from '../types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
-import { CreateAppModal } from '../manage/CreateAppModal';
 import { UpdateAppModal } from '../manage/UpdateAppModal';
+import { useRouter } from 'next-nprogress-bar';
 
 interface Props {
   artifact: Artifact;
@@ -34,14 +34,15 @@ interface Props {
 
 export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const { name, description } = artifact;
+  const router = useRouter();
+
   const { deleteArtifact, isPending: isDeletePending } = useDeleteArtifact({
     artifact,
     onSuccess: async () => {
       onDeleteSuccess?.(artifact);
     },
   });
-  const { isProjectReadOnly, project } = useAppContext();
-  const { openModal } = useModal();
+  const { project } = useAppContext();
 
   return (
     <>
@@ -57,13 +58,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
             {
               itemText: 'Edit',
               onClick: () =>
-                openModal((props) => (
-                  <UpdateAppModal
-                    artifact={artifact}
-                    project={project}
-                    {...props}
-                  />
-                )),
+                router.push(`/${project.id}/apps/builder/a/${artifact.id}`),
             },
             {
               isDelete: true,

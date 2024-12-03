@@ -122,6 +122,7 @@ interface Props
   onChange?: (value: string) => void;
   invalid?: boolean;
   readOnly?: boolean;
+  // showLineNumbers?: boolean;
 }
 
 export function EditableSyntaxHighlighter({
@@ -131,6 +132,7 @@ export function EditableSyntaxHighlighter({
   onChange,
   invalid,
   readOnly,
+  // showLineNumbers,
   ...props
 }: Props) {
   return (
@@ -138,7 +140,12 @@ export function EditableSyntaxHighlighter({
       {labelText && <FormLabel id={id}>{labelText}</FormLabel>}
 
       <div className={clsx(classes.wrapper, { [classes.invalid]: invalid })}>
-        <SyntaxHighlighter language="python" style={style}>
+        <SyntaxHighlighter
+          language="python"
+          style={style}
+          // TODO: resolve text wrapping
+          // showLineNumbers={showLineNumbers}
+        >
           {value.at(-1) === '\n' ? `${value} ` : value}
         </SyntaxHighlighter>
 

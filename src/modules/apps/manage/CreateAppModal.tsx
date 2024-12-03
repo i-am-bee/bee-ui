@@ -40,6 +40,10 @@ import {
 import isEmpty from 'lodash/isEmpty';
 import { useCreateArtifact } from '../hooks/useCreateArtifact';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { extractAppNameFromStliteCode } from '../utils';
+import { useLayoutActions } from '@/store/layout';
+import { useRouter } from 'next-nprogress-bar';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 
 interface FormValues {
   icon: string;
@@ -51,23 +55,13 @@ interface Props extends ModalProps {
   project: Project;
   messageId?: string;
   code?: string;
-  onSaveSuccess?: (artifact: ArtifactResult) => void;
 }
 
-export function CreateAppModal({
-  project,
-  messageId,
-  code,
-  onSaveSuccess,
-  ...props
-}: Props) {
+export function CreateAppModal({ project, messageId, code, ...props }: Props) {
   const { onRequestClose } = props;
   const id = useId();
-  const {
-    setConfirmOnRequestClose,
-    clearConfirmOnRequestClose,
-    onRequestCloseSafe,
-  } = useModalControl();
+  const { onRequestCloseSafe } = useModalControl();
+  const { setLayout } = useLayoutActions();
 
   const {
     mutateAsync: mutateSave,
@@ -76,18 +70,30 @@ export function CreateAppModal({
   } = useCreateArtifact({
     project,
     onSaveSuccess: (artifact) => {
+      setLayout({
+        navbarProps: {
+          type: 'app-builder',
+          artifact: decodeEntityWithMetadata<Artifact>(artifact),
+        },
+      });
+
       onRequestClose();
-      onSaveSuccess?.(artifact);
+
+      window.history.pushState(
+        null,
+        '',
+        `/${project.id}/apps/builder/a/${artifact.id}`,
+      );
     },
   });
 
   const {
-    control,
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting, dirtyFields },
   } = useForm<FormValues>({
     mode: 'onChange',
+    defaultValues: { name: extractAppNameFromStliteCode(code ?? '') },
   });
 
   useConfirmModalCloseOnDirty(!isEmpty(dirtyFields), 'app');

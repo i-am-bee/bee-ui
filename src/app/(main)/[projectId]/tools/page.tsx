@@ -15,7 +15,12 @@
  */
 
 import { ToolsHome } from '@/modules/tools/ToolsHome';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default async function ToolsPage() {
-  return <ToolsHome />;
+  return (
+    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+      <ToolsHome />
+    </LayoutInitializer>
+  );
 }

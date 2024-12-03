@@ -33,7 +33,9 @@ export default async function AppsBuilderPage({
   if (!assistant) notFound();
 
   return (
-    <LayoutInitializer layout={{ sidebarVisible: false }}>
+    <LayoutInitializer
+      layout={{ sidebarVisible: false, navbarProps: { type: 'app-builder' } }}
+    >
       <AppBuilderProvider>
         <AppBuilder assistant={assistant} />
       </AppBuilderProvider>

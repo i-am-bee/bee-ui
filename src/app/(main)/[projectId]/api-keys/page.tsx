@@ -15,7 +15,12 @@
  */
 
 import { ApiKeysHome } from '@/modules/api-keys/ApiKeysHome';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default async function ApiKeysPage() {
-  return <ApiKeysHome />;
+  return (
+    <LayoutInitializer layout={{ sidebarVisible: true }}>
+      <ApiKeysHome />
+    </LayoutInitializer>
+  );
 }

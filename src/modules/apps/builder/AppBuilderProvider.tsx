@@ -22,18 +22,25 @@ import {
   PropsWithChildren,
   use,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
+import { Artifact } from '../types';
 
 interface Props {
   code?: string;
+  artifact?: Artifact;
 }
 
 export function AppBuilderProvider({
   code: initialCode,
+  artifact: initialArtifact,
   children,
 }: PropsWithChildren<Props>) {
+  const [artifact, setArtifact] = useState<Artifact | null>(
+    initialArtifact ?? null,
+  );
   const [code, setCode, codeRef] = useStateWithRef<string | null>(
     initialCode ?? null,
   );
@@ -43,9 +50,13 @@ export function AppBuilderProvider({
     [codeRef, setCode],
   );
 
+  useEffect(() => {
+    if (artifact) setCode(artifact.source_code);
+  }, [artifact, setCode]);
+
   return (
     <AppBuilderApiContext.Provider value={apiValue}>
-      <AppBuilderContext.Provider value={{ code }}>
+      <AppBuilderContext.Provider value={{ code, artifact }}>
         {children}
       </AppBuilderContext.Provider>
     </AppBuilderApiContext.Provider>
@@ -54,6 +65,7 @@ export function AppBuilderProvider({
 
 const AppBuilderContext = createContext<{
   code: string | null;
+  artifact: Artifact | null;
 } | null>(null);
 
 const AppBuilderApiContext = createContext<{

@@ -37,7 +37,7 @@ export default async function AssistantChatPage({
   if (!assistant) notFound();
 
   return (
-    <LayoutInitializer layout={{ sidebarVisible: true }}>
+    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
       <VectorStoreFilesUploadProvider projectId={projectId}>
         <FilesUploadProvider>
           <ChatProvider
