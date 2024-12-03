@@ -16,24 +16,23 @@
 
 'use client';
 import { Thread } from '@/app/api/threads/types';
+import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
-import { useCallback, useId, useMemo, useState } from 'react';
-import classes from './AppBuilder.module.scss';
+import { useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
+import { useCallback, useId, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
-import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
-import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
-import clsx from 'clsx';
-import { extractCodeFromMessageContent } from '../utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { useQueryClient } from '@tanstack/react-query';
 import { threadsQuery } from '../../chat/history/queries';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { useMessages } from '../../chat/providers/useMessages';
-import { UserContentFrame } from './UserContentFrame';
 import { CreateAppModal } from '../manage/CreateAppModal';
+import { extractCodeFromMessageContent } from '../utils';
+import classes from './AppBuilder.module.scss';
+import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
+import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 
 interface Props {
   thread?: Thread;
@@ -142,7 +141,7 @@ function AppBuilderContent() {
           </div>
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
-              <UserContentFrame />
+              <ArtifactSharedIframe />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
               <EditableSyntaxHighlighter

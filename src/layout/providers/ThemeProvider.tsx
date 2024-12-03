@@ -128,6 +128,8 @@ export function ThemeProvider({ children, nonce }: PropsWithChildren<Props>) {
   // not being applied on not-found.tsx pages (the standalone script,
   // that should do so below is not being run). I couldn't find out why.
   useAfterMount(() => applyTheme(theme), [applyTheme, theme]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => applyTheme(theme), []);
 
   const contextValue = useMemo(
     () => ({
