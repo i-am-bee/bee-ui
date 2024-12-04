@@ -19,17 +19,15 @@ import { client } from '../client';
 import { readFile } from '../files';
 import {
   assertSuccessResponse,
-  decodeEntityWithMetadata,
+  decodeMetadata,
   getRequestHeaders,
 } from '../utils';
 import {
-  Message,
   MessageCreateBody,
   MessagesListQuery,
   MessageUpdateBody,
 } from './types';
-import { MessageWithFiles } from '@/modules/chat/types';
-import { fetchEntity } from '@/utils/fetchEntity';
+import { MessageMetadata, MessageWithFiles } from '@/modules/chat/types';
 
 export const MESSAGES_PAGE_SIZE = 100;
 

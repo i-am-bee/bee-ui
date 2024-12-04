@@ -19,9 +19,10 @@ import { Thread } from '@/app/api/threads/types';
 import { useImmerWithGetter } from '@/hooks/useImmerWithGetter';
 import { useQuery } from '@tanstack/react-query';
 import { messagesWithFilesQuery } from '../queries';
-import { MessageWithFiles } from '../types';
+import { MessageMetadata, MessageWithFiles } from '../types';
 import { getMessagesFromThreadMessages } from '../utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { decodeMetadata } from '@/app/api/utils';
 
 export function useMessages({
   thread,
@@ -36,6 +37,11 @@ export function useMessages({
     ...messagesWithFilesQuery(project.id, thread?.id || '', {
       limit: MESSAGES_PAGE_SIZE,
     }),
+    select: (messages) =>
+      messages.filter(
+        ({ metadata }) =>
+          decodeMetadata<MessageMetadata>(metadata).type !== 'code-update',
+      ),
     initialData,
     enabled: Boolean(thread),
   });

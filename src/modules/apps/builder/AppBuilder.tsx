@@ -17,9 +17,14 @@
 'use client';
 import { Thread } from '@/app/api/threads/types';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
-import { ChatMessage, MessageWithFiles } from '@/modules/chat/types';
+import {
+  ChatMessage,
+  Message,
+  MessageMetadata,
+  MessageWithFiles,
+} from '@/modules/chat/types';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
-import { useCallback, useId, useState } from 'react';
+import { useCallback, useId, useMemo, useState } from 'react';
 import classes from './AppBuilder.module.scss';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
@@ -34,6 +39,11 @@ import { UserContentFrame } from './UserContentFrame';
 import { CreateAppModal } from '../manage/CreateAppModal';
 import { createMessage } from '@/app/api/threads-messages';
 import { SourceCodeEditor } from './SourceCodeEditor';
+import {
+  decodeEntityWithMetadata,
+  decodeMetadata,
+  encodeMetadata,
+} from '@/app/api/utils';
 
 interface Props {
   thread?: Thread;
@@ -45,6 +55,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
   const { project } = useAppContext();
   const queryClient = useQueryClient();
   const { setCode, getCode } = useAppBuilderApi();
+  const { artifact, code } = useAppBuilder();
 
   const handleMessageCompleted = useCallback(
     (newThread: Thread, content: string) => {
@@ -72,15 +83,33 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
         lastMessage?.content ?? '',
       );
       const currentCode = getCode();
-      if (lastMessageCode && currentCode && lastMessageCode !== currentCode) {
+      const isCodeModified =
+        lastMessageCode && currentCode && lastMessageCode !== currentCode;
+      const isCloneFirstMessage = currentCode && messages.length === 2;
+      if (isCodeModified || isCloneFirstMessage) {
+        const instruction = isCodeModified
+          ? 'I have edited the source code to'
+          : 'I want to continue working on this source code';
         await createMessage(project.id, thread.id, {
           role: 'user',
-          content: `I have edited the source code to:\n\`\`\`python-app\n${currentCode}\n\`\`\``,
+          content: `${instruction}:\n\`\`\`python-app\n${currentCode}\n\`\`\``,
+          metadata: encodeMetadata<MessageMetadata>({ type: 'code-update' }),
         });
       }
     },
     [getCode, project.id],
   );
+
+  const isCloneAppThread = (() => {
+    const isInitialCloneState = code && !artifact && !initialMessages?.length;
+    const firstMessage = initialMessages?.at(0);
+    const isThreadWithClonedApp = firstMessage
+      ? decodeMetadata<MessageMetadata>(firstMessage.metadata).type ===
+        'code-update'
+      : false;
+
+    return isInitialCloneState || isThreadWithClonedApp;
+  })();
 
   return (
     <ChatProvider
@@ -89,7 +118,11 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }}
       thread={thread}
       initialData={initialMessages}
-      initialAssistantMessage="What do you want to build today?"
+      initialAssistantMessage={
+        isCloneAppThread
+          ? 'How do you want to edit this app? Do you need suggestions?'
+          : 'What do you want to build today?'
+      }
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
     >
@@ -102,10 +135,9 @@ function AppBuilderContent() {
   const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
   const { project } = useAppContext();
   const { openModal } = useModal();
-  const id = useId();
   const { getMessages } = useChat();
 
-  const { setCode } = useAppBuilderApi();
+  const { setArtifact } = useAppBuilderApi();
   const { code } = useAppBuilder();
 
   return (
@@ -140,6 +172,7 @@ function AppBuilderContent() {
                         project={project}
                         messageId={message.id ?? ''}
                         code={code}
+                        onCreateArtifact={setArtifact}
                         {...props}
                       />
                     ));

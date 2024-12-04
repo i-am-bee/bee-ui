@@ -32,7 +32,7 @@ export type MessageUpdateBody = NonNullable<
   paths['/v1/threads/{thread_id}/messages/{message_id}']['post']['requestBody']
 >['content']['application/json'];
 
-export type Message = MessagesListResponse['data'][number];
+export type MessageResult = MessagesListResponse['data'][number];
 
 export type MessageAttachments = NonNullable<MessageCreateBody['attachments']>;
 

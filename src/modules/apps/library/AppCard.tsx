@@ -54,19 +54,22 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
         isDeletePending={isDeletePending}
         cta={cta ? { title: cta } : undefined}
         actions={[
-          ...[
-            {
-              itemText: 'Edit',
-              onClick: () =>
-                router.push(`/${project.id}/apps/builder/a/${artifact.id}`),
-            },
-            {
-              isDelete: true,
-              itemText: 'Delete',
-              onClick: () => deleteArtifact(),
-            },
-          ],
-        ].filter(isNotNull)}
+          {
+            itemText: 'Edit',
+            onClick: () =>
+              router.push(`/${project.id}/apps/builder/a/${artifact.id}`),
+          },
+          {
+            itemText: 'Copy to edit',
+            onClick: () =>
+              router.push(`/${project.id}/apps/builder/clone/${artifact.id}`),
+          },
+          {
+            isDelete: true,
+            itemText: 'Delete',
+            onClick: () => deleteArtifact(),
+          },
+        ]}
       >
         {description && (
           <div className={classes.body}>

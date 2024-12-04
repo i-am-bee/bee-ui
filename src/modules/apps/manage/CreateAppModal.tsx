@@ -55,9 +55,16 @@ interface Props extends ModalProps {
   project: Project;
   messageId?: string;
   code?: string;
+  onCreateArtifact?: (artifact: Artifact) => void;
 }
 
-export function CreateAppModal({ project, messageId, code, ...props }: Props) {
+export function CreateAppModal({
+  project,
+  messageId,
+  code,
+  onCreateArtifact,
+  ...props
+}: Props) {
   const { onRequestClose } = props;
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
@@ -69,21 +76,23 @@ export function CreateAppModal({ project, messageId, code, ...props }: Props) {
     error: saveError,
   } = useCreateArtifact({
     project,
-    onSaveSuccess: (artifact) => {
+    onSaveSuccess: (result) => {
+      const artifact = decodeEntityWithMetadata<Artifact>(result);
       setLayout({
         navbarProps: {
           type: 'app-builder',
-          artifact: decodeEntityWithMetadata<Artifact>(artifact),
+          artifact,
         },
       });
-
-      onRequestClose();
 
       window.history.pushState(
         null,
         '',
         `/${project.id}/apps/builder/a/${artifact.id}`,
       );
+
+      onCreateArtifact?.(artifact);
+      onRequestClose();
     },
   });
 

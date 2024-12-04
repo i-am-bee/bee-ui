@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-import { fetchArtifact } from '@/app/api/artifacts';
-import {
-  ensureAppBuilderAssistant,
-  fetchThread,
-  listMessagesWithFiles,
-  MESSAGES_PAGE_SIZE,
-} from '@/app/api/rsc';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { fetchArtifact, fetchSharedArtifact } from '@/app/api/artifacts';
+import { ensureAppBuilderAssistant } from '@/app/api/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
-import { Artifact } from '@/modules/apps/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 
@@ -33,43 +26,29 @@ interface Props {
     projectId: string;
     artifactId: string;
   };
+  searchParams: { [key: string]: string };
 }
 
-export default async function AppBuilderPage({
+export default async function CloneAppPage({
   params: { projectId, artifactId },
+  searchParams: { secret },
 }: Props) {
   const assistant = await ensureAppBuilderAssistant(projectId);
-  const artifactResult = await fetchArtifact(projectId, artifactId);
+  const artifactResult = secret
+    ? await fetchSharedArtifact(projectId, artifactId, secret)
+    : await fetchArtifact(projectId, artifactId);
 
-  const thread = artifactResult?.thread_id
-    ? await fetchThread(projectId, artifactResult?.thread_id)
-    : null;
-
-  if (!(assistant && thread && artifactResult)) notFound();
-
-  const artifact = decodeEntityWithMetadata<Artifact>(artifactResult);
-
-  const initialMessages = thread.id
-    ? await listMessagesWithFiles(projectId, thread.id, {
-        limit: MESSAGES_PAGE_SIZE,
-      })
-    : [];
+  if (!(assistant && artifactResult)) notFound();
 
   return (
     <LayoutInitializer
       layout={{
         sidebarVisible: false,
-        navbarProps: { type: 'app-builder', artifact },
+        navbarProps: { type: 'app-builder' },
       }}
     >
-      <AppBuilderProvider
-        artifact={decodeEntityWithMetadata<Artifact>(artifact)}
-      >
-        <AppBuilder
-          assistant={assistant}
-          thread={thread}
-          initialMessages={initialMessages}
-        />
+      <AppBuilderProvider code={artifactResult.source_code}>
+        <AppBuilder assistant={assistant} />
       </AppBuilderProvider>
     </LayoutInitializer>
   );

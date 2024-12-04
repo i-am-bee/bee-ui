@@ -37,6 +37,8 @@
   display: flex;
   gap: $spacing-03;
   li {
+    font-weight: 600;
+
     &:not(:last-child)::after {
       content: '/';
       margin-inline-start: $spacing-03;

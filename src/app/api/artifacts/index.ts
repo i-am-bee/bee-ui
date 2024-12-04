@@ -102,3 +102,13 @@ export async function fetchArtifact(projectId: string, id?: string) {
 
   return await fetchEntity(() => readArtifact(projectId, id));
 }
+
+export async function fetchSharedArtifact(
+  projectId: string,
+  id?: string,
+  secret?: string,
+) {
+  if (!id || !secret) return;
+
+  return await fetchEntity(() => readSharedArtifact(projectId, secret, id));
+}

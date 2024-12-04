@@ -25,7 +25,10 @@
 
 .code {
   block-size: 100%;
+  inline-size: 100%;
   overflow-y: auto;
+  padding-block-end: $spacing-08;
+  background-color: $layer-02;
 
   > div {
     inline-size: 100%;
@@ -60,6 +63,9 @@
     &.buttonCancel {
       background-color: $background;
       border-color: $background;
+      &:disabled {
+        pointer-events: none;
+      }
       &:hover {
         background-color: $background-inverse-hover;
         border-color: $background-inverse-hover;

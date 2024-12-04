@@ -15,13 +15,11 @@
  */
 
 'use client';
-import { useStateWithGetter } from '@/hooks/useStateWithGetter';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import {
   createContext,
   PropsWithChildren,
   use,
-  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -46,7 +44,7 @@ export function AppBuilderProvider({
   );
 
   const apiValue = useMemo(
-    () => ({ setCode, getCode: () => codeRef.current }),
+    () => ({ setCode, getCode: () => codeRef.current, setArtifact }),
     [codeRef, setCode],
   );
 
@@ -71,6 +69,7 @@ const AppBuilderContext = createContext<{
 const AppBuilderApiContext = createContext<{
   setCode: (content: string) => void;
   getCode: () => string | null;
+  setArtifact: (artifact: Artifact) => void;
 } | null>(null);
 
 export function useAppBuilderApi() {
