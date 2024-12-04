@@ -18,20 +18,31 @@
 import { Realm } from '@/app/auth/signin/actions';
 import { useTheme } from '@/layout/providers/ThemeProvider';
 import { Button, InlineNotification, Loading } from '@carbon/react';
-import { ArrowRight } from '@carbon/react/icons';
-import { useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import classes from './SignIn.module.scss';
 import { VersionTag } from '@/components/VersionTag/VersionTag';
+import { WaitlistModal } from './WaitlistModal';
+import GoogleIcon from './GoogleIcon.svg';
+import IBMIcon from './IBMIcon.svg';
+
+const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
 
 interface Props {
   error: LoginError | null;
+  showWaitlist?: boolean;
+  showWaitlistModal?: boolean;
   action: (realm: Realm) => void;
 }
 
 const VIDEO_REPLAY_INTERVAL = 10 * 1000;
 
-export function SignIn({ error, action }: Props) {
+export function SignIn({
+  error,
+  action,
+  showWaitlist,
+  showWaitlistModal,
+}: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { appliedTheme } = useTheme();
@@ -118,24 +129,47 @@ export function SignIn({ error, action }: Props) {
           )}
 
           <h1 className={classes.heading}>
-            IBM {APP_NAME}
+            {APP_NAME}
             <VersionTag />
           </h1>
 
-          <form className={classes.form} action={() => action('ent.ibm.com')}>
-            <p className={classes.label}>Log in with IBMid</p>
+          {showWaitlist && (
+            <>
+              <h2>New to Bee?</h2>
 
-            <LoginButton label="IBMid" />
-          </form>
+              <p>
+                Bee is buzzing with excitement, and we’re currently at capacity!
+                Sign up now to secure your spot and be among the first to gain
+                access when we expand. Don’t miss out, join today!
+              </p>
 
-          <form
-            className={classes.form}
-            action={() => action('www.google.com')}
-          >
-            <p className={classes.label}>Log in with Google</p>
+              {WAITLIST_URL && (
+                <Button
+                  className={classes.loginButton}
+                  kind="secondary"
+                  href={WAITLIST_URL}
+                >
+                  Join the waitlist
+                </Button>
+              )}
 
-            <LoginButton label="Google" />
-          </form>
+              <hr className={classes.divider} />
+
+              <p>Already have an account?</p>
+            </>
+          )}
+          <div className={classes.formWrapper}>
+            <form
+              className={classes.form}
+              action={() => action('www.google.com')}
+            >
+              <LoginButton icon={<GoogleIcon />} label="Google" />
+            </form>
+
+            <form className={classes.form} action={() => action('ent.ibm.com')}>
+              <LoginButton icon={<IBMIcon />} label="IBMid" />
+            </form>
+          </div>
         </div>
 
         <div className={classes.video}>
@@ -150,12 +184,20 @@ export function SignIn({ error, action }: Props) {
             />
           </div>
         </div>
+
+        {showWaitlistModal && (
+          <WaitlistModal
+            isOpen
+            onRequestClose={() => {}}
+            onAfterClose={() => {}}
+          />
+        )}
       </div>
     </div>
   );
 }
 
-function LoginButton({ label }: { label: string }) {
+function LoginButton({ icon, label }: { icon: ReactNode; label: string }) {
   const { pending } = useFormStatus();
   return pending ? (
     <div className={classes.loading}>
@@ -163,8 +205,14 @@ function LoginButton({ label }: { label: string }) {
       Redirecting to {label}
     </div>
   ) : (
-    <Button size="lg" kind="secondary" renderIcon={ArrowRight} type="submit">
-      {label}
+    <Button
+      className={classes.loginButton}
+      size="lg"
+      kind="tertiary"
+      type="submit"
+    >
+      {icon}
+      <div className={classes.loginButtonLabel}>Continue with {label}</div>
     </Button>
   );
 }

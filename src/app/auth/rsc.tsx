@@ -20,6 +20,7 @@ import { JWT } from 'next-auth/jwt';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { SIGN_IN_PAGE, auth } from '.';
+import { addDaysToDate } from '@/utils/dates';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
@@ -28,13 +29,15 @@ export const getSession = cache(async () => {
 });
 
 export const ensureSession = async () => {
-  if (DUMMY_JWT_TOKEN)
+  if (DUMMY_JWT_TOKEN) {
     return {
       user: {
         access_token: DUMMY_JWT_TOKEN,
       },
+      expires: addDaysToDate(new Date(), SESSION_TEST_EXPIRY_DAYS),
       userProfile: dummyUserProfileState,
     };
+  }
 
   const session = await getSession();
 
@@ -49,3 +52,5 @@ export const ensureAccessToken = async () => {
   const { access_token } = session.user as JWT;
   return access_token;
 };
+
+const SESSION_TEST_EXPIRY_DAYS = 7;

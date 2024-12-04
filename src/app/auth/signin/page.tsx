@@ -16,9 +16,11 @@
 
 import { LoginError, SignIn } from '@/modules/auth/SignIn';
 import { isAbsoluteUrl } from '@/utils/url';
-import { useMemo } from 'react';
 import { signIn } from './actions';
 import { redirect } from 'next/navigation';
+import { redis } from '@/redis';
+
+const REMAINING_CAPACITY_KEY = 'remainingCapacity';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
@@ -26,7 +28,7 @@ interface PageProps {
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function SignInPage({ searchParams }: PageProps) {
+export default async function SignInPage({ searchParams }: PageProps) {
   let callbackUrl = Array.isArray(searchParams.callbackUrl)
     ? searchParams.callbackUrl[0]
     : searchParams.callbackUrl;
@@ -44,7 +46,7 @@ export default function SignInPage({ searchParams }: PageProps) {
       `/auth/unauthorized?${new URLSearchParams({ error: errorCode ?? '' }).toString()}`,
     );
 
-  const error: LoginError | null = useMemo(() => {
+  const error: LoginError | null = (() => {
     switch (errorCode) {
       case null:
         return null;
@@ -66,7 +68,17 @@ export default function SignInPage({ searchParams }: PageProps) {
       default:
         return { kind: 'error', title: 'Unable to log in.' };
     }
-  }, [errorCode]);
+  })();
 
-  return <SignIn error={error} action={signIn.bind(null, callbackUrl)} />;
+  const remainingCapacity = await redis.get(REMAINING_CAPACITY_KEY);
+  const waitlistFull = !!remainingCapacity && parseInt(remainingCapacity) === 0;
+
+  return (
+    <SignIn
+      error={error}
+      action={signIn.bind(null, callbackUrl)}
+      showWaitlist={waitlistFull}
+      showWaitlistModal={errorCode === 'unauthorized' && waitlistFull}
+    />
+  );
 }

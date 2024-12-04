@@ -97,7 +97,9 @@ const getCspHeader = (nonce: string) => {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    upgrade-insecure-requests;`;
+    upgrade-insecure-requests;
+    frame-src ${USERCONTENT_SITE_URL};
+  `;
 
   return cspHeader.replace(/\s{2,}/g, ' ').trim();
 };

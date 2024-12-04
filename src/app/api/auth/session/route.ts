@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-export function getLocaleDateString(
-  date: Date | string | number,
-  locales: Intl.LocalesArgument = 'en-US',
-  options?: Intl.DateTimeFormatOptions,
-): string {
-  const dateObject =
-    date instanceof Date
-      ? date
-      : new Date(Number.isInteger(date) ? Number(date) * 1000 : date);
-  return dateObject.toLocaleString(locales, options);
-}
+import { ensureSession } from '@/app/auth/rsc';
+import { NextResponse } from 'next/server';
 
-export function addDaysToDate(date: Date, days: number) {
-  return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+export async function GET() {
+  const { expires, userProfile } = await ensureSession();
+  return NextResponse.json({ expires, userProfile });
 }

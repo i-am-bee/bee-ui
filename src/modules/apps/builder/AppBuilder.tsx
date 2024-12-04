@@ -16,34 +16,29 @@
 
 'use client';
 import { Thread } from '@/app/api/threads/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import {
   ChatMessage,
-  Message,
   MessageMetadata,
   MessageWithFiles,
 } from '@/modules/chat/types';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
-import { useCallback, useId, useMemo, useState } from 'react';
-import classes from './AppBuilder.module.scss';
+import clsx from 'clsx';
+import { useCallback, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
-import clsx from 'clsx';
 import { extractCodeFromMessageContent } from '../utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { threadsQuery } from '../../chat/history/queries';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { UserContentFrame } from './UserContentFrame';
 import { CreateAppModal } from '../manage/CreateAppModal';
 import { createMessage } from '@/app/api/threads-messages';
 import { SourceCodeEditor } from './SourceCodeEditor';
-import {
-  decodeEntityWithMetadata,
-  decodeMetadata,
-  encodeMetadata,
-} from '@/app/api/utils';
+import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
+import classes from './AppBuilder.module.scss';
+import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 
 interface Props {
   thread?: Thread;
@@ -185,7 +180,7 @@ function AppBuilderContent() {
           </div>
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
-              <UserContentFrame />
+              <ArtifactSharedIframe />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
               <SourceCodeEditor />

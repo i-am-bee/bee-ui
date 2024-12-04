@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-export function getLocaleDateString(
-  date: Date | string | number,
-  locales: Intl.LocalesArgument = 'en-US',
-  options?: Intl.DateTimeFormatOptions,
-): string {
-  const dateObject =
-    date instanceof Date
-      ? date
-      : new Date(Number.isInteger(date) ? Number(date) * 1000 : date);
-  return dateObject.toLocaleString(locales, options);
-}
+@use 'styles/common' as *;
 
-export function addDaysToDate(date: Date, days: number) {
-  return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
+.root {
+  position: relative;
+  background-color: $layer-02;
+  padding: $spacing-05;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  iframe {
+    max-inline-size: rem(800px);
+  }
+
+  :global(.#{$prefix}--loading-overlay) {
+    position: absolute;
+    background-color: $layer-02;
+  }
+}
+.app {
+  block-size: 100%;
+  inline-size: 100%;
 }
