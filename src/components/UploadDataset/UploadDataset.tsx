@@ -15,14 +15,7 @@
  */
 
 import { FormItem, FileUploaderDropContainer, usePrefix } from '@carbon/react';
-import {
-  ReactElement,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-} from 'react';
+import { SyntheticEvent, useCallback, useId, useMemo } from 'react';
 import { Control, FieldValues, Path, useController } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import classes from './UploadDataset.module.scss';

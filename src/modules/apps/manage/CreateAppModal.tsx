@@ -17,7 +17,7 @@
 import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
-import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   InlineLoading,
@@ -28,15 +28,10 @@ import {
   TextArea,
   TextInput,
 } from '@carbon/react';
-import { useCallback, useEffect, useId } from 'react';
+import { useCallback, useId } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
-import { Artifact } from '../types';
-import {
-  ArtifactCreateBody,
-  ArtifactResult,
-  ArtifactUpdateBody,
-} from '@/app/api/artifacts/types';
+import { ArtifactCreateBody, ArtifactResult } from '@/app/api/artifacts/types';
 import isEmpty from 'lodash/isEmpty';
 import { useCreateArtifact } from '../hooks/useCreateArtifact';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
