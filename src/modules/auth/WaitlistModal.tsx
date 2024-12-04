@@ -44,11 +44,9 @@ export function WaitlistModal({ ...props }: Props) {
       </ModalBody>
       {WAITLIST_URL && (
         <ModalFooter>
-          && (
           <Button kind="secondary" href={WAITLIST_URL}>
             Join waitlist
           </Button>
-          )
         </ModalFooter>
       )}
     </Modal>
