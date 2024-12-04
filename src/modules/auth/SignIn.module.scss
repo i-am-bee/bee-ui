@@ -60,6 +60,12 @@
   }
 }
 
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-03;
+}
+
 .form {
   display: grid;
   row-gap: $spacing-04;
@@ -123,4 +129,10 @@
 
 .loginButtonLabel {
   margin-inline-start: $spacing-04;
+}
+
+.loginButton {
+  inline-size: rem(238px);
+  padding-inline-end: 0;
+  justify-content: flex-start;
 }

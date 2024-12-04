@@ -22,12 +22,11 @@ import { ReactNode, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import classes from './SignIn.module.scss';
 import { VersionTag } from '@/components/VersionTag/VersionTag';
-import Image from 'next/image';
-import GoogleIcon from './GoogleIcon.png';
-import IBMIcon from './IBMIcon.png';
 import { WaitlistModal } from './WaitlistModal';
+import GoogleIcon from './GoogleIcon.svg';
+import IBMIcon from './IBMIcon.svg';
 
-const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL!;
+const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
 
 interface Props {
   error: LoginError | null;
@@ -144,32 +143,33 @@ export function SignIn({
                 access when we expand. Don’t miss out, join today!
               </p>
 
-              <Button kind="secondary" href={WAITLIST_URL}>
-                Join the waitlist
-              </Button>
+              {WAITLIST_URL && (
+                <Button
+                  className={classes.loginButton}
+                  kind="secondary"
+                  href={WAITLIST_URL}
+                >
+                  Join the waitlist
+                </Button>
+              )}
 
               <hr className={classes.divider} />
 
               <p>Already have an account?</p>
             </>
           )}
+          <div className={classes.formWrapper}>
+            <form
+              className={classes.form}
+              action={() => action('www.google.com')}
+            >
+              <LoginButton icon={<GoogleIcon />} label="Google" />
+            </form>
 
-          <form
-            className={classes.form}
-            action={() => action('www.google.com')}
-          >
-            <LoginButton
-              icon={<Image alt="Google" src={GoogleIcon} />}
-              label="Google"
-            />
-          </form>
-
-          <form className={classes.form} action={() => action('ent.ibm.com')}>
-            <LoginButton
-              icon={<Image alt="IBMid" src={IBMIcon} />}
-              label="IBMid"
-            />
-          </form>
+            <form className={classes.form} action={() => action('ent.ibm.com')}>
+              <LoginButton icon={<IBMIcon />} label="IBMid" />
+            </form>
+          </div>
         </div>
 
         <div className={classes.video}>
@@ -205,7 +205,12 @@ function LoginButton({ icon, label }: { icon: ReactNode; label: string }) {
       Redirecting to {label}
     </div>
   ) : (
-    <Button size="lg" kind="tertiary" type="submit">
+    <Button
+      className={classes.loginButton}
+      size="lg"
+      kind="tertiary"
+      type="submit"
+    >
       {icon}
       <div className={classes.loginButtonLabel}>Continue with {label}</div>
     </Button>
