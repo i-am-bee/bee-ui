@@ -49,7 +49,7 @@ export function AppBuilderProvider({
   );
 
   useEffect(() => {
-    if (artifact) setCode(artifact.source_code);
+    if (artifact) setCode(artifact.source_code ?? null);
   }, [artifact, setCode]);
 
   return (

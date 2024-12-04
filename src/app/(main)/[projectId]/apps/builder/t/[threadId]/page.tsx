@@ -25,8 +25,8 @@ import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { extractCodeFromMessageContent } from '@/modules/apps/utils';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
-import { Message } from '@/app/api/threads-messages/types';
 import { getMessagesFromThreadMessages } from '@/modules/chat/utils';
+import { MessageResult } from '@/app/api/threads-messages/types';
 
 interface Props {
   params: {
@@ -69,7 +69,7 @@ export default async function AppBuilderPage({
   );
 }
 
-export function getLastMessageWithStreamlitCode(messages: Message[]) {
+function getLastMessageWithStreamlitCode(messages: MessageResult[]) {
   const chatMessages = getMessagesFromThreadMessages(messages);
   return chatMessages.findLast((message) =>
     Boolean(extractCodeFromMessageContent(message.content)),

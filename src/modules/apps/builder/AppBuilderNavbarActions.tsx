@@ -36,17 +36,12 @@ export function AppBuilderNavbarActions({ artifact }: Props) {
   if (!artifact) return null;
 
   return (
-    <>
-      <Button size="sm" kind="tertiary">
-        Share
-      </Button>
-      <OverflowMenu size="sm" flipped>
-        <OverflowMenuItem
-          isDelete
-          itemText="Delete"
-          onClick={() => deleteArtifact()}
-        />
-      </OverflowMenu>
-    </>
+    <OverflowMenu size="sm" flipped>
+      <OverflowMenuItem
+        isDelete
+        itemText="Delete"
+        onClick={() => deleteArtifact()}
+      />
+    </OverflowMenu>
   );
 }
