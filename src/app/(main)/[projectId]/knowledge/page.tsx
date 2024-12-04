@@ -15,7 +15,12 @@
  */
 
 import { KnowledgeView } from '@/modules/knowledge/KnowledgeView';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default function KnowledgePage() {
-  return <KnowledgeView />;
+  return (
+    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+      <KnowledgeView />
+    </LayoutInitializer>
+  );
 }

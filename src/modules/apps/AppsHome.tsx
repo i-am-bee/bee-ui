@@ -43,6 +43,7 @@ import { useArtifacts } from './hooks/useArtifacts';
 import { AppsList } from './library/AppsList';
 import { Artifact } from './types';
 import { AdminView } from '@/components/AdminView/AdminView';
+import { listArtifactsQuery } from './queries';
 
 export function AppsHome() {
   const { project, isProjectReadOnly } = useAppContext();
@@ -83,7 +84,7 @@ export function AppsHome() {
 
   const handleDeleteArtifactSuccess = (artifact: Artifact) => {
     queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-      assistantsQuery(project.id, params).queryKey,
+      listArtifactsQuery(project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {

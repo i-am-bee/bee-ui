@@ -19,7 +19,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default async function ApiKeysPage() {
   return (
-    <LayoutInitializer layout={{ sidebarVisible: true }}>
+    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
       <ApiKeysHome />
     </LayoutInitializer>
   );
