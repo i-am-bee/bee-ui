@@ -17,6 +17,7 @@
 import { ACCEPT_TOU_PAGE, auth, SIGN_IN_PAGE } from '@/app/auth';
 import { NextMiddleware, NextResponse } from 'next/server';
 import { v4 as uuid } from 'uuid';
+import { USERCONTENT_SITE_URL } from './utils/constants';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
@@ -95,7 +96,9 @@ const getCspHeader = (nonce: string) => {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    upgrade-insecure-requests;`;
+    upgrade-insecure-requests;
+    frame-src ${USERCONTENT_SITE_URL};
+  `;
 
   return cspHeader.replace(/\s{2,}/g, ' ').trim();
 };

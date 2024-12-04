@@ -18,6 +18,14 @@
 
 .root {
   position: relative;
+  background-color: $layer-02;
+  padding: $spacing-05;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  iframe {
+    max-inline-size: rem(800px);
+  }
 
   :global(.#{$prefix}--loading-overlay) {
     position: absolute;
