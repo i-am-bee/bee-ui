@@ -43,7 +43,10 @@ export async function AppShell({
   if (!project) notFound();
 
   return (
-    <AppProvider project={project}>
+    <AppProvider
+      project={project}
+      organization={{ id: session.userProfile.default_organization }}
+    >
       <div className={classes.root}>
         <AppHeader />
 

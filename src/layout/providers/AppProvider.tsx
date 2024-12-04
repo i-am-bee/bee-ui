@@ -60,13 +60,14 @@ const AppApiContext = createContext<AppApiContextValue>(
 
 interface Props {
   project: Project;
+  organization: Organization;
 }
 
 export function AppProvider({
   project: initialProject,
+  organization,
   children,
 }: PropsWithChildren<Props>) {
-  const { organization } = useAppContext();
   const [project, setProject] = useState<Project>(initialProject);
   const [assistant, setAssistant] = useState<Assistant | null>(null);
   const onPageLeaveRef = useRef(() => null);
