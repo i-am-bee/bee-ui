@@ -132,7 +132,11 @@ export function ApiKeysHome() {
                     primaryButtonText: 'Regenerate',
                     onSubmit: () =>
                       openModal((props) => (
-                        <ApiKeyModal.Regenerate apiKey={item} {...props} />
+                        <ApiKeyModal.Regenerate
+                          organization={organization}
+                          apiKey={item}
+                          {...props}
+                        />
                       )),
                   })
                 }
@@ -142,7 +146,11 @@ export function ApiKeysHome() {
                 itemText="Delete"
                 onClick={() =>
                   openModal((props) => (
-                    <ApiKeyModal.Delete apiKey={item} {...props} />
+                    <ApiKeyModal.Delete
+                      organization={organization}
+                      apiKey={item}
+                      {...props}
+                    />
                   ))
                 }
               />
@@ -156,7 +164,7 @@ export function ApiKeysHome() {
       openConfirmation,
       openModal,
       userId,
-      organization.id,
+      organization,
     ],
   );
 
@@ -174,7 +182,11 @@ export function ApiKeysHome() {
               title: 'Create API key',
               onClick: () =>
                 openModal((props) => (
-                  <ApiKeyModal {...props} project={project} />
+                  <ApiKeyModal
+                    {...props}
+                    organization={organization}
+                    project={project}
+                  />
                 )),
             }}
             isEmpty={isEmpty}
@@ -204,6 +216,7 @@ export function ApiKeysHome() {
                         onClick={() =>
                           openModal((props) => (
                             <ApiKeyModal
+                              organization={organization}
                               {...props}
                               project={project}
                               onSuccess={() => resetPagination()}

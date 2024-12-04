@@ -70,7 +70,10 @@ export default async function ThreadPage({
   );
 
   return (
-    <VectorStoreFilesUploadProvider projectId={projectId}>
+    <VectorStoreFilesUploadProvider
+      projectId={projectId}
+      organizationId={session.userProfile.default_organization}
+    >
       <FilesUploadProvider>
         <ChatProvider
           thread={thread}

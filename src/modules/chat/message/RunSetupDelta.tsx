@@ -23,6 +23,7 @@ import isEqual from 'lodash/isEqual';
 import differenceWith from 'lodash/differenceWith';
 import { ToolName } from '@/modules/tools/common/ToolName';
 import { KnowledgeBaseName } from '@/modules/knowledge/common/KnowledgeBaseName';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function RunSetupDelta({
   run,
@@ -31,6 +32,8 @@ export function RunSetupDelta({
   run: ThreadRun;
   nextRunSetup?: RunSetup;
 }) {
+  const { organization, project } = useAppContext();
+
   const deltaMessages = useMemo(() => {
     const deltaMessages = [];
     if (run.instructions != nextRunSetup?.instructions)
@@ -41,14 +44,16 @@ export function RunSetupDelta({
     differenceWith(tools, nextRunTools, isEqual).forEach((tool) =>
       deltaMessages.push(
         <>
-          <ToolName tool={tool} /> tool removed
+          <ToolName organization={organization} project={project} tool={tool} />{' '}
+          tool removed
         </>,
       ),
     );
     differenceWith(nextRunTools, tools, isEqual).forEach((tool) =>
       deltaMessages.push(
         <>
-          <ToolName tool={tool} /> tool added
+          <ToolName organization={organization} project={project} tool={tool} />{' '}
+          tool added
         </>,
       ),
     );

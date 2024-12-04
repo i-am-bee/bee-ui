@@ -136,7 +136,10 @@ export function ToolsList({ type }: Props) {
                 )),
               disabled: isProjectReadOnly,
               tooltipContent: isProjectReadOnly ? (
-                <ReadOnlyTooltipContent entityName="tool" />
+                <ReadOnlyTooltipContent
+                  organization={organization}
+                  entityName="tool"
+                />
               ) : undefined,
             }
           : undefined

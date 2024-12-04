@@ -121,7 +121,10 @@ export function AppsHome() {
             onClick: () => router.push(`/${project.id}/apps/builder`),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (
-              <ReadOnlyTooltipContent entityName="app" />
+              <ReadOnlyTooltipContent
+                organization={organization}
+                entityName="app"
+              />
             ) : undefined,
           }}
         >

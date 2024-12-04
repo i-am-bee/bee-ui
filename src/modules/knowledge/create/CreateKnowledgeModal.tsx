@@ -67,7 +67,10 @@ export function CreateKnowledgeModal({
       <ModalHeader>
         <h2>Create new knowledge base</h2>
       </ModalHeader>
-      <VectorStoreFilesUploadProvider projectId={projectId}>
+      <VectorStoreFilesUploadProvider
+        projectId={projectId}
+        organizationId={organizationId}
+      >
         <CreateKnowledgeModalContent
           organizationId={organizationId}
           projectId={projectId}

@@ -41,6 +41,8 @@ import { AssistantIcon } from '../icons/AssistantIcon';
 import { assistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
 import classes from './AssistantModal.module.scss';
+import { Organization } from '@/app/api/organization/types';
+import { Project } from '@/app/api/projects/types';
 
 export interface AssistantModalProps {
   onDeleteSuccess?: () => void;
@@ -109,7 +111,14 @@ export default function AssistantModal({
                   <ul className={classes.tools}>
                     {assistant.tools.map((item, index) => {
                       const tool = getAssistantToolReference(item);
-                      return <ToolListItem key={tool.id} tool={tool} />;
+                      return (
+                        <ToolListItem
+                          organization={organization}
+                          project={project}
+                          key={tool.id}
+                          tool={tool}
+                        />
+                      );
                     })}
                   </ul>
                 </dt>
@@ -172,12 +181,24 @@ export default function AssistantModal({
   );
 }
 
-function ToolListItem({ tool }: { tool: ToolReference }) {
-  const { toolIcon: Icon, toolName } = useToolInfo(tool);
+function ToolListItem({
+  tool,
+  organization,
+  project,
+}: {
+  tool: ToolReference;
+  organization: Organization;
+  project: Project;
+}) {
+  const { toolIcon: Icon, toolName } = useToolInfo({
+    organization,
+    project,
+    toolReference: tool,
+  });
 
   return (
     <li>
-      <ToolIcon tool={tool} />
+      <ToolIcon organization={organization} project={project} tool={tool} />
       {toolName}
     </li>
   );

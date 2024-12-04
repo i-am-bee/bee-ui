@@ -29,6 +29,8 @@ import { PublicToolModal } from './manage/PublicToolModal';
 import { UserToolModal } from './manage/UserToolModal';
 import classes from './ToolCard.module.scss';
 import { getToolReferenceFromTool } from './utils';
+import { Organization } from '@/app/api/organization/types';
+import { Project } from '@/app/api/projects/types';
 
 interface Props {
   tool: Tool;
@@ -55,7 +57,13 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={<ToolIcon tool={getToolReferenceFromTool(tool)} />}
+        icon={
+          <ToolIcon
+            organization={organization}
+            project={project}
+            tool={getToolReferenceFromTool(tool)}
+          />
+        }
         onClick={() =>
           openModal((props) =>
             tool.type === 'user' ? (
@@ -72,7 +80,12 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
                 />
               )
             ) : (
-              <PublicToolModal {...props} tool={tool} />
+              <PublicToolModal
+                organization={organization}
+                project={project}
+                {...props}
+                tool={tool}
+              />
             ),
           )
         }
@@ -115,12 +128,20 @@ export function ToolIcon({
   tool,
   size = 'md',
   className,
+  project,
+  organization,
 }: {
   tool: ToolReference;
   className?: string;
   size?: 'md' | 'sm';
+  organization: Organization;
+  project: Project;
 }) {
-  const { toolIcon: Icon } = useToolInfo(tool);
+  const { toolIcon: Icon } = useToolInfo({
+    organization,
+    project,
+    toolReference: tool,
+  });
   return (
     <span className={clsx(classes.icon, className)} data-size={size}>
       <Icon size="20" />

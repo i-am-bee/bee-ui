@@ -99,7 +99,11 @@ export function PlanStep({ step, toolCall }: Props) {
           }
         : { type: toolKey, id: toolKey };
 
-  const { toolName, toolIcon } = useToolInfo(tool);
+  const { toolName, toolIcon } = useToolInfo({
+    organization,
+    project,
+    toolReference: tool,
+  });
   const ToolIcon = toolKey ? toolIcon : null;
 
   const expandedStep = useExpandedStep();

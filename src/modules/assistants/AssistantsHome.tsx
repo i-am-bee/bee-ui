@@ -117,7 +117,10 @@ export function AssistantsHome() {
             onClick: () => router.push(`/${project.id}/builder`),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (
-              <ReadOnlyTooltipContent entityName="bee" />
+              <ReadOnlyTooltipContent
+                organization={organization}
+                entityName="bee"
+              />
             ) : undefined,
           }}
         >

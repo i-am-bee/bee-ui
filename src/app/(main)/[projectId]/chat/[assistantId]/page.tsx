@@ -47,7 +47,10 @@ export default async function AssistantChatPage({
 
   return (
     <LayoutInitializer layout={{ sidebarVisible: true }}>
-      <VectorStoreFilesUploadProvider projectId={projectId}>
+      <VectorStoreFilesUploadProvider
+        projectId={projectId}
+        organizationId={session.userProfile.default_organization}
+      >
         <FilesUploadProvider>
           <ChatProvider
             assistant={{

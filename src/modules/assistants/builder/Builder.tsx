@@ -193,7 +193,10 @@ export function Builder({ thread, initialMessages }: Props) {
         </div>
       </section>
       <section className={classes.chat}>
-        <VectorStoreFilesUploadProvider projectId={project.id}>
+        <VectorStoreFilesUploadProvider
+          projectId={project.id}
+          organizationId={organization.id}
+        >
           <FilesUploadProvider>
             <ChatProvider
               assistant={{

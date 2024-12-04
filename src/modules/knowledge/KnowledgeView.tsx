@@ -157,7 +157,10 @@ export function KnowledgeView() {
             )),
           disabled: isProjectReadOnly,
           tooltipContent: isProjectReadOnly ? (
-            <ReadOnlyTooltipContent entityName="knowledge base" />
+            <ReadOnlyTooltipContent
+              organization={organization}
+              entityName="knowledge base"
+            />
           ) : undefined,
         }}
       >

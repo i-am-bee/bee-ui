@@ -77,7 +77,12 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
                 className={classes.createNewButton}
                 renderIcon={Add}
                 onClick={() =>
-                  openModal((props) => <CreateProjectModal {...props} />)
+                  openModal((props) => (
+                    <CreateProjectModal
+                      organization={organization}
+                      {...props}
+                    />
+                  ))
                 }
               >
                 Create workspace

@@ -43,7 +43,7 @@ import { apiKeysQuery } from '../api/queries';
 import { useDeleteApiKey } from '../api/useDeleteApiKey';
 import { useRegenerateApiKey } from '../api/useRegenerateApiKey';
 import classes from './ApiKeyModal.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { Organization } from '@/app/api/organization/types';
 
 interface FormValues {
   name: string;
@@ -52,16 +52,17 @@ interface FormValues {
 
 interface Props extends ModalProps {
   project: ProjectWithScope;
+  organization: Organization;
   onSuccess?: () => void;
 }
 
 export function ApiKeyModal({
   project: currentProject,
+  organization,
   onSuccess,
   ...props
 }: Props) {
   const { onRequestClose } = props;
-  const { organization } = useAppContext();
   const id = useId();
   const { openModal } = useModal();
 
@@ -190,12 +191,13 @@ export function ApiKeyModal({
 
 ApiKeyModal.Regenerate = function RegenerateModal({
   apiKey,
+  organization,
   ...props
 }: {
+  organization: Organization;
   apiKey: ApiKey;
 } & ModalProps) {
   const { openModal } = useModal();
-  const { organization } = useAppContext();
 
   const { mutate } = useRegenerateApiKey({
     organization,
@@ -251,11 +253,12 @@ ApiKeyModal.View = function ViewModal({
 
 ApiKeyModal.Delete = function DeleteModal({
   apiKey,
+  organization,
   ...props
 }: {
   apiKey: ApiKey;
+  organization: Organization;
 } & ModalProps) {
-  const { organization } = useAppContext();
   const { mutate, isPending } = useDeleteApiKey({
     onSuccess: () => props.onRequestClose(),
     organization,

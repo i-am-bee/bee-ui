@@ -18,12 +18,14 @@ import classes from './ReadOnlyTooltipContent.module.scss';
 import { useModal } from '@/layout/providers/ModalProvider';
 import pluralize from 'pluralize';
 import { CreateProjectModal } from './manage/CreateProjectModal';
+import { Organization } from '@/app/api/organization/types';
 
 interface Props {
   entityName: string;
+  organization: Organization;
 }
 
-export function ReadOnlyTooltipContent({ entityName }: Props) {
+export function ReadOnlyTooltipContent({ entityName, organization }: Props) {
   const { openModal } = useModal();
   return (
     <div className={classes.content}>
@@ -32,7 +34,11 @@ export function ReadOnlyTooltipContent({ entityName }: Props) {
       <span
         role="button"
         className={classes.button}
-        onClick={() => openModal((props) => <CreateProjectModal {...props} />)}
+        onClick={() =>
+          openModal((props) => (
+            <CreateProjectModal organization={organization} {...props} />
+          ))
+        }
       >
         create a new one
       </span>

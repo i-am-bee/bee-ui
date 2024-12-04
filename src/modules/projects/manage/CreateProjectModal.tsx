@@ -33,7 +33,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { PROJECTS_QUERY_PARAMS } from '../ProjectSelector';
 import { projectsQuery } from '../queries';
 import { useProjects } from '../hooks/useProjects';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { Organization } from '@/app/api/organization/types';
 
 interface CreateProjectValues {
   name: string;
@@ -41,16 +41,17 @@ interface CreateProjectValues {
 
 interface Props {
   onSuccess?: (project: Project) => void;
+  organization: Organization;
 }
 
 export function CreateProjectModal({
   onSuccess,
+  organization,
   ...props
 }: Props & ModalProps) {
   const htmlId = useId();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { organization } = useAppContext();
 
   const { data: projects } = useProjects({ organization });
 

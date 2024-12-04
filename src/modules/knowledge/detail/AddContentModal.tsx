@@ -58,6 +58,7 @@ export function AddContentModal({
         <h2>Add content to {vectorStore.name}</h2>
       </ModalHeader>
       <VectorStoreFilesUploadProvider
+        organizationId={organizationId}
         projectId={projectId}
         vectorStoreId={vectorStore.id}
         onCreateFileSuccess={onCreateSuccess}
