@@ -26,7 +26,7 @@ interface Props {
     projectId: string;
     artifactId: string;
   };
-  searchParams: { [key: string]: string };
+  searchParams: { secret?: string };
 }
 
 export default async function CloneAppPage({
