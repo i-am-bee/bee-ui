@@ -19,7 +19,6 @@ import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { PROJECT_ID_DEFAULT } from '@/utils/constants';
 import {
   Button,
   InlineLoading,
@@ -34,22 +33,30 @@ import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { projectsQuery } from '../queries';
 import classes from './ArchiveConfirmationModal.module.scss';
+import { Organization } from '@/app/api/organization/types';
+import { useUserProfile } from '@/store/user-profile';
 
 interface Props extends ModalProps {
   project: Project;
+  organization: Organization;
 }
 
-export function ArchiveConfirmationModal({ project, ...props }: Props) {
+export function ArchiveConfirmationModal({
+  project,
+  organization,
+  ...props
+}: Props) {
   const htmlId = useId();
   const queryClient = useQueryClient();
   const { addToast } = useToast();
   const router = useRouter();
+  const projectId = useUserProfile((state) => state.default_project);
 
   const { mutateAsync: mutateArchive } = useMutation({
-    mutationFn: () => archiveProject(project.id),
+    mutationFn: () => archiveProject(organization.id, project.id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [projectsQuery().queryKey.at(0)],
+        queryKey: [projectsQuery(organization.id).queryKey.at(0)],
       });
 
       addToast({
@@ -57,7 +64,7 @@ export function ArchiveConfirmationModal({ project, ...props }: Props) {
         title: 'The workspace was archived.',
         timeout: 10_000,
       });
-      router.push(`/${PROJECT_ID_DEFAULT}`);
+      router.push(`/${projectId}`);
       props.onRequestClose();
     },
     meta: {

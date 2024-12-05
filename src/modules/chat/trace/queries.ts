@@ -17,10 +17,14 @@
 import { listSpans } from '@/app/observe/api';
 import { queryOptions } from '@tanstack/react-query';
 
-export const listSpansQuery = (projectId: string, traceId: string) =>
+export const listSpansQuery = (
+  organizationId: string,
+  projectId: string,
+  traceId: string,
+) =>
   queryOptions({
     queryKey: ['observe:span', traceId],
-    queryFn: () => listSpans(projectId, traceId),
+    queryFn: () => listSpans(organizationId, projectId, traceId),
     meta: {
       errorToast: false,
     },

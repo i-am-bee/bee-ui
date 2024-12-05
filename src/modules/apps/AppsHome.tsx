@@ -46,7 +46,7 @@ import { AdminView } from '@/components/AdminView/AdminView';
 import { listArtifactsQuery } from './queries';
 
 export function AppsHome() {
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<ArtifactsListQueryOrderBy>(
     ARTIFACTS_ORDER_DEFAULT,
   );
@@ -78,13 +78,13 @@ export function AppsHome() {
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/assistants
     queryClient.invalidateQueries({
-      queryKey: [assistantsQuery(project.id).queryKey.at(0)],
+      queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
     });
   };
 
   const handleDeleteArtifactSuccess = (artifact: Artifact) => {
     queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-      listArtifactsQuery(project.id, params).queryKey,
+      listArtifactsQuery(organization.id, project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -122,7 +122,10 @@ export function AppsHome() {
             onClick: () => router.push(`/${project.id}/apps/builder`),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (
-              <ReadOnlyTooltipContent entityName="app" />
+              <ReadOnlyTooltipContent
+                organization={organization}
+                entityName="app"
+              />
             ) : undefined,
           }}
         >

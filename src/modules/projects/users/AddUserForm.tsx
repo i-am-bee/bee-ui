@@ -40,14 +40,14 @@ import { projectUsersQuery, readProjectUserQuery, usersQuery } from './queries';
 
 export function AddUserForm() {
   const htmlId = useId();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const userId = useUserProfile((state) => state.id);
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { data } = useInfiniteQuery({
-    ...usersQuery({ search }),
+    ...usersQuery(organization.id, { search }),
     enabled: search.length > 2,
   });
   const users = useMemo(
@@ -57,12 +57,12 @@ export function AddUserForm() {
 
   const { mutateAsync } = useMutation({
     mutationFn: (body: ProjectUserCreateBody) =>
-      createProjectUser(project.id, body),
+      createProjectUser(organization.id, project.id, body),
     onSuccess: () => {
       setSearch('');
       reset();
       queryClient.invalidateQueries({
-        queryKey: projectUsersQuery(project.id).queryKey,
+        queryKey: projectUsersQuery(organization.id, project.id).queryKey,
       });
     },
   });
@@ -82,7 +82,11 @@ export function AddUserForm() {
   const selectedUser = watch('user');
 
   const { data: projectUser, isPending: isCheckingMemberStatus } = useQuery({
-    ...readProjectUserQuery(project.id, selectedUser?.id ?? ''),
+    ...readProjectUserQuery(
+      organization.id,
+      project.id,
+      selectedUser?.id ?? '',
+    ),
     retry: false,
     enabled: Boolean(selectedUser),
     meta: { errorToast: false },

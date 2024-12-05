@@ -35,24 +35,33 @@ import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { queryOptions } from '@tanstack/react-query';
 
 export const listMessagesQuery = (
+  organizationId: string,
   projectId: string,
   threadId: string,
   query?: MessagesListQuery,
 ) =>
   queryOptions({
-    queryKey: ['threads.messages', projectId, threadId, query],
-    queryFn: () => listMessages(projectId, threadId, query),
+    queryKey: ['threads.messages', organizationId, projectId, threadId, query],
+    queryFn: () => listMessages(organizationId, projectId, threadId, query),
     staleTime: 60 * 60 * 1000,
   });
 
 export const runsQuery = (
+  organizationId: string,
   projectId: string,
   threadId: string,
   query?: RunsListQuery,
 ) =>
   queryOptions({
-    queryKey: ['runs', projectId, threadId, query?.order, query?.order_by],
-    queryFn: () => listRuns(projectId, threadId, query),
+    queryKey: [
+      'runs',
+      organizationId,
+      projectId,
+      threadId,
+      query?.order,
+      query?.order_by,
+    ],
+    queryFn: () => listRuns(organizationId, projectId, threadId, query),
     meta: {
       errorToast: false,
     },
@@ -65,23 +74,26 @@ export const linkPreviewQuery = (url: string) =>
   });
 
 export const messagesWithFilesQuery = (
+  organizationId: string,
   projectId: string,
   threadId: string,
   query?: MessagesListQuery,
 ) =>
   queryOptions({
-    queryKey: ['messages', projectId, threadId],
-    queryFn: () => listMessagesWithFiles(projectId, threadId, query),
+    queryKey: ['messages', organizationId, projectId, threadId],
+    queryFn: () =>
+      listMessagesWithFiles(organizationId, projectId, threadId, query),
   });
 
 export const readRunQuery = (
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
 ) =>
   queryOptions({
-    queryKey: ['run', projectId, threadId, runId],
-    queryFn: () => readRun(projectId, threadId, runId),
+    queryKey: ['run', organizationId, projectId, threadId, runId],
+    queryFn: () => readRun(organizationId, projectId, threadId, runId),
     select: (data) =>
       data ? decodeEntityWithMetadata<ThreadRun>(data) : undefined,
     meta: {
@@ -90,6 +102,7 @@ export const readRunQuery = (
   });
 
 export const runStepsQuery = (
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
@@ -101,6 +114,7 @@ export const runStepsQuery = (
     queryKey: [
       'steps',
       projectId,
+      organizationId,
       threadId,
       runId,
       order,
@@ -108,7 +122,7 @@ export const runStepsQuery = (
       query?.limit,
     ],
     queryFn: () =>
-      listRunSteps(projectId, threadId, runId, {
+      listRunSteps(organizationId, projectId, threadId, runId, {
         ...query,
         order,
       }),
@@ -123,13 +137,14 @@ export const runStepsQuery = (
 };
 
 export const readRunTraceQuery = (
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
 ) =>
   queryOptions({
-    queryKey: ['run-trace', projectId, threadId, runId],
-    queryFn: () => readTrace(projectId, threadId, runId),
+    queryKey: ['run-trace', organizationId, projectId, threadId, runId],
+    queryFn: () => readTrace(organizationId, projectId, threadId, runId),
     meta: {
       errorToast: false,
     },

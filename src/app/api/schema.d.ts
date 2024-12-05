@@ -7733,6 +7733,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            default_organization: string;
+                            default_project: string;
                             email: string | null;
                             id: string;
                             metadata?: {
@@ -7759,6 +7761,7 @@ export interface paths {
                         metadata?: {
                             [key: string]: string;
                         };
+                        name?: string | null;
                     };
                 };
             };
@@ -7770,6 +7773,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            default_organization: string;
+                            default_project: string;
                             email: string | null;
                             id: string;
                             metadata?: {
@@ -7796,6 +7801,7 @@ export interface paths {
                         metadata?: {
                             [key: string]: string;
                         };
+                        name?: string;
                     };
                 };
             };
@@ -7807,6 +7813,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            default_organization: string;
+                            default_project: string;
                             email: string | null;
                             id: string;
                             metadata?: {

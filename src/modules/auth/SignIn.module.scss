@@ -136,3 +136,16 @@
   padding-inline-end: 0;
   justify-content: flex-start;
 }
+
+.footer {
+  position: fixed;
+  left: $spacing-08;
+  bottom: $spacing-08;
+
+  font-size: small;
+  color: $text-secondary;
+
+  > a {
+    color: inherit;
+  }
+}

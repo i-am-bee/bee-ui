@@ -32,15 +32,26 @@ import {
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant, AssistantTemplate } from '../types';
 import classes from './AssistantCard.module.scss';
+import { Organization } from '@/app/api/organization/types';
+import { Project } from '@/app/api/projects/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   template: AssistantTemplate;
   selected?: boolean;
   onClick?: MouseEventHandler;
   onDeleteSuccess?: (assistant: Assistant) => void;
+  organization: Organization;
+  project: Project;
 }
 
-export function AssistantTemplateCard({ template, selected, onClick }: Props) {
+export function AssistantTemplateCard({
+  template,
+  selected,
+  organization,
+  project,
+  onClick,
+}: Props) {
   const { name, description, tools, tool_resources } = template;
   const vectorStoreId = tool_resources?.file_search?.vector_store_ids?.at(0);
 
@@ -60,14 +71,26 @@ export function AssistantTemplateCard({ template, selected, onClick }: Props) {
       )}
 
       <div className={classes.footer}>
-        <ToolsInfo tools={tools} />
+        <ToolsInfo
+          organization={organization}
+          project={project}
+          tools={tools}
+        />
         {vectorStoreId && <KnowledgeInfo vectorStoreId={vectorStoreId} />}
       </div>
     </CardsListItem>
   );
 }
 
-function ToolsInfo({ tools }: { tools: ToolsUsage }) {
+function ToolsInfo({
+  tools,
+  organization,
+  project,
+}: {
+  tools: ToolsUsage;
+  organization: Organization;
+  project: Project;
+}) {
   const displayedTools = tools.slice(0, 3);
   const remainingToolsCount = tools.length - displayedTools.length;
   const [loadingStates, setLoadingStates] = useState(
@@ -87,6 +110,8 @@ function ToolsInfo({ tools }: { tools: ToolsUsage }) {
           return (
             <span key={toolReference.id}>
               <ToolName
+                organization={organization}
+                project={project}
                 index={index}
                 tool={toolReference}
                 setLoadingStates={setLoadingStates}
@@ -105,12 +130,20 @@ function ToolName({
   index,
   tool,
   setLoadingStates,
+  organization,
+  project,
 }: {
   index: number;
   tool: ToolReference;
+  organization: Organization;
+  project: Project;
   setLoadingStates: Dispatch<SetStateAction<boolean[]>>;
 }) {
-  const { toolName, isLoading } = useToolInfo(tool);
+  const { toolName, isLoading } = useToolInfo({
+    organization,
+    project,
+    toolReference: tool,
+  });
 
   const onLoadingChange = useCallback(
     (isLoading: boolean) => {

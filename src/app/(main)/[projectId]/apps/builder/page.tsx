@@ -15,6 +15,7 @@
  */
 
 import { ensureAppBuilderAssistant } from '@/app/api/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
@@ -30,7 +31,9 @@ interface Props {
 export default async function AppsBuilderPage({
   params: { projectId },
 }: Props) {
-  const assistant = await ensureAppBuilderAssistant(projectId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
   if (!assistant) notFound();
 
   return (

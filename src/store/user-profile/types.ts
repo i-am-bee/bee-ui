@@ -19,7 +19,6 @@ import { StoreSlice } from '../types';
 export type UserMetadata = {
   email?: string;
   tou_accepted_at?: number;
-  default_project?: string;
   onboarding_completed_at?: number;
 };
 
@@ -30,6 +29,8 @@ export type UserProfileState = {
   lastName: string;
   email: string;
   metadata?: UserMetadata;
+  default_organization: string;
+  default_project: string;
 };
 
 export type UserProfileAction = {

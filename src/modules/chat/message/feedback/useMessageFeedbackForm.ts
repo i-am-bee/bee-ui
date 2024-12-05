@@ -36,7 +36,7 @@ interface Props {
 }
 
 export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const form = useForm<MessageFeedback>({
     defaultValues: MESSAGE_FEEDBACK_FORM_DEFAULTS,
@@ -55,12 +55,18 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
         throw new Error('Missing required "run" parameter.');
       }
 
-      const response = await updateRun(project.id, threadId, run.id, {
-        metadata: encodeMetadata<RunMetadata>({
-          ...run.uiMetadata,
-          feedback: body,
-        }),
-      });
+      const response = await updateRun(
+        organization.id,
+        project.id,
+        threadId,
+        run.id,
+        {
+          metadata: encodeMetadata<RunMetadata>({
+            ...run.uiMetadata,
+            feedback: body,
+          }),
+        },
+      );
       const thread = response
         ? decodeEntityWithMetadata<ThreadRun>(response)
         : undefined;
@@ -86,7 +92,7 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
 
       if (threadId && run) {
         queryClient.setQueryData(
-          readRunQuery(project.id, threadId, run.id).queryKey,
+          readRunQuery(organization.id, project.id, threadId, run.id).queryKey,
           (run) =>
             run
               ? {

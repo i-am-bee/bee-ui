@@ -66,7 +66,7 @@ export function Builder({ thread, initialMessages }: Props) {
     },
     isOnboarding,
   } = useAssistantBuilder();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
   const id = useId();
   const router = useRouter();
@@ -193,7 +193,10 @@ export function Builder({ thread, initialMessages }: Props) {
         </div>
       </section>
       <section className={classes.chat}>
-        <VectorStoreFilesUploadProvider projectId={project.id}>
+        <VectorStoreFilesUploadProvider
+          projectId={project.id}
+          organizationId={organization.id}
+        >
           <FilesUploadProvider>
             <ChatProvider
               assistant={{

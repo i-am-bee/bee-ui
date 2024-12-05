@@ -25,9 +25,9 @@ import { ReactElement, useState } from 'react';
 import { ArchiveConfirmationModal } from './manage/ArchiveConfirmationModal';
 import { RenameModal } from './manage/RenameModal';
 import classes from './ProjectHome.module.scss';
-import { ProjectSelector } from './ProjectSelector';
 import { UsersCount } from './users/UsersCount';
 import { UsersModalRenderer } from './users/UsersModalRenderer';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
 interface Props {
   children: ReactElement;
@@ -35,11 +35,9 @@ interface Props {
 
 export function ProjectHome({ children }: Props) {
   const [usersModalOpened, setUsersModalOpened] = useState(false);
-  const { project, isProjectReadOnly, role } = useAppContext();
+  const { project, organization, isProjectReadOnly, role } = useAppContext();
   const { openModal } = useModal();
-  const defaultProject = useUserProfile(
-    (state) => state.metadata?.default_project,
-  );
+  const defaultProject = useUserProfile((state) => state.default_project);
 
   return (
     <>
@@ -48,9 +46,9 @@ export function ProjectHome({ children }: Props) {
           <div className={classes.header}>
             <h1 className={classes.heading}>{project.name}</h1>
             <div className={classes.sharing}>
-              {!isProjectReadOnly && (
+              {!isProjectReadOnly && isFeatureEnabled(FeatureName.Projects) && (
                 <>
-                  <UsersCount project={project} />
+                  <UsersCount project={project} organization={organization} />
                   <Button
                     renderIcon={Add}
                     kind="tertiary"
@@ -67,24 +65,30 @@ export function ProjectHome({ children }: Props) {
                     itemText="Rename"
                     onClick={() =>
                       openModal((props) => (
-                        <RenameModal project={project} {...props} />
+                        <RenameModal
+                          organization={organization}
+                          project={project}
+                          {...props}
+                        />
                       ))
                     }
                   />
-                  {project.id !== defaultProject && (
-                    <OverflowMenuItem
-                      itemText="Archive"
-                      isDelete
-                      onClick={() =>
-                        openModal((props) => (
-                          <ArchiveConfirmationModal
-                            {...props}
-                            project={project}
-                          />
-                        ))
-                      }
-                    />
-                  )}
+                  {isFeatureEnabled(FeatureName.Projects) &&
+                    project.id !== defaultProject && (
+                      <OverflowMenuItem
+                        itemText="Archive"
+                        isDelete
+                        onClick={() =>
+                          openModal((props) => (
+                            <ArchiveConfirmationModal
+                              {...props}
+                              organization={organization}
+                              project={project}
+                            />
+                          ))
+                        }
+                      />
+                    )}
                 </OverflowMenu>
               )}
             </div>

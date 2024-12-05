@@ -20,6 +20,7 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { extractCodeFromMessageContent } from '@/modules/apps/utils';
@@ -39,14 +40,21 @@ interface Props {
 export default async function AppBuilderPage({
   params: { projectId, threadId },
 }: Props) {
-  const assistant = await ensureAppBuilderAssistant(projectId);
-  const thread = await fetchThread(projectId, threadId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
+  const thread = await fetchThread(organizationId, projectId, threadId);
 
   if (!(assistant && thread)) notFound();
 
-  const initialMessages = await listMessagesWithFiles(projectId, threadId, {
-    limit: MESSAGES_PAGE_SIZE,
-  });
+  const initialMessages = await listMessagesWithFiles(
+    organizationId,
+    projectId,
+    threadId,
+    {
+      limit: MESSAGES_PAGE_SIZE,
+    },
+  );
 
   return (
     <LayoutInitializer

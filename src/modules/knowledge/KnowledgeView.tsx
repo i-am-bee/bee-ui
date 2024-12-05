@@ -45,7 +45,7 @@ export function KnowledgeView() {
   const [order, setOrder] = useState<VectorStoresListQueryOrderBy>(
     VECTOR_STORES_ORDER_DEFAULT,
   );
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const queryClient = useQueryClient();
   const { openModal } = useModal();
 
@@ -71,7 +71,7 @@ export function KnowledgeView() {
 
   const onCreateSuccess = (response: VectorStoreCreateResponse) => {
     queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQuery(project.id, params).queryKey,
+      vectorStoresQuery(organization.id, project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
 
@@ -81,19 +81,21 @@ export function KnowledgeView() {
     );
 
     queryClient.invalidateQueries({
-      queryKey: [vectorStoresQuery(project.id, params).queryKey.at(0)],
+      queryKey: [
+        vectorStoresQuery(organization.id, project.id, params).queryKey.at(0),
+      ],
     });
   };
 
   const handleInvalidateData = () => {
     queryClient.invalidateQueries({
-      queryKey: [vectorStoresQuery(project.id).queryKey.at(0)],
+      queryKey: [vectorStoresQuery(organization.id, project.id).queryKey.at(0)],
     });
   };
 
   const onUpdateQueryData = (updater: ListVectorStoresDataUpdater) => {
     queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQuery(project.id, params).queryKey,
+      vectorStoresQuery(organization.id, project.id, params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -147,6 +149,7 @@ export function KnowledgeView() {
             openModal((props) => (
               <CreateKnowledgeModal
                 {...props}
+                organizationId={organization.id}
                 projectId={project.id}
                 onCreateVectorStore={onCreateSuccess}
                 onSuccess={handleInvalidateData}
@@ -154,7 +157,10 @@ export function KnowledgeView() {
             )),
           disabled: isProjectReadOnly,
           tooltipContent: isProjectReadOnly ? (
-            <ReadOnlyTooltipContent entityName="knowledge base" />
+            <ReadOnlyTooltipContent
+              organization={organization}
+              entityName="knowledge base"
+            />
           ) : undefined,
         }}
       >

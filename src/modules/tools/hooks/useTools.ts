@@ -24,10 +24,10 @@ export function useTools({
 }: {
   params?: ToolsListQuery;
 } = {}) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const query = useInfiniteQuery({
-    ...toolsQuery(project.id, params),
+    ...toolsQuery(organization.id, project.id, params),
   });
 
   return query;

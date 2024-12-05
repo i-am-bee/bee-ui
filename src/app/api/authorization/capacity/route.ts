@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import { readFile } from '@/app/api/files';
-import { queryOptions } from '@tanstack/react-query';
+import { redis, RedisKey } from '@/redis';
 
-export const readFileQuery = (
-  organizationId: string,
-  projectId: string,
-  id: string,
-) =>
-  queryOptions({
-    queryKey: ['files/{file_id}', organizationId, projectId, id],
-    queryFn: () => readFile(organizationId, projectId, id),
-    staleTime: 60 * 60 * 1000,
-  });
+import { NextResponse, NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const remainingCapacity = await redis.get(RedisKey.REMAINING_CAPACITY);
+  if (!remainingCapacity) return NextResponse.json({ remainingCapacity: null });
+  return NextResponse.json({ remainingCapacity: parseInt(remainingCapacity) });
+}

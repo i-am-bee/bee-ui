@@ -48,12 +48,17 @@ export function KnowledgeFileCard({
   onDeleteSuccess,
 }: Props) {
   const { openConfirmation } = useModal();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
 
   const { mutateAsync: mutateDeleteFile, isPending: isDeletePending } =
     useMutation({
       mutationFn: () =>
-        deleteVectorStoreFile(project.id, vectorStore.id, vectorStoreFile.id),
+        deleteVectorStoreFile(
+          organization.id,
+          project.id,
+          vectorStore.id,
+          vectorStoreFile.id,
+        ),
       onSuccess: async () => {
         onDeleteSuccess?.(vectorStoreFile);
       },
@@ -66,7 +71,7 @@ export function KnowledgeFileCard({
     });
 
   const { data, isLoading } = useQuery(
-    readFileQuery(project.id, vectorStoreFile.id),
+    readFileQuery(organization.id, project.id, vectorStoreFile.id),
   );
 
   if (!data && isLoading)

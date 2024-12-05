@@ -75,7 +75,7 @@ export function ThreadItem({ thread }: Props) {
   const { openConfirmation } = useModal();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const id = useId();
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
@@ -102,13 +102,13 @@ export function ThreadItem({ thread }: Props) {
 
   // Fallback for when the message is not saved in thread metadata
   const { data, isLoading, error, refetch } = useQuery({
-    ...listMessagesQuery(project.id, thread.id, { limit: 1 }),
+    ...listMessagesQuery(organization.id, project.id, thread.id, { limit: 1 }),
     enabled: !title,
   });
 
   const { mutateAsync: mutateDeleteThread, isPending: isDeletePending } =
     useMutation({
-      mutationFn: (id: string) => deleteThread(project.id, id),
+      mutationFn: (id: string) => deleteThread(organization.id, project.id, id),
       onMutate: () => {
         if (isActive) {
           router.push(getNewSessionUrl(project.id, assistant.data));
@@ -116,7 +116,7 @@ export function ThreadItem({ thread }: Props) {
       },
       onSuccess: () => {
         queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-          threadsQuery(project.id).queryKey,
+          threadsQuery(organization.id, project.id).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -131,7 +131,7 @@ export function ThreadItem({ thread }: Props) {
         );
 
         queryClient.invalidateQueries({
-          queryKey: threadsQuery(project.id).queryKey,
+          queryKey: threadsQuery(organization.id, project.id).queryKey,
         });
       },
       meta: {

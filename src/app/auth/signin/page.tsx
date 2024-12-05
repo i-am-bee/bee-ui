@@ -18,9 +18,7 @@ import { LoginError, SignIn } from '@/modules/auth/SignIn';
 import { isAbsoluteUrl } from '@/utils/url';
 import { signIn } from './actions';
 import { redirect } from 'next/navigation';
-import { redis } from '@/redis';
-
-const REMAINING_CAPACITY_KEY = 'remainingCapacity';
+import { redis, RedisKey } from '@/redis';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
@@ -70,7 +68,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
     }
   })();
 
-  const remainingCapacity = await redis.get(REMAINING_CAPACITY_KEY);
+  const remainingCapacity = await redis.get(RedisKey.REMAINING_CAPACITY);
   const waitlistFull = !!remainingCapacity && parseInt(remainingCapacity) === 0;
 
   return (

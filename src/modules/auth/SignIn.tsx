@@ -27,6 +27,7 @@ import GoogleIcon from './GoogleIcon.svg';
 import IBMIcon from './IBMIcon.svg';
 
 const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
+const BEE_AGENT_PLATFORM_URL = process.env.NEXT_PUBLIC_BEE_AGENT_PLATFORM_URL;
 
 interface Props {
   error: LoginError | null;
@@ -193,6 +194,13 @@ export function SignIn({
           />
         )}
       </div>
+
+      {BEE_AGENT_PLATFORM_URL && (
+        <footer className={classes.footer}>
+          Powered by open-source{' '}
+          <a href={BEE_AGENT_PLATFORM_URL}>Bee Agent Platform</a>
+        </footer>
+      )}
     </div>
   );
 }

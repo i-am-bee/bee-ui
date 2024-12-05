@@ -15,12 +15,12 @@
  */
 
 import 'server-only';
-import { dummyUserProfileState } from '@/store/user-profile';
 import { JWT } from 'next-auth/jwt';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { SIGN_IN_PAGE, auth } from '.';
 import { addDaysToDate } from '@/utils/dates';
+import { readUser } from '../api/users';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
@@ -30,13 +30,22 @@ export const getSession = cache(async () => {
 
 export const ensureSession = async () => {
   if (DUMMY_JWT_TOKEN) {
-    return {
-      user: {
-        access_token: DUMMY_JWT_TOKEN,
-      },
-      expires: addDaysToDate(new Date(), SESSION_TEST_EXPIRY_DAYS),
-      userProfile: dummyUserProfileState,
-    };
+    const user = await readUser(DUMMY_JWT_TOKEN);
+    if (user)
+      return {
+        user: {
+          access_token: DUMMY_JWT_TOKEN,
+        },
+        expires: addDaysToDate(new Date(), SESSION_TEST_EXPIRY_DAYS),
+        userProfile: {
+          metadata: {},
+          ...user,
+          name: user.name ?? '',
+          email: user.email ?? '',
+          firstName: 'Test',
+          lastName: 'User',
+        },
+      };
   }
 
   const session = await getSession();
@@ -52,5 +61,19 @@ export const ensureAccessToken = async () => {
   const { access_token } = session.user as JWT;
   return access_token;
 };
+
+export async function ensureDefaultOrganizationId() {
+  const session = await ensureSession();
+  if (!session) {
+    throw new Error('Session not found.');
+  }
+
+  const organizationId = session.userProfile.default_organization;
+  if (!organizationId) {
+    throw new Error('Organization not found.');
+  }
+
+  return organizationId;
+}
 
 const SESSION_TEST_EXPIRY_DAYS = 7;

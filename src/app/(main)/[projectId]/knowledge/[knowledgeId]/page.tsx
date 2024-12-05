@@ -15,6 +15,7 @@
  */
 
 import { fetchVectorStore } from '@/app/api/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { KnowledgeDetail } from '@/modules/knowledge/detail/KnowledgeDetail';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
@@ -29,7 +30,13 @@ interface Props {
 export default async function KnowledgeDetailPage({
   params: { projectId, knowledgeId },
 }: Props) {
-  const vectorStore = await fetchVectorStore(projectId, knowledgeId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const vectorStore = await fetchVectorStore(
+    organizationId,
+    projectId,
+    knowledgeId,
+  );
 
   if (!vectorStore) notFound();
 

@@ -17,7 +17,11 @@
 import { assertSuccessResponse, getRequestHeaders } from '../../api/utils';
 import { observeClient } from './client';
 
-export async function readTrace(projectId: string, id: string) {
+export async function readTrace(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await observeClient.GET('/trace/{id}', {
     params: {
       path: {
@@ -27,21 +31,25 @@ export async function readTrace(projectId: string, id: string) {
         include_mlflow: true,
       },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function listSpans(projectId: string, traceId: string) {
+export async function listSpans(
+  organizationId: string,
+  projectId: string,
+  traceId: string,
+) {
   const res = await observeClient.GET('/span', {
     params: {
       query: {
         trace_id: traceId,
       },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);

@@ -20,7 +20,7 @@ export const isFeatureEnabled = (() => {
     return (feature: FeatureName) =>
       feature in allFeatures ? !!allFeatures[feature] : false;
   } catch (err) {
-    console.warn('Unable to parse feature flags!', err)
+    console.warn('Unable to parse feature flags!', err);
     return (_: string) => false;
   }
 })();
@@ -31,4 +31,5 @@ export enum FeatureName {
   Observe = 'Observe',
   Files = 'Files',
   TextExtraction = 'TextExtraction',
+  Projects = 'Projects',
 }

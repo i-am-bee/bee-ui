@@ -28,6 +28,8 @@ import { useAppContext } from '../providers/AppProvider';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -97,10 +99,9 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
                 showShareButton={navbarProps.type === 'app-detail'}
               />
             )}
-        </div>
 
-        {/* TODO: Remove. Let's keep it for testing purposes for now. */}
-        {/* <ProjectSelector /> */}
+          {isFeatureEnabled(FeatureName.Projects) && <ProjectSelector />}
+        </div>
       </Container>
     </header>
   );

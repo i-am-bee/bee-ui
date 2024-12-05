@@ -29,7 +29,6 @@ import {
   EntityResultWithMetadata,
   EntityWithEncodedMetadata,
 } from './types';
-import { ORGANIZATION_ID_DEFAULT } from '@/utils/constants';
 
 export async function maybeGetJsonBody(response: Response): Promise<unknown> {
   const body = await response.text();
@@ -143,19 +142,20 @@ export function encodeEntityWithMetadata<
   return { ...rest, metadata: encodeMetadata<T['uiMetadata']>(uiMetadata) };
 }
 
-export function getProjectHeaders(projectId?: string) {
+export function getProjectHeaders(organizationId: string, projectId?: string) {
   return {
-    'x-organization': ORGANIZATION_ID_DEFAULT,
+    'x-organization': organizationId,
     ...(projectId ? { 'x-project': projectId } : undefined),
   };
 }
 
 export function getRequestHeaders(
+  organizationId: string,
   projectId?: string,
   additionalHeaders?: HeadersOptions,
 ) {
   return {
-    ...getProjectHeaders(projectId),
+    ...getProjectHeaders(organizationId, projectId),
     ...additionalHeaders,
   };
 }

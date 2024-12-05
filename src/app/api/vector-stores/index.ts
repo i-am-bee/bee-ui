@@ -20,18 +20,20 @@ import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { VectorStoreCreateBody, VectorStoresListQuery } from './types';
 
 export async function createVectorStore(
+  organizationId: string,
   projectId: string,
   body: VectorStoreCreateBody,
 ) {
   const res = await client.POST('/v1/vector_stores', {
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function updateVectorStore(
+  organizationId: string,
   projectId: string,
   id: string,
   body: VectorStoreCreateBody,
@@ -39,22 +41,27 @@ export async function updateVectorStore(
   const res = await client.POST('/v1/vector_stores/{vector_store_id}', {
     params: { path: { vector_store_id: id } },
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readVectorStore(projectId: string, id: string) {
+export async function readVectorStore(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET('/v1/vector_stores/{vector_store_id}', {
     params: { path: { vector_store_id: id } },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function listVectorStores(
+  organizationId: string,
   projectId: string,
   query: VectorStoresListQuery,
 ) {
@@ -62,24 +69,34 @@ export async function listVectorStores(
     params: {
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteVectorStore(projectId: string, id: string) {
+export async function deleteVectorStore(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.DELETE('/v1/vector_stores/{vector_store_id}', {
     params: {
       path: { vector_store_id: id },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
 }
 
-export async function fetchVectorStore(projectId: string, id?: string) {
+export async function fetchVectorStore(
+  organizationId: string,
+  projectId: string,
+  id?: string,
+) {
   if (!id) return;
 
-  return await fetchEntity(() => readVectorStore(projectId, id));
+  return await fetchEntity(() =>
+    readVectorStore(organizationId, projectId, id),
+  );
 }

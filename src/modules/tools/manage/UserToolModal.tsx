@@ -32,12 +32,13 @@ import {
   TextInput,
 } from '@carbon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useId } from 'react';
+import { useCallback, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { readToolQuery, toolsQuery } from '../queries';
 import classes from './UserToolModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { Organization } from '@/app/api/organization/types';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -62,6 +63,7 @@ interface FormValues {
 interface Props extends ModalProps {
   tool?: Tool;
   project: Project;
+  organization: Organization;
   onCreateSuccess?: (tool: ToolResult) => void;
   onSaveSuccess?: (tool: ToolResult) => void;
   onDeleteSuccess?: (tool: Tool) => void;
@@ -70,6 +72,7 @@ interface Props extends ModalProps {
 export function UserToolModal({
   tool,
   project,
+  organization,
   onCreateSuccess,
   onSaveSuccess,
   onDeleteSuccess,
@@ -78,11 +81,7 @@ export function UserToolModal({
   const { onRequestClose } = props;
   const { openConfirmation } = useModal();
   const id = useId();
-  const {
-    setConfirmOnRequestClose,
-    clearConfirmOnRequestClose,
-    onRequestCloseSafe,
-  } = useModalControl();
+  const { onRequestCloseSafe } = useModalControl();
 
   const editMode = tool != undefined;
 
@@ -110,17 +109,18 @@ export function UserToolModal({
   } = useMutation({
     mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
       return id
-        ? updateTool(project.id, id, body)
-        : createTool(project.id, body);
+        ? updateTool(organization.id, project.id, id, body)
+        : createTool(organization.id, project.id, body);
     },
     onSuccess: (tool, { id }) => {
       queryClient.invalidateQueries({
-        queryKey: [toolsQuery(project.id).queryKey.at(0)],
+        queryKey: [toolsQuery(organization.id, project.id).queryKey.at(0)],
       });
 
       if (tool) {
         queryClient.invalidateQueries({
-          queryKey: readToolQuery(project.id, tool.id).queryKey,
+          queryKey: readToolQuery(organization.id, project.id, tool.id)
+            .queryKey,
         });
 
         if (!id) {
@@ -141,13 +141,13 @@ export function UserToolModal({
 
   const { mutateAsync: mutateDeleteTool, isPending: isDeletePending } =
     useMutation({
-      mutationFn: (id: string) => deleteTool(project.id, id),
+      mutationFn: (id: string) => deleteTool(organization.id, project.id, id),
       onSuccess: () => {
         tool && onDeleteSuccess?.(tool);
         onRequestClose();
 
         queryClient.invalidateQueries({
-          queryKey: [toolsQuery(project.id).queryKey.at(0)],
+          queryKey: [toolsQuery(organization.id, project.id).queryKey.at(0)],
         });
       },
       meta: {

@@ -18,12 +18,12 @@ import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { UsersListQuery } from './types';
 
-export async function listUsers(query: UsersListQuery) {
+export async function listUsers(organizationId: string, query: UsersListQuery) {
   const res = await client.GET('/v1/organization/users', {
     params: {
       query,
     },
-    headers: getRequestHeaders(),
+    headers: getRequestHeaders(organizationId),
   });
   assertSuccessResponse(res);
   return res.data;

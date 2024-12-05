@@ -48,7 +48,7 @@ export function ThreadKnowledge({
   const { getMessages, disabledTools, setDisabledTools } = useChat();
   const { getThreadTools } = useChat();
   const { files } = useFilesUpload();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   // TODO: We don't currently support paging of messages, so this works. When pagination is available, we need to figure out the functionality differently.
   const allFiles = useMemo(
     () => [
@@ -79,9 +79,14 @@ export function ThreadKnowledge({
     isLoading: isThreadKnowledgeFilesLoading,
   } = useInfiniteQuery({
     // We support only one vector store per thread
-    ...vectorStoresFilesQuery(project.id, threadVectorStores.at(0)!, {
-      limit: VECTOR_STORES_FILES_LIMIT,
-    }),
+    ...vectorStoresFilesQuery(
+      organization.id,
+      project.id,
+      threadVectorStores.at(0)!,
+      {
+        limit: VECTOR_STORES_FILES_LIMIT,
+      },
+    ),
     enabled: enableFetch && threadVectorStores.length > 0,
   });
 

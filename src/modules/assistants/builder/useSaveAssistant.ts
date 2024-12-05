@@ -30,7 +30,7 @@ interface Props {
 
 export function useSaveAssistant({ onSuccess }: Props) {
   const queryClient = useQueryClient();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const {
     mutate: saveAssistant,
     mutateAsync: saveAssistantAsync,
@@ -38,16 +38,17 @@ export function useSaveAssistant({ onSuccess }: Props) {
   } = useMutation({
     mutationFn: ({ id, body }: { id?: string; body: AssistantCreateBody }) => {
       return id
-        ? updateAssistant(project.id, id, body)
-        : createAssistant(project.id, body);
+        ? updateAssistant(organization.id, project.id, id, body)
+        : createAssistant(organization.id, project.id, body);
     },
     onSuccess: (data, values) => {
       queryClient.invalidateQueries({
-        queryKey: [assistantsQuery(project.id).queryKey.at(0)],
+        queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
       });
       if (data)
         queryClient.invalidateQueries({
-          queryKey: readAssistantQuery(project.id, data.id).queryKey,
+          queryKey: readAssistantQuery(organization.id, project.id, data.id)
+            .queryKey,
         });
 
       data && onSuccess?.(data, !values.id);

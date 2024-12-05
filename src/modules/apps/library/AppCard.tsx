@@ -16,13 +16,10 @@
 
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { isNotNull } from '@/utils/helpers';
 import { MouseEventHandler } from 'react';
 import classes from './AppCard.module.scss';
 import { Artifact } from '../types';
-import { useModal } from '@/layout/providers/ModalProvider';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
-import { UpdateAppModal } from '../manage/UpdateAppModal';
 import { useRouter } from 'next-nprogress-bar';
 
 interface Props {

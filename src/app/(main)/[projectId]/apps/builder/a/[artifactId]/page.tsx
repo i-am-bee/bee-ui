@@ -22,6 +22,7 @@ import {
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { Artifact } from '@/modules/apps/types';
@@ -39,11 +40,13 @@ interface Props {
 export default async function AppBuilderPage({
   params: { projectId, artifactId },
 }: Props) {
-  const assistant = await ensureAppBuilderAssistant(projectId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
   const artifactResult = await fetchArtifact(projectId, artifactId);
 
   const thread = artifactResult?.thread_id
-    ? await fetchThread(projectId, artifactResult?.thread_id)
+    ? await fetchThread(organizationId, projectId, artifactResult?.thread_id)
     : null;
 
   if (!(assistant && thread && artifactResult)) notFound();
@@ -51,7 +54,7 @@ export default async function AppBuilderPage({
   const artifact = decodeEntityWithMetadata<Artifact>(artifactResult);
 
   const initialMessages = thread.id
-    ? await listMessagesWithFiles(projectId, thread.id, {
+    ? await listMessagesWithFiles(organizationId, projectId, thread.id, {
         limit: MESSAGES_PAGE_SIZE,
       })
     : [];

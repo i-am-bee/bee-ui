@@ -20,6 +20,7 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { ConversationView } from '@/modules/chat/ConversationView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -37,23 +38,38 @@ interface Props {
 export default async function ThreadPage({
   params: { projectId, threadId },
 }: Props) {
-  const thread = await fetchThread(projectId, threadId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const thread = await fetchThread(organizationId, projectId, threadId);
 
   if (!thread) notFound();
 
   const { assistantName, assistantId } = thread.uiMetadata;
   const threadAssistant = {
     name: assistantName,
-    ...(await fetchThreadAssistant(projectId, threadId, assistantId)),
+    ...(await fetchThreadAssistant(
+      organizationId,
+      projectId,
+      threadId,
+      assistantId,
+    )),
   };
 
-  const initialMessages = await listMessagesWithFiles(projectId, threadId, {
-    limit: MESSAGES_PAGE_SIZE,
-  });
+  const initialMessages = await listMessagesWithFiles(
+    organizationId,
+    projectId,
+    threadId,
+    {
+      limit: MESSAGES_PAGE_SIZE,
+    },
+  );
 
   return (
     <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
-      <VectorStoreFilesUploadProvider projectId={projectId}>
+      <VectorStoreFilesUploadProvider
+        projectId={projectId}
+        organizationId={organizationId}
+      >
         <FilesUploadProvider>
           <ChatProvider
             thread={thread}

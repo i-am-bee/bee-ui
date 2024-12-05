@@ -17,10 +17,14 @@
 import { Project } from '@/app/api/projects/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { projectUsersQuery } from './queries';
+import { Organization } from '@/app/api/organization/types';
 
-export function useProjectUsersCount(project: Project) {
+export function useProjectUsersCount(
+  organization: Organization,
+  project: Project,
+) {
   const { data, isLoading } = useInfiniteQuery(
-    projectUsersQuery(project.id, { limit: 1 }),
+    projectUsersQuery(organization.id, project.id, { limit: 1 }),
   );
 
   return { totalCount: data?.totalCount, isLoading };

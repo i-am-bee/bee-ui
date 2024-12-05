@@ -38,15 +38,20 @@ export function useBuildTraceData({
   threadId,
   runId,
 }: Props): TraceData | null {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const { data: runTraceData } = useQuery({
-    ...readRunTraceQuery(project.id, threadId ?? '', runId ?? ''),
+    ...readRunTraceQuery(
+      organization.id,
+      project.id,
+      threadId ?? '',
+      runId ?? '',
+    ),
     enabled: Boolean(enabled && threadId && runId),
   });
 
   const { data: traceSpans } = useQuery({
-    ...listSpansQuery(project.id, runTraceData?.id ?? ''),
+    ...listSpansQuery(organization.id, project.id, runTraceData?.id ?? ''),
     enabled: Boolean(runTraceData),
   });
 

@@ -125,6 +125,7 @@ const authResult = NextAuth(() => ({
 
       try {
         const result = await createUser(account.access_token, {
+          name: user.name ?? undefined,
           metadata: encodeMetadata<UserMetadata>({
             email: user.email ?? '',
           }),
@@ -206,6 +207,8 @@ const authResult = NextAuth(() => ({
         firstName: token.first_name,
         lastName: token.last_name,
         metadata: token.userEntity.uiMetadata,
+        default_organization: token.userEntity.default_organization,
+        default_project: token.userEntity.default_project,
       };
 
       return session;

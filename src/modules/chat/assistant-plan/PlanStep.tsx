@@ -69,7 +69,7 @@ export function PlanStep({ step, toolCall }: Props) {
 
   const { run } = useRunContext();
   const { assistant, thread, onToolApprovalSubmitRef, setThread } = useChat();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { trace } = useTraceData();
 
   const queryClient = useQueryClient();
@@ -99,7 +99,11 @@ export function PlanStep({ step, toolCall }: Props) {
           }
         : { type: toolKey, id: toolKey };
 
-  const { toolName, toolIcon } = useToolInfo(tool);
+  const { toolName, toolIcon } = useToolInfo({
+    organization,
+    project,
+    toolReference: tool,
+  });
   const ToolIcon = toolKey ? toolIcon : null;
 
   const expandedStep = useExpandedStep();
@@ -136,7 +140,8 @@ export function PlanStep({ step, toolCall }: Props) {
     onToolApprovalSubmitRef.current?.(value);
 
     queryClient.setQueryData(
-      readRunQuery(project.id, thread?.id ?? '', run?.id ?? '').queryKey,
+      readRunQuery(organization.id, project.id, thread?.id ?? '', run?.id ?? '')
+        .queryKey,
       (run) =>
         run
           ? {

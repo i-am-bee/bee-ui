@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-export const ORGANIZATION_ID_DEFAULT =
-  process.env.NEXT_PUBLIC_ORGANIZATION_ID_DEFAULT!;
-export const PROJECT_ID_DEFAULT = process.env.NEXT_PUBLIC_PROJECT_ID_DEFAULT!;
-
 export const TOU_TEXT = process.env.NEXT_PUBLIC_TOU_TEXT!;
 export const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL!;
 export const DOCUMENTATION_URL = process.env.NEXT_PUBLIC_DOCUMENTATION_URL!;

@@ -18,11 +18,14 @@ import { listApiKeys } from '@/app/api/api-keys';
 import { ApiKeysListQuery } from '@/app/api/api-keys/types';
 import { queryOptions } from '@tanstack/react-query';
 
-export const apiKeysQuery = (params?: ApiKeysListQuery) =>
+export const apiKeysQuery = (
+  organizationId: string,
+  params?: ApiKeysListQuery,
+) =>
   queryOptions({
     queryKey: ['api-keys', params],
     queryFn: () =>
-      listApiKeys({
+      listApiKeys(organizationId, {
         order_by: 'created_at',
         order: 'desc',
         ...params,

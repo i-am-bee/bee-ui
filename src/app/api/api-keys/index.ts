@@ -18,38 +18,49 @@ import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { ApiKeysCreateBody, ApiKeysListQuery } from './types';
 
-export async function createApiKey(projectId: string, body: ApiKeysCreateBody) {
+export async function createApiKey(
+  organizationId: string,
+  projectId: string,
+  body: ApiKeysCreateBody,
+) {
   const res = await client.POST(
     '/v1/organization/projects/{project_id}/api_keys',
     {
       body,
       params: { path: { project_id: projectId } },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function listApiKeys(query: ApiKeysListQuery) {
+export async function listApiKeys(
+  organizationId: string,
+  query: ApiKeysListQuery,
+) {
   const res = await client.GET('/v1/organization/api_keys', {
     params: {
       query,
     },
-    headers: getRequestHeaders(),
+    headers: getRequestHeaders(organizationId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readApiKey(projectId: string, id: string) {
+export async function readApiKey(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET(
     '/v1/organization/projects/{project_id}/api_keys/{api_key_id}',
     {
       params: {
         path: { project_id: id, api_key_id: id },
       },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
@@ -57,6 +68,7 @@ export async function readApiKey(projectId: string, id: string) {
 }
 
 export async function updateApiKey(
+  organizationId: string,
   projectId: string,
   id: string,
   body: ApiKeysCreateBody,
@@ -68,21 +80,25 @@ export async function updateApiKey(
         path: { project_id: projectId, api_key_id: id },
       },
       body,
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteApiKey(projectId: string, id: string) {
+export async function deleteApiKey(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.DELETE(
     '/v1/organization/projects/{project_id}/api_keys/{api_key_id}',
     {
       params: {
         path: { project_id: projectId, api_key_id: id },
       },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);

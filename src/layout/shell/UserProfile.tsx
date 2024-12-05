@@ -18,7 +18,7 @@ import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import { Link } from '@/components/Link/Link';
 import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { dummyUserProfileState, useUserProfile } from '@/store/user-profile';
+import { useUserProfile } from '@/store/user-profile';
 import { PRIVACY_URL, TOU_TEXT } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import { Button, Popover, PopoverContent } from '@carbon/react';
@@ -39,11 +39,11 @@ export function UserProfile() {
   const id = useId();
 
   const { openModal } = useModal();
-  const userId = useUserProfile((state) => state.id);
+  const userEmail = useUserProfile((state) => state.email);
   const name = useUserProfile((state) => state.name);
   const email = useUserProfile((state) => state.email);
 
-  const isDummyUser = userId === dummyUserProfileState.id;
+  const isDummyUser = userEmail === DUMMY_USER_EMAIL;
 
   useOnClickOutside(ref, () => {
     setOpen(false);
@@ -173,3 +173,5 @@ type MenuItem = {
   onClick?: () => void;
   isExternal?: boolean;
 };
+
+const DUMMY_USER_EMAIL = 'test@email.com';
