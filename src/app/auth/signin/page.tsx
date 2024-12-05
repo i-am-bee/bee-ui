@@ -20,7 +20,7 @@ import { signIn } from './actions';
 import { redirect } from 'next/navigation';
 import { redis } from '@/redis';
 
-const REMAINING_CAPACITY_KEY = 'remainingCapacity';
+export const REMAINING_CAPACITY_KEY = 'remainingCapacity';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
