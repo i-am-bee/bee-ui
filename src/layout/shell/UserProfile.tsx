@@ -43,7 +43,7 @@ export function UserProfile() {
   const name = useUserProfile((state) => state.name);
   const email = useUserProfile((state) => state.email);
 
-  const isDummyUser = userEmail === 'test@email.com';
+  const isDummyUser = userEmail === DUMMY_USER_EMAIL;
 
   useOnClickOutside(ref, () => {
     setOpen(false);
@@ -173,3 +173,5 @@ type MenuItem = {
   onClick?: () => void;
   isExternal?: boolean;
 };
+
+const DUMMY_USER_EMAIL = 'test@email.com';
