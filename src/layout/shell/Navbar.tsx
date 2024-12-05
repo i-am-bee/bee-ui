@@ -25,6 +25,8 @@ import { AppBuilderNavbarActions } from '@/modules/apps/builder/AppBuilderNavbar
 import { ReactElement, useMemo } from 'react';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '../providers/AppProvider';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -73,10 +75,9 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
           {navbarProps?.type === 'app-builder' && (
             <AppBuilderNavbarActions artifact={navbarProps.artifact} />
           )}
-        </div>
 
-        {/* TODO: Remove. Let's keep it for testing purposes for now. */}
-        {/* <ProjectSelector /> */}
+          {isFeatureEnabled(FeatureName.Projects) && <ProjectSelector />}
+        </div>
       </Container>
     </header>
   );
