@@ -41,7 +41,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
-        <script nonce={nonce}>
+        <script nonce={nonce} suppressHydrationWarning>
           /*! For license information please see app.LICENSE.txt */
         </script>
       </head>

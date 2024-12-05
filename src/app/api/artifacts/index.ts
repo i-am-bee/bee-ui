@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+import { Artifact } from '@/modules/apps/types';
 import { fetchEntity } from '@/utils/fetchEntity';
 import { client } from '../client';
-import { assertSuccessResponse, getRequestHeaders } from '../utils';
+import {
+  assertSuccessResponse,
+  decodeEntityWithMetadata,
+  getRequestHeaders,
+} from '../utils';
 import {
   ArtifactCreateBody,
   ArtifactsListQuery,
@@ -100,7 +105,9 @@ export async function deleteArtifact(projectId: string, id: string) {
 export async function fetchArtifact(projectId: string, id?: string) {
   if (!id) return;
 
-  return await fetchEntity(() => readArtifact(projectId, id));
+  const artifact = await fetchEntity(() => readArtifact(projectId, id));
+
+  return artifact ? decodeEntityWithMetadata<Artifact>(artifact) : artifact;
 }
 
 export async function fetchSharedArtifact(

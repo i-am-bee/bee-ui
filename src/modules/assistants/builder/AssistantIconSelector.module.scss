@@ -1,0 +1,54 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@use 'styles/common' as *;
+
+.root {
+  inline-size: rem(278px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-03;
+}
+
+.icon {
+  position: absolute;
+  inset: 0 0;
+  background-color: $background;
+  transition: opacity $duration-fast-01 ease-out;
+}
+
+.button {
+  inline-size: rem(32px);
+  block-size: rem(32px);
+  border-radius: $block-radius;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  &:hover,
+  &.selected {
+    border-color: $border-interactive;
+  }
+
+  [data-color='white'] {
+    border: 1px solid $border-subtle;
+    border-radius: $block-radius;
+  }
+}

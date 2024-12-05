@@ -15,7 +15,9 @@
  */
 
 'use client';
+import { createMessage } from '@/app/api/threads-messages';
 import { Thread } from '@/app/api/threads/types';
+import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
@@ -25,20 +27,18 @@ import {
   MessageWithFiles,
 } from '@/modules/chat/types';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
+import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useCallback, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
-import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
-import { extractCodeFromMessageContent } from '../utils';
-import { useQueryClient } from '@tanstack/react-query';
 import { threadsQuery } from '../../chat/history/queries';
-import { CreateAppModal } from '../manage/CreateAppModal';
-import { createMessage } from '@/app/api/threads-messages';
-import { SourceCodeEditor } from './SourceCodeEditor';
-import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
+import { SaveAppModal } from '../manage/SaveAppModal';
+import { extractCodeFromMessageContent } from '../utils';
 import classes from './AppBuilder.module.scss';
+import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { ArtifactSharedIframe } from './ArtifactSharedIframe';
+import { SourceCodeEditor } from './SourceCodeEditor';
 
 interface Props {
   thread?: Thread;
@@ -133,7 +133,9 @@ function AppBuilderContent() {
   const { getMessages } = useChat();
 
   const { setArtifact } = useAppBuilderApi();
-  const { code } = useAppBuilder();
+  const { code, artifact } = useAppBuilder();
+
+  const message = getLastMessageWithCode(getMessages());
 
   return (
     <div className={classes.root}>
@@ -159,20 +161,20 @@ function AppBuilderContent() {
                 kind="secondary"
                 size="sm"
                 onClick={() => {
-                  const message = getLastMessageWithCode(getMessages());
-
                   if (message?.id && code) {
                     openModal((props) => (
-                      <CreateAppModal
+                      <SaveAppModal
+                        artifact={artifact}
                         project={project}
                         messageId={message.id ?? ''}
                         code={code}
-                        onCreateArtifact={setArtifact}
+                        onSaveSuccess={setArtifact}
                         {...props}
                       />
                     ));
                   }
                 }}
+                disabled={!(message?.id && code)}
               >
                 Save to Apps
               </Button>

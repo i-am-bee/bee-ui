@@ -15,7 +15,9 @@
  */
 
 'use client';
+import { RunMetadata } from '@/app/api/threads-runs/types';
 import { Thread } from '@/app/api/threads/types';
+import { ToolReference } from '@/app/api/tools/types';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
@@ -44,13 +46,12 @@ import {
   useAssistantBuilderApi,
 } from './AssistantBuilderProvider';
 import classes from './Builder.module.scss';
-import { IconSelector } from './IconSelector';
+import { IconSelectorBase } from './IconSelectorBase';
 import { InstructionsTextArea } from './InstructionsTextArea';
-import { ToolReference } from '@/app/api/tools/types';
-import { RunMetadata } from '@/app/api/threads-runs/types';
 import { KnowledgeSelector } from './KnowledgeSelector';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 import { useDeleteAssistant } from './useDeleteAssistant';
+import { AssistantIconSelector } from './AssistantIconSelector';
 
 interface Props {
   thread?: Thread;
@@ -113,7 +114,7 @@ export function Builder({ thread, initialMessages }: Props) {
         </div>
 
         <fieldset disabled={isProjectReadOnly}>
-          <IconSelector disabled={isProjectReadOnly} />
+          <AssistantIconSelector disabled={isProjectReadOnly} />
           <Controller
             name="ownName"
             rules={{ required: true }}

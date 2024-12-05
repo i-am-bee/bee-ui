@@ -37,6 +37,9 @@
   display: flex;
   gap: $spacing-03;
   li {
+    display: flex;
+    align-items: center;
+    column-gap: $spacing-03;
     font-weight: 600;
 
     &:not(:last-child)::after {

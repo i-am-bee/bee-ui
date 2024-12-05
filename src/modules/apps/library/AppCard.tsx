@@ -16,14 +16,12 @@
 
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { isNotNull } from '@/utils/helpers';
-import { MouseEventHandler } from 'react';
-import classes from './AppCard.module.scss';
-import { Artifact } from '../types';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
-import { UpdateAppModal } from '../manage/UpdateAppModal';
 import { useRouter } from 'next-nprogress-bar';
+import { MouseEventHandler } from 'react';
+import { AppIcon } from '../AppIcon';
+import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
+import { Artifact } from '../types';
+import classes from './AppCard.module.scss';
 
 interface Props {
   artifact: Artifact;
@@ -49,7 +47,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        // TODO: icon={<AppIcon assistant={assistant} size="lg" />}
+        icon={<AppIcon name={artifact.uiMetadata.icon} />}
         onClick={onClick}
         isDeletePending={isDeletePending}
         cta={cta ? { title: cta } : undefined}

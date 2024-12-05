@@ -123,8 +123,8 @@
 }
 
 .divider {
-  width: 100%;
-  border: 1px solid $border-subtle
+  inline-size: 100%;
+  border: 1px solid $border-subtle;
 }
 
 .loginButtonLabel {
@@ -139,8 +139,8 @@
 
 .footer {
   position: fixed;
-  left: $spacing-08;
-  bottom: $spacing-08;
+  inset-inline-start: $spacing-08;
+  inset-block-end: $spacing-08;
 
   font-size: small;
   color: $text-secondary;

@@ -14,35 +14,33 @@
  * limitations under the License.
  */
 
-'use client';
+@use 'styles/common' as *;
 
-import dynamic from 'next/dynamic';
-import { PropsWithChildren } from 'react';
-
-const ProgressBar = dynamic(
-  () => import('next-nprogress-bar').then((module) => module.AppProgressBar),
-  { ssr: false },
-);
-
-interface Props {
-  nonce?: string;
+.root {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $spacing-03;
 }
 
-export function ProgressBarProvider({
-  children,
-  nonce,
-}: PropsWithChildren<Props>) {
-  return (
-    <>
-      <ProgressBar
-        color="#0f62fe"
-        height="3px"
-        options={{ showSpinner: false }}
-        shallowRouting
-        nonce={nonce}
-      />
+.icon {
+  position: absolute;
+  inset: 0;
+}
 
-      {children}
-    </>
-  );
+.button {
+  inline-size: rem(32px);
+  block-size: rem(32px);
+  border-radius: $block-radius;
+  border: 2px solid transparent;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  &:hover,
+  &.selected {
+    border-color: currentColor;
+  }
 }

@@ -14,29 +14,35 @@
  * limitations under the License.
  */
 
-import { clsx } from 'clsx';
-import has from 'lodash/has';
-import { ReactElement } from 'react';
-import classes from './AssistantBaseIcon.module.scss';
 import {
   Book,
+  Bot,
+  ChartLineSmooth,
   Chat,
   Chemistry,
+  Code,
   ColorPalette,
-  CurrencyBaht,
   CurrencyDollar,
+  EarthFilled,
   FaceWink,
+  Favorite,
+  Gamification,
+  GroupPresentation,
   Idea,
+  Lightning,
   Pen,
   Rocket,
   TextShortParagraph,
   ToolKit,
   UserMultiple,
 } from '@carbon/react/icons';
+import { clsx } from 'clsx';
+import has from 'lodash/has';
+import classes from './AppIcon.module.scss';
 
 interface Props {
   name?: AppIconName;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'md' | 'lg';
   className?: string;
 }
 
@@ -52,17 +58,26 @@ export function AppIcon({ name: propName, className, size = 'md' }: Props) {
 }
 
 export const APP_ICONS = {
-  ColorPalette: ColorPalette,
-  Pen: Pen,
-  FaceWink: FaceWink,
-  Idea: Idea,
-  Book: Book,
-  Chat: Chat,
-  Chemistry: Chemistry,
-  ToolKit: ToolKit,
-  UserMultiple: UserMultiple,
-  CurrencyDollar: CurrencyDollar,
-  Rocket: Rocket,
-  TextShortParagraph: TextShortParagraph,
-} as const;
+  ColorPalette,
+  Pen,
+  FaceWink,
+  Idea,
+  Book,
+  Chat,
+  Chemistry,
+  ToolKit,
+  UserMultiple,
+  CurrencyDollar,
+  Rocket,
+  TextShortParagraph,
+  Code,
+  Bot,
+  Favorite,
+  EarthFilled,
+  GroupPresentation,
+  Lightning,
+  Gamification,
+  ChartLineSmooth,
+};
+
 export type AppIconName = keyof typeof APP_ICONS;

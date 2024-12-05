@@ -18,7 +18,8 @@
 
 $card-size: rem(197px);
 
-.root {
+// Higher specificity needed
+.root.root {
   block-size: $card-size;
   min-block-size: $card-size;
 }

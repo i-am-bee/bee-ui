@@ -16,19 +16,23 @@
 
 @use 'styles/common' as *;
 
-$size: rem(56px);
-
 .root {
+  --size: #{rem(40px)};
+
+  &[data-size='lg'] {
+    --size: #{rem(56px)};
+  }
+
   position: relative;
-  inline-size: $size;
-  block-size: $size;
+  inline-size: var(--size);
+  block-size: var(--size);
 }
 
 .button {
   position: relative;
   background-color: $button-gray;
-  inline-size: $size;
-  block-size: $size;
+  inline-size: var(--size);
+  block-size: var(--size);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -36,13 +40,6 @@ $size: rem(56px);
   border: none;
   cursor: pointer;
   transition: background-color $duration-fast-01 ease-out;
-}
-
-.icon {
-  position: absolute;
-  inset: 0 0;
-  background-color: $background;
-  transition: opacity $duration-fast-01 ease-out;
 }
 
 .selector {
@@ -62,36 +59,7 @@ $size: rem(56px);
     padding: $spacing-04;
     display: flex;
     flex-direction: column;
-
-    > div {
-      inline-size: rem(278px);
-      display: flex;
-      flex-wrap: wrap;
-      gap: $spacing-03;
-
-      button {
-        inline-size: rem(32px);
-        block-size: rem(32px);
-        border-radius: $block-radius;
-        border: 1px solid transparent;
-        background: transparent;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        cursor: pointer;
-        &:hover,
-        &.selected {
-          border-color: $border-interactive;
-        }
-
-        [data-color='white'] {
-          border: 1px solid $border-subtle;
-          border-radius: $block-radius;
-        }
-      }
-    }
+    gap: $spacing-03;
   }
 
   svg {
