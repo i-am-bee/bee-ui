@@ -24,7 +24,7 @@ import { useAppBuilder } from './AppBuilderProvider';
 import classes from './ArtifactSharedIframe.module.scss';
 
 interface Props {
-  sourceCode: string;
+  sourceCode: string | null;
 }
 
 export function ArtifactSharedIframe({ sourceCode }: Props) {
