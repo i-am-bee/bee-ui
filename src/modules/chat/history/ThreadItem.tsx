@@ -77,11 +77,15 @@ export function ThreadItem({ thread }: Props) {
   const router = useRouter();
   const { project, organization } = useAppContext();
   const id = useId();
-  const href = `/${project.id}/thread/${thread.id}`;
-  const isActive = pathname === href;
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
   const fileCount = useThreadFileCount(thread);
+
+  const href =
+    assistant.data?.agent === 'streamlit'
+      ? `/${project.id}/apps/builder/t/${thread.id}`
+      : `/${project.id}/thread/${thread.id}`;
+  const isActive = pathname === href;
 
   const {
     register,

@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
-import { Builder } from '@/modules/assistants/builder/Builder';
-import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+import { REMAINING_CAPACITY_KEY } from '@/app/auth/signin/page';
+import { redis } from '@/redis';
 
-export default async function AssistantBuilderPage() {
-  return (
-    <LayoutInitializer layout={{ sidebarVisible: false, navbarProps: null }}>
-      <AssistantBuilderProvider>
-        <Builder />
-      </AssistantBuilderProvider>
-    </LayoutInitializer>
-  );
+import { NextResponse, NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const remainingCapacity = await redis.get(REMAINING_CAPACITY_KEY);
+  if (!remainingCapacity) return NextResponse.json({ remainingCapacity: null });
+  return NextResponse.json({ remainingCapacity: parseInt(remainingCapacity) });
 }

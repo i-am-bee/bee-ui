@@ -25,6 +25,7 @@ import { ConversationView } from '@/modules/chat/ConversationView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -70,21 +71,23 @@ export default async function ThreadPage({
   );
 
   return (
-    <VectorStoreFilesUploadProvider
-      projectId={projectId}
-      organizationId={session.userProfile.default_organization}
-    >
-      <FilesUploadProvider>
-        <ChatProvider
-          thread={thread}
-          assistant={threadAssistant}
-          initialData={initialMessages}
-          topBarEnabled
-          threadSettingsEnabled
-        >
-          <ConversationView />
-        </ChatProvider>
-      </FilesUploadProvider>
-    </VectorStoreFilesUploadProvider>
+    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+      <VectorStoreFilesUploadProvider
+        projectId={projectId}
+        organizationId={session.userProfile.default_organization}
+      >
+        <FilesUploadProvider>
+          <ChatProvider
+            thread={thread}
+            assistant={threadAssistant}
+            initialData={initialMessages}
+            topBarEnabled
+            threadSettingsEnabled
+          >
+            <ConversationView />
+          </ChatProvider>
+        </FilesUploadProvider>
+      </VectorStoreFilesUploadProvider>
+    </LayoutInitializer>
   );
 }

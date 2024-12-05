@@ -64,7 +64,7 @@ export default async function AssistantBuilderPage({
   );
 
   return (
-    <LayoutInitializer layout={{ sidebarVisible: false }}>
+    <LayoutInitializer layout={{ sidebarVisible: false, navbarProps: null }}>
       <AssistantBuilderProvider assistant={assistant}>
         <Builder thread={thread} initialMessages={initialMessages} />
       </AssistantBuilderProvider>

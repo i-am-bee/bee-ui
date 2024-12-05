@@ -19,5 +19,5 @@ export function extractCodeFromMessageContent(content: string) {
 }
 
 export function extractAppNameFromStliteCode(code: string) {
-  return code.match(/st\.title\("([\s\S]*?)"\)/)?.at(-1);
+  return code.match(/st\.title\(["']([\s\S]*?)['"]\)/)?.at(-1);
 }

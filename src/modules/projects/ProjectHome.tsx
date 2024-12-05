@@ -27,6 +27,7 @@ import { RenameModal } from './manage/RenameModal';
 import classes from './ProjectHome.module.scss';
 import { UsersCount } from './users/UsersCount';
 import { UsersModalRenderer } from './users/UsersModalRenderer';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
 interface Props {
   children: ReactElement;
@@ -45,7 +46,7 @@ export function ProjectHome({ children }: Props) {
           <div className={classes.header}>
             <h1 className={classes.heading}>{project.name}</h1>
             <div className={classes.sharing}>
-              {!isProjectReadOnly && (
+              {!isProjectReadOnly && isFeatureEnabled(FeatureName.Projects) && (
                 <>
                   <UsersCount project={project} organization={organization} />
                   <Button
@@ -72,21 +73,22 @@ export function ProjectHome({ children }: Props) {
                       ))
                     }
                   />
-                  {project.id !== defaultProject && (
-                    <OverflowMenuItem
-                      itemText="Archive"
-                      isDelete
-                      onClick={() =>
-                        openModal((props) => (
-                          <ArchiveConfirmationModal
-                            organization={organization}
-                            {...props}
-                            project={project}
-                          />
-                        ))
-                      }
-                    />
-                  )}
+                  {isFeatureEnabled(FeatureName.Projects) &&
+                    project.id !== defaultProject && (
+                      <OverflowMenuItem
+                        itemText="Archive"
+                        isDelete
+                        onClick={() =>
+                          openModal((props) => (
+                            <ArchiveConfirmationModal
+                              {...props}
+                              organization={organization}
+                              project={project}
+                            />
+                          ))
+                        }
+                      />
+                    )}
                 </OverflowMenu>
               )}
             </div>

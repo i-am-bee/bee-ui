@@ -70,17 +70,14 @@ export function AddContentModal({
 }
 
 function AddContentModalContent({ onSuccess }: { onSuccess: () => void }) {
-  const { files, setFiles, onFileSubmit } = useVectoreStoreFilesUpload();
+  const { isPending, files, setFiles, onFileSubmit } =
+    useVectoreStoreFilesUpload();
 
   const handleSubmit = useCallback(() => {
     files.forEach((file) => {
       onFileSubmit(file);
     });
   }, [files, onFileSubmit]);
-
-  const isPending = files.some(
-    (file) => file.status === 'uploading' || file.status === 'embedding',
-  );
 
   const isComplete =
     files.length && files.every((file) => file.status === 'complete');

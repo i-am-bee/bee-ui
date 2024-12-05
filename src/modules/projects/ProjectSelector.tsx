@@ -53,7 +53,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
           <Dropdown<ProjectWithScope>
             label=""
             items={projects}
-            size="md"
+            size="sm"
             hideClearButton
             itemToString={(option: Option) =>
               option === 'new' ? 'Create workspace' : (option?.name ?? '')

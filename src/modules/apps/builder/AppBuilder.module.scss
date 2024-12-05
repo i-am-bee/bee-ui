@@ -36,8 +36,9 @@
 .appPane {
   block-size: 100%;
   flex: 1 0 50%;
-  display: grid;
-  grid-template-rows: max-content 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
   position: relative;
 
   &.empty::after {
@@ -89,8 +90,9 @@
   }
 
   :global(.#{$prefix}--tab-content) {
-    block-size: 100%;
+    flex-grow: 1;
     inline-size: 100%;
+    overflow: hidden;
 
     > div {
       block-size: 100%;

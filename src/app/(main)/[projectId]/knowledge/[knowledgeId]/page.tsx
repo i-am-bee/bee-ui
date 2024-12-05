@@ -17,6 +17,7 @@
 import { fetchVectorStore } from '@/app/api/rsc';
 import { ensureSession } from '@/app/auth/rsc';
 import { KnowledgeDetail } from '@/modules/knowledge/detail/KnowledgeDetail';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 
 interface Props {
@@ -41,5 +42,9 @@ export default async function KnowledgeDetailPage({
 
   if (!vectorStore) notFound();
 
-  return <KnowledgeDetail vectorStore={vectorStore} />;
+  return (
+    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+      <KnowledgeDetail vectorStore={vectorStore} />
+    </LayoutInitializer>
+  );
 }

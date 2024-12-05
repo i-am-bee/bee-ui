@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { fetchArtifact, fetchSharedArtifact } from '@/app/api/artifacts';
 import { ensureAppBuilderAssistant } from '@/app/api/rsc';
-import { ensureSession } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
@@ -24,27 +24,30 @@ import { notFound } from 'next/navigation';
 interface Props {
   params: {
     projectId: string;
+    artifactId: string;
   };
+  searchParams: { secret?: string };
 }
 
-export default async function AppsBuilderPage({
-  params: { projectId },
+export default async function CloneAppPage({
+  params: { projectId, artifactId },
+  searchParams: { secret },
 }: Props) {
-  const session = await ensureSession();
-  if (!session) {
-    throw new Error('Session not found.');
-  }
-  const assistant = await ensureAppBuilderAssistant(
-    session.userProfile.default_organization,
-    projectId,
-  );
-  if (!assistant) notFound();
+  const assistant = await ensureAppBuilderAssistant(projectId);
+  const artifactResult = secret
+    ? await fetchSharedArtifact(projectId, artifactId, secret)
+    : await fetchArtifact(projectId, artifactId);
+
+  if (!(assistant && artifactResult)) notFound();
 
   return (
     <LayoutInitializer
-      layout={{ sidebarVisible: false, navbarProps: { type: 'app-builder' } }}
+      layout={{
+        sidebarVisible: false,
+        navbarProps: { type: 'app-builder' },
+      }}
     >
-      <AppBuilderProvider>
+      <AppBuilderProvider code={artifactResult.source_code}>
         <AppBuilder assistant={assistant} />
       </AppBuilderProvider>
     </LayoutInitializer>

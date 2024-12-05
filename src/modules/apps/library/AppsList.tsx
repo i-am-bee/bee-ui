@@ -45,7 +45,7 @@ export function AppsList({
           cta="Use app"
           onDeleteSuccess={onDeleteSuccess}
           onClick={() => {
-            router.push(`/${project.id}/apps/a/${artifact.id}`);
+            router.push(`/${project.id}/apps/builder/a/${artifact.id}`);
           }}
         />
       ))}

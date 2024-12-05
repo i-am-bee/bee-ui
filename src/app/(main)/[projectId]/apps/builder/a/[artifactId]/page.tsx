@@ -14,67 +14,56 @@
  * limitations under the License.
  */
 
+import { fetchArtifact } from '@/app/api/artifacts';
 import {
   ensureAppBuilderAssistant,
   fetchThread,
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
-import { ensureSession } from '@/app/auth/rsc';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
-import { extractCodeFromMessageContent } from '@/modules/apps/utils';
+import { Artifact } from '@/modules/apps/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
-import { getMessagesFromThreadMessages } from '@/modules/chat/utils';
-import { MessageResult } from '@/app/api/threads-messages/types';
 
 interface Props {
   params: {
     projectId: string;
-    threadId: string;
+    artifactId: string;
   };
 }
 
 export default async function AppBuilderPage({
-  params: { projectId, threadId },
+  params: { projectId, artifactId },
 }: Props) {
-  const session = await ensureSession();
-  if (!session) {
-    throw new Error('Session not found.');
-  }
-  const assistant = await ensureAppBuilderAssistant(
-    session.userProfile.default_organization,
-    projectId,
-  );
-  const thread = await fetchThread(
-    session.userProfile.default_organization,
-    projectId,
-    threadId,
-  );
+  const assistant = await ensureAppBuilderAssistant(projectId);
+  const artifactResult = await fetchArtifact(projectId, artifactId);
 
-  if (!(assistant && thread)) notFound();
+  const thread = artifactResult?.thread_id
+    ? await fetchThread(projectId, artifactResult?.thread_id)
+    : null;
 
-  const initialMessages = await listMessagesWithFiles(
-    session.userProfile.default_organization,
-    projectId,
-    threadId,
-    {
-      limit: MESSAGES_PAGE_SIZE,
-    },
-  );
+  if (!(assistant && thread && artifactResult)) notFound();
+
+  const artifact = decodeEntityWithMetadata<Artifact>(artifactResult);
+
+  const initialMessages = thread.id
+    ? await listMessagesWithFiles(projectId, thread.id, {
+        limit: MESSAGES_PAGE_SIZE,
+      })
+    : [];
 
   return (
     <LayoutInitializer
       layout={{
         sidebarVisible: false,
-        navbarProps: { type: 'app-builder' },
+        navbarProps: { type: 'app-builder', artifact },
       }}
     >
       <AppBuilderProvider
-        code={extractCodeFromMessageContent(
-          getLastMessageWithStreamlitCode(initialMessages)?.content ?? '',
-        )}
+        artifact={decodeEntityWithMetadata<Artifact>(artifact)}
       >
         <AppBuilder
           assistant={assistant}
@@ -83,12 +72,5 @@ export default async function AppBuilderPage({
         />
       </AppBuilderProvider>
     </LayoutInitializer>
-  );
-}
-
-function getLastMessageWithStreamlitCode(messages: MessageResult[]) {
-  const chatMessages = getMessagesFromThreadMessages(messages);
-  return chatMessages.findLast((message) =>
-    Boolean(extractCodeFromMessageContent(message.content)),
   );
 }

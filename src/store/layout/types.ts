@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+import { Artifact } from '@/modules/apps/types';
 import { StoreSlice } from '../types';
+import { Assistant } from '@/modules/assistants/types';
 
 export type LayoutState = {
   sidebarVisible: boolean;
+  navbarProps: NavbarProps;
 };
 
 export type LayoutActions = {
@@ -25,3 +28,19 @@ export type LayoutActions = {
 };
 
 export type LayoutSlice = StoreSlice<LayoutState, LayoutActions>;
+
+export type AppBuilderNavbarProps = {
+  type: 'app-builder';
+  artifact?: Artifact;
+};
+
+export type AssistantBuilderNavbarProps = {
+  type: 'assistant-builder';
+  assistant?: Assistant;
+};
+
+export type NavbarProps =
+  | AppBuilderNavbarProps
+  | AssistantBuilderNavbarProps
+  | { type: 'common'; title?: string }
+  | null;

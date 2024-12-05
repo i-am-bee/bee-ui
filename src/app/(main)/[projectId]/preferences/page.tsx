@@ -15,7 +15,12 @@
  */
 
 import { SystemPreferences } from '@/modules/preferences/SystemPreferences';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default async function SystemPreferencesPage() {
-  return <SystemPreferences />;
+  return (
+    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+      <SystemPreferences />
+    </LayoutInitializer>
+  );
 }

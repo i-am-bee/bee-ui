@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-import { Message, MessageAttachments } from '@/app/api/threads-messages/types';
+import {
+  MessageAttachments,
+  MessageResult,
+} from '@/app/api/threads-messages/types';
 import { Assistant } from '../assistants/types';
 import { AssistantPlan, ThreadRun } from '@/app/api/threads-runs/types';
 import { VectoreStoreFileUpload } from '../knowledge/files/VectorStoreFilesUploadProvider';
+import { EntityWithDecodedMetadata } from '@/app/api/types';
 
 export interface ThreadAssistant {
   name?: string;
@@ -25,7 +29,13 @@ export interface ThreadAssistant {
   isDeleted?: boolean;
 }
 
-export type MessageWithFiles = Message & {
+export interface MessageMetadata {
+  type?: 'code-update';
+}
+
+export type Message = EntityWithDecodedMetadata<MessageResult, MessageMetadata>;
+
+export type MessageWithFiles = MessageResult & {
   files?: Partial<VectoreStoreFileUpload>[];
 };
 

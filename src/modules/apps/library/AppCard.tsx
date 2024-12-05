@@ -16,13 +16,11 @@
 
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { isNotNull } from '@/utils/helpers';
 import { MouseEventHandler } from 'react';
 import classes from './AppCard.module.scss';
 import { Artifact } from '../types';
-import { useModal } from '@/layout/providers/ModalProvider';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
-import { UpdateAppModal } from '../manage/UpdateAppModal';
+import { useRouter } from 'next-nprogress-bar';
 
 interface Props {
   artifact: Artifact;
@@ -33,14 +31,15 @@ interface Props {
 
 export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const { name, description } = artifact;
+  const router = useRouter();
+
   const { deleteArtifact, isPending: isDeletePending } = useDeleteArtifact({
     artifact,
     onSuccess: async () => {
       onDeleteSuccess?.(artifact);
     },
   });
-  const { organization, project } = useAppContext();
-  const { openModal } = useModal();
+  const { project } = useAppContext();
 
   return (
     <>
@@ -52,26 +51,22 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
         isDeletePending={isDeletePending}
         cta={cta ? { title: cta } : undefined}
         actions={[
-          ...[
-            {
-              itemText: 'Edit',
-              onClick: () =>
-                openModal((props) => (
-                  <UpdateAppModal
-                    organization={organization}
-                    artifact={artifact}
-                    project={project}
-                    {...props}
-                  />
-                )),
-            },
-            {
-              isDelete: true,
-              itemText: 'Delete',
-              onClick: () => deleteArtifact(),
-            },
-          ],
-        ].filter(isNotNull)}
+          {
+            itemText: 'Edit',
+            onClick: () =>
+              router.push(`/${project.id}/apps/builder/a/${artifact.id}`),
+          },
+          {
+            itemText: 'Copy to edit',
+            onClick: () =>
+              router.push(`/${project.id}/apps/builder/clone/${artifact.id}`),
+          },
+          {
+            isDelete: true,
+            itemText: 'Delete',
+            onClick: () => deleteArtifact(),
+          },
+        ]}
       >
         {description && (
           <div className={classes.body}>

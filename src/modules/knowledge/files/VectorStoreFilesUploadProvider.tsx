@@ -38,6 +38,10 @@ import {
 import { useWatchPendingVectorStoreFiles } from '../hooks/useWatchPendingVectoreStoreFiles';
 import { vectorStoresFilesQuery } from '../queries';
 import { Thread } from '@/app/api/threads/types';
+import { useHandleError } from '@/layout/hooks/useHandleError';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { ApiError } from '@/app/api/errors';
+import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 
 export type VectoreStoreFileUpload = {
   id: string;
@@ -151,6 +155,9 @@ export const VectorStoreFilesUploadProvider = ({
     organizationId,
   ]);
 
+  const handleError = useHandleError();
+  const { openModal } = useModal();
+
   const { mutateAsync: mutateAddToVectorStore } = useMutation({
     mutationFn: ({
       vectorStoreId,
@@ -178,9 +185,21 @@ export const VectorStoreFilesUploadProvider = ({
 
       onCreateFileSuccess?.(response);
     },
+    onError: (error, { inputFile }) => {
+      removeFile(inputFile.id);
+      if (error instanceof ApiError && error.code === 'too_many_requests') {
+        openModal((props) => <UsageLimitModal {...props} />);
+      } else {
+        handleError(error, {
+          toast: {
+            title: 'Failed to add file to the knowledge base',
+            includeErrorMessage: true,
+          },
+        });
+      }
+    },
     meta: {
-      errorTitle: 'Failed to add file to the knowledge base',
-      includeErrorMessage: true,
+      errorToast: false,
     },
   });
 

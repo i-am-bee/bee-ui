@@ -84,6 +84,9 @@ import { AssistantModalProvider } from './AssistantModalProvider';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
 import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { ApiError } from '@/app/api/errors';
+import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 
 interface CancelRunParams {
   threadId: string;
@@ -115,6 +118,10 @@ interface Props extends ChatSetup {
   assistant?: ThreadAssistant;
   initialData?: MessageWithFiles[];
   onMessageCompleted?: (thread: Thread, content: string) => void;
+  onBeforePostMessage?: (
+    thread: Thread,
+    messages: ChatMessage[],
+  ) => Promise<void>;
 }
 
 export function ChatProvider({
@@ -126,6 +133,7 @@ export function ChatProvider({
   initialAssistantMessage,
   builderState,
   onMessageCompleted,
+  onBeforePostMessage,
   children,
 }: PropsWithChildren<Props>) {
   const [controller, setController, controllerRef] =
@@ -232,9 +240,28 @@ export function ChatProvider({
       : [];
   }, [assistant, vectorStoreId]);
 
-  const getUsedTools = useCallback(() => {
-    return getThreadTools().filter((t) => !toolIncluded(disabledTools, t));
-  }, [getThreadTools, disabledTools]);
+  const getUsedTools = useCallback(
+    (thread: Thread) => {
+      const tools = getThreadTools().filter(
+        (t) => !toolIncluded(disabledTools, t),
+      );
+
+      const { approvedTools } = thread.uiMetadata;
+      const toolApprovals = tools.reduce((toolApprovals, tool) => {
+        const toolId = getToolUsageId(tool);
+
+        if (isNotNull(toolId) && isExternalTool(tool.type, toolId)) {
+          toolApprovals[toolId] = {
+            require: approvedTools?.includes(toolId) ? 'never' : 'always',
+          };
+        }
+        return toolApprovals;
+      }, {} as NonNullable<ToolApprovals>);
+
+      return { tools, toolApprovals };
+    },
+    [disabledTools, getThreadTools],
+  );
 
   const cancel = useCallback(() => {
     controllerRef.current.abortController?.abort();
@@ -316,6 +343,7 @@ export function ChatProvider({
   if (ensureThreadRef) ensureThreadRef.current = ensureThread;
 
   const handleError = useHandleError();
+  const { openModal } = useModal();
 
   const handleCancelCurrentRun = useCallback(() => {
     threadRef.current &&
@@ -479,10 +507,8 @@ export function ChatProvider({
         runId: null,
       });
 
-      function handleAborted() {
-        handleCancelCurrentRun();
-
-        // Remove last bot message if it was empty, and also last user message
+      // Remove last bot message if it was empty, and also last user message
+      function removeLastMessagePair(ignoreError?: boolean) {
         setMessages((messages) => {
           let message = messages.at(-1);
           let shouldRemoveUserMessage = true;
@@ -493,7 +519,7 @@ export function ChatProvider({
             if (
               !message.content &&
               message.plan == null &&
-              message.error == null
+              (ignoreError || message.error == null)
             ) {
               messages.pop();
               message = messages.at(-1);
@@ -512,6 +538,20 @@ export function ChatProvider({
             messages.pop();
           }
         });
+      }
+
+      function handleAborted() {
+        handleCancelCurrentRun();
+        removeLastMessagePair();
+      }
+
+      function handleChatError(err: unknown) {
+        if (err instanceof ApiError && err.code === 'too_many_requests') {
+          openModal((props) => <UsageLimitModal {...props} />);
+          removeLastMessagePair(true);
+        } else {
+          handleError(err, { toast: false });
+        }
       }
 
       async function handlePostMessage(
@@ -589,24 +629,13 @@ export function ChatProvider({
         thread = await ensureThread(userMessage.content);
 
         if (!regenerate) {
+          await onBeforePostMessage?.(thread, getMessages());
           newMessage = await handlePostMessage(thread.id, userMessage);
 
           setMessagesWithFilesQueryData(thread.id, newMessage);
         }
 
-        const { approvedTools } = thread.uiMetadata;
-        const tools = getUsedTools();
-        const toolApprovals = tools.reduce((toolApprovals, tool) => {
-          const toolId = getToolUsageId(tool);
-
-          if (isNotNull(toolId) && isExternalTool(tool.type, toolId)) {
-            toolApprovals[toolId] = {
-              require: approvedTools?.includes(toolId) ? 'never' : 'always',
-            };
-          }
-
-          return toolApprovals;
-        }, {} as NonNullable<ToolApprovals>);
+        const { tools, toolApprovals } = getUsedTools(thread);
 
         await chatStream({
           action: {
@@ -639,7 +668,7 @@ export function ChatProvider({
           },
         });
       } catch (err) {
-        handleError(err, { toast: false });
+        handleChatError(err);
       } finally {
         handlRunCompleted();
       }
@@ -657,10 +686,12 @@ export function ChatProvider({
     [
       controllerRef,
       setController,
-      handleCancelCurrentRun,
       setMessages,
-      project.id,
+      handleCancelCurrentRun,
+      openModal,
+      handleError,
       organization.id,
+      project.id,
       attachments,
       files,
       clearFiles,
@@ -668,9 +699,10 @@ export function ChatProvider({
       ensureThread,
       getUsedTools,
       chatStream,
+      onBeforePostMessage,
+      getMessages,
       setMessagesWithFilesQueryData,
       queryClient,
-      handleError,
       handlRunCompleted,
     ],
   );

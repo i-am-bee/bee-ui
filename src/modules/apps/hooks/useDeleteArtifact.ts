@@ -22,7 +22,7 @@ import { deleteArtifact } from '@/app/api/artifacts';
 import { listArtifactsQuery } from '../queries';
 
 interface Props {
-  artifact: Artifact;
+  artifact?: Artifact;
   onSuccess?: () => void;
 }
 
@@ -52,6 +52,7 @@ export function useDeleteArtifact({ artifact, onSuccess }: Props) {
   });
 
   const deleteWithConfirmation = () =>
+    artifact &&
     openConfirmation({
       title: `Delete ${artifact.name}?`,
       body: 'Are you sure you want to delete this app? Once an app is deleted, it can’t be undone.',

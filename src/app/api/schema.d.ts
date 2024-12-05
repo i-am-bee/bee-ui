@@ -51,7 +51,9 @@ export interface paths {
                     before?: string;
                     limit?: number;
                     order?: "asc" | "desc";
-                    order_by?: "created_at";
+                    order_by?: "created_at" | "type" | "name";
+                    search?: string | null;
+                    type?: "app"[];
                 };
                 header?: never;
                 path?: never;
@@ -78,7 +80,10 @@ export interface paths {
                                 /** @enum {unknown} */
                                 object: "artifact";
                                 share_url: string | null;
+                                source_code?: string;
                                 thread_id: string | null;
+                                /** @enum {unknown} */
+                                type: "app";
                             }[];
                             first_id: string | null;
                             has_more: boolean;
@@ -132,7 +137,10 @@ export interface paths {
                             /** @enum {unknown} */
                             object: "artifact";
                             share_url: string | null;
+                            source_code?: string;
                             thread_id: string | null;
+                            /** @enum {unknown} */
+                            type: "app";
                         };
                     };
                 };
@@ -180,7 +188,10 @@ export interface paths {
                             /** @enum {unknown} */
                             object: "artifact";
                             share_url: string | null;
+                            source_code?: string;
                             thread_id: string | null;
+                            /** @enum {unknown} */
+                            type: "app";
                         };
                     };
                 };
@@ -200,11 +211,13 @@ export interface paths {
                 content: {
                     "application/json": {
                         description?: string;
+                        message_id?: string;
                         metadata?: {
                             [key: string]: string;
                         };
                         name?: string;
                         shared?: boolean;
+                        source_code?: string;
                     };
                 };
             };
@@ -227,7 +240,10 @@ export interface paths {
                             /** @enum {unknown} */
                             object: "artifact";
                             share_url: string | null;
+                            source_code?: string;
                             thread_id: string | null;
+                            /** @enum {unknown} */
+                            type: "app";
                         };
                     };
                 };
@@ -302,10 +318,9 @@ export interface paths {
                             name: string;
                             /** @enum {unknown} */
                             object: "artifact.shared";
-                        } & {
                             source_code?: string;
                             /** @enum {unknown} */
-                            type?: "app";
+                            type: "app";
                         };
                     };
                 };
@@ -890,6 +905,83 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/chat/completions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        messages: ({
+                            content: string;
+                            /** @enum {unknown} */
+                            role: "system";
+                        } | {
+                            content: string;
+                            /** @enum {unknown} */
+                            role: "user";
+                        } | {
+                            content: string;
+                            /** @enum {unknown} */
+                            role: "assistant";
+                        })[];
+                        model?: string;
+                        response_format?: {
+                            json_schema: {
+                                schema: {
+                                    [key: string]: unknown;
+                                };
+                            };
+                            /** @enum {unknown} */
+                            type: "json_schema";
+                        };
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            choices: {
+                                index: number;
+                                message: {
+                                    content: string;
+                                    /** @enum {unknown} */
+                                    role: "assistant";
+                                };
+                            }[];
+                            created: number;
+                            id: string;
+                            model: string;
+                            /** @enum {unknown} */
+                            object: "chat.completion";
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -7563,6 +7655,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/ui/modules_to_packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    modules: string[];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            packages: string[];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/users": {
         parameters: {
             query?: never;
@@ -7614,6 +7745,7 @@ export interface paths {
                         metadata?: {
                             [key: string]: string;
                         };
+                        name?: string | null;
                     };
                 };
             };
@@ -7653,6 +7785,7 @@ export interface paths {
                         metadata?: {
                             [key: string]: string;
                         };
+                        name?: string;
                     };
                 };
             };
