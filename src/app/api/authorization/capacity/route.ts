@@ -15,10 +15,11 @@
  */
 
 import { redis, RedisKey } from '@/redis';
+import { NextResponse } from 'next/server';
 
-import { NextResponse, NextRequest } from 'next/server';
+export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const remainingCapacity = await redis.get(RedisKey.REMAINING_CAPACITY);
   if (!remainingCapacity) return NextResponse.json({ remainingCapacity: null });
   return NextResponse.json({ remainingCapacity: parseInt(remainingCapacity) });

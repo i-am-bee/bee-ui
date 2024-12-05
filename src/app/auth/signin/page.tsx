@@ -20,6 +20,8 @@ import { signIn } from './actions';
 import { redirect } from 'next/navigation';
 import { redis, RedisKey } from '@/redis';
 
+export const dynamic = 'force-dynamic';
+
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
 interface PageProps {
