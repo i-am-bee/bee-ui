@@ -7759,6 +7759,7 @@ export interface paths {
                         metadata?: {
                             [key: string]: string;
                         };
+                        name?: string | null;
                     };
                 };
             };
@@ -7796,6 +7797,7 @@ export interface paths {
                         metadata?: {
                             [key: string]: string;
                         };
+                        name?: string;
                     };
                 };
             };

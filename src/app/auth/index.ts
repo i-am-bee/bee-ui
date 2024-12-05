@@ -125,6 +125,7 @@ const authResult = NextAuth(() => ({
 
       try {
         const result = await createUser(account.access_token, {
+          name: user.name ?? undefined,
           metadata: encodeMetadata<UserMetadata>({
             email: user.email ?? '',
           }),
