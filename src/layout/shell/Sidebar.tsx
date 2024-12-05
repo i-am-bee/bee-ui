@@ -29,12 +29,12 @@ export interface SidebarProps {
 }
 
 export function Sidebar({ id, isOpen }: SidebarProps) {
-  const visible = useLayout((state) => state.sidebarVisible);
+  const sidebarVisible = useLayout((state) => !state.navbarProps?.backButton);
 
   return (
     <aside
       className={clsx(classes.root, {
-        [classes.visible]: visible,
+        [classes.visible]: sidebarVisible,
         [classes.sidebarPinned]: isOpen,
       })}
     >

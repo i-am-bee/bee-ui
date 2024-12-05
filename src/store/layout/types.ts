@@ -19,8 +19,7 @@ import { StoreSlice } from '../types';
 import { Assistant } from '@/modules/assistants/types';
 
 export type LayoutState = {
-  sidebarVisible: boolean;
-  navbarProps: NavbarProps;
+  navbarProps?: NavbarProps;
 };
 
 export type LayoutActions = {
@@ -29,8 +28,8 @@ export type LayoutActions = {
 
 export type LayoutSlice = StoreSlice<LayoutState, LayoutActions>;
 
-export type AppBuilderNavbarProps = {
-  type: 'app-builder';
+export type AppNavbarProps = {
+  type: 'app-detail' | 'app-builder';
   artifact?: Artifact;
 };
 
@@ -39,8 +38,7 @@ export type AssistantBuilderNavbarProps = {
   assistant?: Assistant;
 };
 
-export type NavbarProps =
-  | AppBuilderNavbarProps
-  | AssistantBuilderNavbarProps
-  | { type: 'common'; title?: string }
-  | null;
+export type NavbarProps = {
+  title?: string;
+  backButton?: { url: string; title?: string };
+} & (AppNavbarProps | AssistantBuilderNavbarProps | { type: 'common' });

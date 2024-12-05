@@ -28,6 +28,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 import { getMessagesFromThreadMessages } from '@/modules/chat/utils';
 import { MessageResult } from '@/app/api/threads-messages/types';
+import { getAppBuilderNavbarProps } from '../../../utils';
 
 interface Props {
   params: {
@@ -57,10 +58,7 @@ export default async function AppBuilderPage({
 
   return (
     <LayoutInitializer
-      layout={{
-        sidebarVisible: false,
-        navbarProps: { type: 'app-builder' },
-      }}
+      layout={{ navbarProps: getAppBuilderNavbarProps(projectId) }}
     >
       <AppBuilderProvider
         code={extractCodeFromMessageContent(

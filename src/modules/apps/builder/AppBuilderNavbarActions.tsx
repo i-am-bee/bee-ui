@@ -16,13 +16,13 @@
 
 import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { Artifact } from '../types';
-import { useModal } from '@/layout/providers/ModalProvider';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
 import { useRouter } from 'next-nprogress-bar';
 import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   artifact?: Artifact;
+  showShareButton?: boolean;
 }
 
 export function AppBuilderNavbarActions({ artifact }: Props) {
@@ -36,12 +36,18 @@ export function AppBuilderNavbarActions({ artifact }: Props) {
   if (!artifact) return null;
 
   return (
-    <OverflowMenu size="sm" flipped>
-      <OverflowMenuItem
-        isDelete
-        itemText="Delete"
-        onClick={() => deleteArtifact()}
-      />
-    </OverflowMenu>
+    <>
+      {/* TODO: share action */}
+      <Button size="sm" kind="tertiary">
+        Share
+      </Button>
+      <OverflowMenu size="sm" flipped>
+        <OverflowMenuItem
+          isDelete
+          itemText="Delete"
+          onClick={() => deleteArtifact()}
+        />
+      </OverflowMenu>
+    </>
   );
 }

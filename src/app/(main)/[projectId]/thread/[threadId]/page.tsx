@@ -65,7 +65,7 @@ export default async function ThreadPage({
   );
 
   return (
-    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
       <VectorStoreFilesUploadProvider
         projectId={projectId}
         organizationId={organizationId}

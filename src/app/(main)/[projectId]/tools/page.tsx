@@ -19,7 +19,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default async function ToolsPage() {
   return (
-    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
       <ToolsHome />
     </LayoutInitializer>
   );

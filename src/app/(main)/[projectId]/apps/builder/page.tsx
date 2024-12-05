@@ -20,6 +20,7 @@ import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
+import { getAppBuilderNavbarProps } from '../utils';
 
 interface Props {
   params: {
@@ -37,7 +38,9 @@ export default async function AppsBuilderPage({
 
   return (
     <LayoutInitializer
-      layout={{ sidebarVisible: false, navbarProps: { type: 'app-builder' } }}
+      layout={{
+        navbarProps: getAppBuilderNavbarProps(projectId),
+      }}
     >
       <AppBuilderProvider>
         <AppBuilder assistant={assistant} />

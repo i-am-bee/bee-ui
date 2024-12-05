@@ -21,7 +21,7 @@ import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
 import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
-import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 
 interface Props {
   projectId: string;
