@@ -21,10 +21,11 @@ import { visit } from 'unist-util-visit';
 export function remarkPythonAppCode() {
   return (tree: Root) => {
     visit(tree, 'code', (node: Code) => {
-      node.data = {
-        ...node.data,
-        hName: 'pythonAppCode',
-      };
+      if (node.lang === 'python-app')
+        node.data = {
+          ...node.data,
+          hName: 'pythonAppCode',
+        };
     });
   };
 }
