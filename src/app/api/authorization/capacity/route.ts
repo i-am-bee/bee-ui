@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { REMAINING_CAPACITY_KEY } from '@/app/auth/signin/page';
-import { redis } from '@/redis';
+import { redis, REMAINING_CAPACITY_KEY } from '@/redis';
 
 import { NextResponse, NextRequest } from 'next/server';
 

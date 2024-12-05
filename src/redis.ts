@@ -18,6 +18,7 @@ import Redis from 'ioredis';
 
 export const REDIS_URL = process.env.REDIS_URL ?? '';
 const REDIS_CA_CERT = process.env.REDIS_CA_CERT ?? '';
+export const REMAINING_CAPACITY_KEY = 'remainingCapacity';
 
 export const redis = new Redis(REDIS_URL, {
   commandTimeout: 10_000,

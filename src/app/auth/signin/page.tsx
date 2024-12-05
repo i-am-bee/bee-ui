@@ -18,9 +18,7 @@ import { LoginError, SignIn } from '@/modules/auth/SignIn';
 import { isAbsoluteUrl } from '@/utils/url';
 import { signIn } from './actions';
 import { redirect } from 'next/navigation';
-import { redis } from '@/redis';
-
-export const REMAINING_CAPACITY_KEY = 'remainingCapacity';
+import { redis, REMAINING_CAPACITY_KEY } from '@/redis';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 

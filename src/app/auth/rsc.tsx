@@ -62,4 +62,18 @@ export const ensureAccessToken = async () => {
   return access_token;
 };
 
+export async function ensureDefaultOrganizationId() {
+  const session = await ensureSession();
+  if (!session) {
+    throw new Error('Session not found.');
+  }
+
+  const organizationId = session.userProfile.default_organization;
+  if (!organizationId) {
+    throw new Error('Organization not found.');
+  }
+
+  return organizationId;
+}
+
 const SESSION_TEST_EXPIRY_DAYS = 7;

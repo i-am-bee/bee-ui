@@ -20,7 +20,7 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
-import { ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { Builder } from '@/modules/assistants/builder/Builder';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
@@ -37,25 +37,19 @@ interface Props {
 export default async function AssistantBuilderPage({
   params: { projectId, threadId, assistantId },
 }: Props) {
-  const session = await ensureSession();
-  if (!session) {
-    throw new Error('Session not found.');
-  }
+  const organizationId = await ensureDefaultOrganizationId();
+
   const assistant = await fetchAssistant(
-    session.userProfile.default_organization,
+    organizationId,
     projectId,
     assistantId,
   );
-  const thread = await fetchThread(
-    session.userProfile.default_organization,
-    projectId,
-    threadId,
-  );
+  const thread = await fetchThread(organizationId, projectId, threadId);
 
   if (!(assistant && thread)) notFound();
 
   const initialMessages = await listMessagesWithFiles(
-    session.userProfile.default_organization,
+    organizationId,
     projectId,
     threadId,
     {

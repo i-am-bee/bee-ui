@@ -20,7 +20,7 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
-import { ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { ConversationView } from '@/modules/chat/ConversationView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -38,15 +38,9 @@ interface Props {
 export default async function ThreadPage({
   params: { projectId, threadId },
 }: Props) {
-  const session = await ensureSession();
-  if (!session) {
-    throw new Error('Session not found.');
-  }
-  const thread = await fetchThread(
-    session.userProfile.default_organization,
-    projectId,
-    threadId,
-  );
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const thread = await fetchThread(organizationId, projectId, threadId);
 
   if (!thread) notFound();
 
@@ -54,7 +48,7 @@ export default async function ThreadPage({
   const threadAssistant = {
     name: assistantName,
     ...(await fetchThreadAssistant(
-      session.userProfile.default_organization,
+      organizationId,
       projectId,
       threadId,
       assistantId,
@@ -62,7 +56,7 @@ export default async function ThreadPage({
   };
 
   const initialMessages = await listMessagesWithFiles(
-    session.userProfile.default_organization,
+    organizationId,
     projectId,
     threadId,
     {
@@ -74,7 +68,7 @@ export default async function ThreadPage({
     <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
       <VectorStoreFilesUploadProvider
         projectId={projectId}
-        organizationId={session.userProfile.default_organization}
+        organizationId={organizationId}
       >
         <FilesUploadProvider>
           <ChatProvider

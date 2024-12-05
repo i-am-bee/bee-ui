@@ -81,7 +81,7 @@ export function RunSetupDelta({
     }
 
     return deltaMessages;
-  }, [nextRunSetup, run, organization]);
+  }, [run, nextRunSetup, organization, project]);
 
   if (!deltaMessages.length) return null;
 

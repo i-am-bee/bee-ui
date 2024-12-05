@@ -15,7 +15,7 @@
  */
 
 import { fetchAssistant } from '@/app/api/rsc';
-import { ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -33,12 +33,10 @@ interface Props {
 export default async function AssistantChatPage({
   params: { assistantId, projectId },
 }: Props) {
-  const session = await ensureSession();
-  if (!session) {
-    throw new Error('Session not found.');
-  }
+  const organizationId = await ensureDefaultOrganizationId();
+
   const assistant = await fetchAssistant(
-    session.userProfile.default_organization,
+    organizationId,
     projectId,
     assistantId,
   );
@@ -49,7 +47,7 @@ export default async function AssistantChatPage({
     <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
       <VectorStoreFilesUploadProvider
         projectId={projectId}
-        organizationId={session.userProfile.default_organization}
+        organizationId={organizationId}
       >
         <FilesUploadProvider>
           <ChatProvider
