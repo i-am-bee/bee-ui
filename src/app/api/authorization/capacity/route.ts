@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { redis, REMAINING_CAPACITY_KEY } from '@/redis';
+import { redis, RedisKey } from '@/redis';
 
 import { NextResponse, NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const remainingCapacity = await redis.get(REMAINING_CAPACITY_KEY);
+  const remainingCapacity = await redis.get(RedisKey.REMAINING_CAPACITY);
   if (!remainingCapacity) return NextResponse.json({ remainingCapacity: null });
   return NextResponse.json({ remainingCapacity: parseInt(remainingCapacity) });
 }

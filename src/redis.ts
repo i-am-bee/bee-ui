@@ -20,6 +20,10 @@ export const REDIS_URL = process.env.REDIS_URL ?? '';
 const REDIS_CA_CERT = process.env.REDIS_CA_CERT ?? '';
 export const REMAINING_CAPACITY_KEY = 'remainingCapacity';
 
+export const RedisKey = {
+  REMAINING_CAPACITY: 'remainingCapacity',
+} as const;
+
 export const redis = new Redis(REDIS_URL, {
   commandTimeout: 10_000,
   tls: REDIS_URL.startsWith('rediss')
