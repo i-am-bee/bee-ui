@@ -20,7 +20,6 @@ import { StoreSelector } from '../types';
 import { LayoutSlice, LayoutState } from './types';
 
 const DEFAULT_STATE: LayoutState = {
-  sidebarVisible: true,
   navbarProps: null,
 };
 

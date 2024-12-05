@@ -180,7 +180,7 @@ function AppBuilderContent() {
           </div>
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
-              <ArtifactSharedIframe />
+              <ArtifactSharedIframe sourceCode={code} />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
               <SourceCodeEditor />

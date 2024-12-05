@@ -20,7 +20,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default async function AssistantBuilderPage() {
   return (
-    <LayoutInitializer layout={{ sidebarVisible: false, navbarProps: null }}>
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
       <AssistantBuilderProvider>
         <Builder />
       </AssistantBuilderProvider>

@@ -25,6 +25,9 @@ import { AppBuilderNavbarActions } from '@/modules/apps/builder/AppBuilderNavbar
 import { ReactElement, useMemo } from 'react';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '../providers/AppProvider';
+import { Button } from '@carbon/react';
+import { ArrowLeft } from '@carbon/react/icons';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -37,7 +40,10 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const navbarProps = useLayout((state) => state.navbarProps);
 
   const headingItems = useMemo(() => {
-    switch (navbarProps?.type) {
+    if (!navbarProps) return undefined;
+
+    const { title } = navbarProps;
+    switch (navbarProps.type) {
       case 'app-builder':
         return navbarProps.artifact
           ? [
@@ -45,12 +51,12 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
               { title: navbarProps.artifact.name },
             ]
           : [{ title: 'App Builder' }];
+      case 'app-detail':
+        return navbarProps.artifact && [{ title: navbarProps.artifact.name }];
       case 'assistant-builder':
         return [{ title: 'Bee builder' }];
-      case 'common':
-        return [{ title: navbarProps.title ?? '' }];
       default:
-        return undefined;
+        return title ? [{ title }] : undefined;
     }
   }, [navbarProps, project]);
 
@@ -59,20 +65,38 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
       <Container size="full" className={classes.container}>
         <SkipNav />
 
-        <SidebarButton
-          sidebarId={sidebarId}
-          sidebarOpen={sidebarOpen}
-          onClick={() => {
-            setUserSetting('sidebarPinned', !sidebarOpen);
-          }}
-        />
+        {navbarProps?.backButton ? (
+          <Tooltip content={navbarProps.backButton.title ?? 'Back'} asChild>
+            <Button
+              size="sm"
+              kind="tertiary"
+              href={navbarProps.backButton.url}
+              className={classes.backButton}
+            >
+              <ArrowLeft />
+            </Button>
+          </Tooltip>
+        ) : (
+          <SidebarButton
+            sidebarId={sidebarId}
+            sidebarOpen={sidebarOpen}
+            onClick={() => {
+              setUserSetting('sidebarPinned', !sidebarOpen);
+            }}
+          />
+        )}
 
         <NavbarHeading items={headingItems} />
 
         <div className={classes.actions}>
-          {navbarProps?.type === 'app-builder' && (
-            <AppBuilderNavbarActions artifact={navbarProps.artifact} />
-          )}
+          {(navbarProps?.type === 'app-builder' ||
+            navbarProps?.type === 'app-detail') &&
+            navbarProps.artifact && (
+              <AppBuilderNavbarActions
+                artifact={navbarProps.artifact}
+                showShareButton={navbarProps.type === 'app-detail'}
+              />
+            )}
         </div>
 
         {/* TODO: Remove. Let's keep it for testing purposes for now. */}

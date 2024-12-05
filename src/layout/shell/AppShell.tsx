@@ -21,7 +21,8 @@ import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
 import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
-import { getSession } from '@/app/auth/rsc';
+import { useLayout } from '@/store/layout';
+import clsx from 'clsx';
 
 interface Props {
   projectId: string;

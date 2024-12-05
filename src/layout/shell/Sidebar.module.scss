@@ -25,16 +25,12 @@ $width: rem(272px);
   position: relative;
   z-index: z('header');
   inline-size: 0;
-  // transform: translateX(-100%);
   transition:
     inline-size $duration-fast-02 motion(exit, productive),
     translate $duration-fast-02 motion(exit, productive);
-  &.sidebarPinned {
+  &.sidebarPinned.visible {
     inline-size: $width;
   }
-  // &.visible {
-  //   transform: translateX(0);
-  // }
 }
 
 .panel {
@@ -53,7 +49,7 @@ $width: rem(272px);
   transition-duration: $duration-fast-02;
   transition-timing-function: motion(exit, productive);
   filter: drop-shadow($drop-shadow);
-  .sidebarPinned & {
+  .sidebarPinned.visible & {
     opacity: 1;
     visibility: visible;
     transform: translateX(0);

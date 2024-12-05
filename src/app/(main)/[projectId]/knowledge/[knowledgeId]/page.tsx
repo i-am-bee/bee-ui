@@ -34,7 +34,7 @@ export default async function KnowledgeDetailPage({
   if (!vectorStore) notFound();
 
   return (
-    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
       <KnowledgeDetail vectorStore={vectorStore} />
     </LayoutInitializer>
   );

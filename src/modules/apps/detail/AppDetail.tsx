@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-import { AppsHome } from '@/modules/apps/AppsHome';
-import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+import { ArtifactSharedIframe } from '../builder/ArtifactSharedIframe';
+import { Artifact } from '../types';
+import classes from './AppDetail.module.scss';
 
-export default function AppsPage() {
+interface Props {
+  artifact: Artifact;
+}
+export function AppDetail({ artifact }: Props) {
   return (
-    <LayoutInitializer
-      layout={{ navbarProps: { title: 'Apps', type: 'common' } }}
-    >
-      <AppsHome />
-    </LayoutInitializer>
+    <div className={classes.root}>
+      <ArtifactSharedIframe sourceCode={artifact.source_code || null} />
+    </div>
   );
 }

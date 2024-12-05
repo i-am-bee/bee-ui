@@ -14,42 +14,48 @@
  * limitations under the License.
  */
 
-import { fetchArtifact, fetchSharedArtifact } from '@/app/api/artifacts';
-import { ensureAppBuilderAssistant } from '@/app/api/rsc';
+import { fetchArtifact } from '@/app/api/artifacts';
+import {
+  ensureAppBuilderAssistant,
+  fetchThread,
+  listMessagesWithFiles,
+  MESSAGES_PAGE_SIZE,
+} from '@/app/api/rsc';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
+import { AppDetail } from '@/modules/apps/detail/AppDetail';
+import { Artifact } from '@/modules/apps/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
-import { getAppBuilderNavbarProps } from '../../../utils';
+import { getAppBuilderNavbarProps } from '../utils';
 
 interface Props {
   params: {
     projectId: string;
     artifactId: string;
   };
-  searchParams: { secret?: string };
 }
 
-export default async function CloneAppPage({
+export default async function AppBuilderPage({
   params: { projectId, artifactId },
-  searchParams: { secret },
 }: Props) {
-  const assistant = await ensureAppBuilderAssistant(projectId);
-  const artifactResult = secret
-    ? await fetchSharedArtifact(projectId, artifactId, secret)
-    : await fetchArtifact(projectId, artifactId);
+  const artifactResult = await fetchArtifact(projectId, artifactId);
+  if (!artifactResult) notFound();
 
-  if (!(assistant && artifactResult)) notFound();
+  const artifact = decodeEntityWithMetadata<Artifact>(artifactResult);
 
   return (
     <LayoutInitializer
       layout={{
-        navbarProps: getAppBuilderNavbarProps(projectId),
+        navbarProps: {
+          type: 'app-detail',
+          artifact,
+          backButton: getAppBuilderNavbarProps(projectId).backButton,
+        },
       }}
     >
-      <AppBuilderProvider code={artifactResult.source_code}>
-        <AppBuilder assistant={assistant} />
-      </AppBuilderProvider>
+      <AppDetail artifact={artifact} />
     </LayoutInitializer>
   );
 }

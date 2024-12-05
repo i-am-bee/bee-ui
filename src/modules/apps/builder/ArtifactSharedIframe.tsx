@@ -23,10 +23,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppBuilder } from './AppBuilderProvider';
 import classes from './ArtifactSharedIframe.module.scss';
 
-interface Props {}
+interface Props {
+  sourceCode: string | null;
+}
 
-export function ArtifactSharedIframe({}: Props) {
-  const { code } = useAppBuilder();
+export function ArtifactSharedIframe({ sourceCode }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
@@ -79,9 +80,9 @@ export function ArtifactSharedIframe({}: Props) {
 
   useEffect(() => {
     if (state === State.READY) {
-      updateCode(code);
+      updateCode(sourceCode);
     }
-  }, [state, theme, code, updateCode]);
+  }, [state, theme, sourceCode, updateCode]);
 
   useEffect(() => {
     window.addEventListener('message', handleMessage);
@@ -102,7 +103,7 @@ export function ArtifactSharedIframe({}: Props) {
         onLoad={handleIframeLoad}
       />
 
-      {state === State.LOADING && code && <Loading />}
+      {state === State.LOADING && sourceCode && <Loading />}
     </div>
   );
 }

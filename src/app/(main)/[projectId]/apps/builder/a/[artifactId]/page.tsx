@@ -27,6 +27,7 @@ import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { Artifact } from '@/modules/apps/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
+import { getAppBuilderNavbarProps } from '../../../utils';
 
 interface Props {
   params: {
@@ -57,10 +58,7 @@ export default async function AppBuilderPage({
 
   return (
     <LayoutInitializer
-      layout={{
-        sidebarVisible: false,
-        navbarProps: { type: 'app-builder', artifact },
-      }}
+      layout={{ navbarProps: getAppBuilderNavbarProps(projectId, artifact) }}
     >
       <AppBuilderProvider
         artifact={decodeEntityWithMetadata<Artifact>(artifact)}
