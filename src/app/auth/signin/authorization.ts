@@ -17,6 +17,8 @@
 import { User } from 'next-auth';
 import { redis, REDIS_URL } from '@/redis';
 
+export const dynamic = 'force-dynamic';
+
 const EMAIL_FIELD = 'email';
 
 const USER_KEY_PREFIX = 'user:';

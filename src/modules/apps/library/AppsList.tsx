@@ -45,14 +45,14 @@ export function AppsList({
           cta="Use app"
           onDeleteSuccess={onDeleteSuccess}
           onClick={() => {
-            router.push(`/${project.id}/apps/builder/a/${artifact.id}`);
+            router.push(`/${project.id}/apps/${artifact.id}`);
           }}
         />
       ))}
 
       {isLoading &&
         Array.from({ length: pageSize }, (_, i) => (
-          <CardsListItem.Skeleton key={i} />
+          <AppCard.Skeleton key={i} />
         ))}
     </>
   );

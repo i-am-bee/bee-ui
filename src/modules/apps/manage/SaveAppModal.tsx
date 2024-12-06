@@ -2,6 +2,7 @@ import {
   ArtifactCreateBody,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
+import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { Modal } from '@/components/Modal/Modal';
@@ -37,6 +38,7 @@ export type AppFormValues = {
 
 interface Props extends ModalProps {
   project: Project;
+  organization: Organization;
   artifact?: Artifact | null;
   messageId?: string;
   code?: string;
@@ -45,6 +47,7 @@ interface Props extends ModalProps {
 
 export function SaveAppModal({
   project,
+  organization,
   artifact: artifactProp,
   messageId,
   code,
@@ -55,6 +58,7 @@ export function SaveAppModal({
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
   const { setLayout } = useLayoutActions();
+
   const isUpdating = !!artifactProp;
 
   const {
@@ -63,6 +67,7 @@ export function SaveAppModal({
     error: saveError,
   } = useSaveArtifact({
     project,
+    organization,
     onSuccess: (result) => {
       const artifact = decodeEntityWithMetadata<Artifact>(result);
 
@@ -104,8 +109,6 @@ export function SaveAppModal({
   } = formReturn;
 
   useConfirmModalCloseOnDirty(!isEmpty(dirtyFields), 'app');
-
-  console.log(messageId);
 
   const onSubmit: SubmitHandler<AppFormValues> = useCallback(
     async (data) => {

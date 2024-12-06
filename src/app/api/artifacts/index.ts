@@ -29,18 +29,20 @@ import {
 } from './types';
 
 export async function createArtifact(
+  organizationId: string,
   projectId: string,
   body: ArtifactCreateBody,
 ) {
   const res = await client.POST('/v1/artifacts', {
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function updateArtifact(
+  organizationId: string,
   projectId: string,
   id: string,
   body: ArtifactUpdateBody,
@@ -48,16 +50,20 @@ export async function updateArtifact(
   const res = await client.POST('/v1/artifacts/{artifact_id}', {
     params: { path: { artifact_id: id } },
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readArtifact(projectId: string, id: string) {
+export async function readArtifact(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET('/v1/artifacts/{artifact_id}', {
     params: { path: { artifact_id: id } },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);
@@ -79,6 +85,7 @@ export async function readSharedArtifact(
 }
 
 export async function listArtifacts(
+  organizationId: string,
   projectId: string,
   query: ArtifactsListQuery,
 ) {
@@ -86,26 +93,36 @@ export async function listArtifacts(
     params: {
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteArtifact(projectId: string, id: string) {
+export async function deleteArtifact(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.DELETE('/v1/artifacts/{artifact_id}', {
     params: {
       path: { artifact_id: id },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
 }
 
-export async function fetchArtifact(projectId: string, id?: string) {
+export async function fetchArtifact(
+  organizationId: string,
+  projectId: string,
+  id?: string,
+) {
   if (!id) return;
 
-  const artifact = await fetchEntity(() => readArtifact(projectId, id));
+  const artifact = await fetchEntity(() =>
+    readArtifact(organizationId, projectId, id),
+  );
 
   return artifact ? decodeEntityWithMetadata<Artifact>(artifact) : artifact;
 }

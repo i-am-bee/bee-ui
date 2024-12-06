@@ -19,58 +19,70 @@ import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { ProjectCreateBody, ProjectsListQuery } from './types';
 
-export async function createProject(body: ProjectCreateBody) {
+export async function createProject(
+  organizationId: string,
+  body: ProjectCreateBody,
+) {
   const res = await client.POST('/v1/organization/projects', {
     body,
-    headers: getRequestHeaders(),
+    headers: getRequestHeaders(organizationId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function updateProject(id: string, body: ProjectCreateBody) {
+export async function updateProject(
+  organizationId: string,
+  id: string,
+  body: ProjectCreateBody,
+) {
   const res = await client.POST('/v1/organization/projects/{project_id}', {
     params: { path: { project_id: id } },
     body,
-    headers: getRequestHeaders(id),
+    headers: getRequestHeaders(organizationId, id),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readProject(id: string) {
+export async function readProject(organizationId: string, id: string) {
   const res = await client.GET('/v1/organization/projects/{project_id}', {
     params: { path: { project_id: id } },
-    headers: getRequestHeaders(),
+    headers: getRequestHeaders(organizationId),
   });
 
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function archiveProject(id: string) {
+export async function archiveProject(organizationId: string, id: string) {
   const res = await client.POST(
     '/v1/organization/projects/{project_id}/archive',
     {
       params: { path: { project_id: id } },
-      headers: getRequestHeaders(id, { 'Content-type': null as any }),
+      headers: getRequestHeaders(organizationId, id, {
+        'Content-type': null as any,
+      }),
     },
   );
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function listProjects(query: ProjectsListQuery) {
+export async function listProjects(
+  organizationId: string,
+  query: ProjectsListQuery,
+) {
   const res = await client.GET('/v1/organization/projects', {
     params: {
       query,
     },
-    headers: getRequestHeaders(),
+    headers: getRequestHeaders(organizationId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function fetchProject(id: string) {
-  return await fetchEntity(() => readProject(id));
+export async function fetchProject(organizationId: string, id: string) {
+  return await fetchEntity(() => readProject(organizationId, id));
 }

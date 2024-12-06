@@ -28,17 +28,19 @@ interface Props {
 
 export function useDeleteArtifact({ artifact, onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (id: string) => deleteArtifact(project.id, id),
+    mutationFn: (id: string) => deleteArtifact(organization.id, project.id, id),
     onSuccess: () => {
       onSuccess?.();
 
       // invalidate all queries on GET:/artifacts
       queryClient.invalidateQueries({
-        queryKey: [listArtifactsQuery(project.id).queryKey.at(0)],
+        queryKey: [
+          listArtifactsQuery(organization.id, project.id).queryKey.at(0),
+        ],
       });
     },
     meta: {

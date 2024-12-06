@@ -16,10 +16,12 @@
 
 import { fetchArtifact, fetchSharedArtifact } from '@/app/api/artifacts';
 import { ensureAppBuilderAssistant } from '@/app/api/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
+import { getAppBuilderNavbarProps } from '../../../utils';
 
 interface Props {
   params: {
@@ -33,7 +35,9 @@ export default async function CloneAppPage({
   params: { projectId, artifactId },
   searchParams: { secret },
 }: Props) {
-  const assistant = await ensureAppBuilderAssistant(projectId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
   const artifactResult = secret
     ? await fetchSharedArtifact(projectId, artifactId, secret)
     : await fetchArtifact(projectId, artifactId);
@@ -43,8 +47,7 @@ export default async function CloneAppPage({
   return (
     <LayoutInitializer
       layout={{
-        sidebarVisible: false,
-        navbarProps: { type: 'app-builder' },
+        navbarProps: getAppBuilderNavbarProps(projectId),
       }}
     >
       <AppBuilderProvider code={artifactResult.source_code}>

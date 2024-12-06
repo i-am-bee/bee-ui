@@ -32,7 +32,7 @@ export const ThreadsHistory = memo(function ThreadsHistory({
   enableFetch,
   className,
 }: Props) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const {
     data,
@@ -44,7 +44,7 @@ export const ThreadsHistory = memo(function ThreadsHistory({
     isPending,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    ...threadsQuery(project.id),
+    ...threadsQuery(organization.id, project.id),
     enabled: enableFetch,
   });
 

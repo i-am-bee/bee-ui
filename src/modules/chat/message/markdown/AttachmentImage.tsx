@@ -29,10 +29,10 @@ export function AttachmentImage({
   alt: string;
   title?: string;
 }) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { data: content, isLoading } = useQuery({
     queryKey: ['files/{file_id}/content', project.id, fileId],
-    queryFn: () => readFileContent(project.id, fileId),
+    queryFn: () => readFileContent(organization.id, project.id, fileId),
   });
 
   return (

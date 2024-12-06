@@ -62,7 +62,7 @@ export const Message = memo(function Message({
 }: Props) {
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { setMessages } = useChat();
   const { ref: inViewRef, inView } = useInView({
     rootMargin: '30% 0%',
@@ -70,7 +70,12 @@ export const Message = memo(function Message({
   });
 
   const { data: run } = useQuery({
-    ...readRunQuery(project.id, thread?.id ?? '', message.run_id ?? ''),
+    ...readRunQuery(
+      organization.id,
+      project.id,
+      thread?.id ?? '',
+      message.run_id ?? '',
+    ),
     enabled: Boolean(inView && thread && message.run_id),
   });
 

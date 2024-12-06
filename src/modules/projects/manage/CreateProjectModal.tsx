@@ -33,6 +33,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { PROJECTS_QUERY_PARAMS } from '../ProjectSelector';
 import { projectsQuery } from '../queries';
 import { useProjects } from '../hooks/useProjects';
+import { Organization } from '@/app/api/organization/types';
 
 interface CreateProjectValues {
   name: string;
@@ -40,17 +41,19 @@ interface CreateProjectValues {
 
 interface Props {
   onSuccess?: (project: Project) => void;
+  organization: Organization;
 }
 
 export function CreateProjectModal({
   onSuccess,
+  organization,
   ...props
 }: Props & ModalProps) {
   const htmlId = useId();
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data: projects } = useProjects({});
+  const { data: projects } = useProjects({ organization });
 
   const projectNames = useMemo(
     () => projects?.projects.map(({ name }) => name),
@@ -58,11 +61,16 @@ export function CreateProjectModal({
   );
 
   const { mutateAsync } = useMutation({
-    mutationFn: (body: ProjectCreateBody) => createProject(body),
+    mutationFn: (body: ProjectCreateBody) =>
+      createProject(organization.id, body),
     onSuccess: (response) => {
       if (response) {
         queryClient.invalidateQueries({
-          queryKey: [projectsQuery(PROJECTS_QUERY_PARAMS).queryKey.at(0)],
+          queryKey: [
+            projectsQuery(organization.id, PROJECTS_QUERY_PARAMS).queryKey.at(
+              0,
+            ),
+          ],
         });
         router.push(`/${response.id}`);
 

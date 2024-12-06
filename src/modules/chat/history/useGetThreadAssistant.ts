@@ -29,7 +29,7 @@ export function useGetThreadAssistant(
   thread?: Thread | null,
   initialAssistant?: ThreadAssistant,
 ) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const { assistantId: threadAssistantId, assistantName } =
     thread?.uiMetadata ?? {};
@@ -45,7 +45,7 @@ export function useGetThreadAssistant(
   }, [thread]);
 
   const { data: runs } = useQuery({
-    ...runsQuery(project.id, thread?.id ?? '', {
+    ...runsQuery(organization.id, project.id, thread?.id ?? '', {
       limit: 1,
       order: 'desc',
       order_by: 'created_at',
@@ -59,7 +59,7 @@ export function useGetThreadAssistant(
     runs?.data.at(-1)?.assistant_id;
 
   const { data } = useQuery({
-    ...readAssistantQuery(project.id, assistantId ?? ''),
+    ...readAssistantQuery(organization.id, project.id, assistantId ?? ''),
     enabled: Boolean(assistantId && !assistant.isDeleted),
     retry: 0,
     meta: {

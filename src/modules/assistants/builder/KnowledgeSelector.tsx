@@ -48,7 +48,7 @@ import classes from './KnowledgeSelector.module.scss';
 
 export function KnowledgeSelector() {
   const { openModal } = useModal();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const {
     field: { value, onChange },
   } = useController<AssistantFormValues, 'vectorStoreId'>({
@@ -94,7 +94,8 @@ export function KnowledgeSelector() {
     handleConnectKnowledge(response.id);
 
     queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQuery(project.id, VECTOR_STORES_QUERY_PARAMS).queryKey,
+      vectorStoresQuery(organization.id, project.id, VECTOR_STORES_QUERY_PARAMS)
+        .queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         const pageFirst = draft?.pages.at(0);
@@ -103,14 +104,17 @@ export function KnowledgeSelector() {
     );
 
     queryClient.invalidateQueries({
-      queryKey: [vectorStoresQuery(project.id).queryKey.at(0)],
+      queryKey: [vectorStoresQuery(organization.id, project.id).queryKey.at(0)],
     });
   };
 
   const handleInvalidateData = () => {
     queryClient.invalidateQueries({
-      queryKey: vectorStoresQuery(project.id, VECTOR_STORES_QUERY_PARAMS)
-        .queryKey,
+      queryKey: vectorStoresQuery(
+        organization.id,
+        project.id,
+        VECTOR_STORES_QUERY_PARAMS,
+      ).queryKey,
     });
   };
 
@@ -120,6 +124,7 @@ export function KnowledgeSelector() {
 
   const { data: dataFiles } = useInfiniteQuery({
     ...vectorStoresFilesQuery(
+      organization.id,
       project.id,
       value ?? '',
       VECTOR_STORE_FILES_QUERY_PARAMS,
@@ -138,6 +143,7 @@ export function KnowledgeSelector() {
           onClick: () =>
             openModal((props) => (
               <CreateKnowledgeModal
+                organizationId={organization.id}
                 projectId={project.id}
                 onCreateVectorStore={onCreateSuccess}
                 onSuccess={handleInvalidateData}

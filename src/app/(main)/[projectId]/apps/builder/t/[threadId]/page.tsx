@@ -20,6 +20,7 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { extractCodeFromMessageContent } from '@/modules/apps/utils';
@@ -27,6 +28,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 import { getMessagesFromThreadMessages } from '@/modules/chat/utils';
 import { MessageResult } from '@/app/api/threads-messages/types';
+import { getAppBuilderNavbarProps } from '../../../utils';
 
 interface Props {
   params: {
@@ -38,21 +40,25 @@ interface Props {
 export default async function AppBuilderPage({
   params: { projectId, threadId },
 }: Props) {
-  const assistant = await ensureAppBuilderAssistant(projectId);
-  const thread = await fetchThread(projectId, threadId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
+  const thread = await fetchThread(organizationId, projectId, threadId);
 
   if (!(assistant && thread)) notFound();
 
-  const initialMessages = await listMessagesWithFiles(projectId, threadId, {
-    limit: MESSAGES_PAGE_SIZE,
-  });
+  const initialMessages = await listMessagesWithFiles(
+    organizationId,
+    projectId,
+    threadId,
+    {
+      limit: MESSAGES_PAGE_SIZE,
+    },
+  );
 
   return (
     <LayoutInitializer
-      layout={{
-        sidebarVisible: false,
-        navbarProps: { type: 'app-builder' },
-      }}
+      layout={{ navbarProps: getAppBuilderNavbarProps(projectId) }}
     >
       <AppBuilderProvider
         code={extractCodeFromMessageContent(

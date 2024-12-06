@@ -24,6 +24,8 @@ import { SkeletonIcon, SkeletonText, Toggle, ToggleProps } from '@carbon/react';
 import { MouseEventHandler, useId } from 'react';
 import classes from './ToolToggle.module.scss';
 import { ToolTypeTag } from './ToolTypeTag';
+import { Organization } from '@/app/api/organization/types';
+import { Project } from '@/app/api/projects/types';
 
 interface Props extends Omit<ToggleProps, 'id' | 'size'> {
   tool: ToolReference;
@@ -33,6 +35,8 @@ interface Props extends Omit<ToggleProps, 'id' | 'size'> {
   toggled?: boolean;
   onToggle?: (toggled: boolean) => void;
   onEditClick?: MouseEventHandler<HTMLButtonElement>;
+  organization: Organization;
+  project: Project;
 }
 
 export function ToolToggle({
@@ -44,11 +48,17 @@ export function ToolToggle({
   disabled,
   onToggle,
   onEditClick,
+  organization,
+  project,
   ...props
 }: Props) {
   const id = useId();
   const toolType = tool.type;
-  const { toolName, toolIcon: Icon } = useToolInfo(tool);
+  const { toolName, toolIcon: Icon } = useToolInfo({
+    toolReference: tool,
+    organization,
+    project,
+  });
 
   const toolId = getToolReferenceId(tool);
 

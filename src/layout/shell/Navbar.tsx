@@ -16,11 +16,14 @@
 
 import { Container } from '@/components/Container/Container';
 import { Link } from '@/components/Link/Link';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { AppIcon } from '@/modules/apps/AppIcon';
 import { AppBuilderNavbarActions } from '@/modules/apps/builder/AppBuilderNavbarActions';
 import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 import { useLayout } from '@/store/layout';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { Button } from '@carbon/react';
+import { ArrowLeft } from '@carbon/react/icons';
 import { ReactElement, useMemo } from 'react';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
 import { useAppContext } from '../providers/AppProvider';
@@ -40,7 +43,10 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const navbarProps = useLayout((state) => state.navbarProps);
 
   const headingItems = useMemo(() => {
-    switch (navbarProps?.type) {
+    if (!navbarProps) return undefined;
+
+    const { title } = navbarProps;
+    switch (navbarProps.type) {
       case 'app-builder':
         const icon = navbarProps?.artifact?.uiMetadata.icon;
 
@@ -53,12 +59,12 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
               },
             ]
           : [{ title: 'App Builder' }];
+      case 'app-detail':
+        return navbarProps.artifact && [{ title: navbarProps.artifact.name }];
       case 'assistant-builder':
         return [{ title: 'Bee builder' }];
-      case 'common':
-        return [{ title: navbarProps.title ?? '' }];
       default:
-        return undefined;
+        return title ? [{ title }] : undefined;
     }
   }, [navbarProps, project]);
 
@@ -67,20 +73,38 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
       <Container size="full" className={classes.container}>
         <SkipNav />
 
-        <SidebarButton
-          sidebarId={sidebarId}
-          sidebarOpen={sidebarOpen}
-          onClick={() => {
-            setUserSetting('sidebarPinned', !sidebarOpen);
-          }}
-        />
+        {navbarProps?.backButton ? (
+          <Tooltip content={navbarProps.backButton.title ?? 'Back'} asChild>
+            <Button
+              size="sm"
+              kind="tertiary"
+              href={navbarProps.backButton.url}
+              className={classes.backButton}
+            >
+              <ArrowLeft />
+            </Button>
+          </Tooltip>
+        ) : (
+          <SidebarButton
+            sidebarId={sidebarId}
+            sidebarOpen={sidebarOpen}
+            onClick={() => {
+              setUserSetting('sidebarPinned', !sidebarOpen);
+            }}
+          />
+        )}
 
         <NavbarHeading items={headingItems} />
 
         <div className={classes.actions}>
-          {navbarProps?.type === 'app-builder' && (
-            <AppBuilderNavbarActions artifact={navbarProps.artifact} />
-          )}
+          {(navbarProps?.type === 'app-builder' ||
+            navbarProps?.type === 'app-detail') &&
+            navbarProps.artifact && (
+              <AppBuilderNavbarActions
+                artifact={navbarProps.artifact}
+                showShareButton={navbarProps.type === 'app-detail'}
+              />
+            )}
 
           {isFeatureEnabled(FeatureName.Projects) && <ProjectSelector />}
         </div>

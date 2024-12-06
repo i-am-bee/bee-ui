@@ -15,7 +15,6 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { Tool, ToolReference } from '@/app/api/tools/types';
 import { readToolQuery } from '../queries';
 import { ComponentType, useMemo } from 'react';
@@ -35,12 +34,21 @@ import {
 import { SkeletonIcon } from '@carbon/react';
 import { ToolName } from '../common/ToolName';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
+import { Organization } from '@/app/api/organization/types';
+import { Project } from '@/app/api/projects/types';
 
-export function useToolInfo(toolReference: ToolReference) {
+export function useToolInfo({
+  toolReference,
+  organization,
+  project,
+}: {
+  toolReference: ToolReference;
+  organization: Organization;
+  project: Project;
+}) {
   const { tool: toolProp, id, type } = toolReference;
-  const { project } = useAppContext();
   const { data, isLoading, error } = useQuery({
-    ...readToolQuery(project.id, id),
+    ...readToolQuery(organization.id, project.id, id),
     enabled: type === 'user' || type === 'system',
     initialData: toolProp
       ? encodeEntityWithMetadata<Tool>(toolProp)

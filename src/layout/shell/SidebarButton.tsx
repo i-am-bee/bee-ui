@@ -21,6 +21,7 @@ import { Menu } from '@carbon/react/icons';
 import { UserSetting } from '../hooks/useUserSetting';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
+import { useLayout } from '@/store/layout';
 
 interface Props extends Omit<ButtonBaseProps, 'kind' | 'size' | 'className'> {
   sidebarId: SidebarProps['id'];

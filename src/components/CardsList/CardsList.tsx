@@ -20,9 +20,6 @@ import {
   ComponentProps,
   PropsWithChildren,
   ReactElement,
-  useEffect,
-  useId,
-  useRef,
   useState,
 } from 'react';
 import classes from './CardsList.module.scss';

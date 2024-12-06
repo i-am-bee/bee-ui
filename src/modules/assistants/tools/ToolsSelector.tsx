@@ -28,12 +28,9 @@ import {
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
-import { useQuery } from '@tanstack/react-query';
-import { readToolQuery } from '@/modules/tools/queries';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import clsx from 'clsx';
 
 export function ToolsSelector() {
@@ -86,8 +83,13 @@ function SelectedToolsItem({
   tool: ToolReference;
   onToggle: (tool: ToolReference, toggled: boolean) => void;
 }) {
-  const { project } = useAppContext();
-  const { toolName, toolIcon: Icon, tool, error } = useToolInfo(toolProp);
+  const { project, organization } = useAppContext();
+  const {
+    toolName,
+    toolIcon: Icon,
+    tool,
+    error,
+  } = useToolInfo({ toolReference: toolProp, project, organization });
   const { openModal } = useModal();
 
   const isUserTool = tool && tool.type === 'user';
@@ -103,7 +105,12 @@ function SelectedToolsItem({
             openModal(
               (props) =>
                 isUserTool && (
-                  <UserToolModal project={project} tool={tool} {...props} />
+                  <UserToolModal
+                    organization={organization}
+                    project={project}
+                    tool={tool}
+                    {...props}
+                  />
                 ),
             )
           }

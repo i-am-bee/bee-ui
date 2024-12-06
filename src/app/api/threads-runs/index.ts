@@ -19,6 +19,7 @@ import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { RunsListQuery, RunStepsQuery, RunUpdateBody } from './types';
 
 export async function listRuns(
+  organizationId: string,
   projectId: string,
   threadId: string,
   query?: RunsListQuery,
@@ -28,7 +29,7 @@ export async function listRuns(
       path: { thread_id: threadId },
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);
@@ -36,6 +37,7 @@ export async function listRuns(
 }
 
 export async function readRun(
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
@@ -44,7 +46,7 @@ export async function readRun(
     params: {
       path: { thread_id: threadId, run_id: runId },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);
@@ -52,6 +54,7 @@ export async function readRun(
 }
 
 export async function cancelRun(
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
@@ -61,7 +64,7 @@ export async function cancelRun(
     {
       params: { path: { thread_id: threadId, run_id: runId } },
       body: {} as unknown as undefined,
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
@@ -69,6 +72,7 @@ export async function cancelRun(
 }
 
 export async function updateRun(
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
@@ -82,13 +86,14 @@ export async function updateRun(
       },
     },
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function listRunSteps(
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
@@ -99,7 +104,7 @@ export async function listRunSteps(
       path: { thread_id: threadId, run_id: runId },
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);
@@ -107,6 +112,7 @@ export async function listRunSteps(
 }
 
 export async function readTrace(
+  organizationId: string,
   projectId: string,
   threadId: string,
   runId: string,
@@ -115,7 +121,7 @@ export async function readTrace(
     params: {
       path: { thread_id: threadId, run_id: runId },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);

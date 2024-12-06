@@ -24,7 +24,7 @@ import {
   useQueries,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { readVectorStoreQuery, vectorStoresQuery } from '../queries';
 import { produce } from 'immer';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
@@ -35,7 +35,7 @@ export const useUpdatePendingVectorStore = (
   params: VectorStoresListQuery,
 ) => {
   const queryClient = useQueryClient();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({
     durationStart: 1000,
@@ -52,7 +52,7 @@ export const useUpdatePendingVectorStore = (
       .filter((store) => store.status === 'in_progress')
       .map((store) => {
         return {
-          ...readVectorStoreQuery(project.id, store.id),
+          ...readVectorStoreQuery(organization.id, project.id, store.id),
           refetchOnWindowFocus: true,
           refetchOnMount: false,
           refetchOnReconnect: false,
@@ -70,7 +70,7 @@ export const useUpdatePendingVectorStore = (
         isSomeUpdated = true;
 
         queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-          vectorStoresQuery(project.id, params).queryKey,
+          vectorStoresQuery(organization.id, project.id, params).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -89,8 +89,10 @@ export const useUpdatePendingVectorStore = (
 
     if (isSomeUpdated) {
       queryClient.invalidateQueries({
-        queryKey: [vectorStoresQuery(project.id, params).queryKey[0]],
+        queryKey: [
+          vectorStoresQuery(organization.id, project.id, params).queryKey[0],
+        ],
       });
     }
-  }, [data, params, project.id, queries, queryClient]);
+  }, [data, params, organization.id, project.id, queries, queryClient]);
 };

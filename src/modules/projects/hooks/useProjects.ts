@@ -22,18 +22,27 @@ import { useEffect, useMemo } from 'react';
 import { projectsQuery } from '../queries';
 import { ProjectWithScope } from '../types';
 import { readProjectUserQuery } from '../users/queries';
+import { Organization } from '@/app/api/organization/types';
 
-export function useProjects({ withRole }: { withRole?: boolean }) {
+export function useProjects({
+  withRole,
+  organization,
+}: {
+  withRole?: boolean;
+  organization: Organization;
+}) {
   const userId = useUserProfile((state) => state.id);
 
-  const query = useInfiniteQuery(projectsQuery(PROJECTS_QUERY_PARAMS));
+  const query = useInfiniteQuery(
+    projectsQuery(organization.id, PROJECTS_QUERY_PARAMS),
+  );
 
   const queries = useQueries({
     queries:
       withRole && query.data && userId
         ? query.data.projects.map((project) => {
             return {
-              ...readProjectUserQuery(project.id, userId),
+              ...readProjectUserQuery(organization.id, project.id, userId),
             };
           })
         : [],

@@ -22,6 +22,7 @@ import { isNotNull } from '@/utils/helpers';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
 
 export const useWatchPendingVectorStoreFiles = (
+  organizationId: string,
   projectId: string,
   vectorStoreId: string | null,
   data: VectorStoreFile[],
@@ -42,7 +43,12 @@ export const useWatchPendingVectorStoreFiles = (
           .filter((file) => file.status === 'in_progress')
           .map((file) => {
             return {
-              ...readVectorStoreFileQuery(projectId, vectorStoreId, file.id),
+              ...readVectorStoreFileQuery(
+                organizationId,
+                projectId,
+                vectorStoreId,
+                file.id,
+              ),
               refetchInterval: getDuration,
             };
           })

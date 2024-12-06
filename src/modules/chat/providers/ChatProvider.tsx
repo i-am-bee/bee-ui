@@ -149,7 +149,7 @@ export function ChatProvider({
     clearFiles,
     ensureThreadRef,
   } = useFilesUpload();
-  const { assistant, onPageLeaveRef, project } = useAppContext();
+  const { assistant, onPageLeaveRef, project, organization } = useAppContext();
   const { selectAssistant } = useAppApiContext();
   const queryClient = useQueryClient();
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
@@ -174,7 +174,7 @@ export function ChatProvider({
 
   const { mutate: mutateCancel } = useMutation({
     mutationFn: ({ threadId, runId }: CancelRunParams) =>
-      cancelRun(project.id, threadId, runId),
+      cancelRun(organization.id, project.id, threadId, runId),
   });
 
   const {
@@ -206,7 +206,8 @@ export function ChatProvider({
     (threadId?: string, newMessage?: MessageWithFiles | null) => {
       if (threadId) {
         queryClient.setQueryData(
-          messagesWithFilesQuery(project.id, threadId).queryKey,
+          messagesWithFilesQuery(organization.id, project.id, threadId)
+            .queryKey,
           (messages) => {
             if (!newMessage) return messages;
 
@@ -221,7 +222,7 @@ export function ChatProvider({
         );
       }
     },
-    [project.id, queryClient],
+    [project.id, organization.id, queryClient],
   );
 
   const getThreadTools = useCallback(() => {
@@ -368,6 +369,7 @@ export function ChatProvider({
     if (threadRef.current) {
       queryClient.invalidateQueries({
         queryKey: readRunQuery(
+          organization.id,
           project.id,
           threadRef.current.id,
           lastMessage?.run_id ?? '',
@@ -380,6 +382,7 @@ export function ChatProvider({
     getMessages,
     onMessageCompleted,
     project.id,
+    organization.id,
     queryClient,
     setController,
     setMessages,
@@ -447,7 +450,7 @@ export function ChatProvider({
     if (thread && getMessages().at(-1)?.role !== 'assistant') {
       queryClient
         .fetchQuery(
-          runsQuery(project.id, thread.id, {
+          runsQuery(organization.id, project.id, thread.id, {
             limit: 1,
             order: 'desc',
             order_by: 'created_at',
@@ -487,6 +490,7 @@ export function ChatProvider({
     setMessages,
     queryClient,
     project.id,
+    organization.id,
     requireUserApproval,
   ]);
 
@@ -554,11 +558,16 @@ export function ChatProvider({
         threadId: string,
         { role, content, attachments, files }: UserChatMessage,
       ): Promise<MessageWithFiles | null> {
-        const message = await createMessage(project.id, threadId, {
-          role,
-          content,
-          attachments,
-        });
+        const message = await createMessage(
+          organization.id,
+          project.id,
+          threadId,
+          {
+            role,
+            content,
+            attachments,
+          },
+        );
 
         setMessages((messages) => {
           const lastUserMessage = messages.findLast(
@@ -645,11 +654,15 @@ export function ChatProvider({
 
             if (files.length > 0) {
               queryClient.invalidateQueries({
-                queryKey: threadsQuery(project.id).queryKey,
+                queryKey: threadsQuery(organization.id, project.id).queryKey,
               });
 
               queryClient.invalidateQueries({
-                queryKey: threadQuery(project.id, thread?.id ?? '').queryKey,
+                queryKey: threadQuery(
+                  organization.id,
+                  project.id,
+                  thread?.id ?? '',
+                ).queryKey,
               });
             }
           },
@@ -671,25 +684,26 @@ export function ChatProvider({
       };
     },
     [
-      assistant,
-      attachments,
-      chatStream,
-      clearFiles,
       controllerRef,
-      ensureThread,
-      files,
-      getMessages,
-      getUsedTools,
-      handlRunCompleted,
-      handleCancelCurrentRun,
-      handleError,
-      onBeforePostMessage,
-      project.id,
-      queryClient,
       setController,
       setMessages,
-      setMessagesWithFilesQueryData,
+      handleCancelCurrentRun,
       openModal,
+      handleError,
+      organization.id,
+      project.id,
+      attachments,
+      files,
+      clearFiles,
+      assistant,
+      ensureThread,
+      getUsedTools,
+      chatStream,
+      onBeforePostMessage,
+      getMessages,
+      setMessagesWithFilesQueryData,
+      queryClient,
+      handlRunCompleted,
     ],
   );
 

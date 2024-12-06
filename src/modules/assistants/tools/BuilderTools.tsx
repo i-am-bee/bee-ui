@@ -26,7 +26,7 @@ import { BuilderSectionHeading } from '../builder/BuilderSectionHeading';
 
 export function BuilderTools() {
   const { openModal } = useModal();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
 
   const { setValue, getValues } = useFormContext<AssistantFormValues>();
 
@@ -47,6 +47,7 @@ export function BuilderTools() {
           onClick: () =>
             openModal((props) => (
               <UserToolModal
+                organization={organization}
                 project={project}
                 onCreateSuccess={handleUserToolCreateSuccess}
                 {...props}

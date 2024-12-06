@@ -28,17 +28,18 @@ interface Props {
 
 export function useDeleteAssistant({ assistant, onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (id: string) => deleteAssistant(project.id, id),
+    mutationFn: (id: string) =>
+      deleteAssistant(organization.id, project.id, id),
     onSuccess: () => {
       onSuccess?.();
 
       // invalidate all queries on GET:/assistants
       queryClient.invalidateQueries({
-        queryKey: [assistantsQuery(project.id).queryKey.at(0)],
+        queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
       });
     },
     meta: {

@@ -7733,6 +7733,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            default_organization: string;
+                            default_project: string;
                             email: string | null;
                             id: string;
                             metadata?: {
@@ -7771,6 +7773,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            default_organization: string;
+                            default_project: string;
                             email: string | null;
                             id: string;
                             metadata?: {
@@ -7809,6 +7813,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            default_organization: string;
+                            default_project: string;
                             email: string | null;
                             id: string;
                             metadata?: {

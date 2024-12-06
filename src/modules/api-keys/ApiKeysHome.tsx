@@ -54,7 +54,7 @@ import { EmptyDataInfo } from '@/components/CardsList/CardsList';
 
 export function ApiKeysHome() {
   const id = useId();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { openModal, openConfirmation } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
   const userId = useUserProfile((state) => state.id);
@@ -74,7 +74,7 @@ export function ApiKeysHome() {
   }, [resetPagination, search]);
 
   const { data, isPending, isFetching } = useQuery(
-    apiKeysQuery({
+    apiKeysQuery(organization.id, {
       search,
       limit: PAGE_SIZE,
       after,
@@ -102,7 +102,12 @@ export function ApiKeysHome() {
               defaultValue={name}
               required
               onConfirm={(value) =>
-                mutateRename({ id, projectId: project.id, name: value })
+                mutateRename({
+                  id,
+                  projectId: project.id,
+                  organizationId: organization.id,
+                  name: value,
+                })
               }
             />
           ),
@@ -127,7 +132,11 @@ export function ApiKeysHome() {
                     primaryButtonText: 'Regenerate',
                     onSubmit: () =>
                       openModal((props) => (
-                        <ApiKeyModal.Regenerate apiKey={item} {...props} />
+                        <ApiKeyModal.Regenerate
+                          organization={organization}
+                          apiKey={item}
+                          {...props}
+                        />
                       )),
                   })
                 }
@@ -137,7 +146,11 @@ export function ApiKeysHome() {
                 itemText="Delete"
                 onClick={() =>
                   openModal((props) => (
-                    <ApiKeyModal.Delete apiKey={item} {...props} />
+                    <ApiKeyModal.Delete
+                      organization={organization}
+                      apiKey={item}
+                      {...props}
+                    />
                   ))
                 }
               />
@@ -145,7 +158,14 @@ export function ApiKeysHome() {
           ),
         };
       }) ?? [],
-    [data?.data, mutateRename, openConfirmation, openModal, userId],
+    [
+      data?.data,
+      mutateRename,
+      openConfirmation,
+      openModal,
+      userId,
+      organization,
+    ],
   );
 
   return (
@@ -162,7 +182,11 @@ export function ApiKeysHome() {
               title: 'Create API key',
               onClick: () =>
                 openModal((props) => (
-                  <ApiKeyModal {...props} project={project} />
+                  <ApiKeyModal
+                    {...props}
+                    organization={organization}
+                    project={project}
+                  />
                 )),
             }}
             isEmpty={isEmpty}
@@ -192,6 +216,7 @@ export function ApiKeysHome() {
                         onClick={() =>
                           openModal((props) => (
                             <ApiKeyModal
+                              organization={organization}
                               {...props}
                               project={project}
                               onSuccess={() => resetPagination()}

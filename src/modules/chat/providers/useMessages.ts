@@ -31,10 +31,10 @@ export function useMessages({
   thread?: Thread | null;
   initialData?: MessageWithFiles[];
 }) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const { data } = useQuery({
-    ...messagesWithFilesQuery(project.id, thread?.id || '', {
+    ...messagesWithFilesQuery(organization.id, project.id, thread?.id || '', {
       limit: MESSAGES_PAGE_SIZE,
     }),
     select: (messages) =>

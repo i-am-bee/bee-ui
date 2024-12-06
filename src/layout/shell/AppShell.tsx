@@ -21,7 +21,7 @@ import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
 import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
-import { getSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 
 interface Props {
   projectId: string;
@@ -31,12 +31,14 @@ export async function AppShell({
   projectId,
   children,
 }: PropsWithChildren<Props>) {
-  const project = await fetchProject(projectId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const project = await fetchProject(organizationId, projectId);
 
   if (!project) notFound();
 
   return (
-    <AppProvider project={project}>
+    <AppProvider project={project} organization={{ id: organizationId }}>
       <div className={classes.root}>
         <AppHeader />
 

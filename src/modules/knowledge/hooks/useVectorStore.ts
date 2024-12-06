@@ -29,10 +29,10 @@ export function useVectorStore(
     initialData?: VectorStore;
   } = {},
 ) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const query = useQuery({
-    ...readVectorStoreQuery(project.id, id ?? ''),
+    ...readVectorStoreQuery(organization.id, project.id, id ?? ''),
     enabled: Boolean(id) && enabled,
     initialData,
   });

@@ -17,16 +17,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteApiKey } from '@/app/api/api-keys';
 import { apiKeysQuery } from './queries';
+import { Organization } from '@/app/api/organization/types';
 
-export function useDeleteApiKey({ onSuccess }: { onSuccess?: () => void }) {
+export function useDeleteApiKey({
+  onSuccess,
+  organization,
+}: {
+  onSuccess?: () => void;
+  organization: Organization;
+}) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: ({ id, projectId }: { id: string; projectId: string }) =>
-      deleteApiKey(projectId, id),
+      deleteApiKey(organization.id, projectId, id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [apiKeysQuery().queryKey.at(0)],
+        queryKey: [apiKeysQuery(organization.id).queryKey.at(0)],
       });
 
       onSuccess?.();

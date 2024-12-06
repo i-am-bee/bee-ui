@@ -19,13 +19,15 @@ import classes from './UsersCount.module.scss';
 import { SkeletonText } from '@carbon/react';
 import { useProjectUsersCount } from './useProjectUsersCount';
 import pluralize from 'pluralize';
+import { Organization } from '@/app/api/organization/types';
 
 interface Props {
   project: Project;
+  organization: Organization;
 }
 
-export function UsersCount({ project }: Props) {
-  const { totalCount, isLoading } = useProjectUsersCount(project);
+export function UsersCount({ project, organization }: Props) {
+  const { totalCount, isLoading } = useProjectUsersCount(organization, project);
 
   return (
     <div className={classes.root}>

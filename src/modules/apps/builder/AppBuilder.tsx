@@ -47,7 +47,7 @@ interface Props {
 }
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
   const { setCode, getCode } = useAppBuilderApi();
   const { artifact, code } = useAppBuilder();
@@ -64,11 +64,11 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
           `/${project.id}/apps/builder/t/${newThread.id}`,
         );
         queryClient.invalidateQueries({
-          queryKey: threadsQuery(project.id).queryKey,
+          queryKey: threadsQuery(organization.id, project.id).queryKey,
         });
       }
     },
-    [project.id, queryClient, setCode, thread],
+    [organization.id, project.id, queryClient, setCode, thread],
   );
 
   const handleBeforePostMessage = useCallback(
@@ -85,14 +85,14 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
         const instruction = isCodeModified
           ? 'I have edited the source code to'
           : 'I want to continue working on this source code';
-        await createMessage(project.id, thread.id, {
+        await createMessage(organization.id, project.id, thread.id, {
           role: 'user',
           content: `${instruction}:\n\`\`\`python-app\n${currentCode}\n\`\`\``,
           metadata: encodeMetadata<MessageMetadata>({ type: 'code-update' }),
         });
       }
     },
-    [getCode, project.id],
+    [getCode, organization.id, project.id],
   );
 
   const isCloneAppThread = (() => {
@@ -128,7 +128,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
 
 function AppBuilderContent() {
   const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { openModal } = useModal();
   const { getMessages } = useChat();
 
@@ -164,6 +164,7 @@ function AppBuilderContent() {
                   if (message?.id && code) {
                     openModal((props) => (
                       <SaveAppModal
+                        organization={organization}
                         artifact={artifact}
                         project={project}
                         messageId={message.id ?? ''}

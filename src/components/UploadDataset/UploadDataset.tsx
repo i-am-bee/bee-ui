@@ -15,14 +15,7 @@
  */
 
 import { FormItem, FileUploaderDropContainer, usePrefix } from '@carbon/react';
-import {
-  ReactElement,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-} from 'react';
+import { SyntheticEvent, useCallback, useId, useMemo } from 'react';
 import { Control, FieldValues, Path, useController } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import classes from './UploadDataset.module.scss';
@@ -91,7 +84,7 @@ export function UploadDataset<
 }: Props<TFieldValues, TName>) {
   const prefix = usePrefix();
   const id = useId();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const { field } = useController({ control, name });
 
@@ -141,7 +134,10 @@ export function UploadDataset<
           return ({ purpose }: UploadOptions) => {
             if (promise == null) {
               setState({ status: 'uploading' });
-              promise = createFile(project.id, { file, purpose }).then(
+              promise = createFile(organization.id, project.id, {
+                file,
+                purpose,
+              }).then(
                 (result) => {
                   uploadedFile = result;
                   setState({ status: 'complete' });
@@ -177,7 +173,7 @@ export function UploadDataset<
         getState: () => state,
       };
     },
-    [extensionsString, project.id],
+    [extensionsString, project.id, organization.id],
   );
 
   const handleAddFiles = (

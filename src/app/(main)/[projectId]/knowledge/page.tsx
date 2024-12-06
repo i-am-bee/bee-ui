@@ -19,7 +19,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default function KnowledgePage() {
   return (
-    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
       <KnowledgeView />
     </LayoutInitializer>
   );

@@ -31,6 +31,7 @@ import {
 } from '@/components/DropdownSelector/DropdownSelector';
 import { DropdownSkeleton } from '@carbon/react';
 import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function ToolsSelectorDropdown() {
   const {
@@ -38,6 +39,7 @@ export function ToolsSelectorDropdown() {
   } = useAssistantBuilder();
 
   const { tools, isLoading } = useListAllTools();
+  const { project, organization } = useAppContext();
 
   const {
     field: { onChange, value },
@@ -83,7 +85,12 @@ export function ToolsSelectorDropdown() {
           itemToString={(item) => getStaticToolName(item)}
           itemToElement={(item) => (
             <>
-              <ToolIcon tool={item} /> {getStaticToolName(item)}
+              <ToolIcon
+                organization={organization}
+                project={project}
+                tool={item}
+              />{' '}
+              {getStaticToolName(item)}
             </>
           )}
           onSubmit={(items, clearSelected) => {

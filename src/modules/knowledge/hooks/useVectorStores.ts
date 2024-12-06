@@ -26,10 +26,10 @@ export function useVectorStores({
   params?: VectorStoresListQuery;
   placeholderData?: typeof keepPreviousData;
 } = {}) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const query = useInfiniteQuery({
-    ...vectorStoresQuery(project.id, params),
+    ...vectorStoresQuery(organization.id, project.id, params),
     placeholderData,
   });
 

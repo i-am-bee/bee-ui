@@ -19,7 +19,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default function HomePage() {
   return (
-    <LayoutInitializer layout={{ sidebarVisible: true, navbarProps: null }}>
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
       <AssistantsHome />
     </LayoutInitializer>
   );

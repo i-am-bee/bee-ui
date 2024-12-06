@@ -27,10 +27,10 @@ interface Props {
 
 export function useDeleteTool({ tool, onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (id: string) => deleteTool(project.id, id),
+    mutationFn: (id: string) => deleteTool(organization.id, project.id, id),
     onSuccess,
     meta: {
       errorToast: {

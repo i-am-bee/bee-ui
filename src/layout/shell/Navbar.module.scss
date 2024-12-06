@@ -65,3 +65,10 @@
     }
   }
 }
+
+.backButton {
+  padding-inline: $spacing-02;
+  inline-size: rem(32px);
+  justify-content: center;
+  min-inline-size: 0;
+}

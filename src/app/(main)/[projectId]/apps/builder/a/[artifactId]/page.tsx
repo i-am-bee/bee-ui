@@ -21,10 +21,12 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
+import { getAppBuilderNavbarProps } from '../../../utils';
 
 interface Props {
   params: {
@@ -36,27 +38,26 @@ interface Props {
 export default async function AppBuilderPage({
   params: { projectId, artifactId },
 }: Props) {
-  const assistant = await ensureAppBuilderAssistant(projectId);
+  const organizationId = await ensureDefaultOrganizationId();
+
+  const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
   const artifact = await fetchArtifact(projectId, artifactId);
 
   const thread = artifact?.thread_id
-    ? await fetchThread(projectId, artifact?.thread_id)
+    ? await fetchThread(organizationId, projectId, artifact?.thread_id)
     : null;
 
   if (!(assistant && thread && artifact)) notFound();
 
   const initialMessages = thread.id
-    ? await listMessagesWithFiles(projectId, thread.id, {
+    ? await listMessagesWithFiles(organizationId, projectId, thread.id, {
         limit: MESSAGES_PAGE_SIZE,
       })
     : [];
 
   return (
     <LayoutInitializer
-      layout={{
-        sidebarVisible: false,
-        navbarProps: { type: 'app-builder', artifact },
-      }}
+      layout={{ navbarProps: getAppBuilderNavbarProps(projectId, artifact) }}
     >
       <AppBuilderProvider artifact={artifact}>
         <AppBuilder

@@ -33,10 +33,13 @@ interface Props {
 
 export function ProjectSelector({ hideReadOnlyTag }: Props) {
   const { openModal } = useModal();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
-  const { projects, data, isFetching } = useProjects({ withRole: true });
+  const { projects, data, isFetching } = useProjects({
+    organization,
+    withRole: true,
+  });
 
   const selectedItem = useMemo(
     () => projects?.find(({ id }) => id === project.id),
@@ -74,7 +77,12 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
                 className={classes.createNewButton}
                 renderIcon={Add}
                 onClick={() =>
-                  openModal((props) => <CreateProjectModal {...props} />)
+                  openModal((props) => (
+                    <CreateProjectModal
+                      organization={organization}
+                      {...props}
+                    />
+                  ))
                 }
               >
                 Create workspace

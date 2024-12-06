@@ -19,6 +19,7 @@ import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { VectorStoreFileCreateBody, VectorStoreFilesListQuery } from './types';
 
 export async function listVectorStoreFiles(
+  organizationId: string,
   projectId: string,
   storeId: string,
   query: VectorStoreFilesListQuery,
@@ -28,13 +29,14 @@ export async function listVectorStoreFiles(
       path: { vector_store_id: storeId },
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function createVectorStoreFile(
+  organizationId: string,
   projectId: string,
   storeId: string,
   body: VectorStoreFileCreateBody,
@@ -42,13 +44,14 @@ export async function createVectorStoreFile(
   const res = await client.POST('/v1/vector_stores/{vector_store_id}/files', {
     body,
     params: { path: { vector_store_id: storeId } },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function deleteVectorStoreFile(
+  organizationId: string,
   projectId: string,
   storeId: string,
   id: string,
@@ -59,13 +62,14 @@ export async function deleteVectorStoreFile(
       params: {
         path: { vector_store_id: storeId, file_id: id },
       },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
 }
 
 export async function readVectorStoreFile(
+  organizationId: string,
   projectId: string,
   storeId: string,
   fileId: string,
@@ -74,7 +78,7 @@ export async function readVectorStoreFile(
     '/v1/vector_stores/{vector_store_id}/files/{file_id}',
     {
       params: { path: { vector_store_id: storeId, file_id: fileId } },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);

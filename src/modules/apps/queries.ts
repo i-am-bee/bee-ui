@@ -21,22 +21,27 @@ import { Artifact } from './types';
 import { ArtifactsListQuery } from '@/app/api/artifacts/types';
 import { isNotNull } from '@/utils/helpers';
 
-export const readArtifactQuery = (projectId: string, id: string) =>
+export const readArtifactQuery = (
+  organizationId: string,
+  projectId: string,
+  id: string,
+) =>
   queryOptions({
-    queryKey: ['artifact', projectId, id],
-    queryFn: () => readArtifact(projectId, id),
+    queryKey: ['artifact', organizationId, projectId, id],
+    queryFn: () => readArtifact(organizationId, projectId, id),
     select: (data) => (data ? decodeEntityWithMetadata<Artifact>(data) : null),
     staleTime: 10 * 60 * 1000,
   });
 
 export const listArtifactsQuery = (
+  organizationId: string,
   projectId: string,
   params?: ArtifactsListQuery,
 ) =>
   infiniteQueryOptions({
-    queryKey: ['artifacts', projectId, params],
+    queryKey: ['artifacts', organizationId, projectId, params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listArtifacts(projectId, {
+      listArtifacts(organizationId, projectId, {
         ...params,
         limit: params?.limit || PAGE_SIZE,
         after: pageParam,

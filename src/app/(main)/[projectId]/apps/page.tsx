@@ -20,10 +20,7 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 export default function AppsPage() {
   return (
     <LayoutInitializer
-      layout={{
-        sidebarVisible: true,
-        navbarProps: { type: 'common', title: 'Apps' },
-      }}
+      layout={{ navbarProps: { title: 'Apps', type: 'common' } }}
     >
       <AppsHome />
     </LayoutInitializer>

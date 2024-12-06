@@ -29,18 +29,20 @@ import {
 import { AssistantCreateBody, AssistantsListQuery } from './types';
 
 export async function createAssistant(
+  organizationId: string,
   projectId: string,
   body: AssistantCreateBody,
 ) {
   const res = await client.POST('/v1/assistants', {
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function updateAssistant(
+  organizationId: string,
   projectId: string,
   id: string,
   body: AssistantCreateBody,
@@ -48,16 +50,20 @@ export async function updateAssistant(
   const res = await client.POST('/v1/assistants/{assistant_id}', {
     params: { path: { assistant_id: id } },
     body,
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function readAssistant(projectId: string, id: string) {
+export async function readAssistant(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET('/v1/assistants/{assistant_id}', {
     params: { path: { assistant_id: id } },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
 
   assertSuccessResponse(res);
@@ -65,6 +71,7 @@ export async function readAssistant(projectId: string, id: string) {
 }
 
 export async function listAssistants(
+  organizationId: string,
   projectId: string,
   query: AssistantsListQuery,
 ) {
@@ -72,39 +79,53 @@ export async function listAssistants(
     params: {
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function listLastAssistants(projectId: string) {
+export async function listLastAssistants(
+  organizationId: string,
+  projectId: string,
+) {
   const res = await client.GET('/v1/ui/last_assistants', {
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteAssistant(projectId: string, id: string) {
+export async function deleteAssistant(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.DELETE('/v1/assistants/{assistant_id}', {
     params: {
       path: { assistant_id: id },
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
 }
 
-export async function fetchAssistant(projectId: string, id?: string) {
+export async function fetchAssistant(
+  organizationId: string,
+  projectId: string,
+  id?: string,
+) {
   if (!id) return;
 
-  const assistant = await fetchEntity(() => readAssistant(projectId, id));
+  const assistant = await fetchEntity(() =>
+    readAssistant(organizationId, projectId, id),
+  );
 
   return assistant ? decodeEntityWithMetadata<Assistant>(assistant) : assistant;
 }
 
 export async function fetchThreadAssistant(
+  organizationId: string,
   projectId: string,
   threadId: string,
   threadAssistantId?: string,
@@ -115,7 +136,7 @@ export async function fetchThreadAssistant(
     const assistantId =
       threadAssistantId ??
       (
-        await listRuns(projectId, threadId, {
+        await listRuns(organizationId, projectId, threadId, {
           limit: 1,
           order: 'desc',
           order_by: 'created_at',
@@ -123,7 +144,7 @@ export async function fetchThreadAssistant(
       )?.data.at(0)?.assistant_id;
 
     threadAssistant.data =
-      (await fetchAssistant(projectId, assistantId)) ?? null;
+      (await fetchAssistant(organizationId, projectId, assistantId)) ?? null;
   } catch (error) {
     if (
       (error instanceof ApiError && error.code === 'not_found') ||
@@ -142,17 +163,24 @@ export async function fetchThreadAssistant(
   return threadAssistant;
 }
 
-export async function ensureAppBuilderAssistant(projectId: string) {
+export async function ensureAppBuilderAssistant(
+  organizationId: string,
+  projectId: string,
+) {
   let result = null;
   try {
     result = (
-      await listAssistants(projectId, { limit: 1, agent: 'streamlit' })
+      await listAssistants(organizationId, projectId, {
+        limit: 1,
+        agent: 'streamlit',
+      })
     )?.data.at(0);
 
     if (!result) {
-      result = await createAssistant(projectId, {
+      result = await createAssistant(organizationId, projectId, {
         agent: 'streamlit',
         name: 'App Builder',
+        tool_resources: undefined,
       });
     }
   } catch (error) {

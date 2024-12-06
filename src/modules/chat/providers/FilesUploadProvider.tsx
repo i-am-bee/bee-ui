@@ -82,7 +82,7 @@ const ERROR_MESSAGES = {
 };
 
 export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
-  const { project, assistant } = useAppContext();
+  const { project, organization, assistant } = useAppContext();
   const {
     files,
     setFiles,
@@ -120,7 +120,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
 
   const { mutateAsync: mutateCreateVectorStore } = useMutation({
     mutationFn: (body: VectorStoreCreateBody) =>
-      createVectorStore(project.id, body),
+      createVectorStore(organization.id, project.id, body),
     onSuccess: (result) => {
       if (result) setVectorStoreId(result.id);
     },
@@ -133,7 +133,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
   });
 
   const { mutateAsync: mutateDeleteFile } = useMutation({
-    mutationFn: (id: string) => deleteFile(project.id, id),
+    mutationFn: (id: string) => deleteFile(organization.id, project.id, id),
   });
 
   const { mutateAsync: mutateDeleteStoreFile } = useMutation({
@@ -143,7 +143,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     }: {
       vectorStoreId: string;
       id: string;
-    }) => deleteVectorStoreFile(project.id, vectorStoreId, id),
+    }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
   });
 
   const removeFile = useCallback(

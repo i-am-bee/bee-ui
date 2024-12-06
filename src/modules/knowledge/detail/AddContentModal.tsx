@@ -32,16 +32,17 @@ import {
   VectorStoreFilesUploadProvider,
 } from '../files/VectorStoreFilesUploadProvider';
 import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
-import { Project } from '@/app/api/projects/types';
 
 interface Props extends ModalProps {
   vectorStore: VectorStore;
+  organizationId: string;
   projectId: string;
   onCreateSuccess: (vectorStoreFile?: VectorStoreFile) => void;
 }
 
 export function AddContentModal({
   vectorStore,
+  organizationId,
   projectId,
   onCreateSuccess,
   ...props
@@ -57,6 +58,7 @@ export function AddContentModal({
         <h2>Add content to {vectorStore.name}</h2>
       </ModalHeader>
       <VectorStoreFilesUploadProvider
+        organizationId={organizationId}
         projectId={projectId}
         vectorStoreId={vectorStore.id}
         onCreateFileSuccess={onCreateSuccess}

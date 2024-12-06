@@ -22,12 +22,16 @@ import {
   ProjectUsersListQuery,
 } from './types';
 
-export async function readProjectUser(projectId: string, id: string) {
+export async function readProjectUser(
+  organizationId: string,
+  projectId: string,
+  id: string,
+) {
   const res = await client.GET(
     '/v1/organization/projects/{project_id}/users/{user_id}',
     {
       params: { path: { project_id: projectId, user_id: id } },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
 
@@ -36,6 +40,7 @@ export async function readProjectUser(projectId: string, id: string) {
 }
 
 export async function listProjectUsers(
+  organizationId: string,
   projectId: string,
   query: ProjectUsersListQuery,
 ) {
@@ -44,13 +49,14 @@ export async function listProjectUsers(
       path: { project_id: projectId },
       query,
     },
-    headers: getRequestHeaders(projectId),
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
 }
 
 export async function createProjectUser(
+  organizationId: string,
   projectId: string,
   body: ProjectUserCreateBody,
 ) {
@@ -59,19 +65,23 @@ export async function createProjectUser(
     {
       params: { path: { project_id: projectId } },
       body,
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function deleteProjectUser(projectId: string, userId: string) {
+export async function deleteProjectUser(
+  organizationId: string,
+  projectId: string,
+  userId: string,
+) {
   const res = await client.DELETE(
     '/v1/organization/projects/{project_id}/users/{user_id}',
     {
       params: { path: { project_id: projectId, user_id: userId } },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);
@@ -79,6 +89,7 @@ export async function deleteProjectUser(projectId: string, userId: string) {
 }
 
 export async function updateProjectUser(
+  organizationId: string,
   projectId: string,
   userId: string,
   role: ProjectUserRole,
@@ -88,7 +99,7 @@ export async function updateProjectUser(
     {
       params: { path: { project_id: projectId, user_id: userId } },
       body: { role },
-      headers: getRequestHeaders(projectId),
+      headers: getRequestHeaders(organizationId, projectId),
     },
   );
   assertSuccessResponse(res);

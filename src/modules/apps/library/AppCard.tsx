@@ -78,3 +78,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
     </>
   );
 }
+
+AppCard.Skeleton = function Skeleton() {
+  return <CardsListItem.Skeleton className={classes.root} />;
+};

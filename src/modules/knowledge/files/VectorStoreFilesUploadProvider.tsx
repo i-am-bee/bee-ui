@@ -75,12 +75,14 @@ const Context = createContext<{
 interface Props {
   vectorStoreId?: string;
   projectId: string;
+  organizationId: string;
   onCreateFileSuccess?: (vectorStoreFile: VectorStoreFile) => void;
 }
 
 export const VectorStoreFilesUploadProvider = ({
   vectorStoreId: propsVectorStoreId,
   projectId,
+  organizationId,
   onCreateFileSuccess,
   children,
 }: PropsWithChildren<Props>) => {
@@ -92,6 +94,7 @@ export const VectorStoreFilesUploadProvider = ({
   const queryClient = useQueryClient();
 
   const vectorStoreFiles = useWatchPendingVectorStoreFiles(
+    organizationId,
     projectId,
     vectorStoreId,
     files.map(({ vectorStoreFile }) => vectorStoreFile).filter(isNotNull),
@@ -120,7 +123,11 @@ export const VectorStoreFilesUploadProvider = ({
           if (vectorStoreId) {
             queryClient.invalidateQueries({
               queryKey: [
-                vectorStoresFilesQuery(projectId, vectorStoreId).queryKey.at(0),
+                vectorStoresFilesQuery(
+                  organizationId,
+                  projectId,
+                  vectorStoreId,
+                ).queryKey.at(0),
               ],
             });
           }
@@ -145,6 +152,7 @@ export const VectorStoreFilesUploadProvider = ({
     queryClient,
     vectorStoreId,
     projectId,
+    organizationId,
   ]);
 
   const handleError = useHandleError();
@@ -158,7 +166,7 @@ export const VectorStoreFilesUploadProvider = ({
       vectorStoreId: string;
       inputFile: VectoreStoreFileUpload;
     }) =>
-      createVectorStoreFile(projectId, vectorStoreId, {
+      createVectorStoreFile(organizationId, projectId, vectorStoreId, {
         file_id: inputFile.file?.id ?? '',
       }),
     onSuccess: (response, { inputFile }) => {
@@ -203,7 +211,7 @@ export const VectorStoreFilesUploadProvider = ({
       inputFile: VectoreStoreFileUpload;
       thread?: Thread;
     }) => {
-      return await createFile(projectId, {
+      return await createFile(organizationId, projectId, {
         file: inputFile.originalFile,
         purpose: 'assistants',
         depends_on_thread_id: thread?.id,

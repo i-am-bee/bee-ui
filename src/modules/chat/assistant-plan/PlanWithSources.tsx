@@ -49,7 +49,7 @@ interface Props {
 }
 
 function PlanWithSourcesComponent({ message, inView }: Props) {
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
   const { thread } = useChat();
   const { setExpandedStep } = useExpandedStepActions();
   const expandedStep = useExpandedStep();
@@ -68,9 +68,15 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     error,
     refetch,
   } = useQuery({
-    ...runStepsQuery(project.id, thread?.id ?? '', message.run_id ?? '', {
-      limit: 100,
-    }),
+    ...runStepsQuery(
+      organization.id,
+      project.id,
+      thread?.id ?? '',
+      message.run_id ?? '',
+      {
+        limit: 100,
+      },
+    ),
     enabled: Boolean(!message.plan && thread && message.run_id && inView),
   });
 

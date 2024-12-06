@@ -27,6 +27,7 @@ import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 export const PAGE_SIZE = 6;
 
 export const vectorStoresQuery = (
+  organizationId: string,
   projectId: string,
   params?: VectorStoresListQuery,
 ) => {
@@ -35,9 +36,14 @@ export const vectorStoresQuery = (
     show_dependent: false,
   };
   return infiniteQueryOptions({
-    queryKey: ['vector-stores', projectId, paramsWithoutDependant],
+    queryKey: [
+      'vector-stores',
+      organizationId,
+      projectId,
+      paramsWithoutDependant,
+    ],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listVectorStores(projectId, {
+      listVectorStores(organizationId, projectId, {
         ...paramsWithoutDependant,
         limit: params?.limit || PAGE_SIZE,
         after: pageParam,
@@ -62,6 +68,7 @@ export const vectorStoresQuery = (
 };
 
 export const vectorStoresFilesQuery = (
+  organizationId: string,
   projectId: string,
   storeId: string,
   params?: VectorStoreFilesListQuery,
@@ -69,7 +76,7 @@ export const vectorStoresFilesQuery = (
   infiniteQueryOptions({
     queryKey: ['vector-stores-files', projectId, storeId, params],
     queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listVectorStoreFiles(projectId, storeId, {
+      listVectorStoreFiles(organizationId, projectId, storeId, {
         ...params,
         limit: params?.limit || PAGE_SIZE,
         after: pageParam,
@@ -92,23 +99,29 @@ export const vectorStoresFilesQuery = (
     },
   });
 
-export const readVectorStoreQuery = (projectId: string, id: string) =>
+export const readVectorStoreQuery = (
+  organizationId: string,
+  projectId: string,
+  id: string,
+) =>
   queryOptions({
-    queryKey: ['vector-store', projectId, id],
-    queryFn: () => readVectorStore(projectId, id),
+    queryKey: ['vector-store', organizationId, projectId, id],
+    queryFn: () => readVectorStore(organizationId, projectId, id),
     meta: {
       errorToast: false,
     },
   });
 
 export const readVectorStoreFileQuery = (
+  organizationId: string,
   projectId: string,
   storeId: string,
   fileId: string,
 ) =>
   queryOptions({
     queryKey: ['vector-store-file', projectId, storeId, fileId],
-    queryFn: () => readVectorStoreFile(projectId, storeId, fileId),
+    queryFn: () =>
+      readVectorStoreFile(organizationId, projectId, storeId, fileId),
     meta: {
       errorToast: false,
     },
