@@ -105,16 +105,27 @@ export function SaveAppModal({
 
   useConfirmModalCloseOnDirty(!isEmpty(dirtyFields), 'app');
 
+  console.log(messageId);
+
   const onSubmit: SubmitHandler<AppFormValues> = useCallback(
     async (data) => {
       await mutateSave(
         isUpdating
           ? {
               id: artifactProp.id,
-              body: createUpdateArtifactBody(artifactProp, data),
+              body: createUpdateArtifactBody({
+                formValues: data,
+                artifact: artifactProp,
+                messageId: messageId ?? '',
+                code: code ?? '',
+              }),
             }
           : {
-              body: createNewArtifactBody(data, messageId ?? '', code ?? ''),
+              body: createNewArtifactBody({
+                formValues: data,
+                messageId: messageId ?? '',
+                code: code ?? '',
+              }),
             },
       );
     },
@@ -186,11 +197,15 @@ export function SaveAppModal({
   );
 }
 
-function createNewArtifactBody(
-  { name, description, icon }: AppFormValues,
-  messageId: string,
-  code: string,
-): ArtifactCreateBody {
+function createNewArtifactBody({
+  formValues: { name, description, icon },
+  messageId,
+  code,
+}: {
+  formValues: AppFormValues;
+  messageId: string;
+  code: string;
+}): ArtifactCreateBody {
   return {
     name,
     description,
@@ -203,13 +218,22 @@ function createNewArtifactBody(
   };
 }
 
-function createUpdateArtifactBody(
-  artifact: Artifact,
-  { name, description, icon }: AppFormValues,
-): ArtifactUpdateBody {
+function createUpdateArtifactBody({
+  formValues: { name, description, icon },
+  artifact,
+  messageId,
+  code,
+}: {
+  formValues: AppFormValues;
+  artifact: Artifact;
+  messageId: string;
+  code: string;
+}): ArtifactUpdateBody {
   return {
     name,
     description,
+    message_id: messageId,
+    source_code: code,
     shared: Boolean(artifact.share_url),
     metadata: encodeMetadata<ArtifactMetadata>({
       icon,

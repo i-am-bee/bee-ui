@@ -16,12 +16,12 @@
 
 import { Container } from '@/components/Container/Container';
 import { Link } from '@/components/Link/Link';
-import { AppIcon, AppIconName } from '@/modules/apps/AppIcon';
+import { AppIcon } from '@/modules/apps/AppIcon';
 import { AppBuilderNavbarActions } from '@/modules/apps/builder/AppBuilderNavbarActions';
 import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 import { useLayout } from '@/store/layout';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
-import { useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
 import { useAppContext } from '../providers/AppProvider';
 import classes from './Navbar.module.scss';
@@ -42,12 +42,14 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const headingItems = useMemo(() => {
     switch (navbarProps?.type) {
       case 'app-builder':
+        const icon = navbarProps?.artifact?.uiMetadata.icon;
+
         return navbarProps.artifact
           ? [
               { title: 'Apps', url: `/${project.id}/apps` },
               {
                 title: navbarProps.artifact.name,
-                icon: navbarProps.artifact.uiMetadata.icon,
+                icon: icon ? <AppIcon name={icon} /> : null,
               },
             ]
           : [{ title: 'App Builder' }];
@@ -94,7 +96,7 @@ export function NavbarHeading({ items }: { items?: HeadingItem[] }) {
     <ul className={classes.heading}>
       {items.map(({ url, title, icon }, key) => (
         <li key={key}>
-          {icon && <AppIcon name={icon} />}
+          {icon}
           {url ? <Link href={url}>{title}</Link> : title}
         </li>
       ))}
@@ -105,5 +107,5 @@ export function NavbarHeading({ items }: { items?: HeadingItem[] }) {
 interface HeadingItem {
   title: string;
   url?: string;
-  icon?: AppIconName;
+  icon?: ReactElement | null;
 }
