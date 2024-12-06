@@ -54,7 +54,7 @@
   display: flex;
   gap: $spacing-03;
 
-  button {
+  > button {
     padding-inline-end: $spacing-05;
     &:global(.#{$prefix}--overflow-menu) {
       padding-inline-end: 0;
