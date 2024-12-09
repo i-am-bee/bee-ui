@@ -50,20 +50,27 @@ export const TextAreaAutoHeight = forwardRef<HTMLTextAreaElement, Props>(
       setValue((event.target as HTMLTextAreaElement).value);
     }, []);
 
+    const updateOverflowValue = useCallback(() => {
+      if (textareaRef.current && containerRef.current) {
+        textareaRef.current.style.overflow =
+          textareaRef.current?.scrollHeight > containerRef.current?.scrollHeight
+            ? 'auto'
+            : 'hidden';
+      }
+    }, []);
+
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLTextAreaElement>) => {
         onChange?.(event);
 
-        if (textareaRef.current && containerRef.current) {
-          textareaRef.current.style.overflow =
-            textareaRef.current?.scrollHeight >
-            containerRef.current?.scrollHeight
-              ? 'auto'
-              : 'hidden';
-        }
+        updateOverflowValue();
       },
-      [onChange],
+      [onChange, updateOverflowValue],
     );
+
+    useEffect(() => {
+      updateOverflowValue();
+    }, [updateOverflowValue]);
 
     // This is necessary for the auto height to work properly. React does some optimization and ignores custom Event dispatch if the value is unchanged, which happens with react-hook-form.
     useEffect(() => {
