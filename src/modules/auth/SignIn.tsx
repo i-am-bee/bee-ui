@@ -121,56 +121,68 @@ export function SignIn({
     <div className={classes.root}>
       <div className={classes.loginGrid}>
         <div className={classes.content}>
-          {error != null && (
-            <InlineNotification
-              kind={error.kind}
-              statusIconDescription={error.kind}
-              title={error.title}
-            />
-          )}
+          <div className={classes.contentInner}>
+            {error != null && (
+              <InlineNotification
+                kind={error.kind}
+                statusIconDescription={error.kind}
+                title={error.title}
+              />
+            )}
 
-          <h1 className={classes.heading}>
-            {APP_NAME}
-            <VersionTag />
-          </h1>
+            <h1 className={classes.heading}>
+              {APP_NAME}
+              <VersionTag />
+            </h1>
 
-          {showWaitlist && (
-            <>
-              <h2>New to Bee?</h2>
+            {showWaitlist && (
+              <>
+                <h2>New to Bee?</h2>
 
-              <p>
-                Bee is buzzing with excitement, and we’re currently at capacity!
-                Sign up now to secure your spot and be among the first to gain
-                access when we expand. Don’t miss out, join today!
-              </p>
+                <p>
+                  Bee is buzzing with excitement, and we’re currently at
+                  capacity! Sign up now to secure your spot and be among the
+                  first to gain access when we expand. Don’t miss out, join
+                  today!
+                </p>
 
-              {WAITLIST_URL && (
-                <Button
-                  className={classes.loginButton}
-                  kind="secondary"
-                  href={WAITLIST_URL}
-                >
-                  Join the waitlist
-                </Button>
-              )}
+                {WAITLIST_URL && (
+                  <Button
+                    className={classes.loginButton}
+                    kind="secondary"
+                    href={WAITLIST_URL}
+                  >
+                    Join the waitlist
+                  </Button>
+                )}
 
-              <hr className={classes.divider} />
+                <hr className={classes.divider} />
 
-              <p>Already have an account?</p>
-            </>
-          )}
-          <div className={classes.formWrapper}>
-            <form
-              className={classes.form}
-              action={() => action('www.google.com')}
-            >
-              <LoginButton icon={<GoogleIcon />} label="Google" />
-            </form>
+                <p>Already have an account?</p>
+              </>
+            )}
+            <div className={classes.formWrapper}>
+              <form
+                className={classes.form}
+                action={() => action('www.google.com')}
+              >
+                <LoginButton icon={<GoogleIcon />} label="Google" />
+              </form>
 
-            <form className={classes.form} action={() => action('ent.ibm.com')}>
-              <LoginButton icon={<IBMIcon />} label="IBMid" />
-            </form>
+              <form
+                className={classes.form}
+                action={() => action('ent.ibm.com')}
+              >
+                <LoginButton icon={<IBMIcon />} label="IBMid" />
+              </form>
+            </div>
           </div>
+          {BEE_AGENT_PLATFORM_URL && (
+            <footer className={classes.footer}>
+              Powered by open-source{' '}
+              <a href={BEE_AGENT_PLATFORM_URL}>Bee Agent Platform</a>
+            </footer>
+          )}
         </div>
 
         <div className={classes.video}>
@@ -194,13 +206,6 @@ export function SignIn({
           />
         )}
       </div>
-
-      {BEE_AGENT_PLATFORM_URL && (
-        <footer className={classes.footer}>
-          Powered by open-source{' '}
-          <a href={BEE_AGENT_PLATFORM_URL}>Bee Agent Platform</a>
-        </footer>
-      )}
     </div>
   );
 }

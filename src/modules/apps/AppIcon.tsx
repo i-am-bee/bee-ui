@@ -23,10 +23,12 @@ import {
   Code,
   ColorPalette,
   CurrencyDollar,
+  DocumentSigned,
   EarthFilled,
   FaceWink,
   Favorite,
   Gamification,
+  Grid,
   GroupPresentation,
   Idea,
   Lightning,
@@ -35,6 +37,7 @@ import {
   TextShortParagraph,
   ToolKit,
   UserMultiple,
+  Document,
 } from '@carbon/react/icons';
 import { clsx } from 'clsx';
 import has from 'lodash/has';
@@ -57,7 +60,7 @@ export function AppIcon({ name: propName, className, size = 'md' }: Props) {
   );
 }
 
-export const APP_ICONS = {
+export const APP_ICONS_USER = {
   ColorPalette,
   Pen,
   FaceWink,
@@ -80,4 +83,7 @@ export const APP_ICONS = {
   ChartLineSmooth,
 };
 
+export const APP_ICONS = { ...APP_ICONS_USER, DocumentSigned, Document, Grid };
+
+export type AppIconUserName = keyof typeof APP_ICONS_USER;
 export type AppIconName = keyof typeof APP_ICONS;

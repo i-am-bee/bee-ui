@@ -29,6 +29,7 @@ import { Artifact } from '@/modules/apps/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 import { getAppBuilderNavbarProps } from '../utils';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 
 interface Props {
   params: {
@@ -40,7 +41,12 @@ interface Props {
 export default async function AppBuilderPage({
   params: { projectId, artifactId },
 }: Props) {
-  const artifactResult = await fetchArtifact(projectId, artifactId);
+  const organizationId = await ensureDefaultOrganizationId();
+  const artifactResult = await fetchArtifact(
+    organizationId,
+    projectId,
+    artifactId,
+  );
   if (!artifactResult) notFound();
 
   const artifact = decodeEntityWithMetadata<Artifact>(artifactResult);

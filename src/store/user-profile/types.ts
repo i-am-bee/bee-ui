@@ -16,10 +16,15 @@
 
 import { StoreSlice } from '../types';
 
+export type OnboardingCompletedAt = {
+  apps?: number;
+  assistants?: number;
+};
+
 export type UserMetadata = {
   email?: string;
   tou_accepted_at?: number;
-  onboarding_completed_at?: number;
+  onboarding_section_completed_at?: OnboardingCompletedAt;
 };
 
 export type UserProfileState = {

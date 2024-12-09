@@ -26,3 +26,8 @@ export type Artifact = EntityWithDecodedMetadata<
   ArtifactResult,
   ArtifactMetadata
 >;
+
+export type AppTemplate = Pick<
+  Artifact,
+  'source_code' | 'name' | 'uiMetadata' | 'description'
+> & { key: string };

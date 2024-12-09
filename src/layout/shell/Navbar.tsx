@@ -74,7 +74,11 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
         <SkipNav />
 
         {navbarProps?.backButton ? (
-          <Tooltip content={navbarProps.backButton.title ?? 'Back'} asChild>
+          <Tooltip
+            content={navbarProps.backButton.title ?? 'Back'}
+            placement="right"
+            asChild
+          >
             <Button
               size="sm"
               kind="tertiary"
