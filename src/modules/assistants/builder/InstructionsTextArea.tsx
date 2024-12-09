@@ -15,22 +15,18 @@
  */
 
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { TextArea, usePrefix } from '@carbon/react';
+import { usePrefix } from '@carbon/react';
 import { useController } from 'react-hook-form';
 import { AssistantFormValues } from './AssistantBuilderProvider';
 import classes from './InstructionsTextArea.module.scss';
 import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
 import { useId } from 'react';
 
-interface Props {
-  className?: string;
-}
-
 const LIMIT = 2000;
 
 const formatContent = (text: string | undefined) => text?.slice(0, LIMIT) || '';
 
-export function InstructionsTextArea({ className }: Props) {
+export function InstructionsTextArea() {
   const { isProjectReadOnly } = useAppContext();
   const prefix = usePrefix();
   const id = useId();
