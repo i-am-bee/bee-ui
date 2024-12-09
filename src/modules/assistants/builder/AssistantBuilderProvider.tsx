@@ -53,6 +53,7 @@ import {
   encodeStarterQuestionsMetadata,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
+import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 
 export type AssistantFormValues = {
   icon: {
@@ -105,9 +106,6 @@ export function AssistantBuilderProvider({
   const { setConfirmOnPageLeave, clearConfirmOnPageLeave } =
     useNavigationControl();
 
-  const { mutate: updateUserMutate } = useUpdateUser();
-  const userMetadata = useUserProfile((state) => state.metadata);
-
   const searchParams = useSearchParams();
   const isDuplicate = searchParams?.has('duplicate');
   const isOnboarding = searchParams?.has(ONBOARDING_PARAM);
@@ -116,20 +114,13 @@ export function AssistantBuilderProvider({
     ? ASSISTANT_TEMPLATES.find((template) => template.key === templateKey)
     : undefined;
 
+  useOnboardingCompleted(isOnboarding ? 'assistants' : null);
+
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
       const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
       selectAssistant(assistantFromResult);
-
-      if (isOnboarding) {
-        updateUserMutate({
-          metadata: encodeMetadata<UserMetadata>({
-            ...userMetadata,
-            onboarding_completed_at: Math.floor(Date.now() / 1000),
-          }),
-        });
-      }
 
       if (isNew)
         window.history.pushState(

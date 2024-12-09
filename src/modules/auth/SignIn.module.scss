@@ -35,7 +35,7 @@
   max-inline-size: 99rem;
   padding-inline: var(---grid-gutter, 2.5rem);
   display: grid;
-  align-items: center;
+  align-items: stretch;
   column-gap: $spacing-08;
   grid-template-columns: 40% 1fr;
 }
@@ -48,6 +48,18 @@
   flex-grow: 1;
   position: relative;
   z-index: 1;
+
+  .contentInner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+  }
+
+  h2 {
+    font-size: rem(20px);
+    line-height: 28 / 20;
+  }
 }
 
 .heading {
@@ -55,6 +67,7 @@
   @include font-family(serif);
   display: flex;
   align-items: flex-start;
+
   :global(.#{$prefix}--tag) {
     margin-inline-start: $spacing-03;
   }
@@ -138,12 +151,10 @@
 }
 
 .footer {
-  position: fixed;
-  inset-inline-start: $spacing-08;
-  inset-block-end: $spacing-08;
-
+  margin-block-start: $spacing-08;
   font-size: small;
   color: $text-secondary;
+  z-index: 0;
 
   > a {
     color: inherit;

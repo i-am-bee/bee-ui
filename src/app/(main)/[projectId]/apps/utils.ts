@@ -24,7 +24,7 @@ export const getAppBuilderNavbarProps = (
     type: 'app-builder',
     backButton: {
       url: `/${projectId}/apps`,
-      title: 'Back to apps',
+      title: 'App library',
     },
     artifact,
   }) as const;

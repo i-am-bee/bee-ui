@@ -41,7 +41,7 @@ export default async function AppBuilderPage({
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
-  const artifact = await fetchArtifact(projectId, artifactId);
+  const artifact = await fetchArtifact(organizationId, projectId, artifactId);
 
   const thread = artifact?.thread_id
     ? await fetchThread(organizationId, projectId, artifact?.thread_id)

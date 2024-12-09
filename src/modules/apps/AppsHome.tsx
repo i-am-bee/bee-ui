@@ -15,10 +15,6 @@
  */
 
 'use client';
-import {
-  AssistantsListQueryOrderBy,
-  ListAssistantsResponse,
-} from '@/app/api/assistants/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ONBOARDING_PARAM } from '@/utils/constants';
@@ -28,12 +24,8 @@ import { produce } from 'immer';
 import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useDebounceValue } from 'usehooks-ts';
-import { AssistantsList } from '../assistants/library/AssistantsList';
 import { assistantsQuery } from '../assistants/library/queries';
-import { Assistant } from '../assistants/types';
 import { OnboardingModal } from '../onboarding/OnboardingModal';
-import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import {
   ArtifactsListQueryOrderBy,
@@ -44,6 +36,8 @@ import { AppsList } from './library/AppsList';
 import { Artifact } from './types';
 import { AdminView } from '@/components/AdminView/AdminView';
 import { listArtifactsQuery } from './queries';
+import { AppsOnboardingTemplateSelection } from './onboarding/AppsOnboardingTemplateSelection';
+import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -138,7 +132,7 @@ export function AppsHome() {
       </AdminView>
 
       {showOnboarding && (
-        <OnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
+        <AppsOnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
       )}
     </>
   );
