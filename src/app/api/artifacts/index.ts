@@ -70,14 +70,9 @@ export async function readArtifact(
   return res.data;
 }
 
-export async function readSharedArtifact(
-  projectId: string,
-  secret: string,
-  id: string,
-) {
+export async function readSharedArtifact(id: string, secret: string) {
   const res = await client.GET('/v1/artifacts/{artifact_id}/shared', {
     params: { path: { artifact_id: id }, query: { secret } },
-    headers: getRequestHeaders(projectId),
   });
 
   assertSuccessResponse(res);
@@ -127,12 +122,8 @@ export async function fetchArtifact(
   return artifact ? decodeEntityWithMetadata<Artifact>(artifact) : artifact;
 }
 
-export async function fetchSharedArtifact(
-  projectId: string,
-  id?: string,
-  secret?: string,
-) {
+export async function fetchSharedArtifact(id?: string, secret?: string) {
   if (!id || !secret) return;
 
-  return await fetchEntity(() => readSharedArtifact(projectId, secret, id));
+  return await fetchEntity(() => readSharedArtifact(id, secret));
 }

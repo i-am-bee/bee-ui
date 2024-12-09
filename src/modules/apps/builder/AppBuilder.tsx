@@ -26,7 +26,16 @@ import {
   MessageMetadata,
   MessageWithFiles,
 } from '@/modules/chat/types';
-import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
+import {
+  Button,
+  IconButton,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from '@carbon/react';
+import { Share } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useCallback, useState } from 'react';
@@ -34,6 +43,7 @@ import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
 import { threadsQuery } from '../../chat/history/queries';
 import { SaveAppModal } from '../manage/SaveAppModal';
+import { ShareAppModal } from '../ShareAppModal';
 import { extractCodeFromMessageContent } from '../utils';
 import classes from './AppBuilder.module.scss';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
@@ -157,6 +167,27 @@ function AppBuilderContent() {
               <Tab>Source code</Tab>
             </TabList>
             <div className={classes.appActions}>
+              {artifact && (
+                <IconButton
+                  label="Share"
+                  kind="tertiary"
+                  size="sm"
+                  align="bottom"
+                  onClick={() =>
+                    openModal((props) => (
+                      <ShareAppModal
+                        {...props}
+                        artifact={artifact}
+                        project={project}
+                        organization={organization}
+                        onSuccess={setArtifact}
+                      />
+                    ))
+                  }
+                >
+                  <Share />
+                </IconButton>
+              )}
               <Button
                 kind="secondary"
                 size="sm"

@@ -16,10 +16,12 @@
 
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
 import { useRouter } from 'next-nprogress-bar';
 import { MouseEventHandler } from 'react';
 import { AppIcon } from '../AppIcon';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
+import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
 import classes from './AppCard.module.scss';
 
@@ -33,6 +35,7 @@ interface Props {
 export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const { name, description } = artifact;
   const router = useRouter();
+  const { openModal } = useModal();
 
   const { deleteArtifact, isPending: isDeletePending } = useDeleteArtifact({
     artifact,
@@ -40,7 +43,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
       onDeleteSuccess?.(artifact);
     },
   });
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
 
   return (
     <>
@@ -56,6 +59,18 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
             itemText: 'Edit',
             onClick: () =>
               router.push(`/${project.id}/apps/builder/a/${artifact.id}`),
+          },
+          {
+            itemText: 'Share',
+            onClick: () =>
+              openModal((props) => (
+                <ShareAppModal
+                  {...props}
+                  artifact={artifact}
+                  project={project}
+                  organization={organization}
+                />
+              )),
           },
           {
             itemText: 'Copy to edit',
