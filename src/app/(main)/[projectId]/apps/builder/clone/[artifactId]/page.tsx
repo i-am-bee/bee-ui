@@ -39,8 +39,8 @@ export default async function CloneAppPage({
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
   const artifactResult = secret
-    ? await fetchSharedArtifact(projectId, artifactId, secret)
-    : await fetchArtifact(projectId, artifactId);
+    ? await fetchSharedArtifact(artifactId, secret)
+    : await fetchArtifact(organizationId, projectId, artifactId);
 
   if (!(assistant && artifactResult)) notFound();
 

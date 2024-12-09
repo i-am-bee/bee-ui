@@ -15,17 +15,8 @@
  */
 
 import { fetchArtifact } from '@/app/api/artifacts';
-import {
-  ensureAppBuilderAssistant,
-  fetchThread,
-  listMessagesWithFiles,
-  MESSAGES_PAGE_SIZE,
-} from '@/app/api/rsc';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
-import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppDetail } from '@/modules/apps/detail/AppDetail';
-import { Artifact } from '@/modules/apps/types';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 import { getAppBuilderNavbarProps } from '../utils';
@@ -40,10 +31,11 @@ interface Props {
 export default async function AppBuilderPage({
   params: { projectId, artifactId },
 }: Props) {
-  const artifactResult = await fetchArtifact(projectId, artifactId);
-  if (!artifactResult) notFound();
+  const organizationId = await ensureDefaultOrganizationId();
 
-  const artifact = decodeEntityWithMetadata<Artifact>(artifactResult);
+  const artifact = await fetchArtifact(organizationId, projectId, artifactId);
+
+  if (!artifact) notFound();
 
   return (
     <LayoutInitializer
