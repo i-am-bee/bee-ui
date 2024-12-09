@@ -21,6 +21,8 @@ import { Artifact } from './types';
 import { ArtifactsListQuery } from '@/app/api/artifacts/types';
 import { isNotNull } from '@/utils/helpers';
 
+export const chatCompletionsQuery = () => {};
+
 export const readArtifactQuery = (
   organizationId: string,
   projectId: string,

@@ -21,6 +21,8 @@ import { removeTrailingSlash } from '@/utils/helpers';
 import { Loading } from '@carbon/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './ArtifactSharedIframe.module.scss';
+import { createChatCompletion, modulesToPackages } from '../../../app/api/apps';
+import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 
 interface Props {
   sourceCode: string | null;
@@ -50,20 +52,53 @@ export function ArtifactSharedIframe({ sourceCode }: Props) {
     postMessage({ type: PostMessageType.UPDATE_CODE, code });
   }, []);
 
-  const handleMessage = useCallback((event: MessageEvent<StliteMessage>) => {
-    const { origin, data } = event;
+  const handleMessage = useCallback(
+    async (event: MessageEvent<StliteMessage>) => {
+      const { origin, data } = event;
 
-    if (origin !== removeTrailingSlash(USERCONTENT_SITE_URL)) {
-      return;
-    }
+      if (origin !== removeTrailingSlash(USERCONTENT_SITE_URL)) {
+        return;
+      }
 
-    if (
-      data.type === SCRIPT_RUN_STATE_CHANGED &&
-      data.scriptRunState === ScriptRunState.RUNNING
-    ) {
-      setState(State.READY);
-    }
-  }, []);
+      if (
+        data.type === RecieveMessageType.SCRIPT_RUN_STATE_CHANGED &&
+        data.scriptRunState === ScriptRunState.RUNNING
+      ) {
+        setState(State.READY);
+      }
+      if (data.type === RecieveMessageType.REQUEST) {
+        switch (data.request_type) {
+          case 'modules_to_packages':
+            const packagesResponse = await modulesToPackages(
+              data.payload.modules,
+            );
+            postMessage({
+              type: PostMessageType.RESPONSE,
+              request_id: data.request_id,
+              payload: packagesResponse,
+            });
+            break;
+          case 'chat_completion':
+            const response = await createChatCompletion({ ...data.payload });
+            const message = response?.choices[0]?.message?.content;
+            postMessage({
+              type: PostMessageType.RESPONSE,
+              request_id: data.request_id,
+              payload: message
+                ? { message }
+                : { error: 'Unknown error occurred.' },
+            });
+            break;
+          default:
+            //Todo
+            break;
+        }
+      }
+
+      console.log(data);
+    },
+    [],
+  );
 
   const handleIframeLoad = useCallback(() => {
     if (theme) {
@@ -115,13 +150,19 @@ type PostMessage =
   | {
       type: PostMessageType.UPDATE_THEME;
       theme: Theme;
+    }
+  | {
+      type: PostMessageType.RESPONSE;
+      request_id: string;
+      payload: unknown;
     };
 
 enum PostMessageType {
-  UPDATE_CODE = 'updateCode',
-  UPDATE_THEME = 'updateTheme',
+  UPDATE_CODE = 'bee:updateCode',
+  UPDATE_THEME = 'bee:updateTheme',
+  RESPONSE = 'bee:response',
   // TODO: Add error handling
-  ERROR = 'error',
+  ERROR = 'bee:error',
 }
 
 enum ScriptRunState {
@@ -135,9 +176,25 @@ enum State {
   READY = 'ready',
 }
 
-const SCRIPT_RUN_STATE_CHANGED = 'SCRIPT_RUN_STATE_CHANGED';
-
-interface StliteMessage {
-  type: typeof SCRIPT_RUN_STATE_CHANGED;
-  scriptRunState: ScriptRunState;
+enum RecieveMessageType {
+  SCRIPT_RUN_STATE_CHANGED = 'SCRIPT_RUN_STATE_CHANGED',
+  REQUEST = 'bee:request',
 }
+
+export type StliteMessage =
+  | {
+      type: RecieveMessageType.SCRIPT_RUN_STATE_CHANGED;
+      scriptRunState: ScriptRunState;
+    }
+  | {
+      type: RecieveMessageType.REQUEST;
+      request_type: 'modules_to_packages';
+      request_id: string;
+      payload: { modules: string[] };
+    }
+  | {
+      type: RecieveMessageType.REQUEST;
+      request_type: 'chat_completion';
+      request_id: string;
+      payload: ChatCompletionCreateBody;
+    };
