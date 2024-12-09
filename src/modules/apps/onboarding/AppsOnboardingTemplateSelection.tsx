@@ -16,7 +16,6 @@
 
 import { Dispatch, SetStateAction } from 'react';
 import classes from './AppsOnboardingTemplateSelection.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { AppTemplate } from '../types';
 import { AppTemplateCard } from './AppTemplateCard';
 import { BlankAppCard } from './BlankAppCard';

@@ -51,8 +51,7 @@ interface Props {
 
 export function AppIcon({ name: propName, className, size = 'md' }: Props) {
   const iconName = propName ?? 'TextShortParagraph';
-  const Icon =
-    iconName && has(APP_ICONS_ALL, iconName) && APP_ICONS_ALL[iconName];
+  const Icon = iconName && has(APP_ICONS, iconName) && APP_ICONS[iconName];
 
   return (
     <span className={clsx(classes.root, className)} data-size={size}>
@@ -61,7 +60,7 @@ export function AppIcon({ name: propName, className, size = 'md' }: Props) {
   );
 }
 
-export const APP_ICONS = {
+export const APP_ICONS_USER = {
   ColorPalette,
   Pen,
   FaceWink,
@@ -83,12 +82,8 @@ export const APP_ICONS = {
   Gamification,
   ChartLineSmooth,
 };
-export const APP_ICONS_EXTERNAL = {
-  DocumentSigned,
-  Document,
-  Grid,
-};
 
-const APP_ICONS_ALL = { ...APP_ICONS, ...APP_ICONS_EXTERNAL };
+export const APP_ICONS = { ...APP_ICONS_USER, DocumentSigned, Document, Grid };
 
-export type AppIconName = keyof typeof APP_ICONS_ALL;
+export type AppIconUserName = keyof typeof APP_ICONS_USER;
+export type AppIconName = keyof typeof APP_ICONS;
