@@ -21,14 +21,33 @@ import { removeTrailingSlash } from '@/utils/helpers';
 import { Loading } from '@carbon/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './ArtifactSharedIframe.module.scss';
-import { createChatCompletion, modulesToPackages } from '../../../app/api/apps';
+import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
+import { ApiError } from '@/app/api/errors';
+import { Project } from '@/app/api/projects/types';
+import { Organization } from '@/app/api/organization/types';
 
 interface Props {
   sourceCode: string | null;
+  projectId: string;
+  organizationId: string;
 }
 
-export function ArtifactSharedIframe({ sourceCode }: Props) {
+function getErrorMessage(error: unknown) {
+  if (error instanceof ApiError && error.code === 'too_many_requests') {
+    return 'You have exceeded the limit for using LLM functions';
+  }
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+  return 'Unknown error when calling LLM function.';
+}
+
+export function ArtifactSharedIframe({
+  sourceCode,
+  projectId,
+  organizationId,
+}: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
@@ -67,35 +86,43 @@ export function ArtifactSharedIframe({ sourceCode }: Props) {
         setState(State.READY);
       }
       if (data.type === RecieveMessageType.REQUEST) {
-        switch (data.request_type) {
-          case 'modules_to_packages':
-            const packagesResponse = await modulesToPackages(
-              data.payload.modules,
-            );
-            postMessage({
-              type: PostMessageType.RESPONSE,
-              request_id: data.request_id,
-              payload: packagesResponse,
-            });
-            break;
-          case 'chat_completion':
-            const response = await createChatCompletion({ ...data.payload });
-            const message = response?.choices[0]?.message?.content;
-            postMessage({
-              type: PostMessageType.RESPONSE,
-              request_id: data.request_id,
-              payload: message
-                ? { message }
-                : { error: 'Unknown error occurred.' },
-            });
-            break;
-          default:
-            //Todo
-            break;
+        try {
+          switch (data.request_type) {
+            case 'modules_to_packages':
+              const packagesResponse = await modulesToPackages(
+                organizationId,
+                projectId,
+                data.payload.modules,
+              );
+              postMessage({
+                type: PostMessageType.RESPONSE,
+                request_id: data.request_id,
+                payload: packagesResponse,
+              });
+              break;
+            case 'chat_completion':
+              const response = await createChatCompletion(
+                organizationId,
+                projectId,
+                data.payload,
+              );
+              const message = response?.choices[0]?.message?.content;
+              if (!message) throw new Error(); // missing completion
+              postMessage({
+                type: PostMessageType.RESPONSE,
+                request_id: data.request_id,
+                payload: { message },
+              });
+              break;
+          }
+        } catch (err) {
+          postMessage({
+            type: PostMessageType.RESPONSE,
+            request_id: data.request_id,
+            payload: { error: getErrorMessage(err) },
+          });
         }
       }
-
-      console.log(data);
     },
     [],
   );

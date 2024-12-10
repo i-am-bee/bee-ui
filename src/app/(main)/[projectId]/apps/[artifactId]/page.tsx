@@ -53,7 +53,11 @@ export default async function AppBuilderPage({
         },
       }}
     >
-      <AppDetail artifact={artifact} />
+      <AppDetail
+        artifact={artifact}
+        projectId={projectId}
+        organizationId={organizationId}
+      />
     </LayoutInitializer>
   );
 }

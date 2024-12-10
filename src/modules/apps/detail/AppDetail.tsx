@@ -20,11 +20,17 @@ import classes from './AppDetail.module.scss';
 
 interface Props {
   artifact: Artifact;
+  projectId: string;
+  organizationId: string;
 }
-export function AppDetail({ artifact }: Props) {
+export function AppDetail({ artifact, projectId, organizationId }: Props) {
   return (
     <div className={classes.root}>
-      <ArtifactSharedIframe sourceCode={artifact.source_code || null} />
+      <ArtifactSharedIframe
+        sourceCode={artifact.source_code || null}
+        projectId={projectId}
+        organizationId={organizationId}
+      />
     </div>
   );
 }

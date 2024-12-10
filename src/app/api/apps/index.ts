@@ -15,18 +15,30 @@
  */
 
 import { client } from '../client';
-import { assertSuccessResponse } from '../utils';
+import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import { ChatCompletionCreateBody } from './types';
 
-export async function createChatCompletion(body: ChatCompletionCreateBody) {
-  const res = await client.POST('/v1/chat/completions', { body });
+export async function createChatCompletion(
+  organizationId: string,
+  projectId: string,
+  body: ChatCompletionCreateBody,
+) {
+  const res = await client.POST('/v1/chat/completions', {
+    body,
+    headers: getRequestHeaders(organizationId, projectId),
+  });
   assertSuccessResponse(res);
   return res.data;
 }
 
-export async function modulesToPackages(modules: string[]) {
+export async function modulesToPackages(
+  organizationId: string,
+  projectId: string,
+  modules: string[],
+) {
   const res = await client.GET('/v1/ui/modules_to_packages', {
     params: { query: { modules } },
+    headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
   return res.data;
