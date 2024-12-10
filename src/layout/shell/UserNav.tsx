@@ -38,7 +38,7 @@ export function UserNav({ className }: Props) {
         {DOCUMENTATION_URL && (
           <li>
             <ExternalLink href={DOCUMENTATION_URL} Icon={ArrowUpRight}>
-              Documentation
+              Resources
             </ExternalLink>
           </li>
         )}
