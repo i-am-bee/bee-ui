@@ -22,7 +22,7 @@ export enum InterationType {
 }
 
 export type TraceSpan =
-  paths['/span']['get']['responses']['200']['content']['application/json']['results'][number];
+  paths['/v1/traces/{trace_id}/spans']['get']['responses']['200']['content']['application/json']['results'][number];
 
 export type SpanDataValueRawWithMeta = {
   raw: {

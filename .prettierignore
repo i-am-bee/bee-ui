@@ -6,3 +6,4 @@ public/
 pnpm-lock.yaml
 *.md
 schema.d.ts
+*.json

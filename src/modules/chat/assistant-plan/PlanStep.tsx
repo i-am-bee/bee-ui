@@ -56,13 +56,15 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
+import { useUserSetting } from '@/layout/hooks/useUserSetting';
 
 interface Props {
   step: AssistantPlanStep;
   toolCall: StepToolCall;
+  allStepsDone: boolean;
 }
 
-export function PlanStep({ step, toolCall }: Props) {
+export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   const id = useId();
   const triggerId = `${id}:trigger`;
   const panelId = `${id}:panel`;
@@ -70,17 +72,20 @@ export function PlanStep({ step, toolCall }: Props) {
   const { run } = useRunContext();
   const { assistant, thread, onToolApprovalSubmitRef, setThread } = useChat();
   const { project, organization } = useAppContext();
-  const { trace } = useTraceData();
+  const { traceData, traceError } = useTraceData();
 
   const queryClient = useQueryClient();
+
+  const { getUserSetting } = useUserSetting();
+  const debugMode = getUserSetting('chatDebugMode');
 
   const {
     updateMutation: { mutate: mutateUpdateThread },
   } = useThreadApi(thread);
 
   const stepTrace = useMemo(
-    () => trace?.steps.find(({ stepId }) => stepId === step.id),
-    [step.id, trace?.steps],
+    () => traceData?.steps.find(({ stepId }) => stepId === step.id),
+    [step.id, traceData?.steps],
   );
 
   const status = getStepStatus(step, run);
@@ -304,6 +309,18 @@ export function PlanStep({ step, toolCall }: Props) {
                         <TraceInfoView data={stepTrace.data} />
                       </motion.section>
                     )}
+                  </AnimatePresence>
+
+                  <AnimatePresence>
+                    {debugMode &&
+                      !traceError &&
+                      !stepTrace &&
+                      expanded &&
+                      allStepsDone && (
+                        <motion.section {...fadeProps()} key={`${id}:trace`}>
+                          <Spinner />
+                        </motion.section>
+                      )}
                   </AnimatePresence>
                 </>
               )}

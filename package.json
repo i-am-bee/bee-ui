@@ -16,7 +16,7 @@
     "schema:generate:observe": "dotenv -e .env.local cross-var -- pnpm dlx openapi-typescript %SCHEMA_OBSERVE_URL% -o ./src/app/observe/api/schema.d.ts --alphabetize",
     "schema:generate-local": "pnpm schema:generate-local:api && pnpm schema:generate-local:observe",
     "schema:generate-local:api": "pnpm dlx openapi-typescript 'http://localhost:4000/docs/json?showHidden=true' -o ./src/app/api/schema.d.ts --alphabetize",
-    "schema:generate-local:observe": "pnpm dlx openapi-typescript 'http://localhost:3001/docs/json' -o ./src/app/observe/api/schema.d.ts --alphabetize",
+    "schema:generate-local:observe": "pnpm dlx openapi-typescript 'http://localhost:4318/docs/json' -o ./src/app/observe/api/schema.d.ts --alphabetize",
     "copyright": "./scripts/copyright.sh",
     "release": "release-it"
   },

@@ -22,7 +22,7 @@ export async function readTrace(
   projectId: string,
   id: string,
 ) {
-  const res = await observeClient.GET('/trace/{id}', {
+  const res = await observeClient.GET('/v1/traces/{id}', {
     params: {
       path: {
         id,
@@ -43,9 +43,9 @@ export async function listSpans(
   projectId: string,
   traceId: string,
 ) {
-  const res = await observeClient.GET('/span', {
+  const res = await observeClient.GET('/v1/traces/{trace_id}/spans', {
     params: {
-      query: {
+      path: {
         trace_id: traceId,
       },
     },
