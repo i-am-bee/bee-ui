@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-import { AppsHome } from '@/modules/apps/AppsHome';
-import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+import { redirect } from 'next/navigation';
+import { ProjectPageProps } from '../page';
 
-export default function AppsPage() {
-  return (
-    <LayoutInitializer
-      layout={{ navbarProps: { title: 'Apps', type: 'common' } }}
-    >
-      <AppsHome />
-    </LayoutInitializer>
-  );
+export default function AppsPage({ params: { projectId } }: ProjectPageProps) {
+  redirect(`/${projectId}`);
 }

@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useState } from 'react';
+@use 'styles/common' as *;
 
-export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
-  const [initialMount, setInitialMount] = useState(true);
+.heading {
+  margin-block-end: $spacing-07;
+}
 
-  useEffect(() => {
-    if (initialMount) return setInitialMount(false);
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-07;
+  &:not(:last-child) {
+    margin-block-end: $spacing-07;
+  }
+}
 
-    return effect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+.subheading {
+  @include type-style(body-02);
+  line-height: (20 / 16);
+  margin-block-end: $spacing-05;
 }

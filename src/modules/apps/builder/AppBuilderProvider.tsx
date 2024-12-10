@@ -25,6 +25,10 @@ import {
   useState,
 } from 'react';
 import { Artifact } from '../types';
+import { useSearchParams } from 'next/navigation';
+import { ONBOARDING_PARAM } from '@/utils/constants';
+import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
+import { ARTIFACT_TEMPLATES } from '../onboarding/templates';
 
 interface Props {
   code?: string;
@@ -36,21 +40,29 @@ export function AppBuilderProvider({
   artifact: initialArtifact,
   children,
 }: PropsWithChildren<Props>) {
+  const searchParams = useSearchParams();
+  const isOnboarding = searchParams?.has(ONBOARDING_PARAM);
+  const templateKey = searchParams?.get('template');
+  const template = templateKey
+    ? ARTIFACT_TEMPLATES.find((template) => template.key === templateKey)
+    : undefined;
+
   const [artifact, setArtifact] = useState<Artifact | null>(
     initialArtifact ?? null,
   );
   const [code, setCode, codeRef] = useStateWithRef<string | null>(
-    initialCode ?? null,
+    initialCode ??
+      initialArtifact?.source_code ??
+      template?.source_code ??
+      null,
   );
+
+  useOnboardingCompleted(isOnboarding ? 'apps' : null);
 
   const apiValue = useMemo(
     () => ({ setCode, getCode: () => codeRef.current, setArtifact }),
     [codeRef, setCode],
   );
-
-  useEffect(() => {
-    if (artifact) setCode(artifact.source_code ?? null);
-  }, [artifact, setCode]);
 
   return (
     <AppBuilderApiContext.Provider value={apiValue}>

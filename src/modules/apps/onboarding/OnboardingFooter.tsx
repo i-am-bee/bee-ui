@@ -14,15 +14,29 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useState } from 'react';
+import { Button } from '@carbon/react';
+import { ArrowRight } from '@carbon/react/icons';
 
-export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
-  const [initialMount, setInitialMount] = useState(true);
+export function OnboardingModalFooter({
+  nextButtonTitle = 'Start building',
+  onNextClick,
+  onBackClick,
+}: {
+  nextButtonTitle?: string;
+  onNextClick: () => void;
+  onBackClick?: () => void;
+}) {
+  return (
+    <>
+      {onBackClick && (
+        <Button kind="ghost" onClick={() => onBackClick()}>
+          Back
+        </Button>
+      )}
 
-  useEffect(() => {
-    if (initialMount) return setInitialMount(false);
-
-    return effect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+      <Button kind="secondary" renderIcon={ArrowRight} onClick={onNextClick}>
+        {nextButtonTitle}
+      </Button>
+    </>
+  );
 }

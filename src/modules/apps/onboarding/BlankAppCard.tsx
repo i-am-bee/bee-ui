@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-import { AppsHome } from '@/modules/apps/AppsHome';
-import { LayoutInitializer } from '@/store/layout/LayouInitializer';
+import { CardsListItem } from '@/components/CardsList/CardsListItem';
+import classes from './AppTemplateCard.module.scss';
+import { AppIcon } from '../AppIcon';
 
-export interface ProjectPageProps {
-  params: {
-    projectId: string;
-  };
+interface Props {
+  selected?: boolean;
+  onClick: () => void;
 }
 
-export default function ProjectHomePage() {
+export function BlankAppCard({ onClick, selected }: Props) {
   return (
-    <LayoutInitializer
-      layout={{ navbarProps: { title: 'Apps', type: 'common' } }}
+    <CardsListItem
+      title="Start from scratch"
+      icon={<AppIcon name="Grid" size="md" />}
+      onClick={onClick}
+      selected={selected}
+      className={classes.root}
+      canHover
     >
-      <AppsHome />
-    </LayoutInitializer>
+      <div className={classes.body}>
+        <p>Create an app from scratch</p>
+      </div>
+    </CardsListItem>
   );
 }

@@ -136,8 +136,8 @@ export function ShareApp({
   );
 }
 
-function extractSecret(url: string) {
-  const match = url.match(/shared[?&]secret=([^&]+)/);
+function extractToken(url: string) {
+  const match = url.match(/shared[?&]token=([^&]+)/);
 
   return match ? decodeURIComponent(match[1]) : null;
 }
@@ -150,6 +150,6 @@ function createFullShareUrl({
   shareUrl: string | null;
 }) {
   return shareUrl
-    ? `${removeTrailingSlash(ARTIFACTS_SITE_URL)}/artifacts/${artifactId}?secret=${extractSecret(shareUrl)}`
+    ? `${removeTrailingSlash(ARTIFACTS_SITE_URL)}/artifacts/${artifactId}?token=${extractToken(shareUrl)}`
     : null;
 }

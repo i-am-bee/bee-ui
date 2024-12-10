@@ -26,9 +26,6 @@ import {
 } from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { useUpdateUser } from '@/modules/users/useUpdateUser';
-import { useUserProfile } from '@/store/user-profile';
-import { UserMetadata } from '@/store/user-profile/types';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';
@@ -53,6 +50,7 @@ import {
   encodeStarterQuestionsMetadata,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
+import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 
 export type AssistantFormValues = {
   icon: {
@@ -104,9 +102,6 @@ export function AssistantBuilderProvider({
   const { setConfirmOnPageLeave, clearConfirmOnPageLeave } =
     useNavigationControl();
 
-  const { mutate: updateUserMutate } = useUpdateUser();
-  const userMetadata = useUserProfile((state) => state.metadata);
-
   const searchParams = useSearchParams();
   const isDuplicate = searchParams?.has('duplicate');
   const isOnboarding = searchParams?.has(ONBOARDING_PARAM);
@@ -115,20 +110,13 @@ export function AssistantBuilderProvider({
     ? ASSISTANT_TEMPLATES.find((template) => template.key === templateKey)
     : undefined;
 
+  useOnboardingCompleted(isOnboarding ? 'assistants' : null);
+
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
       const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
       selectAssistant(assistantFromResult);
-
-      if (isOnboarding) {
-        updateUserMutate({
-          metadata: encodeMetadata<UserMetadata>({
-            ...userMetadata,
-            onboarding_completed_at: Math.floor(Date.now() / 1000),
-          }),
-        });
-      }
 
       if (isNew)
         window.history.pushState(

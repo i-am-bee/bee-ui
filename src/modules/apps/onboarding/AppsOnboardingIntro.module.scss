@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useState } from 'react';
+@use 'styles/common' as *;
 
-export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
-  const [initialMount, setInitialMount] = useState(true);
+.illustration {
+  border-radius: $spacing-03;
+  background-color: $layer-02;
+  display: flex;
+  margin-block-end: $spacing-07;
+}
 
-  useEffect(() => {
-    if (initialMount) return setInitialMount(false);
+.heading {
+  margin-block-end: $spacing-03;
+}
 
-    return effect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+.content {
+  @include type-style(body-02);
+  line-height: (20 / 16);
+  > * {
+    line-height: inherit;
+    font-size: inherit;
+    + * {
+      margin-block-start: rem(20px);
+    }
+  }
 }

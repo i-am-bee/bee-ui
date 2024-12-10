@@ -33,7 +33,7 @@ export function MainNav() {
   const ITEMS = [
     {
       label: 'Apps',
-      href: `/${project.id}/apps`,
+      href: `/${project.id}`,
       count: artifactsCount,
       prefetchData: prefetchArtifacts,
     },

@@ -156,7 +156,7 @@ function AppBuilderContent() {
         className={clsx(classes.appPane, { [classes.empty]: code == null })}
       >
         <Tabs
-          defaultSelectedIndex={selectedTab}
+          selectedIndex={selectedTab}
           onChange={({ selectedIndex }) => {
             setSelectedTab(selectedIndex);
           }}
@@ -217,7 +217,9 @@ function AppBuilderContent() {
               <ArtifactSharedIframe sourceCode={code} />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
-              <SourceCodeEditor />
+              <SourceCodeEditor
+                onSaveCode={() => setSelectedTab(TabsKeys.Preview)}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>

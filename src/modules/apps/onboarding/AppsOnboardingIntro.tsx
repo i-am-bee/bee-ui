@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useState } from 'react';
+import Illustration from './illustration.svg';
+import classes from './AppsOnboardingIntro.module.scss';
 
-export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
-  const [initialMount, setInitialMount] = useState(true);
+export function AppsOnboardingIntro() {
+  return (
+    <div>
+      <div className={classes.illustration}>
+        <Illustration />
+      </div>
 
-  useEffect(() => {
-    if (initialMount) return setInitialMount(false);
+      <h2 className={classes.heading}>Apps</h2>
 
-    return effect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+      <div className={classes.content}>
+        <p>
+          With Bee, you can chat to build reusable apps to automate simple,
+          everyday business tasks. Explore examples, start building, and share
+          your apps with others.
+        </p>
+      </div>
+    </div>
+  );
 }

@@ -16,43 +16,27 @@
 
 import { fetchArtifact, fetchSharedArtifact } from '@/app/api/artifacts';
 import { ensureAppBuilderAssistant } from '@/app/api/rsc';
-import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
-import { notFound } from 'next/navigation';
-import { getAppBuilderNavbarProps } from '../../../utils';
+import { notFound, redirect } from 'next/navigation';
 
 interface Props {
   params: {
-    projectId: string;
     artifactId: string;
   };
   searchParams: { token?: string };
 }
 
 export default async function CloneAppPage({
-  params: { projectId, artifactId },
+  params: { artifactId },
   searchParams: { token },
 }: Props) {
-  const organizationId = await ensureDefaultOrganizationId();
+  const session = await ensureSession();
+  const { default_project: defaultProjectId } = session.userProfile;
 
-  const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
-  const artifactResult = token
-    ? await fetchSharedArtifact(artifactId, token)
-    : await fetchArtifact(organizationId, projectId, artifactId);
-
-  if (!(assistant && artifactResult)) notFound();
-
-  return (
-    <LayoutInitializer
-      layout={{
-        navbarProps: getAppBuilderNavbarProps(projectId),
-      }}
-    >
-      <AppBuilderProvider code={artifactResult.source_code}>
-        <AppBuilder assistant={assistant} />
-      </AppBuilderProvider>
-    </LayoutInitializer>
+  redirect(
+    `/${defaultProjectId}/apps/builder/clone/${artifactId}?token=${token}`,
   );
 }

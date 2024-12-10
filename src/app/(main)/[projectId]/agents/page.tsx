@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useState } from 'react';
+import { AssistantsHome } from '@/modules/assistants/AssistantsHome';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
-export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
-  const [initialMount, setInitialMount] = useState(true);
-
-  useEffect(() => {
-    if (initialMount) return setInitialMount(false);
-
-    return effect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+export default function AssistantsPage() {
+  return (
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
+      <AssistantsHome />
+    </LayoutInitializer>
+  );
 }

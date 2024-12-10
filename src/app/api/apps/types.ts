@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useState } from 'react';
+import { paths } from '../schema';
 
-export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
-  const [initialMount, setInitialMount] = useState(true);
+export type ChatCompletionResponse =
+  paths['/v1/chat/completions']['post']['responses']['200']['content']['application/json'];
 
-  useEffect(() => {
-    if (initialMount) return setInitialMount(false);
-
-    return effect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
-}
+export type ChatCompletionCreateBody = NonNullable<
+  paths['/v1/chat/completions']['post']['requestBody']
+>['content']['application/json'];

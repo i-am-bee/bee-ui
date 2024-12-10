@@ -20,7 +20,11 @@ import { useEffect, useId, useState } from 'react';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { Button } from '@carbon/react';
 
-export function SourceCodeEditor() {
+interface Props {
+  onSaveCode: () => void;
+}
+
+export function SourceCodeEditor({ onSaveCode }: Props) {
   const id = useId();
   const { setCode: saveCode } = useAppBuilderApi();
   const { code: savedCode } = useAppBuilder();
@@ -54,7 +58,10 @@ export function SourceCodeEditor() {
           size="sm"
           kind="secondary"
           disabled={code === savedCode}
-          onClick={() => saveCode(code)}
+          onClick={() => {
+            saveCode(code);
+            onSaveCode();
+          }}
         >
           Apply changes
         </Button>

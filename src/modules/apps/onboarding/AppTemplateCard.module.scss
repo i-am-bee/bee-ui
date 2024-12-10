@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-import { DependencyList, EffectCallback, useEffect, useState } from 'react';
+@use 'styles/common' as *;
 
-export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
-  const [initialMount, setInitialMount] = useState(true);
+$card-size: rem(185px);
 
-  useEffect(() => {
-    if (initialMount) return setInitialMount(false);
+// Higher specificity needed
+.root.root {
+  block-size: $card-size;
+  min-block-size: $card-size;
 
-    return effect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  h3 {
+    font-size: rem(14px);
+  }
+  p {
+    @include truncateMultiline(2);
+  }
 }
