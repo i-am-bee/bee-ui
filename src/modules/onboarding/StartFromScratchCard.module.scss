@@ -16,6 +16,10 @@
 
 @use 'styles/common' as *;
 
+.root {
+  min-block-size: rem(287px);
+}
+
 .body {
   display: flex;
   flex-direction: column;

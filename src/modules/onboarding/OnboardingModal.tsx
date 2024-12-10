@@ -20,7 +20,7 @@ import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
-import { ModalBody, ModalFooter } from '@carbon/react';
+import { ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
@@ -78,12 +78,14 @@ export function OnboardingModal({ ...props }: Props) {
   const { body, footer } = content;
 
   return (
-    <ModalControlProvider onRequestClose={noop}>
+    <ModalControlProvider onRequestClose={props.onRequestClose}>
       <Modal
         {...props}
-        preventCloseOnClickOutside
         className={clsx(classes.root, classes[`step--${step}`])}
       >
+        {step === Steps.ASSISTANT_SELECTION && (
+          <ModalHeader title="Agent builder" />
+        )}
         <ModalBody>{body}</ModalBody>
 
         <ModalFooter>{footer}</ModalFooter>

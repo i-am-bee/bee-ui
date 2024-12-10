@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { ActionableNotification, Button } from '@carbon/react';
+import {
+  ActionableNotification,
+  Button,
+  ExpandableSearch,
+} from '@carbon/react';
 import { Add, ChevronDown } from '@carbon/react/icons';
 import {
   ComponentProps,
@@ -103,13 +107,14 @@ export function CardsList<T extends OrderBy>({
             <div className={classes.controlBar}>
               <div className={classes.searchBar}>
                 {onSearchChange && (
-                  <SearchInput
+                  <ExpandableSearch
                     placeholder={searchPlaceholder}
                     value={search ?? ''}
                     onChange={({ target: { value } }) => {
                       setSearch(value);
                       onSearchChange(value);
                     }}
+                    labelText="Search"
                   />
                 )}
               </div>

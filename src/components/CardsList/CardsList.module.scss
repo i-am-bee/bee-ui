@@ -102,8 +102,47 @@
   margin-block-start: $spacing-02;
 }
 
+.controlBar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: $spacing-05;
+}
+
 .searchBar {
   display: flex;
   justify-content: flex-end;
   gap: $spacing-04;
+  flex-grow: 1;
+
+  :global(.#{$prefix}--search) {
+    &:global(.#{$prefix}--search--expanded) {
+      input {
+        border: 1px solid $border-subtle;
+      }
+    }
+    input {
+      border-radius: $block-radius;
+      background-color: $background;
+      &:focus {
+        outline: 2px solid $text-primary;
+      }
+    }
+    button {
+      &,
+      &:hover {
+        background-color: transparent;
+        border: none;
+      }
+    }
+  }
+  :global(.#{$prefix}--search-magnifier) {
+    border-radius: $block-radius;
+    &:hover {
+      background-color: $background;
+    }
+  }
+  :global(.#{$prefix}--search-close)::before {
+    display: none;
+  }
 }
