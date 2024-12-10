@@ -23,9 +23,10 @@
 
 .form {
   display: grid;
-  grid-template-rows: max-content 1fr max-content;
+  grid-template-rows: 1fr max-content;
   max-inline-size: rem(800px);
   flex: 1 1 auto;
+  inline-size: 50%;
 
   fieldset {
     display: flex;
@@ -70,6 +71,7 @@
   grid-template-rows: max-content 1fr;
   overflow: hidden;
   flex: 1 0 auto;
+  inline-size: 50%;
 }
 
 .chatTopBar {

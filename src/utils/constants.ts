@@ -22,5 +22,6 @@ export const USERCONTENT_SITE_URL =
 export const ARTIFACTS_SITE_URL = process.env.NEXT_PUBLIC_ARTIFACTS_SITE_URL!;
 
 export const ONBOARDING_PARAM = 'onboarding';
+export const ONBOARDING_AGENTS_PARAM = 'agents-onboarding';
 
 export const MAIN_ELEMENT_ID = 'main-content';

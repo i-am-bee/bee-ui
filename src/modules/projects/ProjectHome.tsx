@@ -43,38 +43,38 @@ export function ProjectHome({ children }: Props) {
     <>
       <AdminView
         header={
-          <div className={classes.header}>
-            <h1 className={classes.heading}>{project.name}</h1>
-            <div className={classes.sharing}>
-              {!isProjectReadOnly && isFeatureEnabled(FeatureName.Projects) && (
-                <>
-                  <UsersCount project={project} organization={organization} />
-                  <Button
-                    renderIcon={Add}
-                    kind="tertiary"
-                    size="md"
-                    onClick={() => setUsersModalOpened(true)}
-                  >
-                    Share
-                  </Button>
-                </>
-              )}
-              {role === 'admin' && (
-                <OverflowMenu size="md">
-                  <OverflowMenuItem
-                    itemText="Rename"
-                    onClick={() =>
-                      openModal((props) => (
-                        <RenameModal
-                          organization={organization}
-                          project={project}
-                          {...props}
-                        />
-                      ))
-                    }
-                  />
-                  {isFeatureEnabled(FeatureName.Projects) &&
-                    project.id !== defaultProject && (
+          isFeatureEnabled(FeatureName.Projects) ? (
+            <div className={classes.header}>
+              <h1 className={classes.heading}>{project.name}</h1>
+              <div className={classes.sharing}>
+                {!isProjectReadOnly && (
+                  <>
+                    <UsersCount project={project} organization={organization} />
+                    <Button
+                      renderIcon={Add}
+                      kind="tertiary"
+                      size="md"
+                      onClick={() => setUsersModalOpened(true)}
+                    >
+                      Share
+                    </Button>
+                  </>
+                )}
+                {role === 'admin' && (
+                  <OverflowMenu size="md">
+                    <OverflowMenuItem
+                      itemText="Rename"
+                      onClick={() =>
+                        openModal((props) => (
+                          <RenameModal
+                            organization={organization}
+                            project={project}
+                            {...props}
+                          />
+                        ))
+                      }
+                    />
+                    {project.id !== defaultProject && (
                       <OverflowMenuItem
                         itemText="Archive"
                         isDelete
@@ -89,10 +89,11 @@ export function ProjectHome({ children }: Props) {
                         }
                       />
                     )}
-                </OverflowMenu>
-              )}
+                  </OverflowMenu>
+                )}
+              </div>
             </div>
-          </div>
+          ) : undefined
         }
       >
         {children}

@@ -112,7 +112,7 @@ export function ToolsList({ type }: Props) {
       onFetchNextPage={fetchNextPage}
       isFetching={isFetching}
       error={error}
-      noItemsText="You haven’t created any tools yet."
+      noItemsInfo="You haven’t created any tools yet."
       errorTitle="Failed to load tools"
       onRefetch={refetch}
       hasNextPage={hasNextPage}

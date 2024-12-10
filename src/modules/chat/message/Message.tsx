@@ -219,7 +219,7 @@ function Sender({ message }: { message: ChatMessage }) {
   if (role === 'assistant') {
     return (
       <figure>
-        {assistantData && !builderState ? (
+        {assistantData && !builderState && assistant.data?.agent === 'bee' ? (
           <BounceButton
             onClick={() => openAssistantModal(assistantData)}
             scale={0.875}
@@ -227,7 +227,12 @@ function Sender({ message }: { message: ChatMessage }) {
             <AssistantIcon assistant={assistantData} size="lg" />
           </BounceButton>
         ) : (
-          <AssistantIcon assistant={assistantData} size="lg" />
+          <AssistantIcon
+            assistant={assistantData}
+            iconName={assistant.data?.agent === 'streamlit' ? 'Bee' : undefined}
+            color="black"
+            size="lg"
+          />
         )}
 
         <figcaption>{getThreadAssistantName(assistant)}</figcaption>

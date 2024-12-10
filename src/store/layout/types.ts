@@ -33,12 +33,12 @@ export type AppNavbarProps = {
   artifact?: Artifact;
 };
 
-export type AssistantBuilderNavbarProps = {
-  type: 'assistant-builder';
-  assistant?: Assistant;
+export type ChatNavbarProps = {
+  type: 'chat';
+  assistant: Assistant;
 };
 
 export type NavbarProps = {
   title?: string;
   backButton?: { url: string; title?: string };
-} & (AppNavbarProps | AssistantBuilderNavbarProps | { type: 'common' });
+} & (AppNavbarProps | ChatNavbarProps | { type: 'common' });

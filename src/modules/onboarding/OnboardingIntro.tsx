@@ -24,18 +24,16 @@ export function OnboardingIntro() {
   return (
     <div>
       <div className={classes.illustration}>
-        <Illustration />
+        <video src="/video/agents.mp4" playsInline autoPlay muted />
       </div>
 
-      <h2 className={classes.heading}>Bees</h2>
+      <h2 className={classes.heading}>Agents</h2>
 
       <div className={classes.content}>
         <p>
-          Bees are AI agents that can plan, use tools, and reference knowledge.
-        </p>
-        <p>
-          You can customize them to perform specific tasks. Today, all bees are
-          powered by llama3.1-70b and a ReAct agent architecture.
+          Create an AI agent to accelerate your work. Give it a role, equip it
+          with knowledge and tools, and let it streamline your tasks
+          effortlessly
         </p>
       </div>
     </div>

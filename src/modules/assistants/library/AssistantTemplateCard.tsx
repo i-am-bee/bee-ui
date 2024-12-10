@@ -30,11 +30,10 @@ import {
   useState,
 } from 'react';
 import { AssistantIcon } from '../icons/AssistantIcon';
-import { Assistant, AssistantTemplate } from '../types';
+import { AssistantTemplate } from '../types';
 import classes from './AssistantCard.module.scss';
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   template: AssistantTemplate;
@@ -56,7 +55,7 @@ export function AssistantTemplateCard({
 
   return (
     <CardsListItem
-      className={classes.root}
+      className={clsx(classes.root, classes.sizeSmall)}
       title={name ?? ''}
       icon={<AssistantIcon assistant={template} size="lg" />}
       onClick={onClick}

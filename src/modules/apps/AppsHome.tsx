@@ -17,7 +17,7 @@
 'use client';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { ONBOARDING_PARAM } from '@/utils/constants';
+import { ONBOARDING_AGENTS_PARAM, ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
@@ -25,7 +25,6 @@ import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { assistantsQuery } from '../assistants/library/queries';
-import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import {
   ArtifactsListQueryOrderBy,
@@ -36,26 +35,31 @@ import { AppsList } from './library/AppsList';
 import { Artifact } from './types';
 import { AdminView } from '@/components/AdminView/AdminView';
 import { listArtifactsQuery } from './queries';
-import { AppsOnboardingTemplateSelection } from './onboarding/AppsOnboardingTemplateSelection';
 import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
+import classes from './AppsHome.module.scss';
+import Bee from '@/modules/assistants/icons/BeeMain.svg';
+import { useDebounceValue } from 'usehooks-ts';
+import { OnboardingModal } from '../onboarding/OnboardingModal';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<ArtifactsListQueryOrderBy>(
     ARTIFACTS_ORDER_DEFAULT,
   );
-  // const [search, setSearch] = useDebounceValue('', 200);
+  const [search, setSearch] = useDebounceValue('', 200);
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const showOnboarding =
     !isProjectReadOnly && searchParams?.has(ONBOARDING_PARAM);
+  const showAgentsOnboarding =
+    !isProjectReadOnly && searchParams?.has(ONBOARDING_AGENTS_PARAM);
 
   const queryClient = useQueryClient();
 
   const params = {
     ...order,
-    // search: search.length ? search : undefined,
+    search: search.length ? search : undefined,
   };
 
   const {
@@ -101,11 +105,25 @@ export function AppsHome() {
           onFetchNextPage={fetchNextPage}
           isFetching={isFetching}
           error={error}
-          noItemsText="Honey, this hive is empty."
+          noItemsInfo={
+            <div className={classes.noItemsInfo}>
+              <Bee />
+              <div className={classes.noItemsTitle}>
+                Honey, this hive is empty.
+              </div>
+              <p>
+                Create your first app or{' '}
+                <a href="" target="_blank" rel="noopener noreferrer">
+                  browse examples
+                </a>
+                .
+              </p>
+            </div>
+          }
           errorTitle="Failed to load apps"
           onRefetch={refetch}
           hasNextPage={hasNextPage}
-          // onSearchChange={setSearch}
+          onSearchChange={setSearch}
           orderByProps={{
             selected: order,
             orderByItems: ORDER_OPTIONS,
@@ -133,6 +151,9 @@ export function AppsHome() {
 
       {showOnboarding && (
         <AppsOnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
+      )}
+      {showAgentsOnboarding && (
+        <OnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
       )}
     </>
   );

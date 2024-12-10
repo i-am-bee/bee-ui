@@ -21,6 +21,13 @@
   background-color: $layer-02;
   display: flex;
   margin-block-end: $spacing-07;
+  overflow: hidden;
+  background-color: $color-white;
+  aspect-ratio: 544 / 256;
+  video {
+    inline-size: 100%;
+    transform: scale(1.6) translate(0, 6%);
+  }
 }
 
 .heading {

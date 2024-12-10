@@ -29,6 +29,7 @@ export function StartFromScratchCard({ onClick, selected }: Props) {
       title="Start from scratch"
       onClick={onClick}
       selected={selected}
+      className={classes.root}
       canHover
     >
       <div className={classes.body}>

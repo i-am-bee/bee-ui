@@ -17,7 +17,7 @@
 @use 'styles/common' as *;
 
 .root {
-  padding-block: $spacing-08;
+  padding-block: $spacing-10 $spacing-08;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-gutter: stable;

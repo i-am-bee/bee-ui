@@ -20,7 +20,9 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export default async function AssistantBuilderPage() {
   return (
-    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
+    <LayoutInitializer
+      layout={{ navbarProps: { type: 'common', title: 'Agent builder' } }}
+    >
       <AssistantBuilderProvider>
         <Builder />
       </AssistantBuilderProvider>

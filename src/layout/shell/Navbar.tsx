@@ -31,6 +31,8 @@ import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
 import { SkipNav } from './SkipNav';
+import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
+import { ChatNavbarActions } from '@/modules/chat/ChatNavbarActions';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -48,7 +50,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
     const { title } = navbarProps;
     switch (navbarProps.type) {
       case 'app-builder':
-        const icon = navbarProps?.artifact?.uiMetadata.icon;
+        let icon = navbarProps?.artifact?.uiMetadata.icon;
 
         return navbarProps.artifact
           ? [
@@ -60,9 +62,22 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
             ]
           : [{ title: 'App Builder' }];
       case 'app-detail':
-        return navbarProps.artifact && [{ title: navbarProps.artifact.name }];
-      case 'assistant-builder':
-        return [{ title: 'Bee builder' }];
+        icon = navbarProps?.artifact?.uiMetadata.icon;
+        return (
+          navbarProps.artifact && [
+            {
+              title: navbarProps.artifact.name,
+              icon: icon ? <AppIcon name={icon} /> : null,
+            },
+          ]
+        );
+      case 'chat':
+        return [
+          {
+            title: navbarProps.assistant?.name ?? '',
+            icon: <AssistantIcon assistant={navbarProps.assistant ?? null} />,
+          },
+        ];
       default:
         return title ? [{ title }] : undefined;
     }
@@ -109,6 +124,9 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
                 showShareButton={navbarProps.type === 'app-detail'}
               />
             )}
+          {navbarProps?.type === 'chat' && (
+            <ChatNavbarActions assistant={navbarProps.assistant} />
+          )}
 
           {isFeatureEnabled(FeatureName.Projects) && <ProjectSelector />}
         </div>

@@ -190,7 +190,7 @@ export function ApiKeysHome() {
                 )),
             }}
             isEmpty={isEmpty}
-            noItemsText="You haven't created any API keys yet."
+            noItemsInfo="You haven't created any API keys yet."
           />
         ) : (
           <DataTable headers={HEADERS} rows={rows}>
