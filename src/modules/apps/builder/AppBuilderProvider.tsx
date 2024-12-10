@@ -51,7 +51,10 @@ export function AppBuilderProvider({
     initialArtifact ?? null,
   );
   const [code, setCode, codeRef] = useStateWithRef<string | null>(
-    initialCode ?? template?.source_code ?? null,
+    initialCode ??
+      initialArtifact?.source_code ??
+      template?.source_code ??
+      null,
   );
 
   useOnboardingCompleted(isOnboarding ? 'apps' : null);
@@ -60,10 +63,6 @@ export function AppBuilderProvider({
     () => ({ setCode, getCode: () => codeRef.current, setArtifact }),
     [codeRef, setCode],
   );
-
-  useEffect(() => {
-    if (artifact) setCode(artifact.source_code ?? null);
-  }, [artifact, setCode]);
 
   return (
     <AppBuilderApiContext.Provider value={apiValue}>
