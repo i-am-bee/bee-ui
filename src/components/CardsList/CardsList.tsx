@@ -201,10 +201,12 @@ export function EmptyDataInfo({
   isEmpty,
   noItemsDescr,
   noItemsInfo,
+  newButtonProps,
 }: {
   isEmpty: boolean;
   noItemsInfo?: string | ReactElement;
   noItemsDescr?: string;
+  newButtonProps?: NewButtonProps;
 }) {
   return (
     <div className={classes.empty}>
@@ -215,6 +217,7 @@ export function EmptyDataInfo({
             {noItemsDescr && (
               <p className={classes.emptyDescr}>{noItemsDescr}</p>
             )}
+            {newButtonProps && <NewButton {...newButtonProps} />}
           </>
         ) : (
           noItemsInfo
