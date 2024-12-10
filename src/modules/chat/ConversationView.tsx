@@ -159,7 +159,7 @@ export const ConversationView = memo(function ConversationView() {
           </>
         ) : (
           <div className={classes.deletedAppBanner}>
-            You are viewing session history from a deleted bee
+            You are viewing session history from a deleted agent
           </div>
         )}
       </div>

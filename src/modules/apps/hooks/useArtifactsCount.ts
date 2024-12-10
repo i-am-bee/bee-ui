@@ -16,7 +16,7 @@
 
 import { useArtifacts } from './useArtifacts';
 
-export function useArtifactsTotalCount() {
+export function useArtifactsCount() {
   const { data } = useArtifacts({ params: { limit: 1 } });
 
   return data?.totalCount;

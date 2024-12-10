@@ -17,16 +17,24 @@
 @use 'styles/common' as *;
 
 .root {
-  &:global(.#{$prefix}--btn) {
+  display: flex;
+  align-items: center;
+  column-gap: $spacing-03;
+  margin-inline-start: calc(rem(16px) - $grid-margin);
+
+  :global(.#{$prefix}--btn) {
     color: $text-dark;
-    column-gap: $spacing-04;
-    font-size: rem(16px);
-    line-height: (18 / 16);
-    margin-inline-start: calc(rem(16px) - $grid-margin);
+    padding: 0;
+    inline-size: rem(32px);
+    justify-content: center;
   }
 
   :global(.#{$prefix}--tag) {
     margin-inline-start: rem(-4px);
-    pointer-events: none;
   }
+}
+
+.title {
+  font-size: rem(16px);
+  line-height: (18 / 16);
 }

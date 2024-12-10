@@ -28,7 +28,6 @@ export interface AssistantIconProps {
   size?: AssistantBaseIconProps['size'];
   iconName?: AssitantIconName;
   color?: AssistantIconColor;
-  initialLetter?: string;
   className?: string;
 }
 
@@ -36,7 +35,6 @@ export function AssistantIcon({
   assistant,
   color,
   iconName: iconNameProps,
-  initialLetter,
   ...props
 }: AssistantIconProps) {
   const iconName = iconNameProps ?? getAssistantIconName(assistant);
@@ -45,7 +43,6 @@ export function AssistantIcon({
     <AssistantBaseIcon
       name={iconName}
       color={color ?? assistant?.uiMetadata.color}
-      initialLetter={assistant?.name?.at(0) ?? initialLetter}
       {...props}
     />
   );

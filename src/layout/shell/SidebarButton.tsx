@@ -21,7 +21,6 @@ import { Menu } from '@carbon/react/icons';
 import { UserSetting } from '../hooks/useUserSetting';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
-import { useLayout } from '@/store/layout';
 
 interface Props extends Omit<ButtonBaseProps, 'kind' | 'size' | 'className'> {
   sidebarId: SidebarProps['id'];
@@ -37,26 +36,25 @@ export function SidebarButton({
   const prefetchThreads = usePrefetchThreads();
 
   return (
-    <Button
-      {...props}
-      onMouseEnter={(event) => {
-        prefetchThreads();
-        onMouseEnter?.(event);
-      }}
-      kind="ghost"
-      size="md"
-      className={classes.root}
-      aria-expanded={sidebarOpen}
-      aria-controls={sidebarId}
-      aria-label="Toggle sidebar"
-    >
-      <Menu />
+    <div className={classes.root}>
+      <Button
+        {...props}
+        onMouseEnter={(event) => {
+          prefetchThreads();
+          onMouseEnter?.(event);
+        }}
+        kind="ghost"
+        size="sm"
+        aria-expanded={sidebarOpen}
+        aria-controls={sidebarId}
+        aria-label="Toggle sidebar"
+      >
+        <Menu />
+      </Button>
 
-      <span>
-        IBM <strong>Bee</strong>
-      </span>
+      <p className={classes.title}>Bee</p>
 
       <VersionTag />
-    </Button>
+    </div>
   );
 }

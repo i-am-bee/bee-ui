@@ -209,7 +209,7 @@ export function KnowledgeSelector() {
       {autoEnabledToolNames.length > 0 && (
         <ActionableNotification
           title={`${autoEnabledToolNamesString} enabled`}
-          subtitle={`This bee will need ${autoEnabledToolNamesString} in order to perform file-related tasks, including those involving the knowledge base (if applicable) and any files uploaded during a session.`}
+          subtitle={`This agent will need ${autoEnabledToolNamesString} in order to perform file-related tasks, including those involving the knowledge base (if applicable) and any files uploaded during a session.`}
           kind="info"
           lowContrast
           onCloseButtonClick={() => setAutoEnabledToolNames([])}

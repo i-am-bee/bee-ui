@@ -62,7 +62,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
       case 'app-detail':
         return navbarProps.artifact && [{ title: navbarProps.artifact.name }];
       case 'assistant-builder':
-        return [{ title: 'Bee builder' }];
+        return [{ title: 'Agent builder' }];
       default:
         return title ? [{ title }] : undefined;
     }

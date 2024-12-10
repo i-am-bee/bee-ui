@@ -183,7 +183,7 @@ export function ThreadSettings() {
                           }
                         }}
                       >
-                        <span>View bee details</span>
+                        <span>View agent details</span>
 
                         <ArrowUpRight />
                       </LinkButton>

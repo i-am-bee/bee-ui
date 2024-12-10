@@ -15,7 +15,6 @@
  */
 
 import { clsx } from 'clsx';
-import has from 'lodash/has';
 import { ReactElement } from 'react';
 import classes from './AssistantBaseIcon.module.scss';
 
@@ -23,20 +22,17 @@ export interface AssistantBaseIconProps {
   name?: AssitantIconName;
   color?: AssistantIconColor;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
-  initialLetter?: string;
   className?: string;
 }
 
 export function AssistantBaseIcon({
   name: propName,
   color,
-  initialLetter,
   size = 'md',
   className,
 }: AssistantBaseIconProps) {
-  const iconName = propName ?? (!initialLetter ? 'Bee' : null);
-  const Icon =
-    iconName && has(ASSISTANT_ICONS, iconName) && ASSISTANT_ICONS[iconName];
+  const iconName = propName ?? 'Bee';
+  const Icon = ASSISTANT_ICONS[iconName];
 
   return (
     <span
@@ -46,7 +42,7 @@ export function AssistantBaseIcon({
       data-size={size}
     >
       <AssistantIconColor color={color}>
-        <>{Icon ? <Icon /> : initialLetter}</>
+        <Icon />
       </AssistantIconColor>
     </span>
   );

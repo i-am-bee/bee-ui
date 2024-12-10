@@ -124,7 +124,7 @@ function SelectedToolsItem({
             toolName
           )}
         </button>
-        <Tooltip content="Remove tool from bee" asChild placement="top">
+        <Tooltip content="Remove tool from agent" asChild placement="top">
           <button
             className={classes.removeButton}
             onClick={() => onToggle(toolProp, false)}

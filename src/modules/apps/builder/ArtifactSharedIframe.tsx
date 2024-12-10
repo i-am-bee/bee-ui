@@ -96,7 +96,7 @@ export function ArtifactSharedIframe({ sourceCode }: Props) {
       <iframe
         ref={iframeRef}
         src={USERCONTENT_SITE_URL}
-        title="Bee App preview"
+        title="App preview"
         sandbox="allow-scripts allow-downloads allow-same-origin"
         className={classes.app}
         onLoad={handleIframeLoad}

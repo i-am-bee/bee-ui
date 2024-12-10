@@ -156,7 +156,7 @@ export default function AssistantModal({
                 onClick={deleteAssistant}
                 disabled={isProjectReadOnly}
               >
-                Delete bee
+                Delete agent
               </Button>
             )}
           </div>
@@ -166,9 +166,10 @@ export default function AssistantModal({
             </Button>
             <Button
               kind="secondary"
-              onClick={() =>
-                router.push(`/${project.id}/builder/${assistant.id}`)
-              }
+              onClick={() => {
+                router.push(`/${project.id}/builder/${assistant.id}`);
+                props.onRequestClose();
+              }}
               renderIcon={Edit}
               disabled={isProjectReadOnly}
             >

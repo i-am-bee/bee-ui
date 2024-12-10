@@ -141,11 +141,13 @@
   position: fixed;
   inset-inline-start: $spacing-08;
   inset-block-end: $spacing-08;
-
   font-size: small;
   color: $text-secondary;
 
   > a {
     color: inherit;
+    &:hover {
+      text-decoration: none;
+    }
   }
 }

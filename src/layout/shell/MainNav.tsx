@@ -15,76 +15,42 @@
  */
 
 import { Link } from '@/components/Link/Link';
-import { useAssistantsCount } from '@/modules/assistants/hooks/useAssistantsCount';
-import { usePrefetchAssistants } from '@/modules/assistants/hooks/usePrefetchAssistants';
-import { usePrefetchVectorStores } from '@/modules/knowledge/hooks/usePrefetchVectorStores';
-import { useVectorStoresCount } from '@/modules/knowledge/hooks/useVectorStoresCount';
-import { usePrefetchTools } from '@/modules/tools/hooks/usePrefetchTools';
-import { useToolsCount } from '@/modules/tools/hooks/useToolsCount';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { useArtifactsCount } from '@/modules/apps/hooks/useArtifactsCount';
+import { usePrefetchArtifacts } from '@/modules/apps/hooks/usePrefetchArtifacts';
 import { usePathname } from 'next/navigation';
 import { useAppContext } from '../providers/AppProvider';
 import classes from './MainNav.module.scss';
-import { useArtifactsTotalCount } from '@/modules/apps/hooks/useArtifactsTotalCount';
 
 export function MainNav() {
   const pathname = usePathname();
 
   const { project } = useAppContext();
 
-  const assistantsCount = useAssistantsCount();
-  const toolsCount = useToolsCount({ type: ['user'] });
-  const vectorStoresCount = useVectorStoresCount();
-  const artifactsCount = useArtifactsTotalCount();
+  const artifactsCount = useArtifactsCount();
 
-  const prefetchAssistants = usePrefetchAssistants({ useDefaultParams: true });
-  const prefetchTools = usePrefetchTools({ useDefaultParams: true });
-  const prefetchVectoreStores = usePrefetchVectorStores({
-    useDefaultParams: true,
-  });
+  const prefetchArtifacts = usePrefetchArtifacts({ useDefaultParams: true });
 
   const ITEMS = [
     {
       label: 'Apps',
       href: `/${project.id}/apps`,
       count: artifactsCount,
-      prefetchData: prefetchAssistants,
-    },
-    {
-      label: 'Bees',
-      href: `/${project.id}`,
-      count: assistantsCount,
-      prefetchData: prefetchAssistants,
-    },
-    {
-      label: 'Tools',
-      href: `/${project.id}/tools`,
-      count: toolsCount,
-      prefetchData: prefetchTools,
-    },
-    {
-      label: 'Knowledge',
-      href: `/${project.id}/knowledge`,
-      featureName: FeatureName.Knowledge,
-      count: vectorStoresCount,
-      prefetchData: prefetchVectoreStores,
+      prefetchData: prefetchArtifacts,
     },
   ];
 
   return (
     <nav>
       <ul className={classes.list}>
-        {ITEMS.filter(
-          ({ featureName }) => !featureName || isFeatureEnabled(featureName),
-        ).map(({ label, href, count, prefetchData }) => (
+        {ITEMS.map(({ label, href, count, prefetchData }) => (
           <li key={href}>
             <Link
               href={href}
               aria-current={pathname === href ? 'page' : undefined}
               onMouseEnter={() => prefetchData()}
             >
-              <span>{label}</span>
-              {count && <span>{count}</span>}
+              <span className={classes.label}>{label}</span>
+              {count && <span className={classes.count}>{count}</span>}
             </Link>
           </li>
         ))}
