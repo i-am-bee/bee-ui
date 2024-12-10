@@ -58,7 +58,9 @@
   }
 
   .appActions {
-    button {
+    display: flex;
+    column-gap: $spacing-03;
+    :global(.#{$prefix}--btn--secondary) {
       padding-inline-end: $spacing-05;
     }
   }

@@ -20,7 +20,6 @@ import { USERCONTENT_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import { Loading } from '@carbon/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAppBuilder } from './AppBuilderProvider';
 import classes from './ArtifactSharedIframe.module.scss';
 
 interface Props {

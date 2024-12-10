@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
-import { Artifact } from '../types';
-import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
-import { useRouter } from 'next-nprogress-bar';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
+import { useRouter } from 'next-nprogress-bar';
+import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
+import { ShareAppModal } from '../ShareAppModal';
+import { Artifact } from '../types';
 
 interface Props {
   artifact?: Artifact;
   showShareButton?: boolean;
 }
 
-export function AppBuilderNavbarActions({ artifact }: Props) {
+export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
   const router = useRouter();
-  const { project } = useAppContext();
+  const { project, organization } = useAppContext();
+  const { openModal } = useModal();
   const { deleteArtifact } = useDeleteArtifact({
     artifact,
     onSuccess: () => router.push(`/${project.id}/apps/`),
@@ -37,10 +40,25 @@ export function AppBuilderNavbarActions({ artifact }: Props) {
 
   return (
     <>
-      {/* TODO: share action */}
-      <Button size="sm" kind="tertiary">
-        Share
-      </Button>
+      {showShareButton && (
+        <Button
+          size="sm"
+          kind="tertiary"
+          onClick={() =>
+            openModal((props) => (
+              <ShareAppModal
+                {...props}
+                artifact={artifact}
+                project={project}
+                organization={organization}
+              />
+            ))
+          }
+        >
+          Share
+        </Button>
+      )}
+
       <OverflowMenu size="sm" flipped>
         <OverflowMenuItem
           isDelete
