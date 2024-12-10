@@ -52,7 +52,7 @@ export function MainNav() {
     },
     {
       label: 'Bees',
-      href: `/${project.id}/bees`,
+      href: `/${project.id}/agents`,
       count: assistantsCount,
       prefetchData: prefetchAssistants,
     },

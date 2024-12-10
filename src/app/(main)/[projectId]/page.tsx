@@ -15,7 +15,6 @@
  */
 
 import { AppsHome } from '@/modules/apps/AppsHome';
-import { AssistantsHome } from '@/modules/assistants/AssistantsHome';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export interface ProjectPageProps {

@@ -15,7 +15,6 @@
  */
 
 import { fetchArtifact } from '@/app/api/artifacts';
-import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppDetail } from '@/modules/apps/detail/AppDetail';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';

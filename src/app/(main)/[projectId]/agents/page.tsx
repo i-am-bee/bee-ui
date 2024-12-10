@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-import { redirect } from 'next/navigation';
-import { ProjectPageProps } from '../page';
+import { AssistantsHome } from '@/modules/assistants/AssistantsHome';
+import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
-export default function AppsPage({ params: { projectId } }: ProjectPageProps) {
-  redirect(`/${projectId}`);
+export default function AssistantsPage() {
+  return (
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
+      <AssistantsHome />
+    </LayoutInitializer>
+  );
 }
