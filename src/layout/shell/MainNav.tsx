@@ -46,13 +46,13 @@ export function MainNav() {
   const ITEMS = [
     {
       label: 'Apps',
-      href: `/${project.id}/apps`,
+      href: `/${project.id}`,
       count: artifactsCount,
       prefetchData: prefetchAssistants,
     },
     {
       label: 'Bees',
-      href: `/${project.id}`,
+      href: `/${project.id}/agents`,
       count: assistantsCount,
       prefetchData: prefetchAssistants,
     },

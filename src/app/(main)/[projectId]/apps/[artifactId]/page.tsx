@@ -15,11 +15,11 @@
  */
 
 import { fetchArtifact } from '@/app/api/artifacts';
-import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppDetail } from '@/modules/apps/detail/AppDetail';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 import { getAppBuilderNavbarProps } from '../utils';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 
 interface Props {
   params: {
@@ -32,6 +32,12 @@ export default async function AppBuilderPage({
   params: { projectId, artifactId },
 }: Props) {
   const organizationId = await ensureDefaultOrganizationId();
+  const artifactResult = await fetchArtifact(
+    organizationId,
+    projectId,
+    artifactId,
+  );
+  if (!artifactResult) notFound();
 
   const artifact = await fetchArtifact(organizationId, projectId, artifactId);
 

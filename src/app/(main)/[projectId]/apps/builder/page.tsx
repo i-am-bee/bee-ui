@@ -21,16 +21,11 @@ import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 import { getAppBuilderNavbarProps } from '../utils';
-
-interface Props {
-  params: {
-    projectId: string;
-  };
-}
+import { ProjectPageProps } from '../../page';
 
 export default async function AppsBuilderPage({
   params: { projectId },
-}: Props) {
+}: ProjectPageProps) {
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);

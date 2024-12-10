@@ -44,7 +44,6 @@
 
     &:not(:last-child)::after {
       content: '/';
-      margin-inline-start: $spacing-03;
     }
     a {
       color: $text-primary;

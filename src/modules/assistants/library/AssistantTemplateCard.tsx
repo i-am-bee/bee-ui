@@ -40,7 +40,6 @@ interface Props {
   template: AssistantTemplate;
   selected?: boolean;
   onClick?: MouseEventHandler;
-  onDeleteSuccess?: (assistant: Assistant) => void;
   organization: Organization;
   project: Project;
 }

@@ -14,9 +14,27 @@
  * limitations under the License.
  */
 
-import { redirect } from 'next/navigation';
-import { ProjectPageProps } from '../page';
+@use 'styles/common' as *;
 
-export default function AppsPage({ params: { projectId } }: ProjectPageProps) {
-  redirect(`/${projectId}`);
+.illustration {
+  border-radius: $spacing-03;
+  background-color: $layer-02;
+  display: flex;
+  margin-block-end: $spacing-07;
+}
+
+.heading {
+  margin-block-end: $spacing-03;
+}
+
+.content {
+  @include type-style(body-02);
+  line-height: (20 / 16);
+  > * {
+    line-height: inherit;
+    font-size: inherit;
+    + * {
+      margin-block-start: rem(20px);
+    }
+  }
 }
