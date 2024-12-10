@@ -188,7 +188,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
           onFetchNextPage={fetchNextPage}
           isFetching={isLoading}
           error={error}
-          noItemsText="No files in this knowledge base."
+          noItemsInfo="No files in this knowledge base."
           errorTitle="Failed to load knowledge base files"
           onRefetch={refetch}
           hasNextPage={hasNextPage}

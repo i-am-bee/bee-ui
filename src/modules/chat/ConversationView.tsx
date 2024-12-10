@@ -28,7 +28,7 @@ import { useChat, useChatMessages } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
 import clsx from 'clsx';
 import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
-import { BotChatMessage, ChatMessage } from './types';
+import { BotChatMessage } from './types';
 
 export const ConversationView = memo(function ConversationView() {
   const { dropzone } = useFilesUpload();

@@ -75,6 +75,8 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-04;
+  margin-block-start: $spacing-09;
+
   p {
     text-align: start;
     grid-column: 1 / -1;

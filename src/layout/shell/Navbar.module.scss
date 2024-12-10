@@ -58,10 +58,10 @@
 
   > button {
     padding-inline-end: $spacing-05;
-    &:global(.#{$prefix}--overflow-menu) {
-      padding-inline-end: 0;
-      border: 1px solid $border-subtle;
-    }
+  }
+  :global(.#{$prefix}--overflow-menu) {
+    padding-inline-end: 0;
+    border: 1px solid $border-subtle;
   }
 }
 

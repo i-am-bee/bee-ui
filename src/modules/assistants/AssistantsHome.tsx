@@ -99,7 +99,7 @@ export function AssistantsHome() {
           onFetchNextPage={fetchNextPage}
           isFetching={isFetching}
           error={error}
-          noItemsText="You haven’t created any bees yet."
+          noItemsInfo="You haven’t created any bees yet."
           noItemsDescr="Get started by exploring the library of available bees to
                 jump-start your productivity, or build your own bee fitted
                 specifically for your needs and use cases!"

@@ -129,7 +129,7 @@ export function KnowledgeView() {
     <ProjectHome>
       <CardsList<VectorStoresListQueryOrderBy>
         heading="Knowledge"
-        noItemsText="You haven't created any knowledge bases yet."
+        noItemsInfo="You haven't created any knowledge bases yet."
         errorTitle="Failed to load knowledge bases"
         totalCount={data?.totalCount ?? 0}
         onFetchNextPage={fetchNextPage}

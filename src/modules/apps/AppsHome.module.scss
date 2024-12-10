@@ -13,4 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@use 'styles/common' as *;
 
+.noItemsInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  svg {
+    block-size: rem(40px);
+  }
+  .noItemsTitle {
+    font-size: rem(24px);
+    font-weight: 600;
+    line-height: 31.2 / 24;
+    margin-block-start: $spacing-06;
+  }
+  p {
+    color: $text-secondary;
+    margin-block-start: $spacing-03;
+    font-weight: 400;
+    a {
+      color: $text-secondary;
+    }
+  }
+}

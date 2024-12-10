@@ -37,3 +37,30 @@
   block-size: 100%;
   inline-size: 100%;
 }
+.placeholder {
+  position: absolute;
+  block-size: 100%;
+  inline-size: 100%;
+  background-color: $layer-02;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .placeholderContent {
+    inline-size: rem(450px);
+
+    svg {
+      block-size: rem(60px);
+    }
+    h2 {
+      font-size: rem(24px);
+      font-weight: 600;
+      line-height: 31.2 / 24;
+      margin-block-start: $spacing-06;
+    }
+    p {
+      color: $text-secondary;
+      margin-block-start: $spacing-03;
+    }
+  }
+}

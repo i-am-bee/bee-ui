@@ -31,6 +31,7 @@ import {
   OrderBySelectProps,
 } from '../OrderBySelect/OrderBySelect';
 import { useDataResultState } from '@/hooks/useDataResultState';
+import { isString } from 'lodash';
 
 interface OrderBy {
   order?: string;
@@ -44,7 +45,7 @@ interface Props<T extends OrderBy> {
   totalCount: number;
   hasNextPage?: boolean;
   isFetching: boolean;
-  noItemsText?: string;
+  noItemsInfo?: string | ReactElement;
   noItemsDescr?: string;
   error: Error | null;
   errorTitle?: string;
@@ -62,7 +63,7 @@ export function CardsList<T extends OrderBy>({
   totalCount,
   hasNextPage,
   isFetching,
-  noItemsText = 'No items found.',
+  noItemsInfo = 'No items found.',
   noItemsDescr,
   error,
   errorTitle = 'Failed to load items',
@@ -89,31 +90,29 @@ export function CardsList<T extends OrderBy>({
     isFiltered: Boolean(search),
   });
 
-  const showBarWithNewButton = (onSearchChange || newButtonProps) && !isEmpty;
-
   return (
     <section className={classes.root}>
       {(onSearchChange || heading || orderByProps || newButtonProps) && (
         <header className={classes.header}>
-          {showBarWithNewButton && (
-            <div className={classes.searchBar}>
-              {onSearchChange && (
-                <SearchInput
-                  placeholder={searchPlaceholder}
-                  value={search ?? ''}
-                  onChange={({ target: { value } }) => {
-                    setSearch(value);
-                    onSearchChange(value);
-                  }}
-                />
-              )}
-              {newButtonProps && <NewButton {...newButtonProps} />}
-            </div>
-          )}
+          <div className={classes.heading}>
+            {heading && <h2>{heading}</h2>}
+            {newButtonProps && <NewButton {...newButtonProps} />}
+          </div>
 
-          {(heading || orderByProps) && (
-            <div className={classes.heading}>
-              {heading && <h2>{heading}</h2>}
+          {!isEmpty && (
+            <div className={classes.controlBar}>
+              <div className={classes.searchBar}>
+                {onSearchChange && (
+                  <SearchInput
+                    placeholder={searchPlaceholder}
+                    value={search ?? ''}
+                    onChange={({ target: { value } }) => {
+                      setSearch(value);
+                      onSearchChange(value);
+                    }}
+                  />
+                )}
+              </div>
 
               {orderByProps && !isEmpty && (
                 <div className={classes.order}>
@@ -127,10 +126,9 @@ export function CardsList<T extends OrderBy>({
 
       {!error && (isEmpty || noResults) && (
         <EmptyDataInfo
-          newButtonProps={newButtonProps}
           isEmpty={isEmpty}
           noItemsDescr={noItemsDescr}
-          noItemsText={noItemsText}
+          noItemsInfo={noItemsInfo}
         />
       )}
 
@@ -197,22 +195,25 @@ function NewButton({ title, tooltipContent, ...props }: NewButtonProps) {
 export function EmptyDataInfo({
   isEmpty,
   noItemsDescr,
-  noItemsText,
-  newButtonProps,
+  noItemsInfo,
 }: {
   isEmpty: boolean;
-  noItemsText?: string;
+  noItemsInfo?: string | ReactElement;
   noItemsDescr?: string;
-  newButtonProps?: NewButtonProps;
 }) {
   return (
     <div className={classes.empty}>
       {isEmpty ? (
-        <>
-          <p>{noItemsText}</p>
-          {noItemsDescr && <p className={classes.emptyDescr}>{noItemsDescr}</p>}
-          <NewButton {...newButtonProps} />
-        </>
+        isString(noItemsInfo) ? (
+          <>
+            <p>{noItemsInfo}</p>
+            {noItemsDescr && (
+              <p className={classes.emptyDescr}>{noItemsDescr}</p>
+            )}
+          </>
+        ) : (
+          noItemsInfo
+        )
       ) : (
         <p className={classes.notFound}>No results found.</p>
       )}

@@ -46,7 +46,6 @@ import {
   useAssistantBuilderApi,
 } from './AssistantBuilderProvider';
 import classes from './Builder.module.scss';
-import { IconSelectorBase } from './IconSelectorBase';
 import { InstructionsTextArea } from './InstructionsTextArea';
 import { KnowledgeSelector } from './KnowledgeSelector';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
@@ -96,23 +95,6 @@ export function Builder({ thread, initialMessages }: Props) {
       })}
     >
       <section className={classes.form}>
-        <div className={classes.header}>
-          <Link
-            href={`/${project.id}${isOnboarding ? `?${ONBOARDING_PARAM}` : ''}`}
-          >
-            <IconButton
-              size="lg"
-              kind="tertiary"
-              label="Back to home"
-              align="bottom-left"
-              autoAlign
-            >
-              <ArrowLeft />
-            </IconButton>
-          </Link>
-          <h1>{assitantName ?? 'New bee'}</h1>
-        </div>
-
         <fieldset disabled={isProjectReadOnly}>
           <AssistantIconSelector disabled={isProjectReadOnly} />
           <Controller

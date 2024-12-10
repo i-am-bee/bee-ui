@@ -25,7 +25,6 @@ import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { assistantsQuery } from '../assistants/library/queries';
-import { OnboardingModal } from '../onboarding/OnboardingModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import {
   ArtifactsListQueryOrderBy,
@@ -36,8 +35,9 @@ import { AppsList } from './library/AppsList';
 import { Artifact } from './types';
 import { AdminView } from '@/components/AdminView/AdminView';
 import { listArtifactsQuery } from './queries';
-import { AppsOnboardingTemplateSelection } from './onboarding/AppsOnboardingTemplateSelection';
 import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
+import classes from './AppsHome.module.scss';
+import Bee from '@/modules/assistants/icons/BeeMain.svg';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -101,7 +101,21 @@ export function AppsHome() {
           onFetchNextPage={fetchNextPage}
           isFetching={isFetching}
           error={error}
-          noItemsText="Honey, this hive is empty."
+          noItemsInfo={
+            <div className={classes.noItemsInfo}>
+              <Bee />
+              <div className={classes.noItemsTitle}>
+                Honey, this hive is empty.
+              </div>
+              <p>
+                Create your first app or{' '}
+                <a href="" target="_blank" rel="noopener noreferrer">
+                  browse examples
+                </a>
+                .
+              </p>
+            </div>
+          }
           errorTitle="Failed to load apps"
           onRefetch={refetch}
           hasNextPage={hasNextPage}

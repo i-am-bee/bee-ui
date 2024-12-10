@@ -44,7 +44,7 @@ export default async function AssistantChatPage({
   if (!assistant) notFound();
 
   return (
-    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
+    <LayoutInitializer layout={{ navbarProps: { type: 'chat', assistant } }}>
       <VectorStoreFilesUploadProvider
         projectId={projectId}
         organizationId={organizationId}
