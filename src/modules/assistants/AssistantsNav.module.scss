@@ -1,0 +1,128 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@use 'styles/common' as *;
+@use '@carbon/styles/scss/utilities/button-reset';
+
+@mixin item {
+  @include type-style(label-02);
+  display: flex;
+  align-items: center;
+  column-gap: $spacing-03;
+  padding: $spacing-03;
+  border-radius: $spacing-03;
+  position: relative;
+  z-index: 0;
+  .icon {
+    inline-size: rem(32px);
+    block-size: rem(32px);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+}
+
+.root {
+  min-block-size: 0;
+}
+
+.item {
+  @include item();
+  .icon {
+    box-shadow: $box-shadow;
+    background-color: $layer;
+  }
+}
+
+.bottom {
+  background-color: $layer;
+  position: sticky;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+}
+
+.button {
+  @include button-reset.reset();
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: $spacing-03;
+    z-index: -1;
+  }
+  .item.focusWithin:not(.active) &::before,
+  .item:hover:not(.active) &::before {
+    opacity: 0.5;
+  }
+  .item.focusWithin &::before,
+  .item:hover &::before,
+  .item.active &::before {
+    background-color: $border-subtle-01;
+  }
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible::before {
+    @include focus-outline('outline');
+  }
+}
+
+.options {
+  margin-inline-start: auto;
+  display: none;
+  .item.focusWithin &,
+  .item:hover &,
+  .item:focus-within & {
+    display: block;
+  }
+
+  :global(.#{$prefix}--btn) {
+    &:hover,
+    &:focus {
+      background-color: $layer;
+    }
+  }
+}
+
+.newButton {
+  @include button-reset.reset();
+  @include item();
+  color: $button-muted;
+  &:hover {
+    color: $text-dark;
+  }
+  &:focus-visible {
+    @include focus-outline('outline');
+  }
+
+  .icon {
+    border: 1px dashed currentColor;
+  }
+}
+
+.skeleton {
+  @include item();
+
+  :global(.#{$prefix}--skeleton__text) {
+    margin-block-end: 0;
+  }
+}

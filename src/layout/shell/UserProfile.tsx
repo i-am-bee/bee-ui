@@ -23,6 +23,7 @@ import { PRIVACY_URL, TOU_TEXT } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import { Button, Popover, PopoverContent } from '@carbon/react';
 import { Settings } from '@carbon/react/icons';
+import clsx from 'clsx';
 import { CODE_ESCAPE } from 'keycode-js';
 import { signOut } from 'next-auth/react';
 import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
@@ -31,7 +32,11 @@ import { useAppContext } from '../providers/AppProvider';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
 
-export function UserProfile() {
+interface Props {
+  className?: string;
+}
+
+export function UserProfile({ className }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -84,7 +89,7 @@ export function UserProfile() {
 
   return (
     <Popover
-      className={classes.root}
+      className={clsx(classes.root, className)}
       ref={ref}
       open={open}
       align="right-end"

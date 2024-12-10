@@ -80,6 +80,7 @@ themes.$white: map.merge(
     button-gray-hover: $cool-gray-20,
     button-gray-active: $cool-gray-30,
 
+    button-muted: $cool-gray-50,
     button-disabled: $gray-30,
 
     tag-background-blue: $blue-10,
@@ -154,6 +155,7 @@ themes.$g90: map.merge(
     button-gray-hover: $cool-gray-80,
     button-gray-active: $cool-gray-70,
 
+    button-muted: $cool-gray-50,
     button-disabled: $gray-70,
 
     field-hover-01: $cool-gray-80,
@@ -199,6 +201,8 @@ $button-secondary-color: var(--cds-button-secondary-color);
 $button-gray: var(--cds-button-gray);
 $button-gray-hover: var(--cds-button-gray-hover);
 $button-gray-active: var(--cds-button-gray-active);
+
+$button-muted: var(--cds-button-muted);
 
 $tag-color-cool-gray: var(--cds-tag-color-cool-gray);
 

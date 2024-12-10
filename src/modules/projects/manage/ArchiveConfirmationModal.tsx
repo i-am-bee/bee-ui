@@ -89,8 +89,8 @@ export function ArchiveConfirmationModal({
         <h2>Archive workspace ”{project.name}”</h2>
         <p className={classes.description}>
           By archiving this workspace you will be removing access to all members
-          of this workspace, including yourself. Bees, knowledge, and tools will
-          be archived and requests using workspace&apos;s API keys will be
+          of this workspace, including yourself. Agents, knowledge, and tools
+          will be archived and requests using workspace&apos;s API keys will be
           rejected. Archived workspaces cannot be restored.
         </p>
       </ModalHeader>

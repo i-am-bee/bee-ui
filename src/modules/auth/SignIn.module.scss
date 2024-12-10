@@ -154,9 +154,11 @@
   margin-block-start: $spacing-08;
   font-size: small;
   color: $text-secondary;
-  z-index: 0;
 
   > a {
     color: inherit;
+    &:hover {
+      text-decoration: none;
+    }
   }
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { AssistantsNav } from '@/modules/assistants/AssistantsNav';
 import { ThreadsHistory } from '@/modules/chat/history/ThreadsHistory';
 import { useLayout } from '@/store/layout';
 import clsx from 'clsx';
@@ -43,12 +44,23 @@ export function Sidebar({ id, isOpen }: SidebarProps) {
 
         <hr />
 
-        <CollapsibleGroup heading="Sessions" className={classes.history}>
-          <ThreadsHistory
-            enableFetch={Boolean(isOpen)}
-            className={classes.historyScroll}
-          />
-        </CollapsibleGroup>
+        <div className={classes.content}>
+          <CollapsibleGroup heading="Agents" className={classes.agents}>
+            <AssistantsNav
+              className={classes.agentsScroll}
+              enableFetch={Boolean(isOpen)}
+            />
+          </CollapsibleGroup>
+
+          <hr />
+
+          <CollapsibleGroup heading="Sessions" className={classes.history}>
+            <ThreadsHistory
+              enableFetch={Boolean(isOpen)}
+              className={classes.historyScroll}
+            />
+          </CollapsibleGroup>
+        </div>
 
         <hr />
 

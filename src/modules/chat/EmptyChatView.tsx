@@ -18,16 +18,16 @@
 import { Container } from '@/components/Container/Container';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
+import clsx from 'clsx';
 import { memo } from 'react';
 import { AssistantIcon } from '../assistants/icons/AssistantIcon';
 import classes from './EmptyChatView.module.scss';
 import { AssistantAvatar } from './layout/AssistantAvatar';
+import { Disclaimer } from './layout/Disclaimer';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
 import { SendMessageResult, useChat } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
-import { Disclaimer } from './layout/Disclaimer';
-import clsx from 'clsx';
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 
@@ -59,7 +59,6 @@ export const EmptyChatView = memo(function EmptyChatView({
           {builderState ? (
             <AssistantIcon
               assistant={assistant}
-              initialLetter={builderState.name.at(0) ?? 'N'}
               color={builderState.icon?.color}
               iconName={builderState.icon?.name}
               size="xxl"

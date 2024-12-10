@@ -58,7 +58,6 @@ export function AssistantIconSelector({ disabled }: Props) {
       name={name}
       color={color}
       size="xl"
-      initialLetter={assistantName?.at(0)}
       className={classes.icon}
     />
   );

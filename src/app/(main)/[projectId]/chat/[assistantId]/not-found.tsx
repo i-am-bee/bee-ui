@@ -17,5 +17,5 @@
 import { ErrorPage } from '@/components/ErrorPage/ErrorPage';
 
 export default function AssistantNotFoundPage() {
-  return <ErrorPage statusCode={404} title="Bee not found" />;
+  return <ErrorPage statusCode={404} title="Agent not found" />;
 }

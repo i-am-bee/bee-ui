@@ -21,8 +21,7 @@
   flex-direction: column;
   row-gap: $spacing-02;
   padding-block: $spacing-04;
-  padding-inline-start: $spacing-04;
-  padding-inline-end: $spacing-03;
+  padding-inline: $spacing-03;
   position: relative;
   z-index: 0;
   &.isDeletePending {

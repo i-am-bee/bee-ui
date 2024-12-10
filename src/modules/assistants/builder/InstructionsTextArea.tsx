@@ -46,7 +46,7 @@ export function InstructionsTextArea() {
         title="Instructions"
         id={id}
         className={classes.textArea}
-        placeholder="What does this bee do? How does it behave? What should it avoid doing?"
+        placeholder="What does this agent do? How does it behave? What should it avoid doing?"
         rows={4}
         maxRows={10}
         maxLength={LIMIT}

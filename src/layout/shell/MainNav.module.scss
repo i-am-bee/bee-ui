@@ -26,7 +26,7 @@
     column-gap: $spacing-04;
     color: $text-dark;
     text-decoration: none;
-    padding: $spacing-03 $spacing-04;
+    padding: $spacing-03;
     border-radius: $spacing-03;
     position: relative;
     &::before {
@@ -43,6 +43,9 @@
     &:hover:not([aria-current='page'])::before {
       opacity: 0.5;
     }
+    &[aria-current='page'] .count {
+      border-color: $border-subtle-00;
+    }
     &:focus {
       outline: none;
     }
@@ -50,4 +53,19 @@
       @include focus-outline('outline');
     }
   }
+}
+
+.label {
+  font-weight: 600;
+}
+
+.count {
+  @include type-style(label-01);
+  min-inline-size: rem(32px);
+  text-align: center;
+  color: $text-primary;
+  background-color: $layer-02;
+  border: 1px solid transparent;
+  border-radius: rem(9px);
+  padding-inline: $spacing-02;
 }

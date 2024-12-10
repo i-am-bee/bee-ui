@@ -67,8 +67,9 @@ function getContent(tool: Tool) {
     return (
       <>
         <p>
-          <strong>Warning:</strong> If you disconnect {toolName}, this bee will
-          lose the ability to read and interpret larger or more complex files.
+          <strong>Warning:</strong> If you disconnect {toolName}, this agent
+          will lose the ability to read and interpret larger or more complex
+          files.
         </p>
 
         <p>
@@ -82,13 +83,13 @@ function getContent(tool: Tool) {
     return (
       <>
         <p>
-          <strong>Warning:</strong> If you disconnect {toolName}, this bee will
-          lose its ability to run Python code for tasks like data analysis, file
-          processing, and visualizations.
+          <strong>Warning:</strong> If you disconnect {toolName}, this agent
+          will lose its ability to run Python code for tasks like data analysis,
+          file processing, and visualizations.
         </p>
 
         <p>
-          This bee will also lose its ability to create or modify files,
+          This agent will also lose its ability to create or modify files,
           including those in the connected knowledge base (if applicable) and
           any uploaded during the session.
         </p>
@@ -98,8 +99,8 @@ function getContent(tool: Tool) {
     return (
       <>
         <p>
-          <strong>Warning:</strong> If you disconnect {toolName}, this bee will
-          lose the ability to read and interpret basic files.
+          <strong>Warning:</strong> If you disconnect {toolName}, this agent
+          will lose the ability to read and interpret basic files.
         </p>
 
         <p>

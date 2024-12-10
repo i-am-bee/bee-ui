@@ -58,7 +58,7 @@ export function AssistantCard({
         cta={cta ? { title: cta } : undefined}
         actions={[
           {
-            itemText: 'Bee details',
+            itemText: 'Agent details',
             onClick: () => setBuilderModalOpened(true),
           },
           !isProjectReadOnly

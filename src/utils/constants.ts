@@ -17,6 +17,7 @@
 export const TOU_TEXT = process.env.NEXT_PUBLIC_TOU_TEXT!;
 export const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL!;
 export const DOCUMENTATION_URL = process.env.NEXT_PUBLIC_DOCUMENTATION_URL!;
+export const FEEDBACK_URL = process.env.NEXT_PUBLIC_FEEDBACK_URL!;
 export const USERCONTENT_SITE_URL =
   process.env.NEXT_PUBLIC_USERCONTENT_SITE_URL!;
 export const ARTIFACTS_SITE_URL = process.env.NEXT_PUBLIC_ARTIFACTS_SITE_URL!;

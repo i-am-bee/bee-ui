@@ -32,7 +32,7 @@ export function StartFromScratchCard({ onClick, selected }: Props) {
       canHover
     >
       <div className={classes.body}>
-        <p>Create your bee from scratch</p>
+        <p>Create an agent from scratch</p>
 
         <span className={classes.illustration}>
           <Bee />
