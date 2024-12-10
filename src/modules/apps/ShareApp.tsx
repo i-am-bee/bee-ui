@@ -21,10 +21,10 @@ import { ARTIFACTS_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import {
   CopyButton,
+  InlineLoading,
   InlineNotification,
   TextInput,
   Toggle,
-  ToggleSkeleton,
 } from '@carbon/react';
 import { ContentDeliveryNetwork } from '@carbon/react/icons';
 import { useId, useState } from 'react';
@@ -83,7 +83,7 @@ export function ShareApp({
         </div>
 
         {isPending ? (
-          <ToggleSkeleton />
+          <InlineLoading />
         ) : (
           <Toggle
             id={`${id}:toggle`}

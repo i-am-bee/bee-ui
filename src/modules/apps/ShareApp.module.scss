@@ -28,12 +28,16 @@
   display: flex;
   align-items: center;
   column-gap: $spacing-03;
-  :global(.#{$prefix}--toggle) {
-    inline-size: rem(50px);
-    text-align: end;
-  }
   :global(.#{$prefix}--toggle__appearance) {
     column-gap: 0;
+  }
+  :global(.#{$prefix}--inline-loading) {
+    inline-size: rem(32px);
+    min-block-size: 0;
+    justify-content: center;
+  }
+  :global(.#{$prefix}--inline-loading__animation) {
+    margin-inline-end: 0;
   }
 }
 
