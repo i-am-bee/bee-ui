@@ -16,10 +16,7 @@
 
 import { DependencyList, EffectCallback, useEffect, useState } from 'react';
 
-export function useAfterMount(
-  effect: EffectCallback,
-  deps: DependencyList | undefined = [],
-) {
+export function useAfterMount(effect: EffectCallback, deps?: DependencyList) {
   const [initialMount, setInitialMount] = useState(true);
 
   useEffect(() => {
