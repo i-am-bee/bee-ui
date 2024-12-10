@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { listSpans } from '@/app/observe/api';
+import { listSpans, readTrace } from '@/app/observe/api';
 import { queryOptions } from '@tanstack/react-query';
+
+export const MAX_TRACE_RETRY_COUNT = 10;
 
 export const listSpansQuery = (
   organizationId: string,
@@ -28,4 +30,18 @@ export const listSpansQuery = (
     meta: {
       errorToast: false,
     },
+  });
+
+export const readTraceQuery = (
+  organizationId: string,
+  projectId: string,
+  traceId: string,
+) =>
+  queryOptions({
+    queryKey: ['observe:trace', traceId],
+    queryFn: () => readTrace(organizationId, projectId, traceId),
+    meta: {
+      errorToast: false,
+    },
+    retry: MAX_TRACE_RETRY_COUNT,
   });

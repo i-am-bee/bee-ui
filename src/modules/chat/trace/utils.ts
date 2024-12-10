@@ -27,7 +27,7 @@ export function isSpanDataValueRawWithMeta(
 export function getLastNewTokenSpan(spans: TraceSpan[]) {
   return [...spans]
     .reverse()
-    .find((span) => span.name === GENERATE_EVENT_NEW_TOKEN);
+    .find((span) => span.attributes.name === GENERATE_EVENT_NEW_TOKEN);
 }
 
 export function getGeneratedTokenCountSafe(span?: TraceSpan) {

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
- @use 'styles/common' as *;
+@use 'styles/common' as *;
 
 .header {
-   padding: 0.5rem !important;
+  padding: 0.5rem !important;
 }
 
 .title {
-   margin-block: $spacing-04;
+  margin-block: $spacing-04;
 }
- 
+
 .graphics {
-   background: #F2F4F8;
-   padding: $spacing-09;
+  background: #f2f4f8;
+  padding: $spacing-09;
 }
 
 .closeButton {
-   visibility: hidden 
+  visibility: hidden;
 }

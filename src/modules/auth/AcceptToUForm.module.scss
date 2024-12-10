@@ -47,8 +47,8 @@
   }
 
   :global(
-      .#{$prefix}--checkbox:not(:checked) ~ .#{$prefix}--checkbox-label::before
-    ) {
+    .#{$prefix}--checkbox:not(:checked) ~ .#{$prefix}--checkbox-label::before
+  ) {
     border-color: currentColor;
   }
 }

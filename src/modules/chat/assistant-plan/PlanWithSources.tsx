@@ -41,6 +41,7 @@ import { TraceInfoView } from '../trace/TraceInfoView';
 import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props {
   message: BotChatMessage;
@@ -80,6 +81,15 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     enabled: Boolean(!message.plan && thread && message.run_id && inView),
   });
 
+  const allStepsDone = useMemo(() => {
+    const steps = message?.plan?.steps || [];
+    return Boolean(
+      steps.length > 0 &&
+        !steps.some((step) => step.status === 'in_progress') &&
+        message.content.length > 0,
+    );
+  }, [message]);
+
   const planFromSteps = useMemo(() => {
     const plan: AssistantPlan = { key: uuid(), pending: false, steps: [] };
     stepsData?.data.forEach((step) => {
@@ -91,7 +101,7 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
   const plan = message.plan ?? planFromSteps;
   const sources = getSourcesWithSteps(plan.steps ?? []);
 
-  const traceData = useBuildTraceData({
+  const { traceData, traceError } = useBuildTraceData({
     enabled:
       isFeatureEnabled(FeatureName.Observe) &&
       Boolean(debugMode && !message.pending && inView),
@@ -139,11 +149,20 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
       />
     );
 
-  if (!plan.steps.some((step) => step.toolCalls.length))
-    return traceData ? <TraceInfoView data={traceData.overall} /> : null;
+  if (!plan.steps.some((step) => step.toolCalls.length)) {
+    const DefaultLoadingComponent =
+      message.run_id && debugMode && !traceError && allStepsDone ? (
+        <Spinner />
+      ) : null;
+    return traceData ? (
+      <TraceInfoView data={traceData.overall} />
+    ) : (
+      DefaultLoadingComponent
+    );
+  }
 
   return (
-    <TraceDataProvider data={traceData}>
+    <TraceDataProvider traceData={traceData} traceError={traceError}>
       <div className={clsx(classes.root, { [classes.isOpen]: isOpen })}>
         {showButton && (
           <div className={classes.toggle}>
@@ -161,7 +180,7 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
           </div>
         )}
 
-        <PlanView plan={plan} show={isOpen} />
+        <PlanView plan={plan} show={isOpen} allStepsDone={allStepsDone} />
 
         <SourcesView
           sources={sources.map(({ steps, ...props }) => ({

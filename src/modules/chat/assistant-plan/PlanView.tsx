@@ -17,20 +17,25 @@
 import { AssistantPlan } from '@/app/api/threads-runs/types';
 import { fadeProps } from '@/utils/fadeProps';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
 import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { PlanStep } from './PlanStep';
 import classes from './PlanView.module.scss';
+import { Spinner } from '@/components/Spinner/Spinner';
+import { useUserSetting } from '@/layout/hooks/useUserSetting';
 
 interface Props {
   plan: AssistantPlan;
   show?: boolean;
+  allStepsDone: boolean;
 }
 
-export function PlanView({ plan, show }: Props) {
+export function PlanView({ plan, show, allStepsDone }: Props) {
   const id = useId();
-  const { trace } = useTraceData();
+  const { traceData, traceError } = useTraceData();
+  const { getUserSetting } = useUserSetting();
+  const debugMode = getUserSetting('chatDebugMode');
 
   return (
     <AnimatePresence>
@@ -44,18 +49,35 @@ export function PlanView({ plan, show }: Props) {
           <ol aria-label="plan steps">
             {plan.steps.map((step) =>
               step.toolCalls.map((toolCall) => (
-                <PlanStep key={step.id} step={step} toolCall={toolCall} />
+                <PlanStep
+                  key={step.id}
+                  step={step}
+                  toolCall={toolCall}
+                  allStepsDone={allStepsDone}
+                />
               )),
             )}
 
             <AnimatePresence>
-              {trace && (
+              {traceData && (
                 <motion.li
                   {...fadeProps()}
                   key={`${id}:trace`}
                   className={classes.trace}
                 >
-                  <TraceInfoView data={trace.overall} />
+                  <TraceInfoView data={traceData.overall} />
+                </motion.li>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {debugMode && !traceError && !traceData && allStepsDone && (
+                <motion.li
+                  {...fadeProps()}
+                  key={`${id}:trace`}
+                  className={classes.trace}
+                >
+                  <Spinner />
                 </motion.li>
               )}
             </AnimatePresence>
