@@ -308,7 +308,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    secret: string;
+                    token: string;
                 };
                 header?: never;
                 path: {

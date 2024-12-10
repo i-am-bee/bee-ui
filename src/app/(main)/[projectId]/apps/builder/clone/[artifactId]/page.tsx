@@ -28,18 +28,18 @@ interface Props {
     projectId: string;
     artifactId: string;
   };
-  searchParams: { secret?: string };
+  searchParams: { token?: string };
 }
 
 export default async function CloneAppPage({
   params: { projectId, artifactId },
-  searchParams: { secret },
+  searchParams: { token },
 }: Props) {
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
-  const artifactResult = secret
-    ? await fetchSharedArtifact(artifactId, secret)
+  const artifactResult = token
+    ? await fetchSharedArtifact(artifactId, token)
     : await fetchArtifact(organizationId, projectId, artifactId);
 
   if (!(assistant && artifactResult)) notFound();
