@@ -57,7 +57,7 @@ OnboardingIntro.Footer = function OnboardingIntroFooter({
           target="_blank"
           rel="noopener noreferrer"
         >
-          Documentation
+          Resources
         </Button>
       )}
 
