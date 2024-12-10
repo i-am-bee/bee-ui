@@ -214,11 +214,7 @@ function AppBuilderContent() {
           </div>
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
-              <ArtifactSharedIframe
-                sourceCode={code}
-                projectId={project.id}
-                organizationId={organization.id}
-              />
+              <ArtifactSharedIframe sourceCode={code} />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
               <SourceCodeEditor

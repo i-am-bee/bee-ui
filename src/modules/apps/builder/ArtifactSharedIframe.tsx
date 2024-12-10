@@ -24,13 +24,10 @@ import classes from './ArtifactSharedIframe.module.scss';
 import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
-import { Project } from '@/app/api/projects/types';
-import { Organization } from '@/app/api/organization/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   sourceCode: string | null;
-  projectId: string;
-  organizationId: string;
 }
 
 function getErrorMessage(error: unknown) {
@@ -43,14 +40,11 @@ function getErrorMessage(error: unknown) {
   return 'Unknown error when calling LLM function.';
 }
 
-export function ArtifactSharedIframe({
-  sourceCode,
-  projectId,
-  organizationId,
-}: Props) {
+export function ArtifactSharedIframe({ sourceCode }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
+  const { project, organization } = useAppContext();
 
   const postMessage = (message: PostMessage) => {
     iframeRef.current?.contentWindow?.postMessage(
@@ -90,8 +84,8 @@ export function ArtifactSharedIframe({
           switch (data.request_type) {
             case 'modules_to_packages':
               const packagesResponse = await modulesToPackages(
-                organizationId,
-                projectId,
+                organization.id,
+                project.id,
                 data.payload.modules,
               );
               postMessage({
@@ -102,8 +96,8 @@ export function ArtifactSharedIframe({
               break;
             case 'chat_completion':
               const response = await createChatCompletion(
-                organizationId,
-                projectId,
+                organization.id,
+                project.id,
                 data.payload,
               );
               const message = response?.choices[0]?.message?.content;
@@ -124,7 +118,7 @@ export function ArtifactSharedIframe({
         }
       }
     },
-    [],
+    [project, organization],
   );
 
   const handleIframeLoad = useCallback(() => {
