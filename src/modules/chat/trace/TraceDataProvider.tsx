@@ -23,19 +23,22 @@ const TraceContext = createContext<TraceContextValue>(
 );
 
 type TraceContextValue = {
-  trace: TraceData | null;
+  traceData: TraceData | null;
+  traceError?: Error;
 };
 
 interface Props {
-  data: TraceData | null;
+  traceData: TraceData | null;
+  traceError?: Error;
 }
 
 export function TraceDataProvider({
-  data,
+  traceData,
+  traceError,
   children,
 }: PropsWithChildren<Props>) {
   return (
-    <TraceContext.Provider value={{ trace: data }}>
+    <TraceContext.Provider value={{ traceData, traceError }}>
       {children}
     </TraceContext.Provider>
   );

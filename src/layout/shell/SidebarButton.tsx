@@ -21,7 +21,7 @@ import { Menu } from '@carbon/react/icons';
 import { UserSetting } from '../hooks/useUserSetting';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
-import { useLayout } from '@/store/layout';
+import { MouseEvent } from 'react';
 
 interface Props extends Omit<ButtonBaseProps, 'kind' | 'size' | 'className'> {
   sidebarId: SidebarProps['id'];
@@ -39,7 +39,7 @@ export function SidebarButton({
   return (
     <Button
       {...props}
-      onMouseEnter={(event) => {
+      onMouseEnter={(event: MouseEvent<HTMLButtonElement>) => {
         prefetchThreads();
         onMouseEnter?.(event);
       }}
