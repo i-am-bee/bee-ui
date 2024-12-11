@@ -28,14 +28,21 @@ import { ASSISTANT_TEMPLATES } from '../assistants/templates';
 import { AssistantTemplate } from '../assistants/types';
 import { OnboardingAssistantSelection } from './OnboardingAssistantSelection';
 import { OnboardingIntro } from './OnboardingIntro';
-import classes from './OnboardingModal.module.scss';
+import classes from './NewAgentModal.module.scss';
+import { Project } from 'next/dist/build/swc';
+import { Organization } from '@/app/api/organization/types';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
-interface Props extends ModalProps {}
+interface Props extends ModalProps {
+  isOnboarding?: boolean;
+}
 
-export function OnboardingModal({ ...props }: Props) {
+export function NewAgentModal({ isOnboarding, ...props }: Props) {
   const router = useRouter();
-  const { project } = useAppContext();
-  const [step, setStep] = useState(Steps.INTRO);
+  const { project } = useProjectContext();
+  const [step, setStep] = useState(
+    isOnboarding ? Steps.INTRO : Steps.ASSISTANT_SELECTION,
+  );
   const [selectedTemplate, setSelectedTemplate] =
     useState<AssistantTemplate | null>(null);
 
@@ -63,8 +70,9 @@ export function OnboardingModal({ ...props }: Props) {
         ),
         footer: (
           <OnboardingAssistantSelection.Footer
-            onBackClick={() => setStep(Steps.INTRO)}
+            onBackClick={isOnboarding ? () => setStep(Steps.INTRO) : undefined}
             onNextClick={() => {
+              props.onRequestClose();
               router.push(
                 `/${project.id}/builder?${ONBOARDING_PARAM}${selectedTemplate ? `&template=${selectedTemplate.key}` : ''}`,
               );

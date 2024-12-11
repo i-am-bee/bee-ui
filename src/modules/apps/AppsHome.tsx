@@ -39,7 +39,7 @@ import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
 import classes from './AppsHome.module.scss';
 import Bee from '@/modules/assistants/icons/BeeMain.svg';
 import { useDebounceValue } from 'usehooks-ts';
-import { OnboardingModal } from '../onboarding/OnboardingModal';
+import { NewAgentModal } from '../onboarding/NewAgentModal';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -153,7 +153,12 @@ export function AppsHome() {
         <AppsOnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
       )}
       {showAgentsOnboarding && (
-        <OnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
+        <NewAgentModal
+          isOnboarding
+          onRequestClose={noop}
+          onAfterClose={noop}
+          isOpen
+        />
       )}
     </>
   );

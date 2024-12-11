@@ -22,6 +22,7 @@ import { AssistantTemplate } from '../assistants/types';
 import classes from './OnboardingAssistantSelection.module.scss';
 import { StartFromScratchCard } from './StartFromScratchCard';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   templates?: AssistantTemplate[];
@@ -33,7 +34,7 @@ export function OnboardingAssistantSelection({
   selected,
   onSelect,
 }: Props) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   return (
     <div>
@@ -71,14 +72,16 @@ OnboardingAssistantSelection.Footer =
     onBackClick,
     onNextClick,
   }: {
-    onBackClick: () => void;
+    onBackClick?: () => void;
     onNextClick: () => void;
   }) {
     return (
       <>
-        <Button kind="ghost" onClick={onBackClick}>
-          Back
-        </Button>
+        {onBackClick && (
+          <Button kind="ghost" onClick={onBackClick}>
+            Back
+          </Button>
+        )}
 
         <Button kind="secondary" renderIcon={ArrowRight} onClick={onNextClick}>
           Start building

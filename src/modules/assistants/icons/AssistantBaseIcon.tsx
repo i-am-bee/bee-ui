@@ -29,7 +29,7 @@ export interface AssistantBaseIconProps {
 
 export function AssistantBaseIcon({
   name: propName,
-  color,
+  color: propColor,
   initialLetter,
   size = 'md',
   className,
@@ -38,13 +38,11 @@ export function AssistantBaseIcon({
   const Icon =
     iconName && has(ASSISTANT_ICONS, iconName) && ASSISTANT_ICONS[iconName];
 
+  // TEMP: Disable colors, except for the black used for app builder assistant
+  const color = propColor === 'black' ? propColor : undefined;
+
   return (
-    <span
-      className={clsx(classes.root, className, {
-        [classes.noColor]: !color && Icon,
-      })}
-      data-size={size}
-    >
+    <span className={clsx(classes.root, className)} data-size={size}>
       <AssistantIconColor color={color}>
         <>{Icon ? <Icon /> : initialLetter}</>
       </AssistantIconColor>

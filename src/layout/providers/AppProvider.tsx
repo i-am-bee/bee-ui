@@ -34,6 +34,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { ProjectProvider } from './ProjectProvider';
 
 export interface AppContextValue {
   assistant: Assistant | null;
@@ -57,6 +58,8 @@ const AppContext = createContext<AppContextValue>(
 const AppApiContext = createContext<AppApiContextValue>(
   null as unknown as AppApiContextValue,
 );
+
+const ProjectContext = createContext<Props>(null as unknown as Props);
 
 interface Props {
   project: Project;
@@ -110,13 +113,19 @@ export function AppProvider({
         value={{
           assistant: assistantData ?? assistant,
           project: projectData ?? project,
-          organization: organization,
+          organization,
           isProjectReadOnly,
           role: projectUser?.role ?? null,
           onPageLeaveRef,
         }}
       >
-        {children}
+        {/* TODO: remove duplicity of props in AppContext */}
+        <ProjectProvider
+          project={projectData ?? project}
+          organization={organization}
+        >
+          {children}
+        </ProjectProvider>
       </AppContext.Provider>
     </AppApiContext.Provider>
   );

@@ -29,9 +29,8 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
-import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
-import { useModal } from '@/layout/providers/ModalProvider';
 import clsx from 'clsx';
+import { ToolInfoButton } from './ToolInfoButton';
 
 export function ToolsSelector() {
   const prefix = usePrefix();
@@ -90,7 +89,6 @@ function SelectedToolsItem({
     tool,
     error,
   } = useToolInfo({ toolReference: toolProp, project, organization });
-  const { openModal } = useModal();
 
   const isUserTool = tool && tool.type === 'user';
 
@@ -101,19 +99,6 @@ function SelectedToolsItem({
           className={clsx(classes.selectedToolButton, {
             [classes.isUserTool]: isUserTool,
           })}
-          onClick={() =>
-            openModal(
-              (props) =>
-                isUserTool && (
-                  <UserToolModal
-                    organization={organization}
-                    project={project}
-                    tool={tool}
-                    {...props}
-                  />
-                ),
-            )
-          }
         >
           <span className={classes.selectedIcon}>
             <Icon />
@@ -121,7 +106,10 @@ function SelectedToolsItem({
           {error ? (
             <span className={classes.toolError}>Tool not found</span>
           ) : (
-            toolName
+            <>
+              {toolName}
+              {tool && <ToolInfoButton toolReference={toolProp} />}
+            </>
           )}
         </button>
         <Tooltip content="Remove tool from agent" asChild placement="top">

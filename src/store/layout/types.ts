@@ -35,10 +35,15 @@ export type AppNavbarProps = {
 
 export type ChatNavbarProps = {
   type: 'chat';
-  assistant: Assistant;
+  assistant: Assistant | null;
 };
 
 export type NavbarProps = {
   title?: string;
   backButton?: { url: string; title?: string };
-} & (AppNavbarProps | ChatNavbarProps | { type: 'common' });
+} & (
+  | AppNavbarProps
+  | ChatNavbarProps
+  | { type: 'assistant-builder' }
+  | { type: 'common' }
+);

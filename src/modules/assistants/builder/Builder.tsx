@@ -51,6 +51,8 @@ import { KnowledgeSelector } from './KnowledgeSelector';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 import { useDeleteAssistant } from './useDeleteAssistant';
 import { AssistantIconSelector } from './AssistantIconSelector';
+import { useUserSetting } from '@/layout/hooks/useUserSetting';
+import { useOnMount } from '@/hooks/useOnMount';
 
 interface Props {
   thread?: Thread;
@@ -64,7 +66,6 @@ export function Builder({ thread, initialMessages }: Props) {
       watch,
       formState: { isSubmitting, dirtyFields },
     },
-    isOnboarding,
   } = useAssistantBuilder();
   const { project, organization, isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
@@ -77,6 +78,10 @@ export function Builder({ thread, initialMessages }: Props) {
       router.push(`/${project.id}`);
     },
   });
+
+  const { setUserSetting } = useUserSetting();
+
+  useOnMount(() => setUserSetting('sidebarPinned', false));
 
   const isSaved = Boolean(assistant && isEmpty(dirtyFields));
 
@@ -130,6 +135,7 @@ export function Builder({ thread, initialMessages }: Props) {
                 value={value}
                 ref={ref}
                 onChange={onChange}
+                maxLength={200}
               />
             )}
           />
@@ -158,6 +164,17 @@ export function Builder({ thread, initialMessages }: Props) {
           </div>
 
           <div>
+            {assistant && (
+              <Button
+                kind="tertiary"
+                onClick={() =>
+                  router.push(`/${project.id}/chat/${assistant.id}`)
+                }
+                disabled={isSubmitting}
+              >
+                Launch in chat
+              </Button>
+            )}
             <Button
               kind="secondary"
               onClick={() => onSubmit()}
@@ -169,7 +186,7 @@ export function Builder({ thread, initialMessages }: Props) {
               ) : isSaved ? (
                 'Saved'
               ) : (
-                'Save'
+                'Save agent'
               )}
             </Button>
           </div>

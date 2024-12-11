@@ -81,7 +81,7 @@ export function AssistantIconSelector({ disabled }: Props) {
             </button>
           ))}
         </div>
-        <div className={classes.root}>
+        {/* <div className={classes.root}>
           {ASSISTANT_ICON_COLORS.filter((color) => color !== 'black').map(
             (iconColor) => (
               <button
@@ -95,7 +95,7 @@ export function AssistantIconSelector({ disabled }: Props) {
               </button>
             ),
           )}
-        </div>
+        </div> */}
       </>
     </IconSelectorBase>
   );

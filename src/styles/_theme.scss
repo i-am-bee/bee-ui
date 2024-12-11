@@ -65,6 +65,7 @@ themes.$white: map.merge(
     layer-accent-03: $cool-gray-30,
 
     layer-inverse-01: $cool-gray-90,
+    layer-inverse-02: $cool-gray-80,
     layer-selected-disabled: $gray-30,
     text-placeholder: $gray-40,
     text-dark: $black,
@@ -140,6 +141,7 @@ themes.$g90: map.merge(
     layer-03-hover: $cool-gray-60,
 
     layer-inverse-01: $white,
+    layer-inverse-02: $cool-gray-10,
     layer-selected-disabled: $gray-70,
     text-placeholder: $gray-60,
     text-dark: $white,
@@ -191,6 +193,7 @@ themes.$g90: map.merge(
 );
 
 $layer-inverse-01: var(--cds-layer-inverse-01);
+$layer-inverse-02: var(--cds-layer-inverse-02);
 $text-dark: var(--cds-text-dark);
 $text-muted: var(--cds-text-muted);
 $text-muted-light: var(--cds-text-muted-light);

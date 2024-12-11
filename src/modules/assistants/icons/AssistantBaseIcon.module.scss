@@ -57,14 +57,6 @@
     block-size: var(--icon-size);
     fill: currentColor;
   }
-
-  &.noColor {
-    box-shadow: none;
-    svg {
-      inline-size: var(--size);
-      block-size: var(--size);
-    }
-  }
 }
 
 .color {

@@ -110,8 +110,15 @@ h1 {
     background-color: transparent;
   }
   &:hover {
-    background-color: $text-primary;
-    color: $text-inverse;
+    background-color: $layer-02;
+    color: $text-primary;
+  }
+}
+
+.#{$prefix}--btn--ghost {
+  color: $text-primary;
+  &:hover {
+    color: $text-primary;
   }
 }
 

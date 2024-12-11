@@ -15,20 +15,24 @@
  */
 
 @use 'styles/common' as *;
+@use '@carbon/styles/scss/utilities/button-reset';
 
 .root {
-  z-index: z('modal');
+  @include button-reset.reset();
+  inline-size: $spacing-06;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.content {
-  @include type-style(label-02);
-  background-color: $layer-inverse-02;
-  color: $text-inverse;
-  border-radius: $block-radius;
-  padding: $spacing-03 $spacing-04;
-  max-inline-size: rem(264px);
-}
-
-.arrow {
-  fill: $layer-inverse-02;
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-04;
+  button {
+    color: $link-inverse;
+    &:hover {
+      color: $link-inverse-hover;
+    }
+  }
 }

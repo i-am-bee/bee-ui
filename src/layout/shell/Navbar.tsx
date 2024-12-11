@@ -125,7 +125,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
                 showShareButton={navbarProps.type === 'app-detail'}
               />
             )}
-          {navbarProps?.type === 'chat' && (
+          {navbarProps?.type === 'chat' && navbarProps.assistant && (
             <ChatNavbarActions assistant={navbarProps.assistant} />
           )}
 

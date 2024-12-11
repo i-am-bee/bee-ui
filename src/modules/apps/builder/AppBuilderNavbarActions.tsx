@@ -61,6 +61,18 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
 
       <OverflowMenu size="sm" flipped>
         <OverflowMenuItem
+          itemText="Edit"
+          onClick={() =>
+            router.push(`/${project.id}/apps/builder/a/${artifact.id}`)
+          }
+        />
+        <OverflowMenuItem
+          itemText="Copy to edit"
+          onClick={() =>
+            router.push(`/${project.id}/apps/builder/clone/${artifact.id}`)
+          }
+        />
+        <OverflowMenuItem
           isDelete
           itemText="Delete"
           onClick={() => deleteArtifact()}

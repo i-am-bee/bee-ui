@@ -26,7 +26,7 @@ import classes from './LinkButton.module.scss';
 interface BaseProps {
   className?: string;
   children?: ReactNode;
-  icon?: ComponentType<{ size?: number }>;
+  icon?: ComponentType<{ size?: number | string }>;
   size?: 'sm' | 'md' | 'lg';
   as?: ElementType;
 }
