@@ -125,8 +125,8 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       initialData={initialMessages}
       initialAssistantMessage={
         isCloneAppThread
-          ? 'How do you want to edit this app? Do you need suggestions?'
-          : 'What do you want to build today?'
+          ? 'Hello! How do you want to edit this app?'
+          : 'Hello! What app do you want me to build?'
       }
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
