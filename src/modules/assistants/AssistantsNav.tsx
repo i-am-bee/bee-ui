@@ -34,9 +34,8 @@ import { ASSISTANTS_ORDER_DEFAULT } from './AssistantsHome';
 import classes from './AssistantsNav.module.scss';
 import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
 import { useAssistants } from './hooks/useAssistants';
-import { AssistantBaseIcon } from './icons/AssistantBaseIcon';
-import { Assistant } from './types';
 import { AssistantIcon } from './icons/AssistantIcon';
+import { Assistant } from './types';
 
 interface Props {
   enableFetch?: boolean;
