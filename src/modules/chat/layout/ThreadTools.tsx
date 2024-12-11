@@ -34,7 +34,7 @@ export function ThreadTools({ assistantTools = [] }: Props) {
     return (
       <EmptyList
         heading="No tools connected"
-        content="This bee does not use any tools. You can fork and edit this bee in bee details if you’d like to connect tools."
+        content="This agent does not use any tools. You can fork and edit this agent in agent details if you’d like to connect tools."
       />
     );
   }

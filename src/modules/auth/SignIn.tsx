@@ -186,7 +186,13 @@ export function SignIn({
           {BEE_AGENT_PLATFORM_URL && (
             <footer className={classes.footer}>
               Powered by open-source{' '}
-              <a href={BEE_AGENT_PLATFORM_URL}>Bee Agent Platform</a>
+              <a
+                href={BEE_AGENT_PLATFORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Bee Agent Platform
+              </a>
             </footer>
           )}
         </div>

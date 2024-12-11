@@ -16,7 +16,10 @@
 
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import { Link } from '@/components/Link/Link';
-import { DOCUMENTATION_URL } from '@/utils/constants';
+import { usePrefetchVectorStores } from '@/modules/knowledge/hooks/usePrefetchVectorStores';
+import { usePrefetchTools } from '@/modules/tools/hooks/usePrefetchTools';
+import { DOCUMENTATION_URL, FEEDBACK_URL } from '@/utils/constants';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { ArrowUpRight } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { HTMLAttributes } from 'react';
@@ -29,12 +32,37 @@ interface Props extends HTMLAttributes<HTMLElement> {}
 export function UserNav({ className }: Props) {
   const { project } = useAppContext();
 
+  const prefetchTools = usePrefetchTools({ useDefaultParams: true });
+  const prefetchVectoreStores = usePrefetchVectorStores({
+    useDefaultParams: true,
+  });
+
+  const ITEMS = [
+    {
+      label: 'Tools',
+      href: `/${project.id}/tools`,
+      prefetchData: prefetchTools,
+    },
+    {
+      label: 'Knowledge',
+      href: `/${project.id}/knowledge`,
+      featureName: FeatureName.Knowledge,
+      prefetchData: prefetchVectoreStores,
+    },
+  ];
+
   return (
     <nav className={clsx(classes.root, className)} aria-label="User menu">
       <ul className={classes.nav}>
-        <li>
-          <Link href={`/${project.id}/tools/public`}>Public tools</Link>
-        </li>
+        {ITEMS.filter(
+          ({ featureName }) => !featureName || isFeatureEnabled(featureName),
+        ).map(({ label, href, prefetchData }) => (
+          <li key={href}>
+            <Link href={href} onMouseEnter={() => prefetchData()}>
+              {label}
+            </Link>
+          </li>
+        ))}
         {DOCUMENTATION_URL && (
           <li>
             <ExternalLink href={DOCUMENTATION_URL} Icon={ArrowUpRight}>
@@ -42,9 +70,16 @@ export function UserNav({ className }: Props) {
             </ExternalLink>
           </li>
         )}
+        {FEEDBACK_URL && (
+          <li>
+            <ExternalLink href={FEEDBACK_URL} Icon={ArrowUpRight}>
+              Give feedback
+            </ExternalLink>
+          </li>
+        )}
       </ul>
 
-      <UserProfile />
+      <UserProfile className={classes.userProfile} />
     </nav>
   );
 }

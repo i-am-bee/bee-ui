@@ -80,7 +80,6 @@ const AssistantBuilderContext = createContext<AssistantBuilderContextValue>(
 
 export interface AssistantBuilderApiContextValue {
   onSubmit: () => void;
-  onCopyToCustomize: () => void;
 }
 
 const AssistantBuilderApiContext =
@@ -144,25 +143,26 @@ export function AssistantBuilderProvider({
     } else {
       selectAssistant(initialAssistant);
     }
-  }, [initialAssistant, isDuplicate, selectAssistant]);
+
+    reset(
+      formValuesFromAssistant(
+        assistantTemplate ? assistantTemplate : (initialAssistant ?? null),
+        isDuplicate,
+      ),
+      {
+        keepValues: false,
+      },
+    );
+  }, [isDuplicate, initialAssistant, selectAssistant]);
 
   useEffect(() => {
     if (!isEmpty(formState.dirtyFields))
       setConfirmOnPageLeave(
-        'Your bee has unsaved changes, do you really want to leave?',
+        'Your agent has unsaved changes, do you really want to leave?',
       );
     else clearConfirmOnPageLeave();
     return () => clearConfirmOnPageLeave();
   }, [clearConfirmOnPageLeave, formState, setConfirmOnPageLeave]);
-
-  const handleCopyToCustomize = useCallback(() => {
-    if (!assistant) return;
-
-    reset(formValuesFromAssistant(assistant, true), {
-      keepValues: false,
-    });
-    selectAssistant(null);
-  }, [assistant, reset, selectAssistant]);
 
   const onSubmit = useCallback(
     async ({
@@ -226,9 +226,8 @@ export function AssistantBuilderProvider({
   const apiValue = useMemo(
     () => ({
       onSubmit: handleSubmit(onSubmit, handleError),
-      onCopyToCustomize: handleCopyToCustomize,
     }),
-    [handleCopyToCustomize, handleError, handleSubmit, onSubmit],
+    [handleError, handleSubmit, onSubmit],
   );
 
   return (
@@ -279,7 +278,7 @@ function formValuesFromAssistant(
     },
     ownName: assistant?.name
       ? `${assistant.name}${isDuplicate ? ' ( Copy )' : ''}`
-      : 'New Bee',
+      : 'New agent',
     description: assistant?.description ?? '',
     instructions: assistant?.instructions || '',
     tools: assistant?.tools.reduce(

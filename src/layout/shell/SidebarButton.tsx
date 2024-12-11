@@ -36,26 +36,25 @@ export function SidebarButton({
   const prefetchThreads = usePrefetchThreads();
 
   return (
-    <Button
-      {...props}
-      onMouseEnter={(event) => {
-        prefetchThreads();
-        onMouseEnter?.(event);
-      }}
-      kind="ghost"
-      size="md"
-      className={classes.root}
-      aria-expanded={sidebarOpen}
-      aria-controls={sidebarId}
-      aria-label="Toggle sidebar"
-    >
-      <Menu />
+    <div className={classes.root}>
+      <Button
+        {...props}
+        onMouseEnter={(event) => {
+          prefetchThreads();
+          onMouseEnter?.(event);
+        }}
+        kind="ghost"
+        size="sm"
+        aria-expanded={sidebarOpen}
+        aria-controls={sidebarId}
+        aria-label="Toggle sidebar"
+      >
+        <Menu />
+      </Button>
 
-      <span>
-        IBM <strong>Bee</strong>
-      </span>
+      <p className={classes.title}>Bee</p>
 
       <VersionTag />
-    </Button>
+    </div>
   );
 }

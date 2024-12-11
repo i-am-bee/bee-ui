@@ -29,12 +29,12 @@
   font-weight: bold;
   display: flex;
   flex-direction: column;
-  row-gap: $spacing-02;
   a {
     display: flex;
     color: inherit;
     text-decoration: none;
-    line-height: rem(24px);
+    line-height: rem(18px);
+    padding: rem(7px) $spacing-03;
     &:hover {
       text-decoration: underline;
     }
@@ -43,4 +43,8 @@
       outline-offset: 0;
     }
   }
+}
+
+.userProfile {
+  margin-inline-start: $spacing-03;
 }

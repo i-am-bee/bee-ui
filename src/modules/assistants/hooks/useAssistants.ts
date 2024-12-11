@@ -21,11 +21,13 @@ import { assistantsQuery } from '../library/queries';
 
 export function useAssistants({
   params,
-}: { params?: AssistantsListQuery } = {}) {
+  enabled = true,
+}: { params?: AssistantsListQuery; enabled?: boolean } = {}) {
   const { project, organization } = useAppContext();
 
   const query = useInfiniteQuery({
     ...assistantsQuery(organization.id, project.id, params),
+    enabled,
   });
 
   return query;

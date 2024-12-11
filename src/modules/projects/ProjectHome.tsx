@@ -19,6 +19,7 @@ import { AdminView } from '@/components/AdminView/AdminView';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useUserProfile } from '@/store/user-profile';
+import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
 import { ReactElement, useState } from 'react';
@@ -27,7 +28,6 @@ import { RenameModal } from './manage/RenameModal';
 import classes from './ProjectHome.module.scss';
 import { UsersCount } from './users/UsersCount';
 import { UsersModalRenderer } from './users/UsersModalRenderer';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
 interface Props {
   children: ReactElement;
@@ -104,10 +104,4 @@ export function ProjectHome({ children }: Props) {
       />
     </>
   );
-}
-
-export enum HomeSection {
-  Bees = 'Bees',
-  Tools = 'Tools',
-  Knowledge = 'Knowledge',
 }

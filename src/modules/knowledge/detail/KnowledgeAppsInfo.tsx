@@ -57,7 +57,7 @@ export function KnowledgeAppsInfo({ vectorStore }: Props) {
         )}
       </div>
       <span className={classes.usedBy}>
-        used by {pluralize('bee', assistants.length, true)}
+        used by {pluralize('agent', assistants.length, true)}
       </span>
     </div>
   );

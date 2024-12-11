@@ -94,16 +94,16 @@ export function AssistantsHome() {
     <>
       <ProjectHome>
         <CardsList<AssistantsListQueryOrderBy>
-          heading="Bees"
+          heading="Agents"
           totalCount={data?.totalCount ?? 0}
           onFetchNextPage={fetchNextPage}
           isFetching={isFetching}
           error={error}
-          noItemsInfo="You haven’t created any bees yet."
-          noItemsDescr="Get started by exploring the library of available bees to
-                jump-start your productivity, or build your own bee fitted
+          noItemsInfo="You haven’t created any agents yet."
+          noItemsDescr="Get started by exploring the library of available agents to
+                jump-start your productivity, or build your own agent fitted
                 specifically for your needs and use cases!"
-          errorTitle="Failed to load bees"
+          errorTitle="Failed to load agents"
           onRefetch={refetch}
           hasNextPage={hasNextPage}
           onSearchChange={setSearch}
@@ -113,13 +113,13 @@ export function AssistantsHome() {
             onChangeOrder: setOrder,
           }}
           newButtonProps={{
-            title: 'New bee',
+            title: 'New agent',
             onClick: () => router.push(`/${project.id}/builder`),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (
               <ReadOnlyTooltipContent
                 organization={organization}
-                entityName="bee"
+                entityName="agent"
               />
             ) : undefined,
           }}

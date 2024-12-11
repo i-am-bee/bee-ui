@@ -106,7 +106,7 @@ export function Builder({ thread, initialMessages }: Props) {
             }) => (
               <TextInput
                 id={`${id}:name`}
-                placeholder="Name your bee"
+                placeholder="Name your agent"
                 maxLength={NAME_MAX_LENGTH}
                 labelText="Name"
                 size="lg"
@@ -125,7 +125,7 @@ export function Builder({ thread, initialMessages }: Props) {
               <TextArea
                 labelText="Description (user-facing)"
                 rows={3}
-                placeholder="Describe your bee so users can kow how to use it"
+                placeholder="Describe your agent so users can kow how to use it"
                 invalidText="Description is required"
                 value={value}
                 ref={ref}
@@ -151,7 +151,7 @@ export function Builder({ thread, initialMessages }: Props) {
                 {isDeletePending ? (
                   <InlineLoading title="Deleting..." />
                 ) : (
-                  'Delete bee'
+                  'Delete agent'
                 )}
               </Button>
             )}
@@ -224,7 +224,7 @@ function BuilderChat() {
   return (
     <>
       <div className={classes.chatTopBar}>
-        <div>This is preview of your bee. </div>
+        <div>This is preview of your agent.</div>
 
         <Button
           kind="ghost"

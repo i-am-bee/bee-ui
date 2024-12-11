@@ -54,7 +54,7 @@ export function useDeleteAssistant({ assistant, onSuccess }: Props) {
     openConfirmation({
       title: `Delete ${assistant.name}?`,
       body: 'Are you sure you want to delete this app? Once an app is deleted, it can’t be undone.',
-      primaryButtonText: 'Delete bee',
+      primaryButtonText: 'Delete agent',
       danger: true,
       onSubmit: () => mutateAsync(assistant.id),
     });

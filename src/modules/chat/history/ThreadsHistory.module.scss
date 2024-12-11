@@ -18,8 +18,7 @@
 
 .noHistory {
   @include type-style(body-01);
-  color: $text-secondary;
-  padding-inline: $spacing-04;
+  padding: $spacing-02 $spacing-03;
 }
 
 .list {
