@@ -24,6 +24,7 @@
   display: flex;
   justify-content: center;
   padding-block: $spacing-08;
+
   > * {
     margin-block: auto;
   }
@@ -48,6 +49,7 @@
   flex-grow: 1;
   position: relative;
   z-index: 1;
+  max-inline-size: rem(400px);
 
   .contentInner {
     display: flex;
@@ -59,6 +61,13 @@
   h2 {
     font-size: rem(20px);
     line-height: 28 / 20;
+    margin-block-end: $spacing-03;
+  }
+
+  hr {
+    inline-size: 100%;
+    border: 1px solid $border-subtle;
+    margin-block: $spacing-07;
   }
 }
 
@@ -67,6 +76,7 @@
   @include font-family(serif);
   display: flex;
   align-items: flex-start;
+  margin-block-end: $spacing-07;
 
   :global(.#{$prefix}--tag) {
     margin-inline-start: $spacing-03;
@@ -135,9 +145,8 @@
   margin-block-start: $spacing-05;
 }
 
-.divider {
-  inline-size: 100%;
-  border: 1px solid $border-subtle;
+h2.haveAccountHeading {
+  margin-block-end: $spacing-06;
 }
 
 .loginButtonLabel {
@@ -148,6 +157,9 @@
   inline-size: rem(238px);
   padding-inline-end: 0;
   justify-content: flex-start;
+  &.waitlistButton {
+    margin-block-start: $spacing-06;
+  }
 }
 
 .footer {

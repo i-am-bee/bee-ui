@@ -25,6 +25,7 @@ import { VersionTag } from '@/components/VersionTag/VersionTag';
 import { WaitlistModal } from './WaitlistModal';
 import GoogleIcon from './GoogleIcon.svg';
 import IBMIcon from './IBMIcon.svg';
+import clsx from 'clsx';
 
 const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
 const BEE_AGENT_PLATFORM_URL = process.env.NEXT_PUBLIC_BEE_AGENT_PLATFORM_URL;
@@ -148,7 +149,10 @@ export function SignIn({
 
                 {WAITLIST_URL && (
                   <Button
-                    className={classes.loginButton}
+                    className={clsx(
+                      classes.loginButton,
+                      classes.waitlistButton,
+                    )}
                     kind="secondary"
                     href={WAITLIST_URL}
                   >
@@ -156,9 +160,11 @@ export function SignIn({
                   </Button>
                 )}
 
-                <hr className={classes.divider} />
+                <hr />
 
-                <p>Already have an account?</p>
+                <h2 className={classes.haveAccountHeading}>
+                  Already have an account?
+                </h2>
               </>
             )}
             <div className={classes.formWrapper}>
