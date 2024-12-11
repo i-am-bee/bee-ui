@@ -44,7 +44,7 @@ import { AppIconName } from '../AppIcon';
 import { AppIconSelector } from '../builder/AppIconSelector';
 import { useSaveArtifact } from '../hooks/useSaveArtifact';
 import { Artifact, ArtifactMetadata } from '../types';
-import { extractAppNameFromStliteCode } from '../utils';
+import { extractAppMetadataFromStreamlitCode } from '../utils';
 
 export type AppFormValues = {
   name: string;
@@ -114,7 +114,7 @@ export function SaveAppModal({
           description: artifactProp.description || '',
           icon: artifactProp.uiMetadata.icon,
         }
-      : { name: extractAppNameFromStliteCode(code ?? '') },
+      : { ...extractAppMetadataFromStreamlitCode(code ?? '') },
     mode: 'onChange',
   });
 

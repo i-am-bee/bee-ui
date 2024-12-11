@@ -22,7 +22,7 @@ import { useRunContext } from '../../providers/RunProvider';
 import { Rocket } from '@carbon/react/icons';
 import { InlineLoading, SkeletonIcon } from '@carbon/react';
 import {
-  extractAppNameFromStliteCode,
+  extractAppMetadataFromStreamlitCode,
   extractCodeFromMessageContent,
 } from '@/modules/apps/utils';
 
@@ -35,9 +35,9 @@ export function PythonAppCode({
   const appName = useMemo(() => {
     if (message?.pending || !message?.content) return null;
 
-    return extractAppNameFromStliteCode(
+    return extractAppMetadataFromStreamlitCode(
       extractCodeFromMessageContent(message.content) ?? '',
-    );
+    ).name;
   }, [message]);
 
   return (
