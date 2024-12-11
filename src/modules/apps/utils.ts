@@ -15,7 +15,7 @@
  */
 
 export function extractCodeFromMessageContent(content: string) {
-  return content.match(/```python-app\n([\s\S]*?)```/)?.at(-1);
+  return [...content.matchAll(/```python-app\n([\s\S]*?)```/g)].at(-1)?.at(-1);
 }
 
 export function extractAppMetadataFromStreamlitCode(code: string) {
