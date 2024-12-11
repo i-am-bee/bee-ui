@@ -19,6 +19,8 @@ import { Link } from '@/components/Link/Link';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { AppIcon } from '@/modules/apps/AppIcon';
 import { AppBuilderNavbarActions } from '@/modules/apps/builder/AppBuilderNavbarActions';
+import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
+import { ChatNavbarActions } from '@/modules/chat/ChatNavbarActions';
 import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 import { useLayout } from '@/store/layout';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
@@ -31,8 +33,6 @@ import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
 import { SkipNav } from './SkipNav';
-import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
-import { ChatNavbarActions } from '@/modules/chat/ChatNavbarActions';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -48,10 +48,11 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
     if (!navbarProps) return undefined;
 
     const { title } = navbarProps;
+    let icon;
+
     switch (navbarProps.type) {
       case 'app-builder':
-        let icon = navbarProps?.artifact?.uiMetadata.icon;
-
+        icon = navbarProps?.artifact?.uiMetadata.icon;
         return navbarProps.artifact
           ? [
               { title: 'Apps', url: `/${project.id}/apps` },
