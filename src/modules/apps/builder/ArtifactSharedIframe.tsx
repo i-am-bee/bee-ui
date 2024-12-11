@@ -154,7 +154,13 @@ export function ArtifactSharedIframe({ sourceCode }: Props) {
         ref={iframeRef}
         src={USERCONTENT_SITE_URL}
         title="App preview"
-        sandbox="allow-scripts allow-downloads allow-same-origin"
+        sandbox={[
+          'allow-scripts',
+          'allow-downloads',
+          'allow-same-origin',
+          'allow-popups',
+          'allow-popups-to-escape-sandbox',
+        ].join(' ')}
         className={classes.app}
         onLoad={handleIframeLoad}
       />
