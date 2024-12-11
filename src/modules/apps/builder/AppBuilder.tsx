@@ -147,6 +147,20 @@ function AppBuilderContent() {
 
   const message = getLastMessageWithCode(getMessages());
 
+  const { sendMessage, thread } = useChat();
+
+  const handleReportError = useCallback(
+    async (errorText: string) => {
+      await createMessage(organization.id, project.id, thread!.id, {
+        role: 'user',
+        content: `I have encountered the following error: \`\`\`error\n${errorText}\n\`\`\``,
+        metadata: encodeMetadata<MessageMetadata>({ type: 'report-error' }),
+      });
+      await sendMessage(`Help me fix the attached error.`);
+    },
+    [organization, project, thread, sendMessage],
+  );
+
   return (
     <div className={classes.root}>
       <section className={classes.chat}>
@@ -214,7 +228,10 @@ function AppBuilderContent() {
           </div>
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
-              <ArtifactSharedIframe sourceCode={code} />
+              <ArtifactSharedIframe
+                sourceCode={code}
+                onReportError={handleReportError}
+              />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
               <SourceCodeEditor

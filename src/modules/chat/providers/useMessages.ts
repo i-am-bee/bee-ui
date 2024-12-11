@@ -40,7 +40,9 @@ export function useMessages({
     select: (messages) =>
       messages.filter(
         ({ metadata }) =>
-          decodeMetadata<MessageMetadata>(metadata).type !== 'code-update',
+          !['code-update', 'error-report'].includes(
+            decodeMetadata<MessageMetadata>(metadata).type ?? '',
+          ),
       ),
     initialData,
     enabled: Boolean(thread),

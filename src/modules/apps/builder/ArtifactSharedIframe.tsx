@@ -29,6 +29,7 @@ import Bee from '@/modules/assistants/icons/BeeMain.svg';
 
 interface Props {
   sourceCode: string | null;
+  onReportError?: (errorText: string) => void;
 }
 
 function getErrorMessage(error: unknown) {
@@ -41,7 +42,7 @@ function getErrorMessage(error: unknown) {
   return 'Unknown error when calling LLM function.';
 }
 
-export function ArtifactSharedIframe({ sourceCode }: Props) {
+export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
@@ -58,13 +59,22 @@ export function ArtifactSharedIframe({ sourceCode }: Props) {
     postMessage({ type: PostMessageType.UPDATE_THEME, theme });
   }, []);
 
-  const updateCode = useCallback((code: string | null) => {
-    if (!code) {
-      return;
-    }
+  const updateCode = useCallback(
+    (code: string | null) => {
+      if (!code) {
+        return;
+      }
 
-    postMessage({ type: PostMessageType.UPDATE_CODE, code });
-  }, []);
+      postMessage({
+        type: PostMessageType.UPDATE_CODE,
+        config: {
+          can_fix_error: Boolean(onReportError),
+        },
+        code,
+      });
+    },
+    [onReportError],
+  );
 
   const handleMessage = useCallback(
     async (event: MessageEvent<StliteMessage>) => {
@@ -79,7 +89,9 @@ export function ArtifactSharedIframe({ sourceCode }: Props) {
         data.scriptRunState === ScriptRunState.RUNNING
       ) {
         setState(State.READY);
+        return;
       }
+
       if (data.type === RecieveMessageType.REQUEST) {
         try {
           switch (data.request_type) {
@@ -117,9 +129,15 @@ export function ArtifactSharedIframe({ sourceCode }: Props) {
             payload: { error: getErrorMessage(err) },
           });
         }
+        return;
+      }
+
+      if (data.type === RecieveMessageType.REPORT_ERROR) {
+        onReportError?.(data.errorText);
+        return;
       }
     },
-    [project, organization],
+    [project, organization, onReportError],
   );
 
   const handleIframeLoad = useCallback(() => {
@@ -178,6 +196,9 @@ type PostMessage =
   | {
       type: PostMessageType.UPDATE_CODE;
       code: string;
+      config: {
+        can_fix_error?: boolean;
+      };
     }
   | {
       type: PostMessageType.UPDATE_THEME;
@@ -193,8 +214,6 @@ enum PostMessageType {
   UPDATE_CODE = 'bee:updateCode',
   UPDATE_THEME = 'bee:updateTheme',
   RESPONSE = 'bee:response',
-  // TODO: Add error handling
-  ERROR = 'bee:error',
 }
 
 enum ScriptRunState {
@@ -211,6 +230,7 @@ enum State {
 enum RecieveMessageType {
   SCRIPT_RUN_STATE_CHANGED = 'SCRIPT_RUN_STATE_CHANGED',
   REQUEST = 'bee:request',
+  REPORT_ERROR = 'bee:reportError',
 }
 
 export type StliteMessage =
@@ -229,4 +249,8 @@ export type StliteMessage =
       request_type: 'chat_completion';
       request_id: string;
       payload: ChatCompletionCreateBody;
+    }
+  | {
+      type: RecieveMessageType.REPORT_ERROR;
+      errorText: string;
     };
