@@ -34,7 +34,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
   }
 }
 
@@ -44,10 +43,6 @@
 
 .item {
   @include item();
-  .icon {
-    box-shadow: $box-shadow;
-    background-color: $layer;
-  }
 }
 
 .bottom {
@@ -121,6 +116,10 @@
 
 .skeleton {
   @include item();
+
+  .icon {
+    overflow: hidden;
+  }
 
   :global(.#{$prefix}--skeleton__text) {
     margin-block-end: 0;

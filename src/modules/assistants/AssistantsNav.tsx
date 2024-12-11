@@ -36,6 +36,7 @@ import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
 import { useAssistants } from './hooks/useAssistants';
 import { AssistantBaseIcon } from './icons/AssistantBaseIcon';
 import { Assistant } from './types';
+import { AssistantIcon } from './icons/AssistantIcon';
 
 interface Props {
   enableFetch?: boolean;
@@ -113,7 +114,7 @@ function AgentLink({
         })}
       >
         <span className={classes.icon}>
-          <AssistantBaseIcon name={assistant.uiMetadata.icon} size="sm" />
+          <AssistantIcon assistant={assistant} size="lg" />
         </span>
 
         <button
