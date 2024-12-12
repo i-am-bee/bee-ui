@@ -55,7 +55,7 @@ import {
 import { getAppBuilderNavbarProps } from '@/app/(main)/[projectId]/apps/utils';
 import { useRouter } from 'next-nprogress-bar';
 import { useLayoutActions } from '@/store/layout';
-import { useArtifactsTotalCount } from '../hooks/useArtifacts';
+import { useArtifactsCount } from '../hooks/useArtifactsCount';
 
 interface Props {
   thread?: Thread;
@@ -161,7 +161,7 @@ function AppBuilderContent() {
   const { code, artifact } = useAppBuilder();
   const { setLayout } = useLayoutActions();
 
-  const totalCount = useArtifactsTotalCount();
+  const totalCount = useArtifactsCount();
 
   const message = getLastMessageWithCode(getMessages());
 

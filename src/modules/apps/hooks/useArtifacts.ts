@@ -28,11 +28,3 @@ export function useArtifacts({ params }: { params?: ArtifactsListQuery } = {}) {
 
   return query;
 }
-
-export function useArtifactsTotalCount({
-  params,
-}: { params?: ArtifactsListQuery } = {}) {
-  const { data } = useArtifacts({ params: { ...params, limit: 1 } });
-
-  return data?.totalCount;
-}

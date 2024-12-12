@@ -51,7 +51,7 @@ export default async function AppBuilderPage({
         navbarProps: getAppBuilderNavbarProps(projectId),
       }}
     >
-      <AppBuilderProvider code={artifact.source_code} artifact={artifact}>
+      <AppBuilderProvider artifact={artifact}>
         <AppBuilder assistant={assistant} />
       </AppBuilderProvider>
     </LayoutInitializer>
