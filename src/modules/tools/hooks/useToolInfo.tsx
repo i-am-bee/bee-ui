@@ -30,6 +30,8 @@ import {
   PartlyCloudy,
   SearchLocate,
   Tools,
+  Calculator,
+  IbmWatsonxAssistant,
 } from '@carbon/react/icons';
 import { SkeletonIcon } from '@carbon/react';
 import { ToolName } from '../common/ToolName';
@@ -94,6 +96,8 @@ const SYSTEM_TOOL_NAME: Record<SystemToolId, string> = {
   weather: 'OpenMeteo',
   arxiv: 'Arxiv',
   read_file: 'ReadFile',
+  llm: 'LLM',
+  calculator: 'Calculatr',
 };
 
 const SYSTEM_TOOL_ICONS: Record<SystemToolId, ComponentType> = {
@@ -102,6 +106,8 @@ const SYSTEM_TOOL_ICONS: Record<SystemToolId, ComponentType> = {
   weather: PartlyCloudy,
   arxiv: Arxiv,
   read_file: DocumentView,
+  llm: IbmWatsonxAssistant,
+  calculator: Calculator,
 };
 
 export function getStaticToolName({ type, id, tool }: ToolReference) {

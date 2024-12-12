@@ -116,7 +116,9 @@ export function isExternalTool(type: ToolType, id: string) {
   return !(
     type === 'file_search' ||
     type === 'function' ||
-    (type === 'system' && id === ('read_file' satisfies SystemToolId))
+    (type === 'system' && id === ('read_file' satisfies SystemToolId)) ||
+    (type === 'system' && id === ('llm' satisfies SystemToolId)) ||
+    (type === 'system' && id === ('calculator' satisfies SystemToolId))
   );
 }
 

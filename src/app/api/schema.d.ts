@@ -122,7 +122,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         description?: string;
-                        message_id: string;
+                        message_id?: string;
                         metadata?: {
                             [key: string]: string;
                         };
@@ -446,7 +446,7 @@ export interface paths {
                                 } | {
                                     system: {
                                         /** @enum {string} */
-                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                     };
                                     /** @enum {unknown} */
                                     type: "system";
@@ -536,7 +536,7 @@ export interface paths {
                         } | {
                             system: {
                                 /** @enum {string} */
-                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                             };
                             /** @enum {unknown} */
                             type: "system";
@@ -616,7 +616,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -721,7 +721,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -802,7 +802,7 @@ export interface paths {
                         } | {
                             system: {
                                 /** @enum {string} */
-                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                             };
                             /** @enum {unknown} */
                             type: "system";
@@ -882,7 +882,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -2883,7 +2883,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -2954,7 +2954,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -3003,7 +3003,7 @@ export interface paths {
                                 } | {
                                     system: {
                                         /** @enum {string} */
-                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                     };
                                     /** @enum {unknown} */
                                     type: "system";
@@ -3080,7 +3080,7 @@ export interface paths {
                         } | {
                             system: {
                                 /** @enum {string} */
-                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                             };
                             /** @enum {unknown} */
                             type: "system";
@@ -3178,7 +3178,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -3249,7 +3249,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -3298,7 +3298,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -3415,7 +3415,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -3486,7 +3486,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -3535,7 +3535,7 @@ export interface paths {
                                 } | {
                                     system: {
                                         /** @enum {string} */
-                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                     };
                                     /** @enum {unknown} */
                                     type: "system";
@@ -3628,7 +3628,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -3720,7 +3720,7 @@ export interface paths {
                                             index: number;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -3934,7 +3934,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -4005,7 +4005,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -4054,7 +4054,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -4174,7 +4174,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -4245,7 +4245,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -4294,7 +4294,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -4420,7 +4420,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -4491,7 +4491,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -4540,7 +4540,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -4672,7 +4672,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -4818,7 +4818,7 @@ export interface paths {
                                     id: string;
                                     system: {
                                         /** @enum {string} */
-                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                         input?: unknown;
                                         output?: unknown;
                                     };
@@ -4969,7 +4969,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -5040,7 +5040,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -5089,7 +5089,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -5206,7 +5206,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -5277,7 +5277,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -5326,7 +5326,7 @@ export interface paths {
                                 } | {
                                     system: {
                                         /** @enum {string} */
-                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                     };
                                     /** @enum {unknown} */
                                     type: "system";
@@ -5419,7 +5419,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -5511,7 +5511,7 @@ export interface paths {
                                             index: number;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -5737,7 +5737,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -5808,7 +5808,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -5857,7 +5857,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -5974,7 +5974,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -6045,7 +6045,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -6094,7 +6094,7 @@ export interface paths {
                                 } | {
                                     system: {
                                         /** @enum {string} */
-                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                     };
                                     /** @enum {unknown} */
                                     type: "system";
@@ -6187,7 +6187,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -6279,7 +6279,7 @@ export interface paths {
                                             index: number;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -6540,7 +6540,7 @@ export interface paths {
                         } | {
                             system: {
                                 /** @enum {string} */
-                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                             };
                             /** @enum {unknown} */
                             type: "system";
@@ -6638,7 +6638,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -6709,7 +6709,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -6758,7 +6758,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
@@ -6875,7 +6875,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -6946,7 +6946,7 @@ export interface paths {
                                             id: string;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -6995,7 +6995,7 @@ export interface paths {
                                 } | {
                                     system: {
                                         /** @enum {string} */
-                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                        id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                     };
                                     /** @enum {unknown} */
                                     type: "system";
@@ -7088,7 +7088,7 @@ export interface paths {
                                         id: string;
                                         system: {
                                             /** @enum {string} */
-                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                            id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                             input?: unknown;
                                             output?: unknown;
                                         };
@@ -7180,7 +7180,7 @@ export interface paths {
                                             index: number;
                                             system: {
                                                 /** @enum {string} */
-                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                                id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                                 input?: unknown;
                                                 output?: unknown;
                                             };
@@ -7652,7 +7652,7 @@ export interface paths {
                             } | {
                                 system: {
                                     /** @enum {string} */
-                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file";
+                                    id: "web_search" | "wikipedia" | "weather" | "arxiv" | "read_file" | "llm" | "calculator";
                                 };
                                 /** @enum {unknown} */
                                 type: "system";
