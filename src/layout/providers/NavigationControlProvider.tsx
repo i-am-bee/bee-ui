@@ -21,6 +21,7 @@ import {
   PropsWithChildren,
   createContext,
   use,
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -30,6 +31,7 @@ interface NavigationControlContextValue {
   confirmMessage: string | null;
   setConfirmOnPageLeave: (confirmMessage?: string) => void;
   clearConfirmOnPageLeave: () => void;
+  onLeaveWithConfirmation: (props: { onSuccess: () => void }) => void;
 }
 
 const NavigationControlContext = createContext<NavigationControlContextValue>(
@@ -64,6 +66,21 @@ export function NavigationControlProvider({ children }: PropsWithChildren) {
     }
   }, [confirmMessage, isBlocked]);
 
+  const handleLeaveWithConfirmation: NavigationControlContextValue['onLeaveWithConfirmation'] =
+    useCallback(
+      ({ onSuccess }) => {
+        if (
+          isBlocked &&
+          !window.confirm(confirmMessage ?? CONFIRM_MESSAGE_DEFAULT)
+        ) {
+          return;
+        }
+
+        onSuccess();
+      },
+      [confirmMessage, isBlocked],
+    );
+
   return (
     <NavigationControlContext.Provider
       value={{
@@ -71,6 +88,7 @@ export function NavigationControlProvider({ children }: PropsWithChildren) {
         confirmMessage,
         setConfirmOnPageLeave,
         clearConfirmOnPageLeave,
+        onLeaveWithConfirmation: handleLeaveWithConfirmation,
       }}
     >
       {children}

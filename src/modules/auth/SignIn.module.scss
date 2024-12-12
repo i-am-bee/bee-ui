@@ -66,7 +66,8 @@
 
   hr {
     inline-size: 100%;
-    border: 1px solid $border-subtle;
+    border: 0;
+    border-block-start: 1px solid $border-subtle;
     margin-block: $spacing-07;
   }
 }
@@ -77,6 +78,15 @@
   display: flex;
   align-items: flex-start;
   margin-block-end: $spacing-07;
+
+  &.logoHeading {
+    position: relative;
+    flex-direction: column-reverse;
+
+    :global(.#{$prefix}--tag) {
+      margin-inline-start: 0;
+    }
+  }
 
   :global(.#{$prefix}--tag) {
     margin-inline-start: $spacing-03;
@@ -145,7 +155,7 @@
   margin-block-start: $spacing-05;
 }
 
-h2.haveAccountHeading {
+.haveAccountHeading {
   margin-block-end: $spacing-06;
 }
 

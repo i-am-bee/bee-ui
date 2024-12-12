@@ -757,6 +757,7 @@ export function ChatProvider({
       topBarEnabled,
       threadSettingsEnabled,
       initialAssistantMessage,
+      inputPlaceholder,
     ],
   );
 

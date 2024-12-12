@@ -16,9 +16,9 @@
 
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation } from '@tanstack/react-query';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { Tool } from '@/app/api/tools/types';
 import { deleteTool } from '@/app/api/tools';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   tool: Tool;
@@ -27,7 +27,7 @@ interface Props {
 
 export function useDeleteTool({ tool, onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (id: string) => deleteTool(organization.id, project.id, id),

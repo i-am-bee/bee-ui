@@ -27,13 +27,13 @@ import {
 } from '@tanstack/react-query';
 import { createThread, deleteThread, updateThread } from '@/app/api/threads';
 import { threadQuery, threadsQuery } from '../history/queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { produce } from 'immer';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export function useThreadApi(thread: Thread | null) {
   const queryClient = useQueryClient();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const updateMutation = useMutation({
     mutationFn: async (body: ThreadUpdateBody) => {

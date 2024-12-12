@@ -29,6 +29,16 @@ import { useSearchParams } from 'next/navigation';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 import { ARTIFACT_TEMPLATES } from '../onboarding/templates';
+import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
+import { useLayoutActions } from '@/store/layout';
+import { getAppBuilderNavbarProps } from '@/app/(main)/[projectId]/apps/utils';
+import {
+  ProjectProvider,
+  useProjectContext,
+} from '@/layout/providers/ProjectProvider';
+import { useRouter } from 'next-nprogress-bar';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { SaveAppModal } from '../manage/SaveAppModal';
 
 interface Props {
   code?: string;
@@ -58,6 +68,15 @@ export function AppBuilderProvider({
   );
 
   useOnboardingCompleted(isOnboarding ? 'apps' : null);
+
+  // useEffect(() => {
+  //   if (artifact && artifact.source_code !== code)
+  //     setConfirmOnPageLeave(
+  //       'Your app has unsaved changes, do you really want to leave?',
+  //     );
+  //   else clearConfirmOnPageLeave();
+  //   return () => clearConfirmOnPageLeave();
+  // }, [artifact, clearConfirmOnPageLeave, code, setConfirmOnPageLeave]);
 
   const apiValue = useMemo(
     () => ({ setCode, getCode: () => codeRef.current, setArtifact }),

@@ -16,7 +16,6 @@
 
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import {
-  AppProvider,
   useAppApiContext,
   useAppContext,
 } from '@/layout/providers/AppProvider';
@@ -39,7 +38,10 @@ import { AssistantIcon } from './icons/AssistantIcon';
 import { Assistant } from './types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { NewAgentModal } from '../onboarding/NewAgentModal';
-import { ProjectProvider } from '@/layout/providers/ProjectProvider';
+import {
+  ProjectProvider,
+  useProjectContext,
+} from '@/layout/providers/ProjectProvider';
 import { useLayout } from '@/store/layout';
 
 interface Props {
@@ -184,7 +186,7 @@ AgentLink.Skeleton = function Skeleton() {
 };
 
 function NewButton() {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const { openModal } = useModal();
 
   return (

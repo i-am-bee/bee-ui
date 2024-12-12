@@ -35,6 +35,7 @@ import { useTools } from './hooks/useTools';
 import { UserToolModal } from './manage/UserToolModal';
 import { toolsQuery } from './queries';
 import { ToolCard } from './ToolCard';
+import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   type: 'user' | 'public';
@@ -127,12 +128,15 @@ export function ToolsList({ type }: Props) {
               title: 'New tool',
               onClick: () =>
                 openModal((props) => (
-                  <UserToolModal
-                    {...props}
+                  <ProjectProvider
                     project={project}
                     organization={organization}
-                    onSaveSuccess={handleCreateSuccess}
-                  />
+                  >
+                    <UserToolModal
+                      {...props}
+                      onSaveSuccess={handleCreateSuccess}
+                    />
+                  </ProjectProvider>
                 )),
               disabled: isProjectReadOnly,
               tooltipContent: isProjectReadOnly ? (

@@ -15,10 +15,10 @@
  */
 
 import { ToolsListQuery } from '@/app/api/tools/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { toolsQuery } from '../queries';
 import { TOOLS_ORDER_DEFAULT, TOOLS_PAGE_SIZE } from '../ToolsList';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 const DEFAULT_PARAMS: Partial<ToolsListQuery> = {
   type: ['user'],
@@ -31,7 +31,7 @@ export function usePrefetchTools({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const queryClient = useQueryClient();
 
   return (params?: ToolsListQuery) =>

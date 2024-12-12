@@ -24,6 +24,7 @@ import { createFile } from '@/app/api/files';
 import { CloudUpload } from '@carbon/react/icons';
 import mimeType from 'mime-types';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props<
   TFieldValues extends FieldValues = FieldValues,
@@ -84,7 +85,7 @@ export function UploadDataset<
 }: Props<TFieldValues, TName>) {
   const prefix = usePrefix();
   const id = useId();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const { field } = useController({ control, name });
 

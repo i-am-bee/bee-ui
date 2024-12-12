@@ -24,8 +24,8 @@ import classes from './ArtifactSharedIframe.module.scss';
 import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import Bee from '@/modules/assistants/icons/BeeMain.svg';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   sourceCode: string | null;
@@ -46,7 +46,7 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const postMessage = (message: PostMessage) => {
     iframeRef.current?.contentWindow?.postMessage(

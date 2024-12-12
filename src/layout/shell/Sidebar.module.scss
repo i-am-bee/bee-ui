@@ -80,12 +80,7 @@ $width: rem(274px);
 .agents {
   flex-shrink: 0;
   &[aria-expanded='true'] {
-    &:has(~ [aria-expanded='false']) {
-      max-block-size: calc(100% - rem(50px));
-    }
-    &:has(~ [aria-expanded='true']) {
-      max-block-size: calc(50% - $spacing-05);
-    }
+    max-block-size: calc(100% - rem(50px));
   }
 }
 

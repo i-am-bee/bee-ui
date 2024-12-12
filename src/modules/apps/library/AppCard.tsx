@@ -15,7 +15,6 @@
  */
 
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useRouter } from 'next-nprogress-bar';
 import { MouseEventHandler } from 'react';
@@ -24,6 +23,7 @@ import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
 import classes from './AppCard.module.scss';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   artifact: Artifact;
@@ -43,7 +43,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
       onDeleteSuccess?.(artifact);
     },
   });
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   return (
     <>

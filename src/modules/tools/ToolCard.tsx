@@ -31,6 +31,7 @@ import classes from './ToolCard.module.scss';
 import { getToolReferenceFromTool } from './utils';
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
+import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   tool: Tool;
@@ -65,29 +66,24 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
           />
         }
         onClick={() =>
-          openModal((props) =>
-            tool.type === 'user' ? (
-              isProjectReadOnly ? (
-                <UserToolModal.View tool={tool} {...props} />
+          openModal((props) => (
+            <ProjectProvider project={project} organization={organization}>
+              {tool.type === 'user' ? (
+                isProjectReadOnly ? (
+                  <UserToolModal.View tool={tool} {...props} />
+                ) : (
+                  <UserToolModal
+                    {...props}
+                    tool={tool}
+                    onDeleteSuccess={onDeleteSuccess}
+                    onSaveSuccess={onSaveSuccess}
+                  />
+                )
               ) : (
-                <UserToolModal
-                  {...props}
-                  project={project}
-                  organization={organization}
-                  tool={tool}
-                  onDeleteSuccess={onDeleteSuccess}
-                  onSaveSuccess={onSaveSuccess}
-                />
-              )
-            ) : (
-              <PublicToolModal
-                organization={organization}
-                project={project}
-                {...props}
-                tool={tool}
-              />
-            ),
-          )
+                <PublicToolModal {...props} tool={tool} />
+              )}
+            </ProjectProvider>
+          ))
         }
         isDeletePending={isDeletePending}
         cta={

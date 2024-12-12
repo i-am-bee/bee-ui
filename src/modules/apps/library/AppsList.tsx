@@ -1,24 +1,7 @@
-/**
- * Copyright 2024 IBM Corp.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useRouter } from 'next-nprogress-bar';
-import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   artifacts?: NonNullable<Artifact>[];
@@ -33,7 +16,7 @@ export function AppsList({
   pageSize = PAGE_SIZE,
   onDeleteSuccess,
 }: Props) {
-  const { project } = useAppContext();
+  const { project } = useProjectContext();
   const router = useRouter();
 
   return (

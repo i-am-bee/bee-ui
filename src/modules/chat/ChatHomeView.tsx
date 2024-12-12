@@ -15,7 +15,6 @@
  */
 
 'use client';
-
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useEffect } from 'react';
@@ -29,7 +28,7 @@ import {
 } from './providers/ChatProvider';
 import { Thread } from '@/app/api/threads/types';
 import { ChatMessage } from './types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export interface ChatState {
   thread: Thread;
@@ -41,7 +40,7 @@ export function ChatHomeView() {
     useChat();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const handleMessageSent = ({ thread }: SendMessageResult) => {
     if (thread) {
       // We could use normal nextjs router and navigate to /thread/[threadId] page

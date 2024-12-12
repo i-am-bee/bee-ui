@@ -18,15 +18,12 @@ import {
   ArtifactCreateBody,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
-import { useLayoutActions } from '@/store/layout';
 import {
   Button,
   InlineLoading,
@@ -45,6 +42,8 @@ import { AppIconSelector } from '../builder/AppIconSelector';
 import { useSaveArtifact } from '../hooks/useSaveArtifact';
 import { Artifact, ArtifactMetadata } from '../types';
 import { extractAppMetadataFromStreamlitCode } from '../utils';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useRouter } from 'next-nprogress-bar';
 
 export type AppFormValues = {
   name: string;
@@ -53,27 +52,26 @@ export type AppFormValues = {
 };
 
 interface Props extends ModalProps {
-  project: Project;
-  organization: Organization;
   artifact?: Artifact | null;
   messageId?: string;
   code?: string;
+  isFirstAppConfirmation?: boolean;
   onSaveSuccess?: (artifact: Artifact) => void;
 }
 
 export function SaveAppModal({
-  project,
-  organization,
   artifact: artifactProp,
   messageId,
   code,
+  isFirstAppConfirmation,
   onSaveSuccess,
   ...props
 }: Props) {
+  const router = useRouter();
   const { onRequestClose } = props;
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
-  const { setLayout } = useLayoutActions();
+  const { project } = useProjectContext();
 
   const isUpdating = !!artifactProp;
 
@@ -82,17 +80,8 @@ export function SaveAppModal({
     isError: isSaveError,
     error: saveError,
   } = useSaveArtifact({
-    project,
-    organization,
     onSuccess: (result) => {
       const artifact = decodeEntityWithMetadata<Artifact>(result);
-
-      setLayout({
-        navbarProps: {
-          type: 'app-builder',
-          artifact,
-        },
-      });
 
       if (!isUpdating) {
         window.history.pushState(
@@ -101,6 +90,8 @@ export function SaveAppModal({
           `/${project.id}/apps/builder/a/${artifact.id}`,
         );
       }
+
+      if (isFirstAppConfirmation) router.push(`/${project.id}/apps`);
 
       onSaveSuccess?.(artifact);
       onRequestClose();
@@ -114,7 +105,7 @@ export function SaveAppModal({
           description: artifactProp.description || '',
           icon: artifactProp.uiMetadata.icon,
         }
-      : { ...extractAppMetadataFromStreamlitCode(code ?? '') },
+      : { ...extractAppMetadataFromStreamlitCode(code ?? ''), icon: 'Rocket' },
     mode: 'onChange',
   });
 
@@ -154,7 +145,16 @@ export function SaveAppModal({
   return (
     <Modal {...props} preventCloseOnClickOutside>
       <ModalHeader>
-        <h2>{artifactProp ? 'Edit app' : 'Save'}</h2>
+        <h2>
+          {artifactProp
+            ? 'Edit app'
+            : isFirstAppConfirmation
+              ? 'Unsaved changes'
+              : 'Save'}
+        </h2>
+        {isFirstAppConfirmation && (
+          <p>Progress will be lost if you do not save your app</p>
+        )}
       </ModalHeader>
       <ModalBody>
         <FormProvider {...formReturn}>
@@ -199,8 +199,15 @@ export function SaveAppModal({
       </ModalBody>
 
       <ModalFooter>
-        <Button kind="ghost" onClick={() => onRequestCloseSafe()}>
-          Cancel
+        <Button
+          kind="ghost"
+          onClick={() => {
+            if (isFirstAppConfirmation) router.push(`/${project.id}/apps`);
+
+            onRequestCloseSafe();
+          }}
+        >
+          {isFirstAppConfirmation ? 'Discard changes' : 'Cancel'}
         </Button>
 
         <Button
@@ -209,7 +216,13 @@ export function SaveAppModal({
           disabled={!isValid || isSubmitting}
           onClick={handleSubmit(onSubmit)}
         >
-          {isSubmitting ? <InlineLoading description="Saving..." /> : 'Save'}
+          {isSubmitting ? (
+            <InlineLoading description="Saving..." />
+          ) : !artifactProp ? (
+            'Save to apps'
+          ) : (
+            'Save'
+          )}
         </Button>
       </ModalFooter>
     </Modal>

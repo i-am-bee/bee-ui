@@ -23,7 +23,7 @@ import isEqual from 'lodash/isEqual';
 import differenceWith from 'lodash/differenceWith';
 import { ToolName } from '@/modules/tools/common/ToolName';
 import { KnowledgeBaseName } from '@/modules/knowledge/common/KnowledgeBaseName';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export function RunSetupDelta({
   run,
@@ -32,7 +32,7 @@ export function RunSetupDelta({
   run: ThreadRun;
   nextRunSetup?: RunSetup;
 }) {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useProjectContext();
 
   const deltaMessages = useMemo(() => {
     const deltaMessages = [];

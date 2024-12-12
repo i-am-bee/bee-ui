@@ -28,11 +28,12 @@ import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
 import { ReactElement, useMemo } from 'react';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
-import { useAppContext } from '../providers/AppProvider';
 import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
 import { SkipNav } from './SkipNav';
+import { useNavigationControl } from '../providers/NavigationControlProvider';
+import { useRouter } from 'next-nprogress-bar';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -41,7 +42,8 @@ interface Props {
 
 export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const { setUserSetting } = useUserSetting();
-  const { project } = useAppContext();
+  const { onLeaveWithConfirmation } = useNavigationControl();
+  const router = useRouter();
   const navbarProps = useLayout((state) => state.navbarProps);
 
   const headingItems = useMemo(() => {
@@ -81,7 +83,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
       default:
         return title ? [{ title }] : undefined;
     }
-  }, [navbarProps, project]);
+  }, [navbarProps]);
 
   return (
     <header className={classes.root}>
@@ -97,7 +99,18 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
             <Button
               size="sm"
               kind="tertiary"
-              href={navbarProps.backButton.url}
+              onClick={() => {
+                if (!navbarProps.backButton) return;
+
+                const { onClick, url } = navbarProps.backButton;
+                if (onClick) {
+                  onClick();
+                } else {
+                  onLeaveWithConfirmation({
+                    onSuccess: () => router.push(url),
+                  });
+                }
+              }}
               className={classes.backButton}
             >
               <ArrowLeft />

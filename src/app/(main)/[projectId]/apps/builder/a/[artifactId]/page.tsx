@@ -45,11 +45,11 @@ export default async function AppBuilderPage({
 
   const thread = artifact?.thread_id
     ? await fetchThread(organizationId, projectId, artifact?.thread_id)
-    : null;
+    : undefined;
 
-  if (!(assistant && thread && artifact)) notFound();
+  if (!(assistant && artifact)) notFound();
 
-  const initialMessages = thread.id
+  const initialMessages = thread?.id
     ? await listMessagesWithFiles(organizationId, projectId, thread.id, {
         limit: MESSAGES_PAGE_SIZE,
       })

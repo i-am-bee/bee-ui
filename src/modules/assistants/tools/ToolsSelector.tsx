@@ -25,12 +25,12 @@ import {
   AssistantFormValues,
   useAssistantBuilder,
 } from '../builder/AssistantBuilderProvider';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import clsx from 'clsx';
-import { ToolInfoButton } from './ToolInfoButton';
+import { ToolNameWithTooltip } from './ToolNameWithTooltip';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export function ToolsSelector() {
   const prefix = usePrefix();
@@ -82,9 +82,8 @@ function SelectedToolsItem({
   tool: ToolReference;
   onToggle: (tool: ToolReference, toggled: boolean) => void;
 }) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const {
-    toolName,
     toolIcon: Icon,
     tool,
     error,
@@ -106,10 +105,7 @@ function SelectedToolsItem({
           {error ? (
             <span className={classes.toolError}>Tool not found</span>
           ) : (
-            <>
-              {toolName}
-              {tool && <ToolInfoButton toolReference={toolProp} />}
-            </>
+            <ToolNameWithTooltip toolReference={toolProp} />
           )}
         </button>
         <Tooltip content="Remove tool from agent" asChild placement="top">

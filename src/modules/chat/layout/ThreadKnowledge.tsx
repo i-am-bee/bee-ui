@@ -1,20 +1,3 @@
-/**
- * Copyright 2024 IBM Corp.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
 import { vectorStoresFilesQuery } from '@/modules/knowledge/queries';
@@ -27,6 +10,7 @@ import { useId, useMemo } from 'react';
 import { useChat } from '../providers/ChatProvider';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import classes from './ThreadKnowledge.module.scss';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   assistantVectorStores: string[];
@@ -48,7 +32,7 @@ export function ThreadKnowledge({
   const { getMessages, disabledTools, setDisabledTools } = useChat();
   const { getThreadTools } = useChat();
   const { files } = useFilesUpload();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   // TODO: We don't currently support paging of messages, so this works. When pagination is available, we need to figure out the functionality differently.
   const allFiles = useMemo(
     () => [

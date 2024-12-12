@@ -28,9 +28,9 @@ import { CODE_ESCAPE } from 'keycode-js';
 import { signOut } from 'next-auth/react';
 import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
-import { useAppContext } from '../providers/AppProvider';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
+import { useProjectContext } from '../providers/ProjectProvider';
 
 interface Props {
   className?: string;
@@ -40,7 +40,7 @@ export function UserProfile({ className }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const { project } = useAppContext();
+  const { project } = useProjectContext();
   const id = useId();
 
   const { openModal } = useModal();

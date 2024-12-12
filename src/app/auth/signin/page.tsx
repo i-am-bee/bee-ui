@@ -77,7 +77,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
     <SignIn
       error={error}
       action={signIn.bind(null, callbackUrl)}
-      showWaitlist={waitlistFull}
+      showWaitlist={true}
       showWaitlistModal={errorCode === 'unauthorized' && waitlistFull}
     />
   );

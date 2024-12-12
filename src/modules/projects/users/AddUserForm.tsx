@@ -21,7 +21,6 @@ import {
   ProjectUserRole,
 } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { Button, ComboBox } from '@carbon/react';
 import { Add, Checkmark } from '@carbon/react/icons';
@@ -37,10 +36,11 @@ import { Controller, useForm } from 'react-hook-form';
 import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import { projectUsersQuery, readProjectUserQuery, usersQuery } from './queries';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export function AddUserForm() {
   const htmlId = useId();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const userId = useUserProfile((state) => state.id);
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();

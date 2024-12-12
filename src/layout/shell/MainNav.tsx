@@ -20,11 +20,12 @@ import { usePrefetchArtifacts } from '@/modules/apps/hooks/usePrefetchArtifacts'
 import { usePathname } from 'next/navigation';
 import { useAppContext } from '../providers/AppProvider';
 import classes from './MainNav.module.scss';
+import { useProjectContext } from '../providers/ProjectProvider';
 
 export function MainNav() {
   const pathname = usePathname();
 
-  const { project } = useAppContext();
+  const { project } = useProjectContext();
 
   const artifactsCount = useArtifactsCount();
 

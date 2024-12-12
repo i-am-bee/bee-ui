@@ -34,8 +34,14 @@
 }
 
 .heading {
+  position: absolute;
+  inset: 0;
   display: flex;
   gap: $spacing-03;
+  justify-content: center;
+  align-items: center;
+  z-index: -1;
+
   li {
     display: flex;
     align-items: center;
@@ -55,7 +61,7 @@
 .actions {
   display: flex;
   gap: $spacing-03;
-
+  background-color: $background;
   > button {
     padding-inline-end: $spacing-05;
   }

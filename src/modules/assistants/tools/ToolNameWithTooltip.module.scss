@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-'use client';
-import { ReactNode, useEffect } from 'react';
-import { LayoutState } from './types';
-import { useLayoutActions } from '.';
-import { useOnMount } from '@/hooks/useOnMount';
+@use 'styles/common' as *;
+@use '@carbon/styles/scss/utilities/button-reset';
 
-export function LayoutInitializer({
-  layout,
-  children,
-}: {
-  layout: LayoutState;
-  children: ReactNode;
-}) {
-  const { setLayout } = useLayoutActions();
-
-  useOnMount(() => {
-    setLayout(layout);
-  });
-
-  return children;
+.root {
+  display: flex;
+  align-items: center;
 }

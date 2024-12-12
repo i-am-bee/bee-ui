@@ -91,4 +91,10 @@
       }
     }
   }
+
+  :global(.#{$prefix}--modal-close-button) {
+    :global(.#{$prefix}--popover) {
+      display: none;
+    }
+  }
 }

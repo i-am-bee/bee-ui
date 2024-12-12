@@ -21,8 +21,8 @@ import { useQuery } from '@tanstack/react-query';
 import { messagesWithFilesQuery } from '../queries';
 import { MessageMetadata, MessageWithFiles } from '../types';
 import { getMessagesFromThreadMessages } from '../utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { decodeMetadata } from '@/app/api/utils';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export function useMessages({
   thread,
@@ -31,7 +31,7 @@ export function useMessages({
   thread?: Thread | null;
   initialData?: MessageWithFiles[];
 }) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const { data } = useQuery({
     ...messagesWithFilesQuery(organization.id, project.id, thread?.id || '', {
