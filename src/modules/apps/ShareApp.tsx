@@ -58,8 +58,6 @@ export function ShareApp({
     error,
     isPending,
   } = useSaveArtifact({
-    project,
-    organization,
     onSuccess: (result) => {
       const artifact = decodeEntityWithMetadata<Artifact>(result);
 

@@ -67,12 +67,7 @@ export function ToolInfoButton({ toolReference }: Props) {
                         <UserToolModal {...props} tool={tool} />
                       )
                     ) : (
-                      <PublicToolModal
-                        organization={organization}
-                        project={project}
-                        {...props}
-                        tool={tool}
-                      />
+                      <PublicToolModal {...props} tool={tool} />
                     )}
                   </>
                 </ProjectProvider>
