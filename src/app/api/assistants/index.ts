@@ -180,6 +180,7 @@ export async function ensureAppBuilderAssistant(
       result = await createAssistant(organizationId, projectId, {
         agent: 'streamlit',
         name: 'App Builder',
+        model: 'meta-llama/llama-3-1-405b-instruct-fp8',
         tool_resources: undefined,
       });
     }

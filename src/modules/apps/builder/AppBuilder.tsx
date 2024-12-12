@@ -125,9 +125,15 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       initialData={initialMessages}
       initialAssistantMessage={
         isCloneAppThread
-          ? 'Hello! How do you want to edit this app?'
-          : 'Hello! What app do you want me to build?'
+          ? 'Hello! Let me know if you want to change anything about this app.'
+          : 'Hello! Describe the app you want to build.'
       }
+      inputPlaceholder={{
+        initial: isCloneAppThread
+          ? 'Describe what this app should do or what you want to change about this app.'
+          : 'Outline what your app should do and how it should work.',
+        ongoing: 'Describe the change(s) you want to make to this app.',
+      }}
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
     >
