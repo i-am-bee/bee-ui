@@ -44,6 +44,7 @@ import { Artifact, ArtifactMetadata } from '../types';
 import { extractAppMetadataFromStreamlitCode } from '../utils';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { useRouter } from 'next-nprogress-bar';
+import classes from './SaveAppModal.module.scss';
 
 export type AppFormValues = {
   name: string;
@@ -55,7 +56,7 @@ interface Props extends ModalProps {
   artifact?: Artifact | null;
   messageId?: string;
   code?: string;
-  isFirstAppConfirmation?: boolean;
+  isConfirmation?: boolean;
   onSaveSuccess?: (artifact: Artifact) => void;
 }
 
@@ -63,7 +64,7 @@ export function SaveAppModal({
   artifact: artifactProp,
   messageId,
   code,
-  isFirstAppConfirmation,
+  isConfirmation,
   onSaveSuccess,
   ...props
 }: Props) {
@@ -83,15 +84,17 @@ export function SaveAppModal({
     onSuccess: (result) => {
       const artifact = decodeEntityWithMetadata<Artifact>(result);
 
-      if (!isUpdating) {
-        window.history.pushState(
-          null,
-          '',
-          `/${project.id}/apps/builder/a/${artifact.id}`,
-        );
+      if (isConfirmation) {
+        router.push(`/${project.id}/apps`);
+      } else {
+        if (!isUpdating) {
+          window.history.pushState(
+            null,
+            '',
+            `/${project.id}/apps/builder/a/${artifact.id}`,
+          );
+        }
       }
-
-      if (isFirstAppConfirmation) router.push(`/${project.id}/apps`);
 
       onSaveSuccess?.(artifact);
       onRequestClose();
@@ -143,71 +146,73 @@ export function SaveAppModal({
   );
 
   return (
-    <Modal {...props} preventCloseOnClickOutside>
+    <Modal {...props} preventCloseOnClickOutside className={classes.root}>
       <ModalHeader>
         <h2>
-          {artifactProp
-            ? 'Edit app'
-            : isFirstAppConfirmation
-              ? 'Unsaved changes'
+          {isConfirmation
+            ? 'Unsaved changes'
+            : artifactProp
+              ? 'Edit app'
               : 'Save'}
         </h2>
-        {isFirstAppConfirmation && (
+        {isConfirmation && (
           <p>Progress will be lost if you do not save your app</p>
         )}
       </ModalHeader>
       <ModalBody>
-        <FormProvider {...formReturn}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <SettingsFormGroup>
-              <AppIconSelector />
+        {(!isConfirmation || !artifactProp) && (
+          <FormProvider {...formReturn}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <SettingsFormGroup>
+                <AppIconSelector />
 
-              <div>
-                <TextInput
-                  size="lg"
-                  id={`${id}:name`}
-                  labelText="Name"
-                  placeholder="Name your app"
-                  invalid={errors.name != null}
-                  {...register('name', {
-                    required: true,
-                  })}
-                />
-              </div>
+                <div>
+                  <TextInput
+                    size="lg"
+                    id={`${id}:name`}
+                    labelText="Name"
+                    placeholder="Name your app"
+                    invalid={errors.name != null}
+                    {...register('name', {
+                      required: true,
+                    })}
+                  />
+                </div>
 
-              <div>
-                <TextArea
-                  id={`${id}:description`}
-                  labelText="Description"
-                  placeholder="Describe your app"
-                  invalid={errors.description != null}
-                  {...register('description')}
-                />
-              </div>
+                <div>
+                  <TextArea
+                    id={`${id}:description`}
+                    labelText="Description"
+                    placeholder="Describe your app"
+                    invalid={errors.description != null}
+                    {...register('description')}
+                  />
+                </div>
 
-              {isSaveError && (
-                <InlineNotification
-                  kind="error"
-                  title={saveError.message}
-                  lowContrast
-                  hideCloseButton
-                />
-              )}
-            </SettingsFormGroup>
-          </form>
-        </FormProvider>
+                {isSaveError && (
+                  <InlineNotification
+                    kind="error"
+                    title={saveError.message}
+                    lowContrast
+                    hideCloseButton
+                  />
+                )}
+              </SettingsFormGroup>
+            </form>
+          </FormProvider>
+        )}
       </ModalBody>
 
       <ModalFooter>
         <Button
           kind="ghost"
           onClick={() => {
-            if (isFirstAppConfirmation) router.push(`/${project.id}/apps`);
+            if (isConfirmation) router.push(`/${project.id}/apps`);
 
             onRequestCloseSafe();
           }}
         >
-          {isFirstAppConfirmation ? 'Discard changes' : 'Cancel'}
+          {isConfirmation ? 'Discard changes' : 'Cancel'}
         </Button>
 
         <Button

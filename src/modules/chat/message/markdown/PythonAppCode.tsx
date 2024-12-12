@@ -25,12 +25,15 @@ import {
   extractAppMetadataFromStreamlitCode,
   extractCodeFromMessageContent,
 } from '@/modules/apps/utils';
+import { useAppBuilder } from '@/modules/apps/builder/AppBuilderProvider';
+import { AppIcon } from '@/modules/apps/AppIcon';
 
 export function PythonAppCode({
   node,
   ...props
 }: HTMLAttributes<HTMLElement> & ExtraProps) {
   const { message } = useRunContext();
+  const { artifact } = useAppBuilder();
 
   const appName = useMemo(() => {
     if (message?.pending || !message?.content) return null;
@@ -49,7 +52,11 @@ export function PythonAppCode({
       ) : (
         <div className={classes.app}>
           <span className={classes.icon}>
-            {message?.pending ? <InlineLoading /> : <Rocket />}
+            {message?.pending ? (
+              <InlineLoading />
+            ) : (
+              <AppIcon name={artifact ? artifact.uiMetadata.icon : 'Rocket'} />
+            )}
           </span>
           {/* TODO: handle app error */}
           <strong>{appName ?? 'The app is ready'}</strong>

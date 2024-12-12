@@ -177,7 +177,9 @@ function AppBuilderContent() {
         backButton: {
           ...navbarProps.backButton,
           onClick: () => {
-            if (!artifact && !totalCount) {
+            const isFirstNewApp = !artifact && !totalCount;
+            const hasUnsavedChanges = artifact && artifact.source_code !== code;
+            if (isFirstNewApp || hasUnsavedChanges) {
               openModal((props) => (
                 <ProjectProvider project={project} organization={organization}>
                   <SaveAppModal
@@ -185,13 +187,11 @@ function AppBuilderContent() {
                     messageId={message?.id}
                     code={code ?? undefined}
                     onSaveSuccess={setArtifact}
-                    isFirstAppConfirmation
+                    isConfirmation
                     {...props}
                   />
                 </ProjectProvider>
               ));
-              return;
-            } else if (artifact && artifact.source_code !== code) {
               return;
             }
 

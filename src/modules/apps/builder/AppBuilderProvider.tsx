@@ -20,7 +20,6 @@ import {
   createContext,
   PropsWithChildren,
   use,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -29,16 +28,6 @@ import { useSearchParams } from 'next/navigation';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 import { ARTIFACT_TEMPLATES } from '../onboarding/templates';
-import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
-import { useLayoutActions } from '@/store/layout';
-import { getAppBuilderNavbarProps } from '@/app/(main)/[projectId]/apps/utils';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
-import { useRouter } from 'next-nprogress-bar';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { SaveAppModal } from '../manage/SaveAppModal';
 
 interface Props {
   code?: string;
@@ -69,15 +58,6 @@ export function AppBuilderProvider({
 
   useOnboardingCompleted(isOnboarding ? 'apps' : null);
 
-  // useEffect(() => {
-  //   if (artifact && artifact.source_code !== code)
-  //     setConfirmOnPageLeave(
-  //       'Your app has unsaved changes, do you really want to leave?',
-  //     );
-  //   else clearConfirmOnPageLeave();
-  //   return () => clearConfirmOnPageLeave();
-  // }, [artifact, clearConfirmOnPageLeave, code, setConfirmOnPageLeave]);
-
   const apiValue = useMemo(
     () => ({ setCode, getCode: () => codeRef.current, setArtifact }),
     [codeRef, setCode],
@@ -95,7 +75,10 @@ export function AppBuilderProvider({
 const AppBuilderContext = createContext<{
   code: string | null;
   artifact: Artifact | null;
-} | null>(null);
+}>({
+  code: null,
+  artifact: null,
+});
 
 const AppBuilderApiContext = createContext<{
   setCode: (content: string) => void;
@@ -116,11 +99,5 @@ export function useAppBuilderApi() {
 }
 
 export function useAppBuilder() {
-  const context = use(AppBuilderContext);
-
-  if (!context) {
-    throw new Error('useAppBuilder must be used within a AppBuilderProvider');
-  }
-
-  return context;
+  return use(AppBuilderContext);
 }
