@@ -41,7 +41,16 @@ export function PythonAppCode({
   }, [message]);
 
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+      onClick={() => {
+        if (message?.pending || message?.error) {
+          return;
+        }
+
+        console.log('click');
+      }}
+    >
       {message?.pending ? (
         <MessageLoading message="Loading the app" showSpinner />
       ) : message?.error ? (

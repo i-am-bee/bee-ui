@@ -21,6 +21,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 interface Props {
   artifact?: Artifact;
@@ -35,6 +36,8 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
     artifact,
     onSuccess: () => router.push(`/${project.id}/apps/`),
   });
+
+  const isMdDown = useBreakpoint('mdDown');
 
   if (!artifact) return null;
 
@@ -59,7 +62,7 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
         </Button>
       )}
 
-      <OverflowMenu size="sm" flipped>
+      <OverflowMenu size="sm" flipped direction={isMdDown ? 'top' : 'bottom'}>
         <OverflowMenuItem
           isDelete
           itemText="Delete"

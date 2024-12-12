@@ -20,13 +20,17 @@ $card-size: rem(185px);
 
 // Higher specificity needed
 .root.root {
-  block-size: $card-size;
-  min-block-size: $card-size;
-
   h3 {
     font-size: rem(14px);
   }
   p {
     @include truncateMultiline(2);
+  }
+}
+
+@include breakpoint-up(md) {
+  .root.root {
+    block-size: $card-size;
+    min-block-size: $card-size;
   }
 }

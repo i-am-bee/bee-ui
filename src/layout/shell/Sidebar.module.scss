@@ -17,9 +17,10 @@
 @use 'styles/common' as *;
 
 $padding-x: $spacing-05;
-$width: rem(274px);
+$width: var(--sidebar-width);
 
 .root {
+  --sidebar-width: #{rem(288px)};
   grid-area: sidebar;
   block-size: 100%;
   position: relative;
@@ -28,8 +29,20 @@ $width: rem(274px);
   transition:
     inline-size $duration-fast-02 motion(exit, productive),
     translate $duration-fast-02 motion(exit, productive);
-  &.sidebarPinned.visible {
-    inline-size: $width;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: $sidebar-overlay;
+  visibility: hidden;
+  opacity: 0;
+  transition-property: opacity, visibility;
+  transition-duration: $duration-fast-02;
+  transition-timing-function: motion(exit, productive);
+  .sidebarPinned.visible & {
+    opacity: 1;
+    visibility: visible;
   }
 }
 
@@ -41,7 +54,7 @@ $width: rem(274px);
   block-size: 100%;
   background-color: $layer;
   color: $text-dark;
-  padding: $spacing-07 $padding-x;
+  padding: $spacing-05 $padding-x;
   opacity: 0;
   visibility: hidden;
   transform: translateX(-25%);
@@ -96,4 +109,21 @@ $width: rem(274px);
 
 .userNav {
   margin-block-start: -$spacing-02;
+}
+
+@include breakpoint-up(lg) {
+  .root {
+    --sidebar-width: #{rem(274px)};
+    &.sidebarPinned.visible {
+      inline-size: $width;
+    }
+  }
+
+  .overlay {
+    display: none;
+  }
+
+  .panel {
+    padding-block: $spacing-07;
+  }
 }

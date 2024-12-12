@@ -18,7 +18,7 @@ import { AssistantsNav } from '@/modules/assistants/AssistantsNav';
 import { ThreadsHistory } from '@/modules/chat/history/ThreadsHistory';
 import { useLayout } from '@/store/layout';
 import clsx from 'clsx';
-import { UserSetting } from '../hooks/useUserSetting';
+import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
 import { CollapsibleGroup } from './CollapsibleGroup';
 import { MainNav } from './MainNav';
 import classes from './Sidebar.module.scss';
@@ -30,6 +30,7 @@ export interface SidebarProps {
 }
 
 export function Sidebar({ id, isOpen }: SidebarProps) {
+  const { setUserSetting } = useUserSetting();
   const sidebarVisible = useLayout((state) => !state.navbarProps?.backButton);
 
   return (
@@ -39,6 +40,11 @@ export function Sidebar({ id, isOpen }: SidebarProps) {
         [classes.sidebarPinned]: isOpen,
       })}
     >
+      <div
+        className={classes.overlay}
+        onClick={() => setUserSetting('sidebarPinned', false)}
+      />
+
       <div id={id} aria-hidden={!isOpen} className={classes.panel}>
         <MainNav />
 

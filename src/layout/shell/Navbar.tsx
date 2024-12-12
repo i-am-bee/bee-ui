@@ -85,7 +85,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
   }, [navbarProps, project]);
 
   return (
-    <header className={classes.root}>
+    <header className={classes.root} data-type={navbarProps?.type}>
       <Container size="full" className={classes.container}>
         <SkipNav />
 
@@ -144,7 +144,7 @@ export function NavbarHeading({ items }: { items?: HeadingItem[] }) {
       {items.map(({ url, title, icon }, key) => (
         <li key={key}>
           {icon}
-          {url ? <Link href={url}>{title}</Link> : title}
+          <span>{url ? <Link href={url}>{title}</Link> : title}</span>
         </li>
       ))}
     </ul>

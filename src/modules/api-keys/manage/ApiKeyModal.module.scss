@@ -31,7 +31,6 @@
   &.modalCreate {
     :global(.#{$prefix}--modal-content) {
       overflow: visible;
-      mask-image: none;
       padding-block-end: $spacing-10;
     }
   }

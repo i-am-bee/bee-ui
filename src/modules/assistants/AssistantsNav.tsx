@@ -36,6 +36,7 @@ import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
 import { useAssistants } from './hooks/useAssistants';
 import { AssistantIcon } from './icons/AssistantIcon';
 import { Assistant } from './types';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 interface Props {
   enableFetch?: boolean;
@@ -102,6 +103,8 @@ function AgentLink({
   const { project, assistant: selectedAssistant } = useAppContext();
   const router = useRouter();
 
+  const isMdDown = useBreakpoint('mdDown');
+
   return (
     <li>
       <div
@@ -133,6 +136,7 @@ function AgentLink({
             size="sm"
             onOpen={() => setOptionsOpen(true)}
             onClose={() => setOptionsOpen(false)}
+            flipped={isMdDown}
           >
             <OverflowMenuItem
               itemText="Agent details"

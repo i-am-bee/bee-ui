@@ -54,7 +54,7 @@
     display: flex;
     align-items: center;
     border-block-end: 1px solid $border-subtle;
-    padding-inline: $spacing-06;
+    padding-inline: $spacing-05;
   }
 
   .appActions {
@@ -100,5 +100,17 @@
       block-size: 100%;
       inline-size: 100%;
     }
+  }
+}
+
+@include breakpoint-down(md) {
+  .appPane {
+    display: none;
+  }
+}
+
+@include breakpoint-up(lg) {
+  .appPaneHeader {
+    padding-inline: $spacing-06;
   }
 }

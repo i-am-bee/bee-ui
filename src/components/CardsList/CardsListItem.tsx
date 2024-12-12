@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import {
   OverflowMenu,
   OverflowMenuItem,
@@ -58,6 +59,8 @@ export function CardsListItem({
 }: PropsWithChildren<Props>) {
   const [optionsOpen, setOptionsOpen] = useState(false);
 
+  const isMaxDown = useBreakpoint('maxDown');
+
   const Title = () => (
     <h3 className={classes.name}>
       {onClick ? (
@@ -90,6 +93,7 @@ export function CardsListItem({
               size="md"
               onOpen={() => setOptionsOpen(true)}
               onClose={() => setOptionsOpen(false)}
+              flipped={isMaxDown}
             >
               {actions.map((props, i) => (
                 <OverflowMenuItem {...props} key={i} />
