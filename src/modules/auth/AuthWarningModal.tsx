@@ -38,6 +38,7 @@ export function AuthWarningModal({ content, buttonLabel }: Props) {
       </ModalBody>
       <ModalFooter>
         <Button
+          kind="secondary"
           renderIcon={Login}
           onClick={() => {
             // HACK: I didn't find a way how to "exit" an intercepted route, and render the original one
