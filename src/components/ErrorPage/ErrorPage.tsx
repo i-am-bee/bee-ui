@@ -17,7 +17,7 @@
 'use client';
 
 import { Button } from '@carbon/react';
-import { Restart } from '@carbon/react/icons';
+import { ArrowRight, Restart } from '@carbon/react/icons';
 import classes from './ErrorPage.module.scss';
 
 export interface ErrorPageProps {
@@ -34,11 +34,19 @@ export function ErrorPage({ statusCode, title, onRetry }: ErrorPageProps) {
 
         <h1>{title}</h1>
 
-        {onRetry && (
-          <Button renderIcon={Restart} size="md" onClick={onRetry}>
+        <div className={classes.buttons}>
+          <Button
+            renderIcon={Restart}
+            size="md"
+            kind="tertiary"
+            onClick={() => document.location.reload()}
+          >
             Try again
           </Button>
-        )}
+          <Button size="md" href="/" kind="secondary" renderIcon={ArrowRight}>
+            Go to Home page
+          </Button>
+        </div>
       </div>
     </div>
   );
