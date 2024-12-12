@@ -67,8 +67,7 @@
         pointer-events: none;
       }
       &:hover {
-        background-color: $background-inverse-hover;
-        border-color: $background-inverse-hover;
+        border-color: $background-inverse;
       }
     }
   }
