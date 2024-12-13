@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import {
   useAppApiContext,
@@ -36,7 +37,6 @@ import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
 import { useAssistants } from './hooks/useAssistants';
 import { AssistantIcon } from './icons/AssistantIcon';
 import { Assistant } from './types';
-import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 interface Props {
   enableFetch?: boolean;
@@ -140,7 +140,9 @@ function AgentLink({
           >
             <OverflowMenuItem
               itemText="Agent details"
-              onClick={() => setBuilderModalOpened(true)}
+              onClick={() => {
+                setBuilderModalOpened(true);
+              }}
             />
             <OverflowMenuItem
               itemText="Edit"

@@ -24,6 +24,7 @@
     --size: 2.5rem;
   }
 
+  flex-shrink: 0;
   inline-size: var(--size);
   block-size: var(--size);
   display: inline-flex;

@@ -25,6 +25,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
+  padding: 0;
   &:focus-visible {
     @include focus-outline('outline');
   }

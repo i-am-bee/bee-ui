@@ -123,12 +123,14 @@
       padding-inline-end: rem(30px);
       border-radius: $block-radius;
       font-size: rem(14px);
+      text-align: start;
 
       &.isUserTool {
         cursor: pointer;
       }
 
       .selectedIcon {
+        flex-shrink: 0;
         inline-size: $spacing-06;
         block-size: $spacing-06;
         border-radius: 50%;

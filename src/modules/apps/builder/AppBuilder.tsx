@@ -20,6 +20,7 @@ import { Thread } from '@/app/api/threads/types';
 import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { NavbarHeading } from '@/layout/shell/Navbar';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import {
   ChatMessage,
@@ -35,13 +36,14 @@ import {
   TabPanels,
   Tabs,
 } from '@carbon/react';
-import { Share } from '@carbon/react/icons';
+import { ArrowLeft, Share } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useCallback, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
 import { threadsQuery } from '../../chat/history/queries';
+import { AppIcon } from '../AppIcon';
 import { SaveAppModal } from '../manage/SaveAppModal';
 import { ShareAppModal } from '../ShareAppModal';
 import { extractCodeFromMessageContent } from '../utils';
@@ -142,13 +144,19 @@ function AppBuilderContent() {
   const { openModal } = useModal();
   const { getMessages } = useChat();
 
-  const { setArtifact } = useAppBuilderApi();
-  const { code, artifact } = useAppBuilder();
+  const { setArtifact, setMobilePreviewOpen } = useAppBuilderApi();
+  const { code, artifact, mobilePreviewOpen } = useAppBuilder();
 
   const message = getLastMessageWithCode(getMessages());
 
+  const icon = artifact?.uiMetadata.icon;
+
   return (
-    <div className={classes.root}>
+    <div
+      className={clsx(classes.root, {
+        [classes.mobilePreviewOpen]: mobilePreviewOpen,
+      })}
+    >
       <section className={classes.chat}>
         <ConversationView />
       </section>
@@ -162,6 +170,27 @@ function AppBuilderContent() {
           }}
         >
           <div className={classes.appPaneHeader}>
+            <div className={classes.appPaneHeaderMobile}>
+              <Button
+                size="sm"
+                kind="tertiary"
+                onClick={() => setMobilePreviewOpen(false)}
+              >
+                <ArrowLeft />
+              </Button>
+
+              {artifact && (
+                <NavbarHeading
+                  items={[
+                    {
+                      title: artifact.name,
+                      icon: icon ? <AppIcon name={icon} /> : null,
+                    },
+                  ]}
+                />
+              )}
+            </div>
+
             <TabList aria-label="App View mode">
               <Tab>UI Preview</Tab>
               <Tab>Source code</Tab>

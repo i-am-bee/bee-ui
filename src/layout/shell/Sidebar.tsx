@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useSidebarCloseOnPathnameOnMobile } from '@/hooks/useSidebarCloseOnPathnameOnMobile';
 import { AssistantsNav } from '@/modules/assistants/AssistantsNav';
 import { ThreadsHistory } from '@/modules/chat/history/ThreadsHistory';
 import { useLayout } from '@/store/layout';
@@ -32,6 +33,8 @@ export interface SidebarProps {
 export function Sidebar({ id, isOpen }: SidebarProps) {
   const { setUserSetting } = useUserSetting();
   const sidebarVisible = useLayout((state) => !state.navbarProps?.backButton);
+
+  useSidebarCloseOnPathnameOnMobile();
 
   return (
     <aside

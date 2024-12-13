@@ -51,7 +51,6 @@
 
 .tools {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: $spacing-04;
   li {
     display: flex;
@@ -83,5 +82,19 @@
     &:last-child {
       max-inline-size: 10rem;
     }
+  }
+}
+
+@include breakpoint-down(md) {
+  .actionBar {
+    :global(.#{$prefix}--btn).hideOnMobile {
+      display: none;
+    }
+  }
+}
+
+@include breakpoint-up(md) {
+  .tools {
+    grid-template-columns: 1fr 1fr;
   }
 }

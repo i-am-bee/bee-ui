@@ -26,7 +26,7 @@
     inset-block-start: 100%;
     inset-inline-start: 0;
     inline-size: 100%;
-    block-size: rem(116px);
+    block-size: rem(58px);
     background-image: linear-gradient(
       to bottom,
       $body-background,
@@ -36,8 +36,7 @@
 }
 
 .holder {
-  padding-block-start: rem(62px);
-  padding-block-end: $spacing-06;
+  padding-block: $spacing-06;
   background-color: $body-background;
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -57,4 +56,16 @@
   display: flex;
   align-items: center;
   column-gap: $spacing-05;
+}
+
+@include breakpoint-up(lg) {
+  .root {
+    &::after {
+      block-size: rem(116px);
+    }
+  }
+  .holder {
+    padding-block-start: rem(62px);
+    padding-block-end: $spacing-06;
+  }
 }

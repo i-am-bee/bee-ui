@@ -42,6 +42,7 @@
     align-items: center;
     column-gap: $spacing-03;
     font-weight: 600;
+    line-height: (20 / 16);
     min-inline-size: 0;
     &:not(:last-child)::after {
       content: '/';
@@ -77,11 +78,22 @@
 }
 
 @include breakpoint-down(md) {
+  .root[data-type='chat'],
   .root[data-type='common'] {
     .heading,
     .actions {
       display: none;
     }
+  }
+
+  .root[data-type='app-builder'] {
+    .actions {
+      display: none;
+    }
+  }
+
+  .heading li.hideOnMobile {
+    display: none;
   }
 
   .actions {

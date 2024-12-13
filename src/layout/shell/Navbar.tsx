@@ -26,6 +26,7 @@ import { useLayout } from '@/store/layout';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
+import clsx from 'clsx';
 import { ReactElement, useMemo } from 'react';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
 import { useAppContext } from '../providers/AppProvider';
@@ -55,7 +56,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
         icon = navbarProps?.artifact?.uiMetadata.icon;
         return navbarProps.artifact
           ? [
-              { title: 'Apps', url: `/${project.id}/apps` },
+              { title: 'Apps', url: `/${project.id}/apps`, hideOnMobile: true },
               {
                 title: navbarProps.artifact.name,
                 icon: icon ? <AppIcon name={icon} /> : null,
@@ -141,8 +142,11 @@ export function NavbarHeading({ items }: { items?: HeadingItem[] }) {
 
   return (
     <ul className={classes.heading}>
-      {items.map(({ url, title, icon }, key) => (
-        <li key={key}>
+      {items.map(({ url, title, icon, hideOnMobile }, key) => (
+        <li
+          key={key}
+          className={clsx({ [`${classes.hideOnMobile}`]: hideOnMobile })}
+        >
           {icon}
           <span>{url ? <Link href={url}>{title}</Link> : title}</span>
         </li>
@@ -155,4 +159,5 @@ interface HeadingItem {
   title: string;
   url?: string;
   icon?: ReactElement | null;
+  hideOnMobile?: boolean;
 }

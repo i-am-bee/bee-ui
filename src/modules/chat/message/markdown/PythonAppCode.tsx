@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-import { HTMLAttributes, useMemo } from 'react';
-import { ExtraProps } from 'react-markdown';
-import classes from './PythonAppCode.module.scss';
-import { MessageLoading } from '../MessageLoading';
-import { useRunContext } from '../../providers/RunProvider';
-import { Rocket } from '@carbon/react/icons';
-import { InlineLoading, SkeletonIcon } from '@carbon/react';
+import { useAppBuilderApi } from '@/modules/apps/builder/AppBuilderProvider';
 import {
   extractAppMetadataFromStreamlitCode,
   extractCodeFromMessageContent,
 } from '@/modules/apps/utils';
+import { InlineLoading } from '@carbon/react';
+import { Rocket } from '@carbon/react/icons';
+import { HTMLAttributes, useMemo } from 'react';
+import { ExtraProps } from 'react-markdown';
+import { useRunContext } from '../../providers/RunProvider';
+import { MessageLoading } from '../MessageLoading';
+import classes from './PythonAppCode.module.scss';
 
 export function PythonAppCode({
   node,
   ...props
 }: HTMLAttributes<HTMLElement> & ExtraProps) {
   const { message } = useRunContext();
+  const { setMobilePreviewOpen } = useAppBuilderApi();
 
   const appName = useMemo(() => {
     if (message?.pending || !message?.content) return null;
@@ -48,7 +50,7 @@ export function PythonAppCode({
           return;
         }
 
-        console.log('click');
+        setMobilePreviewOpen(true);
       }}
     >
       {message?.pending ? (
