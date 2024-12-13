@@ -33,7 +33,9 @@ export function getLastNewTokenSpan(spans: TraceSpan[]) {
 export function getGeneratedTokenCountSafe(span?: TraceSpan) {
   if (!span) return null;
 
-  const value = span.attributes.data?.value;
+  const key = span.attributes.target?.includes('streamlit') ? 'chunk' : 'value';
+
+  const value = span.attributes.data?.[key];
   if (!isSpanDataValueRawWithMeta(value)) return null;
 
   return value.raw.meta.generated_token_count;

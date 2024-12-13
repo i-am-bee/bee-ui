@@ -111,10 +111,12 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
 
     const executionTime = getExecutionTime(spans);
 
-    const tokenCount = iterations.reduce(
-      (tokenCount, iteration) => tokenCount + (iteration?.tokenCount ?? 0),
-      0,
-    );
+    // load token count from iterations if they exist. Otherwise, compute it from all spans.
+    const tokenCount =
+      iterations.reduce(
+        (tokenCount, iteration) => tokenCount + (iteration?.tokenCount ?? 0),
+        0,
+      ) || getGeneratedTokenCountSafe(getLastNewTokenSpan(spans));
 
     const rawPrompt = iterations.find(
       (iteration) => iteration.type === InterationType.FINAL_ANSWER,
