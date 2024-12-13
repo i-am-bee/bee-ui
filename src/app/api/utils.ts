@@ -51,6 +51,7 @@ export function handleFailedResponse(response: Response, body: unknown): never {
     if (response.status === 403 && data.error.code === 'auth_error') {
       throw new UnauthorizedError('You are not authorized.', response);
     }
+
     throw new ApiError(response, data);
   }
   throw new Error('Invalid response from server', {

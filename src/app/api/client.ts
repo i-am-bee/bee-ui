@@ -43,18 +43,31 @@ export function createApiClient<T extends Record<string, any>>(
   return createClient<T>({
     baseUrl: `${baseUrl}${path ?? ''}`,
     fetch: fetchRetry(fetch, {
-      retryOn: [
-        StatusCodes.TOO_MANY_REQUESTS, // Retry also when concurrency limits (due to external factors) are hit
-        StatusCodes.BAD_GATEWAY,
-        StatusCodes.SERVICE_UNAVAILABLE,
-        StatusCodes.CONFLICT,
-        StatusCodes.GATEWAY_TIMEOUT,
-        StatusCodes.REQUEST_TIMEOUT,
-        StatusCodes.INTERNAL_SERVER_ERROR,
-      ],
+      retryOn: (_, __, response) => {
+        // Concurrency limits (due to external factors) are hit
+        if (response?.status === StatusCodes.TOO_MANY_REQUESTS) {
+          const resetDuration = response?.headers.get('ratelimit-reset');
+          return (
+            !resetDuration || Number(resetDuration) < RETRY_ON_RESET_THRESHOLD
+          );
+        }
+
+        const retryCodes = [
+          StatusCodes.BAD_GATEWAY,
+          StatusCodes.SERVICE_UNAVAILABLE,
+          StatusCodes.CONFLICT,
+          StatusCodes.GATEWAY_TIMEOUT,
+          StatusCodes.REQUEST_TIMEOUT,
+          StatusCodes.INTERNAL_SERVER_ERROR,
+        ];
+
+        return Boolean(response && retryCodes.includes(response.status));
+      },
       retryDelay: function (attempt) {
         return Math.pow(2, attempt) * 1000;
       },
     }),
   });
 }
+
+const RETRY_ON_RESET_THRESHOLD = 5; // seconds
