@@ -15,10 +15,7 @@
  */
 
 import { encodeMetadata } from '@/app/api/utils';
-import {
-  OnboardingCompletedAt,
-  UserMetadata,
-} from '@/store/user-profile/types';
+import { UserMetadata } from '@/store/user-profile/types';
 import { useUpdateUser } from './useUpdateUser';
 import { useOnMount } from '@/hooks/useOnMount';
 import { useUserProfile } from '@/store/user-profile';
