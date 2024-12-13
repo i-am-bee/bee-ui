@@ -177,8 +177,9 @@ function AppBuilderContent() {
         backButton: {
           ...navbarProps.backButton,
           onClick: () => {
-            const isFirstNewApp = !artifact && !totalCount;
+            const isFirstNewApp = !artifact && !totalCount && code;
             const hasUnsavedChanges = artifact && artifact.source_code !== code;
+
             if (isFirstNewApp || hasUnsavedChanges) {
               openModal((props) => (
                 <ProjectProvider project={project} organization={organization}>
