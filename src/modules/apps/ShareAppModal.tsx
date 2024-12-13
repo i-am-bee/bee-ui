@@ -29,7 +29,7 @@ interface Props extends ModalProps {
 
 export function ShareAppModal({ artifact, onSuccess, ...props }: Props) {
   return (
-    <Modal {...props} preventCloseOnClickOutside>
+    <Modal {...props}>
       <ModalHeader>
         <h2>Share</h2>
       </ModalHeader>
