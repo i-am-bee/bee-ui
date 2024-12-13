@@ -22,7 +22,6 @@
   box-shadow: $box-shadow;
   border-radius: $spacing-03;
   padding: $spacing-05;
-  min-block-size: rem(318px);
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
@@ -121,4 +120,16 @@
   align-items: center;
   justify-content: space-between;
   column-gap: $spacing-05;
+}
+
+@include breakpoint-down(md) {
+  .cta {
+    display: none;
+  }
+}
+
+@include breakpoint-up(md) {
+  .root {
+    min-block-size: rem(318px);
+  }
 }

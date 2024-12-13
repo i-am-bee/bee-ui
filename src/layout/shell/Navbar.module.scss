@@ -23,14 +23,14 @@
   background-color: $layer;
   border-block-end: 1px solid $border-subtle-00;
   display: grid;
-  padding-block: rem(16px) rem(15px);
+  padding-block: rem(12px) rem(11px);
 }
 
 .container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   column-gap: $spacing-04;
+  min-inline-size: 0;
 }
 
 .heading {
@@ -38,18 +38,24 @@
   inset: 0;
   display: flex;
   gap: $spacing-03;
+  min-inline-size: 0;
   justify-content: center;
   align-items: center;
   z-index: -1;
+  padding-inline: calc(2 * #{$grid-margin} + #{rem(32px)});
 
   li {
     display: flex;
     align-items: center;
     column-gap: $spacing-03;
     font-weight: 600;
-
+    line-height: (20 / 16);
+    min-inline-size: 0;
     &:not(:last-child)::after {
       content: '/';
+    }
+    > span {
+      @include truncate();
     }
     a {
       color: $text-primary;
@@ -76,4 +82,57 @@
   inline-size: rem(32px);
   justify-content: center;
   min-inline-size: 0;
+}
+
+@include breakpoint-down(md) {
+  .root[data-type='chat'],
+  .root[data-type='common'] {
+    .heading,
+    .actions {
+      display: none;
+    }
+  }
+
+  .root[data-type='app-builder'] {
+    .actions {
+      display: none;
+    }
+  }
+
+  .root[data-type='assistant-builder'] {
+    .heading {
+      padding-inline-end: $spacing-07;
+      text-align: end;
+      justify-content: flex-end;
+    }
+  }
+
+  .actions {
+    position: fixed;
+    inset-block-end: 0;
+    inset-inline: 0;
+    background-color: $layer-01;
+    padding: $spacing-05;
+    justify-content: flex-end;
+    box-shadow: $box-shadow;
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+@include breakpoint-up(md) {
+  .container {
+    justify-content: space-between;
+  }
+
+  .heading {
+    padding-inline: calc(2 * #{$grid-margin} + #{rem(110px)});
+  }
+}
+
+@include breakpoint-up(lg) {
+  .root {
+    padding-block: rem(16px) rem(15px);
+  }
 }

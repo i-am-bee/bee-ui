@@ -17,12 +17,13 @@
 @use 'styles/common' as *;
 
 .root {
+  --navbar-height: #{rem(64px)};
   display: grid;
   grid-template-areas:
     'navbar navbar'
     'sidebar main';
   grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: rem(72px) minmax(0, 1fr);
+  grid-template-rows: var(--navbar-height) minmax(0, 1fr);
   block-size: 100vh;
 }
 
@@ -35,5 +36,17 @@
   // Fixes an unresolved bug where an element would sometimes gain focus automatically (at least we're removing styling)
   &:focus-visible {
     outline: none;
+  }
+}
+
+@include breakpoint-down(md) {
+  [data-type='app-detail'] ~ .content {
+    padding-block-end: rem(64px);
+  }
+}
+
+@include breakpoint-up(lg) {
+  .root {
+    --navbar-height: #{rem(72px)};
   }
 }

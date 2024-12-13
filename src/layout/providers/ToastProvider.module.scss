@@ -20,6 +20,7 @@
   position: fixed;
   inset-block-start: 0;
   inset-inline-end: 0;
+  max-inline-size: 100%;
   // Set the z-index between the modal and dropdown.
   z-index: z('modal') + 1;
 
@@ -30,6 +31,7 @@
 
   :global(.#{$prefix}--toast-notification) {
     inline-size: rem(360px);
+    max-inline-size: 100%;
   }
   :global(.#{$prefix}--toast-notification__details) {
     flex-grow: 1;

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import {
   useAppApiContext,
@@ -110,6 +111,8 @@ function AgentLink({
   const navbarProps = useLayout((state) => state.navbarProps);
   const router = useRouter();
 
+  const isMdDown = useBreakpoint('mdDown');
+
   return (
     <li>
       <div
@@ -144,10 +147,13 @@ function AgentLink({
             size="sm"
             onOpen={() => setOptionsOpen(true)}
             onClose={() => setOptionsOpen(false)}
+            flipped={isMdDown}
           >
             <OverflowMenuItem
               itemText="Agent details"
-              onClick={() => setBuilderModalOpened(true)}
+              onClick={() => {
+                setBuilderModalOpened(true);
+              }}
             />
             <OverflowMenuItem
               itemText="Edit"

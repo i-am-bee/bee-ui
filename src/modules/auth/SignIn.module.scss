@@ -24,7 +24,6 @@
   display: flex;
   justify-content: center;
   padding-block: $spacing-08;
-
   > * {
     margin-block: auto;
   }
@@ -34,28 +33,30 @@
 .loginGrid {
   inline-size: 100%;
   max-inline-size: 99rem;
-  padding-inline: var(---grid-gutter, 2.5rem);
+  padding-inline: $grid-gutter;
   display: grid;
   align-items: stretch;
   column-gap: $spacing-08;
-  grid-template-columns: 40% 1fr;
 }
 
 .content {
   display: flex;
   flex-direction: column;
   row-gap: $spacing-07;
-  flex-shrink: 0;
-  flex-grow: 1;
   position: relative;
   z-index: 1;
-  max-inline-size: rem(400px);
 
   .contentInner {
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex-grow: 1;
+  }
+
+  :global(.#{$prefix}--inline-notification) {
+    max-inline-size: 100%;
+    inline-size: max-content;
+    margin-block-end: $spacing-07;
   }
 
   h2 {
@@ -129,14 +130,10 @@
 }
 
 .video {
-  max-inline-size: rem(800px);
+  max-inline-size: rem(400px);
   inline-size: 100%;
-  flex-shrink: 1;
-  aspect-ratio: 1 / 1;
   position: relative;
   pointer-events: none;
-  block-size: 100vh;
-  margin-block: -$spacing-09;
 }
 
 .videoHolder {
@@ -144,9 +141,9 @@
   position: absolute;
   inset-block: 0;
   inset-inline-start: 50%;
-  aspect-ratio: 1.5 / 1;
-  block-size: 100%;
-  max-block-size: rem(1000px);
+  aspect-ratio: 1 / 1;
+  block-size: 200%;
+  max-block-size: rem(500px);
   transform: translateX(-50%);
   video {
     position: absolute;
@@ -169,11 +166,14 @@
 }
 
 .loginButton {
-  inline-size: rem(238px);
+  inline-size: rem(240px);
   padding-inline-end: 0;
   justify-content: flex-start;
   &.waitlistButton {
     margin-block-start: $spacing-06;
+  }
+  &:global(.#{$prefix}--btn--tertiary:not(:hover):not(:active)) {
+    background-color: $layer;
   }
 }
 
@@ -187,5 +187,50 @@
     &:hover {
       text-decoration: none;
     }
+  }
+}
+
+@include breakpoint-down(md) {
+  .loginGrid {
+    row-gap: $spacing-12;
+  }
+
+  .content {
+    margin-inline: auto;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .video {
+    aspect-ratio: 1 / 1;
+    grid-row-start: 1;
+    margin-inline: auto;
+  }
+}
+
+@include breakpoint-up(md) {
+  .loginGrid {
+    grid-template-columns: 40% 1fr;
+  }
+
+  .content {
+    max-inline-size: rem(400px);
+  }
+
+  .video {
+    max-inline-size: rem(800px);
+    block-size: 100vh;
+    margin-block: -$spacing-09;
+  }
+
+  .videoHolder {
+    aspect-ratio: 1.5 / 1;
+    block-size: 100%;
+  }
+}
+
+@include breakpoint-up(lg) {
+  .videoHolder {
+    max-block-size: rem(1000px);
   }
 }

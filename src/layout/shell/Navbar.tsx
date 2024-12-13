@@ -26,14 +26,14 @@ import { useLayout } from '@/store/layout';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
+import { useRouter } from 'next-nprogress-bar';
 import { ReactElement, useMemo } from 'react';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
+import { useNavigationControl } from '../providers/NavigationControlProvider';
 import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
 import { SkipNav } from './SkipNav';
-import { useNavigationControl } from '../providers/NavigationControlProvider';
-import { useRouter } from 'next-nprogress-bar';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -86,7 +86,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
   }, [navbarProps]);
 
   return (
-    <header className={classes.root}>
+    <header className={classes.root} data-type={navbarProps?.type}>
       <Container size="full" className={classes.container}>
         <SkipNav />
 
@@ -156,7 +156,7 @@ export function NavbarHeading({ items }: { items?: HeadingItem[] }) {
       {items.map(({ url, title, icon }, key) => (
         <li key={key}>
           {icon}
-          {url ? <Link href={url}>{title}</Link> : title}
+          <span>{url ? <Link href={url}>{title}</Link> : title}</span>
         </li>
       ))}
     </ul>

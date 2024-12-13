@@ -18,13 +18,16 @@
 
 $card-size: rem(197px);
 
-// Higher specificity needed
-.root.root {
-  block-size: $card-size;
-  min-block-size: $card-size;
-}
 .body {
   p {
     @include truncateMultiline(2);
+  }
+}
+
+@include breakpoint-up(md) {
+  // Higher specificity needed
+  .root.root {
+    block-size: $card-size;
+    min-block-size: $card-size;
   }
 }

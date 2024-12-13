@@ -15,10 +15,10 @@
  */
 
 import { UnauthenticatedError } from '@/app/api/errors';
-import { useEventCallback } from '@/hooks';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
 import { useToast } from '../providers/ToastProvider';
+import { useCallback } from 'react';
 
 interface QueryMetaData {
   toast?: false | { title?: string; includeErrorMessage?: boolean };
@@ -29,7 +29,7 @@ export function useHandleError() {
   const router = useRouter();
   const pathname = usePathname()!;
 
-  const handleError = useEventCallback(
+  const handleError = useCallback(
     (err: unknown, opts: QueryMetaData = {}) => {
       if (err instanceof UnauthenticatedError) {
         router.replace(
@@ -48,6 +48,7 @@ export function useHandleError() {
         console.error(err);
       }
     },
+    [addToast, pathname, router],
   );
   return handleError;
 }

@@ -32,6 +32,7 @@
   &::after {
     pointer-events: none;
   }
+  &[data-floating-menu-direction='top'],
   &[data-floating-menu-direction='bottom'] {
     &:not(.#{$prefix}--breadcrumb-menu-options)::after {
       display: none;

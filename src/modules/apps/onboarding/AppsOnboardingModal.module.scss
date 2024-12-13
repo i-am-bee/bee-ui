@@ -19,7 +19,7 @@
 .root {
   &:global(.#{$prefix}--modal) {
     :global(.#{$prefix}--modal-content) {
-      padding: $spacing-07 $spacing-07 $spacing-09;
+      padding: $spacing-05;
       h2 {
         font-size: rem(24px);
         line-height: (28 / 24);
@@ -29,7 +29,7 @@
     }
 
     :global(.#{$prefix}--modal-footer) {
-      padding: 0 $spacing-07 $spacing-07;
+      padding: $spacing-05;
 
       :global(.#{$prefix}--btn) {
         padding-inline-end: rem(54px);
@@ -54,6 +54,20 @@
 
       :global(.#{$prefix}--modal-footer) {
         padding-block-start: $spacing-05;
+      }
+    }
+  }
+}
+
+@include breakpoint-up(md) {
+  .root {
+    &:global(.#{$prefix}--modal) {
+      :global(.#{$prefix}--modal-content) {
+        padding: $spacing-07 $spacing-07 $spacing-05;
+      }
+
+      :global(.#{$prefix}--modal-footer) {
+        padding: $spacing-05 $spacing-07 $spacing-07;
       }
     }
   }

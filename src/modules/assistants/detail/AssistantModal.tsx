@@ -161,7 +161,11 @@ export default function AssistantModal({
             )}
           </div>
           <div>
-            <Button kind="ghost" onClick={() => props.onRequestClose()}>
+            <Button
+              kind="ghost"
+              onClick={() => props.onRequestClose()}
+              className={classes.hideOnMobile}
+            >
               Cancel
             </Button>
             <Button

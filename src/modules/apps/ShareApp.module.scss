@@ -50,6 +50,7 @@
   border: 1px solid $border-subtle-00;
   background-color: $layer-01;
   border-radius: $spacing-03;
+  flex-shrink: 0;
 }
 
 .text {

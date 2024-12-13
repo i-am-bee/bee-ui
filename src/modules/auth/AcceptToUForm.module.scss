@@ -17,38 +17,35 @@
 @use 'styles/common' as *;
 
 .root {
-  max-inline-size: rem(472px);
   margin-inline: auto;
   min-block-size: 0;
   display: flex;
   flex-direction: column;
-  padding-block-start: 20vh;
 }
 
 .heading {
-  font-size: rem(24px);
-  line-height: (32 / 24);
-  font-weight: normal;
-  margin-block-end: $spacing-07;
+  font-size: rem(18px);
+  line-height: (24 / 18);
+  margin-block-end: $spacing-05;
 }
 
 .content {
   @include scrollbar();
   overflow-y: auto;
-  margin-block-end: $spacing-07;
+  margin-block-end: $spacing-05;
 }
 
 .checkbox {
   &:global(.#{$prefix}--form-item) {
     flex-grow: 0;
     &:global(.#{$prefix}--checkbox-wrapper:last-of-type) {
-      margin-block-end: $spacing-06;
+      margin-block-end: $spacing-05;
     }
   }
 
   :global(
-    .#{$prefix}--checkbox:not(:checked) ~ .#{$prefix}--checkbox-label::before
-  ) {
+      .#{$prefix}--checkbox:not(:checked) ~ .#{$prefix}--checkbox-label::before
+    ) {
     border-color: currentColor;
   }
 }
@@ -74,5 +71,48 @@
   pointer-events: none;
   path[fill='rgb(0,0,0)'] {
     fill: currentColor;
+  }
+}
+
+@include breakpoint-down(md) {
+  .content {
+    border-block-end: 1px solid $border-subtle-00;
+    padding-inline: $grid-margin;
+    margin-inline: calc(#{$grid-margin} * -1);
+  }
+
+  .button {
+    inline-size: 100%;
+    max-inline-size: none;
+  }
+
+  .animation {
+    display: none;
+  }
+}
+
+@include breakpoint-up(md) {
+  .root {
+    max-inline-size: rem(472px);
+    padding-block-start: 20vh;
+  }
+
+  .heading {
+    font-size: rem(24px);
+    line-height: (32 / 24);
+    font-weight: normal;
+    margin-block-end: $spacing-07;
+  }
+
+  .content {
+    margin-block-end: $spacing-07;
+  }
+
+  .checkbox {
+    &:global(.#{$prefix}--form-item) {
+      &:global(.#{$prefix}--checkbox-wrapper:last-of-type) {
+        margin-block-end: $spacing-06;
+      }
+    }
   }
 }
