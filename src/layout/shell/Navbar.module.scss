@@ -42,6 +42,7 @@
   justify-content: center;
   align-items: center;
   z-index: -1;
+  padding-inline: calc(2 * #{$grid-margin} + #{rem(32px)});
 
   li {
     display: flex;
@@ -98,6 +99,14 @@
     }
   }
 
+  .root[data-type='assistant-builder'] {
+    .heading {
+      padding-inline-end: $spacing-07;
+      text-align: end;
+      justify-content: flex-end;
+    }
+  }
+
   .actions {
     position: fixed;
     inset-block-end: 0;
@@ -115,6 +124,10 @@
 @include breakpoint-up(md) {
   .container {
     justify-content: space-between;
+  }
+
+  .heading {
+    padding-inline: calc(2 * #{$grid-margin} + #{rem(110px)});
   }
 }
 

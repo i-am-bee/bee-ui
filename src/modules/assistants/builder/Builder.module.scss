@@ -54,8 +54,7 @@
 }
 
 .actionBar {
-  padding-block: $spacing-05;
-  padding-inline: $spacing-07;
+  padding: $spacing-05;
   display: flex;
   justify-content: space-between;
   border-block-start: 1px solid $border-subtle;
@@ -64,7 +63,7 @@
     gap: $spacing-03;
 
     button {
-      padding-inline: $spacing-05;
+      padding-inline: rem(15px);
       display: flex;
       gap: $spacing-05;
       align-items: center;
@@ -96,6 +95,12 @@
   font-size: rem(14px);
 }
 
+@include breakpoint-down(lg) {
+  .buttonLabel {
+    display: none;
+  }
+}
+
 @include breakpoint-down(md) {
   .chat {
     display: none;
@@ -107,5 +112,9 @@
     fieldset {
       padding: $spacing-06 $spacing-07;
     }
+  }
+
+  .actionBar {
+    padding-inline: $spacing-07;
   }
 }

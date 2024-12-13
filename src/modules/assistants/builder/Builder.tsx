@@ -28,7 +28,7 @@ import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvide
 import { MessageWithFiles } from '@/modules/chat/types';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { Button, InlineLoading, TextArea, TextInput } from '@carbon/react';
-import { CheckmarkFilled } from '@carbon/react/icons';
+import { ChatLaunch, CheckmarkFilled, TrashCan } from '@carbon/react/icons';
 import clsx from 'clsx';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next-nprogress-bar';
@@ -150,7 +150,10 @@ export function Builder({ thread, initialMessages }: Props) {
                 {isDeletePending ? (
                   <InlineLoading title="Deleting..." />
                 ) : (
-                  'Delete agent'
+                  <>
+                    <span className={classes.buttonLabel}>Delete agent</span>
+                    <TrashCan />
+                  </>
                 )}
               </Button>
             )}
@@ -165,7 +168,8 @@ export function Builder({ thread, initialMessages }: Props) {
                 }
                 disabled={isSubmitting}
               >
-                Launch in chat
+                <span className={classes.buttonLabel}>Launch in chat</span>
+                <ChatLaunch />
               </Button>
             )}
             <Button
