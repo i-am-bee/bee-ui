@@ -15,11 +15,8 @@
  */
 
 'use client';
-
 import { Spinner } from '@/components/Spinner/Spinner';
 import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { AssistantBaseIcon } from '@/modules/assistants/icons/AssistantBaseIcon';
 import {
   dispatchInputEventOnFormTextarea,
   submitFormOnEnter,
@@ -27,19 +24,23 @@ import {
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { Send, StopOutlineFilled, WarningFilled } from '@carbon/react/icons';
-import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { memo, useCallback, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mergeRefs } from 'react-merge-refs';
 import { Attachment } from '../attachments/Attachment';
 import { AttachmentsList } from '../attachments/AttachmentsList';
-import { SendMessageResult, useChat } from '../providers/ChatProvider';
+import {
+  SendMessageResult,
+  useChat,
+  useChatMessages,
+} from '../providers/ChatProvider';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import { FilesMenu } from './FilesMenu';
 import classes from './InputBar.module.scss';
 import { PromptSuggestions } from './PromptSuggestions';
 import { ThreadSettings } from './ThreadSettings';
+import { useMessages } from '../providers/useMessages';
 
 interface Props {
   showSuggestions?: boolean;
@@ -52,7 +53,6 @@ export const InputBar = memo(function InputBar({
   onMessageSubmit,
   onMessageSent,
 }: Props) {
-  const queryClient = useQueryClient();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [promptSuggestionsOpen, setPromptSuggestionsOpen] = useState(false);
@@ -67,11 +67,11 @@ export const InputBar = memo(function InputBar({
     status,
     cancel,
     assistant,
-    disabledTools,
     builderState,
     threadSettingsEnabled,
+    inputPlaceholder,
   } = useChat();
-  const { project } = useAppContext();
+  const messages = useChatMessages();
 
   const { register, watch, handleSubmit, setValue } = useForm<FormValues>({
     mode: 'onChange',
@@ -110,6 +110,12 @@ export const InputBar = memo(function InputBar({
 
   const isSubmitDisabled =
     isFilesPending || !inputValue || (builderState && !builderState.isSaved);
+
+  const placeholder = inputPlaceholder
+    ? messages.length
+      ? inputPlaceholder.ongoing
+      : inputPlaceholder.initial
+    : 'Ask a question…';
 
   return (
     <form
@@ -165,7 +171,7 @@ export const InputBar = memo(function InputBar({
           <TextAreaAutoHeight
             className={classes.textarea}
             rows={1}
-            placeholder="Ask a question…"
+            placeholder={placeholder}
             autoFocus={!builderState}
             ref={mergeRefs([inputFormRef, inputRef])}
             {...inputFormProps}

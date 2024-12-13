@@ -30,7 +30,7 @@ export interface ThreadAssistant {
 }
 
 export interface MessageMetadata {
-  type?: 'code-update';
+  type?: 'code-update' | 'report-error';
 }
 
 export type Message = EntityWithDecodedMetadata<MessageResult, MessageMetadata>;

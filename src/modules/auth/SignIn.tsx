@@ -26,6 +26,8 @@ import { WaitlistModal } from './WaitlistModal';
 import GoogleIcon from './GoogleIcon.svg';
 import IBMIcon from './IBMIcon.svg';
 import clsx from 'clsx';
+import Image from 'next/image';
+import BeeLogo from '@/layout/shell/BeeLogo.svg';
 
 const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
 const BEE_AGENT_PLATFORM_URL = process.env.NEXT_PUBLIC_BEE_AGENT_PLATFORM_URL;
@@ -131,20 +133,20 @@ export function SignIn({
               />
             )}
 
-            <h1 className={classes.heading}>
-              {APP_NAME}
+            <h1
+              className={clsx(classes.heading, {
+                [classes.logoHeading]: showWaitlist,
+              })}
+            >
+              {showWaitlist ? <BeeLogo /> : APP_NAME}
               <VersionTag />
             </h1>
 
             {showWaitlist && (
               <>
-                <h2>New to Bee?</h2>
-
                 <p>
-                  Bee is buzzing with excitement, and we’re currently at
-                  capacity! Sign up now to secure your spot and be among the
-                  first to gain access when we expand. Don’t miss out, join
-                  today!
+                  Bee is buzzing with activity, and we’re currently at capacity.
+                  Sign up now to get notified when we expand.
                 </p>
 
                 {WAITLIST_URL && (
@@ -162,9 +164,9 @@ export function SignIn({
 
                 <hr />
 
-                <h2 className={classes.haveAccountHeading}>
+                <p className={classes.haveAccountHeading}>
                   Already have an account?
-                </h2>
+                </p>
               </>
             )}
             <div className={classes.formWrapper}>
@@ -185,7 +187,7 @@ export function SignIn({
           </div>
           {BEE_AGENT_PLATFORM_URL && (
             <footer className={classes.footer}>
-              Powered by open-source{' '}
+              Powered by the open-source{' '}
               <a
                 href={BEE_AGENT_PLATFORM_URL}
                 target="_blank"

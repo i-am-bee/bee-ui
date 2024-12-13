@@ -65,7 +65,11 @@ export default async function ThreadPage({
   );
 
   return (
-    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
+    <LayoutInitializer
+      layout={{
+        navbarProps: { type: 'chat', assistant: threadAssistant.data },
+      }}
+    >
       <VectorStoreFilesUploadProvider
         projectId={projectId}
         organizationId={organizationId}

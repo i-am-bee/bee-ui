@@ -1,5 +1,79 @@
 # Changelog
 
+## <small>0.0.11 (2024-12-13)</small>
+
+* fix: session update (#138) ([af9d1f1](https://github.com/i-am-bee/bee-ui/commit/af9d1f1)), closes [#138](https://github.com/i-am-bee/bee-ui/issues/138)
+* feat(observe): add streamlit token count trace info (#137) ([10eee5e](https://github.com/i-am-bee/bee-ui/commit/10eee5e)), closes [#137](https://github.com/i-am-bee/bee-ui/issues/137)
+
+## <small>0.0.10 (2024-12-13)</small>
+
+* feat: qa for launch (#135) ([19b8911](https://github.com/i-am-bee/bee-ui/commit/19b8911)), closes [#135](https://github.com/i-am-bee/bee-ui/issues/135)
+
+## <small>0.0.9 (2024-12-13)</small>
+
+* fix(apps): share modal  (#134) ([ea1166f](https://github.com/i-am-bee/bee-ui/commit/ea1166f)), closes [#134](https://github.com/i-am-bee/bee-ui/issues/134)
+
+## <small>0.0.8 (2024-12-12)</small>
+
+* feat: qa for launch  (#130) ([9476ff3](https://github.com/i-am-bee/bee-ui/commit/9476ff3)), closes [#130](https://github.com/i-am-bee/bee-ui/issues/130)
+* feat: qa for launch (#133) ([b7529f5](https://github.com/i-am-bee/bee-ui/commit/b7529f5)), closes [#133](https://github.com/i-am-bee/bee-ui/issues/133)
+* feat(apps): allow links to open popups (#127) ([425aaac](https://github.com/i-am-bee/bee-ui/commit/425aaac)), closes [#127](https://github.com/i-am-bee/bee-ui/issues/127)
+
+## <small>0.0.7 (2024-12-11)</small>
+
+* fix: broken auth, api calls on test user (#95) ([856f16f](https://github.com/i-am-bee/bee-ui/commit/856f16f)), closes [#95](https://github.com/i-am-bee/bee-ui/issues/95)
+* fix: deleted thread click causing error ([8a8030d](https://github.com/i-am-bee/bee-ui/commit/8a8030d))
+* fix: icon bug (#126) ([3b8a8f4](https://github.com/i-am-bee/bee-ui/commit/3b8a8f4)), closes [#126](https://github.com/i-am-bee/bee-ui/issues/126)
+* fix: project selector text overflow ([aa68584](https://github.com/i-am-bee/bee-ui/commit/aa68584))
+* fix: remove focus styles from main elements (#74) ([627f406](https://github.com/i-am-bee/bee-ui/commit/627f406)), closes [#74](https://github.com/i-am-bee/bee-ui/issues/74)
+* fix: theme flickering on mount (#116) ([f1e2da8](https://github.com/i-am-bee/bee-ui/commit/f1e2da8)), closes [#116](https://github.com/i-am-bee/bee-ui/issues/116)
+* fix(apps): chat completion add missing project and org headers (#121) ([dc7820f](https://github.com/i-am-bee/bee-ui/commit/dc7820f)), closes [#121](https://github.com/i-am-bee/bee-ui/issues/121)
+* fix(apps): use context for project and organization (#122) ([2347db8](https://github.com/i-am-bee/bee-ui/commit/2347db8)), closes [#122](https://github.com/i-am-bee/bee-ui/issues/122)
+* fix(apps): use the last app code block in message (#125) ([0243cbe](https://github.com/i-am-bee/bee-ui/commit/0243cbe)), closes [#125](https://github.com/i-am-bee/bee-ui/issues/125)
+* fix(assistant-builder): enable scroll on role field (#88) ([0d83fe6](https://github.com/i-am-bee/bee-ui/commit/0d83fe6)), closes [#88](https://github.com/i-am-bee/bee-ui/issues/88)
+* fix(assistant-builder): show scrollbar on overflown role textarea (#112) ([a6bd94f](https://github.com/i-am-bee/bee-ui/commit/a6bd94f)), closes [#112](https://github.com/i-am-bee/bee-ui/issues/112)
+* fix(assistant-builder): starter questions style (#81) ([6927346](https://github.com/i-am-bee/bee-ui/commit/6927346)), closes [#81](https://github.com/i-am-bee/bee-ui/issues/81)
+* fix(build): prevent routes prerender (#110) ([87e8e62](https://github.com/i-am-bee/bee-ui/commit/87e8e62)), closes [#110](https://github.com/i-am-bee/bee-ui/issues/110)
+* fix(build): remove page export (#108) ([f081c9c](https://github.com/i-am-bee/bee-ui/commit/f081c9c)), closes [#108](https://github.com/i-am-bee/bee-ui/issues/108)
+* fix(chat): loading style, reflect thread tools in chat changes (#83) ([8253566](https://github.com/i-am-bee/bee-ui/commit/8253566)), closes [#83](https://github.com/i-am-bee/bee-ui/issues/83)
+* fix(chat): recognize artifacts code snippets (#101) ([a052a86](https://github.com/i-am-bee/bee-ui/commit/a052a86)), closes [#101](https://github.com/i-am-bee/bee-ui/issues/101)
+* fix(chat): thinking style (#87) ([7062f1d](https://github.com/i-am-bee/bee-ui/commit/7062f1d)), closes [#87](https://github.com/i-am-bee/bee-ui/issues/87)
+* fix(modals): add default value to ModalControlProvider (#78) ([2e95ff0](https://github.com/i-am-bee/bee-ui/commit/2e95ff0)), closes [#78](https://github.com/i-am-bee/bee-ui/issues/78)
+* fix(onboarding): style duplicate ([291e129](https://github.com/i-am-bee/bee-ui/commit/291e129))
+* fix(trace): hide undefined raw prompt (#90) ([036c856](https://github.com/i-am-bee/bee-ui/commit/036c856)), closes [#90](https://github.com/i-am-bee/bee-ui/issues/90)
+* chore: update lock, add missing copyright disclaimer ([fa0ab27](https://github.com/i-am-bee/bee-ui/commit/fa0ab27))
+* feat: add app icon selector ([e67e302](https://github.com/i-am-bee/bee-ui/commit/e67e302))
+* feat: add app sharing ([22cd71a](https://github.com/i-am-bee/bee-ui/commit/22cd71a))
+* feat: add onboarding modal ([f57a61a](https://github.com/i-am-bee/bee-ui/commit/f57a61a))
+* feat: add organization for each user (#97) ([91155af](https://github.com/i-am-bee/bee-ui/commit/91155af)), closes [#97](https://github.com/i-am-bee/bee-ui/issues/97)
+* feat: add strict csp using nonce without unsafe-inline (#91) ([c0e2f3e](https://github.com/i-am-bee/bee-ui/commit/c0e2f3e)), closes [#91](https://github.com/i-am-bee/bee-ui/issues/91)
+* feat: change Documentation to Resources (#119) ([1ef091f](https://github.com/i-am-bee/bee-ui/commit/1ef091f)), closes [#119](https://github.com/i-am-bee/bee-ui/issues/119)
+* feat: clone public app (#120) ([605ce1b](https://github.com/i-am-bee/bee-ui/commit/605ce1b)), closes [#120](https://github.com/i-am-bee/bee-ui/issues/120)
+* feat: improve initial messages (#129) ([0f72c41](https://github.com/i-am-bee/bee-ui/commit/0f72c41)), closes [#129](https://github.com/i-am-bee/bee-ui/issues/129)
+* feat: initial apps builder & library (#93) ([640377c](https://github.com/i-am-bee/bee-ui/commit/640377c)), closes [#93](https://github.com/i-am-bee/bee-ui/issues/93)
+* feat: layout updates & qa  (#123) ([47c97b8](https://github.com/i-am-bee/bee-ui/commit/47c97b8)), closes [#123](https://github.com/i-am-bee/bee-ui/issues/123)
+* feat: usage limit modal (#99) ([3d08177](https://github.com/i-am-bee/bee-ui/commit/3d08177)), closes [#99](https://github.com/i-am-bee/bee-ui/issues/99)
+* feat(apps): app detail (#103) ([c1fdaf4](https://github.com/i-am-bee/bee-ui/commit/c1fdaf4)), closes [#103](https://github.com/i-am-bee/bee-ui/issues/103)
+* feat(apps): copy to edit, update source code, customize navbar (#100) ([30f32b8](https://github.com/i-am-bee/bee-ui/commit/30f32b8)), closes [#100](https://github.com/i-am-bee/bee-ui/issues/100)
+* feat(apps): error reporting and fixing (#128) ([7362e74](https://github.com/i-am-bee/bee-ui/commit/7362e74)), closes [#128](https://github.com/i-am-bee/bee-ui/issues/128)
+* feat(apps): implement endpoints for app builder (#115) ([6706d9b](https://github.com/i-am-bee/bee-ui/commit/6706d9b)), closes [#115](https://github.com/i-am-bee/bee-ui/issues/115)
+* feat(apps): onboarding modal with templates, fixes (#114) ([9c623fe](https://github.com/i-am-bee/bee-ui/commit/9c623fe)), closes [#114](https://github.com/i-am-bee/bee-ui/issues/114)
+* feat(artifact): rename secret to token (#117) ([c993a8d](https://github.com/i-am-bee/bee-ui/commit/c993a8d)), closes [#117](https://github.com/i-am-bee/bee-ui/issues/117)
+* feat(assistant-builder): qa updates, chat scroll fix (#80) ([25fa5ab](https://github.com/i-am-bee/bee-ui/commit/25fa5ab)), closes [#80](https://github.com/i-am-bee/bee-ui/issues/80)
+* feat(assistant-builder): show setup changes in chat, edit user tool (#77) ([2292c94](https://github.com/i-am-bee/bee-ui/commit/2292c94)), closes [#77](https://github.com/i-am-bee/bee-ui/issues/77)
+* feat(auth): send name explicitly (#102) ([7f4fc1a](https://github.com/i-am-bee/bee-ui/commit/7f4fc1a)), closes [#102](https://github.com/i-am-bee/bee-ui/issues/102)
+* feat(capacity): add public endpoint (#104) ([9cad8eb](https://github.com/i-am-bee/bee-ui/commit/9cad8eb)), closes [#104](https://github.com/i-am-bee/bee-ui/issues/104)
+* feat(observe): new OpenTelemetry observe backend implementation (#118) ([5d4ebf5](https://github.com/i-am-bee/bee-ui/commit/5d4ebf5)), closes [#118](https://github.com/i-am-bee/bee-ui/issues/118)
+* feat(projects): select & share allowed by feature flag (#105) ([f21a362](https://github.com/i-am-bee/bee-ui/commit/f21a362)), closes [#105](https://github.com/i-am-bee/bee-ui/issues/105)
+* feat(shell): rework sidebar (#124) ([3c1f446](https://github.com/i-am-bee/bee-ui/commit/3c1f446)), closes [#124](https://github.com/i-am-bee/bee-ui/issues/124)
+* feat(shell): rework sidebar, add navbad header (#82) ([91c9b38](https://github.com/i-am-bee/bee-ui/commit/91c9b38)), closes [#82](https://github.com/i-am-bee/bee-ui/issues/82)
+* feat(signing): re-enable Google signin for beta release (#69) ([fe2b7a6](https://github.com/i-am-bee/bee-ui/commit/fe2b7a6)), closes [#69](https://github.com/i-am-bee/bee-ui/issues/69)
+* feat(signup): add waitlist and error handling (#96) ([dda989b](https://github.com/i-am-bee/bee-ui/commit/dda989b)), closes [#96](https://github.com/i-am-bee/bee-ui/issues/96)
+* feat(signup): platform footer (#106) ([92ba4c8](https://github.com/i-am-bee/bee-ui/commit/92ba4c8)), closes [#106](https://github.com/i-am-bee/bee-ui/issues/106)
+* ci: add missing Dockerfile args (#107) ([e373f6a](https://github.com/i-am-bee/bee-ui/commit/e373f6a)), closes [#107](https://github.com/i-am-bee/bee-ui/issues/107)
+* refactor: artifact iframe ([a4ae3f2](https://github.com/i-am-bee/bee-ui/commit/a4ae3f2))
+* docs: update readme with images ([6d35610](https://github.com/i-am-bee/bee-ui/commit/6d35610))
+
 ## <small>0.0.6 (2024-11-13)</small>
 
 * fix: sass imports (#72) ([43589bc](https://github.com/i-am-bee/bee-ui/commit/43589bc)), closes [#72](https://github.com/i-am-bee/bee-ui/issues/72)

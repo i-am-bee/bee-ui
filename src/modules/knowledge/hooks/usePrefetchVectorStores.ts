@@ -15,10 +15,10 @@
  */
 
 import { VectorStoresListQuery } from '@/app/api/vector-stores/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { VECTOR_STORES_ORDER_DEFAULT } from '../KnowledgeView';
 import { vectorStoresQuery } from '../queries';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 const DEFAULT_PARAMS: Partial<VectorStoresListQuery> = {
   ...VECTOR_STORES_ORDER_DEFAULT,
@@ -29,7 +29,7 @@ export function usePrefetchVectorStores({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const queryClient = useQueryClient();
 
   return (params?: VectorStoresListQuery) =>

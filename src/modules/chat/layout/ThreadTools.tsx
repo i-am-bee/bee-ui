@@ -20,7 +20,7 @@ import { Assistant } from '@/modules/assistants/types';
 import { useChat } from '../providers/ChatProvider';
 import { EmptyList } from './EmptyList';
 import classes from './ThreadTools.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   assistantTools?: Assistant['tools'];
@@ -28,7 +28,7 @@ interface Props {
 
 export function ThreadTools({ assistantTools = [] }: Props) {
   const { disabledTools, setDisabledTools } = useChat();
-  const { organization, project } = useAppContext();
+  const { organization, project } = useProjectContext();
 
   if (assistantTools.length === 0) {
     return (

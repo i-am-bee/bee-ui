@@ -28,9 +28,8 @@ export function AppsOnboardingIntro() {
 
       <div className={classes.content}>
         <p>
-          With Bee, you can chat to build reusable apps to automate simple,
-          everyday business tasks. Explore examples, start building, and share
-          your apps with others.
+          Chat to build personalized, AI-powered apps that automate everyday
+          business tasks like meeting summarization and data analysis.
         </p>
       </div>
     </div>

@@ -17,6 +17,11 @@
 @use 'styles/common' as *;
 
 .root {
+  :global(.#{$prefix}--modal-container) {
+    @include breakpoint-up(lg) {
+      max-block-size: 94%;
+    }
+  }
   &:global(.#{$prefix}--modal) {
     :global(.#{$prefix}--modal-header) {
       padding-inline: $spacing-07;

@@ -85,7 +85,11 @@ const AppBuilderContext = createContext<{
   code: string | null;
   artifact: Artifact | null;
   mobilePreviewOpen: boolean;
-} | null>(null);
+}>({
+  code: null,
+  artifact: null,
+  mobilePreviewOpen: false,
+});
 
 const AppBuilderApiContext = createContext<{
   setCode: (content: string) => void;
@@ -107,11 +111,5 @@ export function useAppBuilderApi() {
 }
 
 export function useAppBuilder() {
-  const context = use(AppBuilderContext);
-
-  if (!context) {
-    throw new Error('useAppBuilder must be used within a AppBuilderProvider');
-  }
-
-  return context;
+  return use(AppBuilderContext);
 }

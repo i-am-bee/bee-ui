@@ -22,13 +22,13 @@
 
 .content {
   @include type-style(label-02);
-  background-color: $layer-inverse-01;
+  background-color: $layer-inverse-02;
   color: $text-inverse;
-  border-radius: $spacing-03;
-  padding: $spacing-03;
+  border-radius: $block-radius;
+  padding: $spacing-03 $spacing-04;
   max-inline-size: rem(264px);
 }
 
 .arrow {
-  fill: $layer-inverse-01;
+  fill: $layer-inverse-02;
 }

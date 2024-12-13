@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { useRouter } from 'next-nprogress-bar';
 import { Assistant } from '../assistants/types';
 import { useDeleteAssistant } from '../assistants/builder/useDeleteAssistant';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   assistant: Assistant;
@@ -26,7 +26,7 @@ interface Props {
 
 export function ChatNavbarActions({ assistant }: Props) {
   const router = useRouter();
-  const { project, organization } = useAppContext();
+  const { project } = useProjectContext();
   const { deleteAssistant } = useDeleteAssistant({
     assistant,
     onSuccess: () => router.push(`/${project.id}/`),

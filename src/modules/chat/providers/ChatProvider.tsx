@@ -111,6 +111,7 @@ interface ChatSetup {
   threadSettingsEnabled?: boolean;
   builderState?: AssistantBuilderState;
   initialAssistantMessage?: string;
+  inputPlaceholder?: { initial: string; ongoing: string };
 }
 
 interface Props extends ChatSetup {
@@ -132,6 +133,7 @@ export function ChatProvider({
   threadSettingsEnabled,
   initialAssistantMessage,
   builderState,
+  inputPlaceholder,
   onMessageCompleted,
   onBeforePostMessage,
   children,
@@ -181,16 +183,6 @@ export function ChatProvider({
     updateMutation: { mutateAsync: mutateUpdateThread },
     createMutation: { mutateAsync: mutateCreateThread },
   } = useThreadApi(thread);
-
-  // TODO: find a different solution, this is called just anytime
-  // useEffect(() => {
-  //   return () => {
-  //     // delete empty thread, if no message was sent yet
-  //     if (thread && !getMessages().length) {
-  //       mutateDeleteThread(thread.id);
-  //     }
-  //   };
-  // }, [getMessages, mutateDeleteThread, thread]);
 
   useEffect(() => {
     if (threadAssistant?.data) selectAssistant(threadAssistant.data);
@@ -745,6 +737,7 @@ export function ChatProvider({
       topBarEnabled,
       threadSettingsEnabled,
       initialAssistantMessage,
+      inputPlaceholder,
     }),
     [
       controller.status,
@@ -764,6 +757,7 @@ export function ChatProvider({
       topBarEnabled,
       threadSettingsEnabled,
       initialAssistantMessage,
+      inputPlaceholder,
     ],
   );
 

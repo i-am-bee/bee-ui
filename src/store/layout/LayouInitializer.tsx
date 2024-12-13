@@ -18,6 +18,7 @@
 import { ReactNode, useEffect } from 'react';
 import { LayoutState } from './types';
 import { useLayoutActions } from '.';
+import { useOnMount } from '@/hooks/useOnMount';
 
 export function LayoutInitializer({
   layout,
@@ -28,9 +29,9 @@ export function LayoutInitializer({
 }) {
   const { setLayout } = useLayoutActions();
 
-  useEffect(() => {
+  useOnMount(() => {
     setLayout(layout);
-  }, [layout, setLayout]);
+  });
 
   return children;
 }

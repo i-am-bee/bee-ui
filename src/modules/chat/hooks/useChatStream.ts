@@ -62,11 +62,11 @@ import { ChatMessage, ToolApprovalValue } from '../types';
 import { isBotMessage } from '../utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { readRunQuery } from '../queries';
-import { Thread, ThreadMetadata } from '@/app/api/threads/types';
+import { Thread } from '@/app/api/threads/types';
 import { getToolApprovalId } from '@/modules/tools/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { RunController } from '../providers/ChatProvider';
 import { EntityWithDecodedMetadata } from '@/app/api/types';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 type RunsCreateBodyDecoded = EntityWithDecodedMetadata<
   RunsCreateBody,
@@ -105,7 +105,7 @@ export function useChatStream({
   updateController,
 }: Props) {
   const queryClient = useQueryClient();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const getThread = () => {
     const thread = threadRef.current;

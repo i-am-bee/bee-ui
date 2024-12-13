@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-import { ArtifactsListQuery } from '@/app/api/artifacts/types';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { listArtifactsQuery } from '../queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+@use 'styles/common' as *;
 
-export function useArtifacts({ params }: { params?: ArtifactsListQuery } = {}) {
-  const { project, organization } = useProjectContext();
-
-  const query = useInfiniteQuery({
-    ...listArtifactsQuery(organization.id, project.id, params),
-  });
-
-  return query;
+.root {
+  :global(.#{$prefix}--modal-header) {
+    p {
+      margin-block-start: $spacing-04;
+    }
+  }
 }

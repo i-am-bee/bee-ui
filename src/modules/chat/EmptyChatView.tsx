@@ -72,7 +72,7 @@ export const EmptyChatView = memo(function EmptyChatView({
 
           <div className={classes.heading}>
             <h1>
-              Hi {firstName}, I&apos;m {assistantName}!
+              Hi {firstName}, I’m {assistantName}!
             </h1>
             <p>{assistantDescription}</p>
           </div>

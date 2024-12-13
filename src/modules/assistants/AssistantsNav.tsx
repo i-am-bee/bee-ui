@@ -37,6 +37,13 @@ import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
 import { useAssistants } from './hooks/useAssistants';
 import { AssistantIcon } from './icons/AssistantIcon';
 import { Assistant } from './types';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { NewAgentModal } from '../onboarding/NewAgentModal';
+import {
+  ProjectProvider,
+  useProjectContext,
+} from '@/layout/providers/ProjectProvider';
+import { useLayout } from '@/store/layout';
 
 interface Props {
   enableFetch?: boolean;
@@ -101,6 +108,7 @@ function AgentLink({
   const [builderModalOpened, setBuilderModalOpened] = useState(false);
   const { selectAssistant } = useAppApiContext();
   const { project, assistant: selectedAssistant } = useAppContext();
+  const navbarProps = useLayout((state) => state.navbarProps);
   const router = useRouter();
 
   const isMdDown = useBreakpoint('mdDown');
@@ -112,7 +120,10 @@ function AgentLink({
         className={clsx(classes.item, {
           [classes.focusWithin]: optionsOpen,
           [classes.active]:
-            selectedAssistant && selectedAssistant.id === assistant.id,
+            selectedAssistant &&
+            selectedAssistant.id === assistant.id &&
+            (navbarProps?.type === 'chat' ||
+              navbarProps?.type === 'assistant-builder'),
         })}
       >
         <span className={classes.icon}>
@@ -181,14 +192,20 @@ AgentLink.Skeleton = function Skeleton() {
 };
 
 function NewButton() {
-  const { project } = useAppContext();
-  const router = useRouter();
+  const { project, organization } = useProjectContext();
+  const { openModal } = useModal();
 
   return (
     <button
       type="button"
       className={classes.newButton}
-      onClick={() => router.push(`/${project.id}/builder`)}
+      onClick={() =>
+        openModal((props) => (
+          <ProjectProvider project={project} organization={organization}>
+            <NewAgentModal {...props} />
+          </ProjectProvider>
+        ))
+      }
     >
       <span className={classes.icon}>
         <Add />

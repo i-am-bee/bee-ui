@@ -96,6 +96,12 @@
       }
     }
   }
+
+  :global(.#{$prefix}--modal-close-button) {
+    :global(.#{$prefix}--popover) {
+      display: none;
+    }
+  }
 }
 
 @include breakpoint-up(md) {

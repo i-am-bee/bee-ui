@@ -50,7 +50,8 @@ export function SourceCodeEditor({ onSaveCode }: Props) {
           size="sm"
           kind="tertiary"
           className={classes.buttonCancel}
-          disabled={code === savedCode}
+          disabled={!savedCode || code === savedCode}
+          onClick={() => setCode(savedCode ?? '')}
         >
           Cancel
         </Button>

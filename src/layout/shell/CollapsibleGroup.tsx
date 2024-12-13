@@ -37,7 +37,10 @@ export function CollapsibleGroup({
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className={clsx(classes.root, className)}>
+    <div
+      className={clsx(classes.root, className)}
+      aria-expanded={expanded ? 'true' : 'false'}
+    >
       <header className={classes.header}>
         <h3 className={classes.heading}>{heading}</h3>
 

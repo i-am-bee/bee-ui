@@ -17,7 +17,6 @@
 import { BounceButton } from '@/components/BounceLink/BounceButton';
 import { Container } from '@/components/Container/Container';
 import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { useUserProfile } from '@/store/user-profile';
 import { useQuery } from '@tanstack/react-query';
@@ -44,6 +43,7 @@ import { MessageContent } from './MessageContent';
 import { RunSetup } from '@/modules/assistants/builder/Builder';
 import { RunSetupDelta } from './RunSetupDelta';
 import isEqual from 'lodash/isEqual';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   message: ChatMessage;
@@ -62,7 +62,7 @@ export const Message = memo(function Message({
 }: Props) {
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const { setMessages } = useChat();
   const { ref: inViewRef, inView } = useInView({
     rootMargin: '30% 0%',

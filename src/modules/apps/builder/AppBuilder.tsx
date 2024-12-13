@@ -15,11 +15,15 @@
  */
 
 'use client';
+import { getAppBuilderNavbarProps } from '@/app/(main)/[projectId]/apps/utils';
 import { createMessage } from '@/app/api/threads-messages';
 import { Thread } from '@/app/api/threads/types';
 import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import {
+  ProjectProvider,
+  useProjectContext,
+} from '@/layout/providers/ProjectProvider';
 import { NavbarHeading } from '@/layout/shell/Navbar';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import {
@@ -27,6 +31,7 @@ import {
   MessageMetadata,
   MessageWithFiles,
 } from '@/modules/chat/types';
+import { useLayoutActions } from '@/store/layout';
 import {
   Button,
   IconButton,
@@ -39,11 +44,13 @@ import {
 import { ArrowLeft, Share } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useCallback, useState } from 'react';
+import { useRouter } from 'next-nprogress-bar';
+import { useCallback, useEffect, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
 import { threadsQuery } from '../../chat/history/queries';
 import { AppIcon } from '../AppIcon';
+import { useArtifactsCount } from '../hooks/useArtifactsCount';
 import { SaveAppModal } from '../manage/SaveAppModal';
 import { ShareAppModal } from '../ShareAppModal';
 import { extractCodeFromMessageContent } from '../utils';
@@ -59,7 +66,7 @@ interface Props {
 }
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const queryClient = useQueryClient();
   const { setCode, getCode } = useAppBuilderApi();
   const { artifact, code } = useAppBuilder();
@@ -107,15 +114,16 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
     [getCode, organization.id, project.id],
   );
 
-  const isCloneAppThread = (() => {
+  const isEditAppThread = (() => {
     const isInitialCloneState = code && !artifact && !initialMessages?.length;
     const firstMessage = initialMessages?.at(0);
     const isThreadWithClonedApp = firstMessage
       ? decodeMetadata<MessageMetadata>(firstMessage.metadata).type ===
         'code-update'
       : false;
+    const isAppWithoutThread = artifact && !initialMessages?.length;
 
-    return isInitialCloneState || isThreadWithClonedApp;
+    return isInitialCloneState || isThreadWithClonedApp || isAppWithoutThread;
   })();
 
   return (
@@ -126,10 +134,16 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       thread={thread}
       initialData={initialMessages}
       initialAssistantMessage={
-        isCloneAppThread
-          ? 'How do you want to edit this app? Do you need suggestions?'
-          : 'What do you want to build today?'
+        isEditAppThread
+          ? 'Hello! Let me know if you want to change anything about this app.'
+          : 'Hello! Describe the app you want to build.'
       }
+      inputPlaceholder={{
+        initial: isEditAppThread
+          ? 'Describe what this app should do or what you want to change about this app.'
+          : 'Outline what your app should do and how it should work.',
+        ongoing: 'Describe the change(s) you want to make to this app.',
+      }}
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
     >
@@ -140,16 +154,82 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
 
 function AppBuilderContent() {
   const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
-  const { project, organization } = useAppContext();
-  const { openModal } = useModal();
-  const { getMessages } = useChat();
 
+  const router = useRouter();
+  const { project, organization } = useProjectContext();
+  const { openModal } = useModal();
+  const { getMessages, sendMessage, thread } = useChat();
   const { setArtifact, setMobilePreviewOpen } = useAppBuilderApi();
   const { code, artifact, mobilePreviewOpen } = useAppBuilder();
+  const { setLayout } = useLayoutActions();
+
+  const totalCount = useArtifactsCount();
 
   const message = getLastMessageWithCode(getMessages());
 
   const icon = artifact?.uiMetadata.icon;
+
+  useEffect(() => {
+    const navbarProps = getAppBuilderNavbarProps(
+      project.id,
+      artifact ?? undefined,
+    );
+
+    setLayout({
+      navbarProps: {
+        ...navbarProps,
+        backButton: {
+          ...navbarProps.backButton,
+          onClick: () => {
+            const isFirstNewApp = !artifact && !totalCount && code;
+            const hasUnsavedChanges = artifact && artifact.source_code !== code;
+
+            if (isFirstNewApp || hasUnsavedChanges) {
+              openModal((props) => (
+                <ProjectProvider project={project} organization={organization}>
+                  <SaveAppModal
+                    artifact={artifact}
+                    messageId={message?.id}
+                    code={code ?? undefined}
+                    onSaveSuccess={setArtifact}
+                    isConfirmation
+                    {...props}
+                  />
+                </ProjectProvider>
+              ));
+              return;
+            }
+
+            router.push(navbarProps.backButton.url);
+          },
+        },
+      },
+    });
+  }, [
+    artifact,
+    code,
+    message?.id,
+    openModal,
+    organization,
+    project,
+    project.id,
+    router,
+    setArtifact,
+    setLayout,
+    totalCount,
+  ]);
+
+  const handleReportError = useCallback(
+    async (errorText: string) => {
+      await createMessage(organization.id, project.id, thread!.id, {
+        role: 'user',
+        content: `I have encountered the following error: \`\`\`error\n${errorText}\n\`\`\``,
+        metadata: encodeMetadata<MessageMetadata>({ type: 'report-error' }),
+      });
+      await sendMessage(`Help me fix the attached error.`);
+    },
+    [organization, project, thread, sendMessage],
+  );
 
   return (
     <div
@@ -169,81 +249,92 @@ function AppBuilderContent() {
             setSelectedTab(selectedIndex);
           }}
         >
-          <div className={classes.appPaneHeader}>
-            <div className={classes.appPaneHeaderMobile}>
-              <Button
-                size="sm"
-                kind="tertiary"
-                onClick={() => setMobilePreviewOpen(false)}
-              >
-                <ArrowLeft />
-              </Button>
-
-              {artifact && (
-                <NavbarHeading
-                  items={[
-                    {
-                      title: artifact.name,
-                      icon: icon ? <AppIcon name={icon} /> : null,
-                    },
-                  ]}
-                />
-              )}
-            </div>
-
-            <TabList aria-label="App View mode">
-              <Tab>UI Preview</Tab>
-              <Tab>Source code</Tab>
-            </TabList>
-            <div className={classes.appActions}>
-              {artifact && (
-                <IconButton
-                  label="Share"
-                  kind="tertiary"
+          {code !== null && (
+            <div className={classes.appPaneHeader}>
+              <div className={classes.appPaneHeaderMobile}>
+                <Button
                   size="sm"
-                  align="bottom"
-                  onClick={() =>
-                    openModal((props) => (
-                      <ShareAppModal
-                        {...props}
-                        artifact={artifact}
-                        project={project}
-                        organization={organization}
-                        onSuccess={setArtifact}
-                      />
-                    ))
-                  }
+                  kind="tertiary"
+                  onClick={() => setMobilePreviewOpen(false)}
                 >
-                  <Share />
-                </IconButton>
-              )}
-              <Button
-                kind="secondary"
-                size="sm"
-                onClick={() => {
-                  if (message?.id && code) {
-                    openModal((props) => (
-                      <SaveAppModal
-                        organization={organization}
-                        artifact={artifact}
-                        project={project}
-                        messageId={message.id ?? ''}
-                        code={code}
-                        onSaveSuccess={setArtifact}
-                        {...props}
-                      />
-                    ));
-                  }
-                }}
-                disabled={!(message?.id && code)}
-              >
-                Save to Apps
-              </Button>
+                  <ArrowLeft />
+                </Button>
+
+                {artifact && (
+                  <NavbarHeading
+                    items={[
+                      {
+                        title: artifact.name,
+                        icon: icon ? <AppIcon name={icon} /> : null,
+                      },
+                    ]}
+                  />
+                )}
+              </div>
+
+              <TabList aria-label="App View mode">
+                <Tab>UI Preview</Tab>
+                <Tab>Source code</Tab>
+              </TabList>
+              <div className={classes.appActions}>
+                {artifact && (
+                  <IconButton
+                    label="Share"
+                    kind="tertiary"
+                    size="sm"
+                    align="bottom"
+                    onClick={() =>
+                      openModal((props) => (
+                        <ProjectProvider
+                          project={project}
+                          organization={organization}
+                        >
+                          <ShareAppModal
+                            {...props}
+                            artifact={artifact}
+                            onSuccess={setArtifact}
+                          />
+                        </ProjectProvider>
+                      ))
+                    }
+                  >
+                    <Share />
+                  </IconButton>
+                )}
+                <Button
+                  kind="secondary"
+                  size="sm"
+                  onClick={() => {
+                    if (code) {
+                      openModal((props) => (
+                        <ProjectProvider
+                          project={project}
+                          organization={organization}
+                        >
+                          <SaveAppModal
+                            artifact={artifact}
+                            messageId={message?.id}
+                            code={code}
+                            onSaveSuccess={setArtifact}
+                            {...props}
+                          />
+                        </ProjectProvider>
+                      ));
+                    }
+                  }}
+                  disabled={!code}
+                >
+                  Save to Apps
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
-              <ArtifactSharedIframe sourceCode={code} />
+              <ArtifactSharedIframe
+                sourceCode={code}
+                onReportError={handleReportError}
+              />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
               <SourceCodeEditor

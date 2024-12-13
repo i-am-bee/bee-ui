@@ -61,6 +61,7 @@ export function AppIcon({ name: propName, className, size = 'md' }: Props) {
 }
 
 export const APP_ICONS_USER = {
+  Rocket,
   ColorPalette,
   Pen,
   FaceWink,
@@ -71,7 +72,6 @@ export const APP_ICONS_USER = {
   ToolKit,
   UserMultiple,
   CurrencyDollar,
-  Rocket,
   TextShortParagraph,
   Code,
   Bot,

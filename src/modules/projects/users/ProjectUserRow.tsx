@@ -17,7 +17,6 @@
 import { deleteProjectUser, updateProjectUser } from '@/app/api/projects-users';
 import { ProjectUser, ProjectUserRole } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { SkeletonPlaceholder, SkeletonText } from '@carbon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -25,13 +24,14 @@ import clsx from 'clsx';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import classes from './ProjectUserRow.module.scss';
 import { projectUsersQuery } from './queries';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   user: ProjectUser;
 }
 
 export function ProjectUserRow({ user }: Props) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const userId = useUserProfile((state) => state.id);
   const queryClient = useQueryClient();
 

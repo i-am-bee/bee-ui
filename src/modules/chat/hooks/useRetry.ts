@@ -15,17 +15,17 @@
  */
 
 import { deleteMessage } from '@/app/api/threads-messages';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { useMutation } from '@tanstack/react-query';
 import { v4 as uuid } from 'uuid';
 import { useChat } from '../providers/ChatProvider';
 import { ChatMessage } from '../types';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export function useRetry(message: ChatMessage) {
   const { status, thread, sendMessage, getMessages, setMessages } = useChat();
   const { addToast } = useToast();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const { mutateAsync, isPending: isDeleting } = useMutation({
     mutationFn: ({ threadId, messageId }: DeleteMutationParams) =>

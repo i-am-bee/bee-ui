@@ -17,18 +17,18 @@
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { redirect } from 'next/navigation';
 import { ensureSession } from '../auth/rsc';
-// import isObject from 'lodash/isObject';
+import isObject from 'lodash/isObject';
 
 export default async function AppsPage() {
   const session = await ensureSession();
-  // const { onboarding_section_completed_at: onboardingCompleted } =
-  //   session.userProfile.metadata ?? {};
+  const { onboarding_section_completed_at: onboardingCompleted } =
+    session.userProfile.metadata ?? {};
 
   const { default_project: defaultProject } = session.userProfile;
 
-  // TODO: enable onboarding
-  // const showOnboarding = !Boolean(isObject(onboardingCompleted) && onboardingCompleted.apps);
-  const showOnboarding = false;
+  const showOnboarding = !Boolean(
+    isObject(onboardingCompleted) && onboardingCompleted.apps,
+  );
 
   redirect(`/${defaultProject}${showOnboarding ? `?${ONBOARDING_PARAM}` : ''}`);
 }

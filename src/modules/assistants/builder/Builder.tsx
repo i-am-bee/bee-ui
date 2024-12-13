@@ -18,7 +18,10 @@
 import { RunMetadata } from '@/app/api/threads-runs/types';
 import { Thread } from '@/app/api/threads/types';
 import { ToolReference } from '@/app/api/tools/types';
+import { useOnMount } from '@/hooks/useOnMount';
+import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -56,7 +59,6 @@ export function Builder({ thread, initialMessages }: Props) {
       watch,
       formState: { isSubmitting, dirtyFields },
     },
-    isOnboarding,
   } = useAssistantBuilder();
   const { project, organization, isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
@@ -69,6 +71,10 @@ export function Builder({ thread, initialMessages }: Props) {
       router.push(`/${project.id}`);
     },
   });
+
+  const { setUserSetting } = useUserSetting();
+
+  useOnMount(() => setUserSetting('sidebarPinned', false));
 
   const isSaved = Boolean(assistant && isEmpty(dirtyFields));
 
@@ -122,6 +128,7 @@ export function Builder({ thread, initialMessages }: Props) {
                 value={value}
                 ref={ref}
                 onChange={onChange}
+                maxLength={200}
               />
             )}
           />
@@ -150,6 +157,17 @@ export function Builder({ thread, initialMessages }: Props) {
           </div>
 
           <div>
+            {assistant && (
+              <Button
+                kind="tertiary"
+                onClick={() =>
+                  router.push(`/${project.id}/chat/${assistant.id}`)
+                }
+                disabled={isSubmitting}
+              >
+                Launch in chat
+              </Button>
+            )}
             <Button
               kind="secondary"
               onClick={() => onSubmit()}
@@ -161,7 +179,7 @@ export function Builder({ thread, initialMessages }: Props) {
               ) : isSaved ? (
                 'Saved'
               ) : (
-                'Save'
+                'Save agent'
               )}
             </Button>
           </div>
@@ -199,8 +217,8 @@ export function Builder({ thread, initialMessages }: Props) {
 const NAME_MAX_LENGTH = 55;
 
 function BuilderChat() {
-  const { thread, assistant, reset, getMessages } = useChat();
-  const { project } = useAppContext();
+  const { thread, assistant, reset } = useChat();
+  const { project } = useProjectContext();
 
   const handleClear = () => {
     reset([]);

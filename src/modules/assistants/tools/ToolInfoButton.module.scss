@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-import { ArtifactsListQuery } from '@/app/api/artifacts/types';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { listArtifactsQuery } from '../queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+@use 'styles/common' as *;
+@use '@carbon/styles/scss/utilities/button-reset';
 
-export function useArtifacts({ params }: { params?: ArtifactsListQuery } = {}) {
-  const { project, organization } = useProjectContext();
+.root {
+  @include button-reset.reset();
+  inline-size: $spacing-06;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  const query = useInfiniteQuery({
-    ...listArtifactsQuery(organization.id, project.id, params),
-  });
-
-  return query;
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-04;
+  .openDetailBtn {
+    color: $link-inverse;
+    &:hover {
+      color: $link-inverse-hover;
+    }
+  }
 }

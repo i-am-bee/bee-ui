@@ -16,7 +16,7 @@
 
 @use 'styles/common' as *;
 
-.root {
+.root.root {
   min-block-size: rem(287px);
 }
 

@@ -163,7 +163,13 @@ export function AssistantBuilderProvider({
         keepValues: false,
       },
     );
-  }, [isDuplicate, initialAssistant, selectAssistant]);
+  }, [
+    isDuplicate,
+    initialAssistant,
+    selectAssistant,
+    reset,
+    assistantTemplate,
+  ]);
 
   useEffect(() => {
     if (!isEmpty(formState.dirtyFields))

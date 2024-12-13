@@ -46,8 +46,7 @@
 
 .content {
   display: flex;
-  justify-content: space-between;
-  column-gap: $spacing-08;
+  justify-content: flex-end;
 }
 
 .heading {

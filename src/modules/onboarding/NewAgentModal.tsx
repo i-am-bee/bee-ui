@@ -15,11 +15,9 @@
  */
 
 import { Modal } from '@/components/Modal/Modal';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ONBOARDING_PARAM } from '@/utils/constants';
-import { noop } from '@/utils/helpers';
 import { ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
@@ -28,14 +26,19 @@ import { ASSISTANT_TEMPLATES } from '../assistants/templates';
 import { AssistantTemplate } from '../assistants/types';
 import { OnboardingAssistantSelection } from './OnboardingAssistantSelection';
 import { OnboardingIntro } from './OnboardingIntro';
-import classes from './OnboardingModal.module.scss';
+import classes from './NewAgentModal.module.scss';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
-interface Props extends ModalProps {}
+interface Props extends ModalProps {
+  isOnboarding?: boolean;
+}
 
-export function OnboardingModal({ ...props }: Props) {
+export function NewAgentModal({ isOnboarding, ...props }: Props) {
   const router = useRouter();
-  const { project } = useAppContext();
-  const [step, setStep] = useState(Steps.INTRO);
+  const { project } = useProjectContext();
+  const [step, setStep] = useState(
+    isOnboarding ? Steps.INTRO : Steps.ASSISTANT_SELECTION,
+  );
   const [selectedTemplate, setSelectedTemplate] =
     useState<AssistantTemplate | null>(null);
 
@@ -63,8 +66,9 @@ export function OnboardingModal({ ...props }: Props) {
         ),
         footer: (
           <OnboardingAssistantSelection.Footer
-            onBackClick={() => setStep(Steps.INTRO)}
+            onBackClick={isOnboarding ? () => setStep(Steps.INTRO) : undefined}
             onNextClick={() => {
+              props.onRequestClose();
               router.push(
                 `/${project.id}/builder?${ONBOARDING_PARAM}${selectedTemplate ? `&template=${selectedTemplate.key}` : ''}`,
               );

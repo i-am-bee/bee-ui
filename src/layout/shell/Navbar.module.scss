@@ -34,9 +34,15 @@
 }
 
 .heading {
+  position: absolute;
+  inset: 0;
   display: flex;
   gap: $spacing-03;
   min-inline-size: 0;
+  justify-content: center;
+  align-items: center;
+  z-index: -1;
+
   li {
     display: flex;
     align-items: center;
@@ -60,7 +66,7 @@
 .actions {
   display: flex;
   gap: $spacing-03;
-
+  background-color: $background;
   > button {
     padding-inline-end: $spacing-05;
   }
@@ -90,10 +96,6 @@
     .actions {
       display: none;
     }
-  }
-
-  .heading li.hideOnMobile {
-    display: none;
   }
 
   .actions {

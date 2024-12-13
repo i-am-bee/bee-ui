@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-import {
-  useAppApiContext,
-  useAppContext,
-} from '@/layout/providers/AppProvider';
+import { useAppApiContext } from '@/layout/providers/AppProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import { useRouter } from 'next-nprogress-bar';
 import { Assistant } from '../types';
 import { PAGE_SIZE } from './queries';
 import { AssistantCard } from './AssistantCard';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   assistants?: NonNullable<Assistant>[];
@@ -39,7 +37,7 @@ export function AssistantsList({
   onDeleteSuccess,
 }: Props) {
   const { selectAssistant } = useAppApiContext();
-  const { project } = useAppContext();
+  const { project } = useProjectContext();
   const router = useRouter();
 
   return (

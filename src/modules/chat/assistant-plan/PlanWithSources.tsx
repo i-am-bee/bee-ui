@@ -40,8 +40,8 @@ import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { Spinner } from '@/components/Spinner/Spinner';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   message: BotChatMessage;
@@ -50,7 +50,7 @@ interface Props {
 }
 
 function PlanWithSourcesComponent({ message, inView }: Props) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const { thread } = useChat();
   const { setExpandedStep } = useExpandedStepActions();
   const expandedStep = useExpandedStep();

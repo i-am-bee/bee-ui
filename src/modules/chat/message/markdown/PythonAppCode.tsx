@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-import { useAppBuilderApi } from '@/modules/apps/builder/AppBuilderProvider';
+import { AppIcon } from '@/modules/apps/AppIcon';
+import {
+  useAppBuilder,
+  useAppBuilderApi,
+} from '@/modules/apps/builder/AppBuilderProvider';
 import {
   extractAppMetadataFromStreamlitCode,
   extractCodeFromMessageContent,
 } from '@/modules/apps/utils';
 import { InlineLoading } from '@carbon/react';
-import { Rocket } from '@carbon/react/icons';
 import { HTMLAttributes, useMemo } from 'react';
 import { ExtraProps } from 'react-markdown';
 import { useRunContext } from '../../providers/RunProvider';
@@ -32,6 +35,7 @@ export function PythonAppCode({
   ...props
 }: HTMLAttributes<HTMLElement> & ExtraProps) {
   const { message } = useRunContext();
+  const { artifact } = useAppBuilder();
   const { setMobilePreviewOpen } = useAppBuilderApi();
 
   const appName = useMemo(() => {
@@ -60,7 +64,11 @@ export function PythonAppCode({
       ) : (
         <div className={classes.app}>
           <span className={classes.icon}>
-            {message?.pending ? <InlineLoading /> : <Rocket />}
+            {message?.pending ? (
+              <InlineLoading />
+            ) : (
+              <AppIcon name={artifact ? artifact.uiMetadata.icon : 'Rocket'} />
+            )}
           </span>
           {/* TODO: handle app error */}
           <strong>{appName ?? 'The app is ready'}</strong>

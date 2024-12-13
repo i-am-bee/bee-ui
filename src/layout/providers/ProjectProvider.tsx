@@ -14,29 +14,41 @@
  * limitations under the License.
  */
 
+'use client';
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
-import { Modal } from '@/components/Modal/Modal';
-import { ModalProps } from '@/layout/providers/ModalProvider';
-import { ModalBody, ModalHeader } from '@carbon/react';
-import { ShareApp } from './ShareApp';
-import { Artifact } from './types';
+import { createContext, PropsWithChildren, use } from 'react';
 
-interface Props extends ModalProps {
-  artifact: Artifact;
-  onSuccess?: (artifact: Artifact) => void;
+interface Props {
+  project: Project;
+  organization: Organization;
 }
 
-export function ShareAppModal({ artifact, onSuccess, ...props }: Props) {
-  return (
-    <Modal {...props}>
-      <ModalHeader>
-        <h2>Share</h2>
-      </ModalHeader>
+const ProjectContext = createContext<Props>(null as unknown as Props);
 
-      <ModalBody>
-        <ShareApp artifact={artifact} onSuccess={onSuccess} />
-      </ModalBody>
-    </Modal>
+export function ProjectProvider({
+  project,
+  organization,
+  children,
+}: PropsWithChildren<Props>) {
+  return (
+    <ProjectContext.Provider
+      value={{
+        project,
+        organization,
+      }}
+    >
+      {children}
+    </ProjectContext.Provider>
   );
+}
+
+export function useProjectContext() {
+  const context = use(ProjectContext);
+
+  if (!context) {
+    throw new Error('useProjectContext must be used within a ProjectProvider');
+  }
+
+  return context;
 }

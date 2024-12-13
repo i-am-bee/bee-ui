@@ -36,6 +36,7 @@ import { ToolName } from '../common/ToolName';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
+import { useTools } from './useTools';
 
 export function useToolInfo({
   toolReference,
@@ -47,15 +48,22 @@ export function useToolInfo({
   project: Project;
 }) {
   const { tool: toolProp, id, type } = toolReference;
+  const isQueryable = type === 'user' || type === 'system';
   const { data, isLoading, error } = useQuery({
     ...readToolQuery(organization.id, project.id, id),
-    enabled: type === 'user' || type === 'system',
+    enabled: isQueryable,
     initialData: toolProp
       ? encodeEntityWithMetadata<Tool>(toolProp)
       : undefined,
   });
 
-  const tool = data ?? toolProp;
+  const { data: staticToolData } = useTools({
+    params: { type: [type] },
+    enabled: !isQueryable,
+  });
+  const staticTool = staticToolData?.tools.at(0);
+
+  const tool = data ?? staticTool ?? toolProp;
 
   const toolName = useMemo(() => {
     if (tool) return tool.name;
@@ -85,7 +93,7 @@ export function useToolInfo({
     return Tools;
   }, [id, tool, type]);
 
-  return { toolName, toolIcon, tool: data, isLoading, error };
+  return { toolName, toolIcon, tool: data ?? staticTool, isLoading, error };
 }
 
 const SYSTEM_TOOL_NAME: Record<SystemToolId, string> = {

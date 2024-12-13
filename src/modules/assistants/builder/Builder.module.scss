@@ -62,6 +62,18 @@
   > div {
     display: flex;
     gap: $spacing-03;
+
+    button {
+      padding-inline: $spacing-05;
+      display: flex;
+      gap: $spacing-05;
+      align-items: center;
+
+      svg:global(.#{$prefix}--btn__icon) {
+        position: relative;
+        inset: 0;
+      }
+    }
   }
 }
 

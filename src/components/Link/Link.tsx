@@ -35,7 +35,8 @@ type Props = Omit<
  */
 export function Link({ href, children, replace, onClick, ...rest }: Props) {
   const router = useRouter();
-  const { isBlocked, confirmMessage } = useNavigationControl();
+  const { isBlocked, confirmMessage, onLeaveWithConfirmation } =
+    useNavigationControl();
 
   return (
     <NextLink

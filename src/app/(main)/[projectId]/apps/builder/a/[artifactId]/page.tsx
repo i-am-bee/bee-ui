@@ -43,28 +43,16 @@ export default async function AppBuilderPage({
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);
   const artifact = await fetchArtifact(organizationId, projectId, artifactId);
 
-  const thread = artifact?.thread_id
-    ? await fetchThread(organizationId, projectId, artifact?.thread_id)
-    : null;
-
-  if (!(assistant && thread && artifact)) notFound();
-
-  const initialMessages = thread.id
-    ? await listMessagesWithFiles(organizationId, projectId, thread.id, {
-        limit: MESSAGES_PAGE_SIZE,
-      })
-    : [];
+  if (!(assistant && artifact)) notFound();
 
   return (
     <LayoutInitializer
-      layout={{ navbarProps: getAppBuilderNavbarProps(projectId, artifact) }}
+      layout={{
+        navbarProps: getAppBuilderNavbarProps(projectId),
+      }}
     >
       <AppBuilderProvider artifact={artifact}>
-        <AppBuilder
-          assistant={assistant}
-          thread={thread}
-          initialMessages={initialMessages}
-        />
+        <AppBuilder assistant={assistant} />
       </AppBuilderProvider>
     </LayoutInitializer>
   );

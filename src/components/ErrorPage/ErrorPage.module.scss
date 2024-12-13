@@ -37,3 +37,8 @@
     @include type-style(heading-07);
   }
 }
+
+.buttons {
+  display: flex;
+  gap: $spacing-03;
+}
