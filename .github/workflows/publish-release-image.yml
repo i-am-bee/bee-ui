@@ -34,6 +34,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_APP_NAME=Bee
             NEXT_PUBLIC_FEATURE_FLAGS={"Knowledge": false, "Files": true, "FunctionTools": true, "Observe": true}
+            NEXT_PUBLIC_USERCONTENT_SITE_URL=http://bee-usercontent-site:5173
           tags: |
             ${{ vars.DOCKER_REGISTRY }}/i-am-bee/bee-ui-local:latest
             ${{ vars.DOCKER_REGISTRY }}/i-am-bee/bee-ui-local:${{ steps.get_version.outputs.VERSION }}
