@@ -117,10 +117,10 @@ function AgentLink({
         className={clsx(classes.item, {
           [classes.focusWithin]: optionsOpen,
           [classes.active]:
-            (selectedAssistant &&
-              selectedAssistant.id === assistant.id &&
-              navbarProps?.type === 'chat') ||
-            navbarProps?.type === 'assistant-builder',
+            selectedAssistant &&
+            selectedAssistant.id === assistant.id &&
+            (navbarProps?.type === 'chat' ||
+              navbarProps?.type === 'assistant-builder'),
         })}
       >
         <span className={classes.icon}>

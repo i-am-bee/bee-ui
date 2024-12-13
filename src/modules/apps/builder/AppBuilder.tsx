@@ -240,63 +240,65 @@ function AppBuilderContent() {
             setSelectedTab(selectedIndex);
           }}
         >
-          <div className={classes.appPaneHeader}>
-            <TabList aria-label="App View mode">
-              <Tab>UI Preview</Tab>
-              <Tab>Source code</Tab>
-            </TabList>
-            <div className={classes.appActions}>
-              {artifact && (
-                <IconButton
-                  label="Share"
-                  kind="tertiary"
+          {code !== null && (
+            <div className={classes.appPaneHeader}>
+              <TabList aria-label="App View mode">
+                <Tab>UI Preview</Tab>
+                <Tab>Source code</Tab>
+              </TabList>
+              <div className={classes.appActions}>
+                {artifact && (
+                  <IconButton
+                    label="Share"
+                    kind="tertiary"
+                    size="sm"
+                    align="bottom"
+                    onClick={() =>
+                      openModal((props) => (
+                        <ProjectProvider
+                          project={project}
+                          organization={organization}
+                        >
+                          <ShareAppModal
+                            {...props}
+                            artifact={artifact}
+                            onSuccess={setArtifact}
+                          />
+                        </ProjectProvider>
+                      ))
+                    }
+                  >
+                    <Share />
+                  </IconButton>
+                )}
+                <Button
+                  kind="secondary"
                   size="sm"
-                  align="bottom"
-                  onClick={() =>
-                    openModal((props) => (
-                      <ProjectProvider
-                        project={project}
-                        organization={organization}
-                      >
-                        <ShareAppModal
-                          {...props}
-                          artifact={artifact}
-                          onSuccess={setArtifact}
-                        />
-                      </ProjectProvider>
-                    ))
-                  }
+                  onClick={() => {
+                    if (code) {
+                      openModal((props) => (
+                        <ProjectProvider
+                          project={project}
+                          organization={organization}
+                        >
+                          <SaveAppModal
+                            artifact={artifact}
+                            messageId={message?.id}
+                            code={code}
+                            onSaveSuccess={setArtifact}
+                            {...props}
+                          />
+                        </ProjectProvider>
+                      ));
+                    }
+                  }}
+                  disabled={!code}
                 >
-                  <Share />
-                </IconButton>
-              )}
-              <Button
-                kind="secondary"
-                size="sm"
-                onClick={() => {
-                  if (code) {
-                    openModal((props) => (
-                      <ProjectProvider
-                        project={project}
-                        organization={organization}
-                      >
-                        <SaveAppModal
-                          artifact={artifact}
-                          messageId={message?.id}
-                          code={code}
-                          onSaveSuccess={setArtifact}
-                          {...props}
-                        />
-                      </ProjectProvider>
-                    ));
-                  }
-                }}
-                disabled={!code}
-              >
-                Save to Apps
-              </Button>
+                  Save to Apps
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
               <ArtifactSharedIframe

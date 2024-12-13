@@ -1,0 +1,14 @@
+<svg  viewBox="0 0 512 557" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="511.553" height="557" rx="8" fill="white" data-fill="background" />
+  <rect x="24.5" y="24.5" width="126" height="7" rx="3.5" fill="#F2F4F8" stroke="#F2F4F8" data-fill="layer" data-stroke="layer"/>
+  <rect x="24.5" y="64.5" width="311" height="7" rx="3.5" fill="#F2F4F8" stroke="#F2F4F8" data-fill="layer" data-stroke="layer"/>
+  <rect x="24.5" y="104.5" width="462.553" height="82" rx="7.5" stroke="#DDE1E6" stroke-dasharray="6 6" data-stroke="layer"/>
+  <rect x="24.5" y="219.5" width="399" height="23" rx="7.5" fill="#F2F4F8" stroke="#F2F4F8" data-fill="layer" data-stroke="layer"/>
+  <rect width="48" height="24" transform="translate(440 219)" fill="white" fill-opacity="0.01" style="mix-blend-mode:multiply" data-fill="background"/>
+  <rect x="440" y="219" width="48" height="24" rx="12" fill="#DDE1E6" data-fill="layer"/>
+  <rect x="467" y="222" width="18" height="18" rx="9" fill="white" data-fill="background" />
+  <rect x="24.5" y="275.5" width="223" height="47" rx="7.5" fill="#F2F4F8" stroke="#F2F4F8" data-fill="layer" data-stroke="layer"/>
+  <rect x="264.5" y="275.5" width="223" height="47" rx="7.5" fill="#F2F4F8" stroke="#F2F4F8" data-fill="layer" data-stroke="layer"/>
+  <rect x="24.5" y="355.5" width="462.553" height="95" rx="7.5" fill="#F2F4F8" stroke="#F2F4F8" data-fill="layer" data-stroke="layer"/>
+  <rect x="24" y="483" width="140" height="50" rx="8" fill="#DDE1E6" data-fill="layer-active"/>
+</svg>

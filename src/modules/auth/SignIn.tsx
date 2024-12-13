@@ -27,6 +27,7 @@ import GoogleIcon from './GoogleIcon.svg';
 import IBMIcon from './IBMIcon.svg';
 import clsx from 'clsx';
 import Image from 'next/image';
+import BeeLogo from '@/layout/shell/BeeLogo.svg';
 
 const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
 const BEE_AGENT_PLATFORM_URL = process.env.NEXT_PUBLIC_BEE_AGENT_PLATFORM_URL;
@@ -137,16 +138,7 @@ export function SignIn({
                 [classes.logoHeading]: showWaitlist,
               })}
             >
-              {showWaitlist ? (
-                <Image
-                  src="/img/Bee-logo.svg"
-                  alt="Bee logo"
-                  width={144}
-                  height={44}
-                />
-              ) : (
-                APP_NAME
-              )}
+              {showWaitlist ? <BeeLogo /> : APP_NAME}
               <VersionTag />
             </h1>
 

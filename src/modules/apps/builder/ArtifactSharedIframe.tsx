@@ -26,6 +26,7 @@ import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
 import Bee from '@/modules/assistants/icons/BeeMain.svg';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import AppPlaceholder from './Placeholder.svg';
 
 interface Props {
   sourceCode: string | null;
@@ -185,11 +186,7 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
 
       {!sourceCode ? (
         <div className={classes.placeholder}>
-          <div className={classes.placeholderContent}>
-            <Bee />
-            <h2>Build an app</h2>
-            <p>Preview and test your app here before saving and sharing</p>
-          </div>
+          <AppPlaceholder />
         </div>
       ) : (
         state === State.LOADING && sourceCode && <Loading />

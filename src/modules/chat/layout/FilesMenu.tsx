@@ -22,6 +22,7 @@
 import { IconButton, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { Attachment } from '@carbon/react/icons';
 import { MouseEventHandler } from 'react';
+import { useChat } from '../providers/ChatProvider';
 // import classes from './FilesMenu.module.scss';
 
 interface Props {
@@ -29,10 +30,13 @@ interface Props {
 }
 
 export function FilesMenu({ onUploadClick }: Props) {
+  const { assistant } = useChat();
+
   return (
     <IconButton
       label="Upload file"
       onClick={onUploadClick}
+      disabled={!assistant}
       autoAlign
       kind="ghost"
       size="sm"

@@ -86,6 +86,11 @@
     :global(.#{$prefix}--tag) {
       margin-inline-start: 0;
     }
+    svg {
+      path {
+        fill: $text-primary;
+      }
+    }
   }
 
   :global(.#{$prefix}--tag) {
