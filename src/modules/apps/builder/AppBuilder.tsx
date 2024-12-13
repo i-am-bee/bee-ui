@@ -254,13 +254,16 @@ function AppBuilderContent() {
                   align="bottom"
                   onClick={() =>
                     openModal((props) => (
-                      <ShareAppModal
-                        {...props}
-                        artifact={artifact}
+                      <ProjectProvider
                         project={project}
                         organization={organization}
-                        onSuccess={setArtifact}
-                      />
+                      >
+                        <ShareAppModal
+                          {...props}
+                          artifact={artifact}
+                          onSuccess={setArtifact}
+                        />
+                      </ProjectProvider>
                     ))
                   }
                 >

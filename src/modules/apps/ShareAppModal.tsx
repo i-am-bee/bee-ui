@@ -24,18 +24,10 @@ import { Artifact } from './types';
 
 interface Props extends ModalProps {
   artifact: Artifact;
-  project: Project;
-  organization: Organization;
   onSuccess?: (artifact: Artifact) => void;
 }
 
-export function ShareAppModal({
-  artifact,
-  project,
-  organization,
-  onSuccess,
-  ...props
-}: Props) {
+export function ShareAppModal({ artifact, onSuccess, ...props }: Props) {
   return (
     <Modal {...props} preventCloseOnClickOutside>
       <ModalHeader>
@@ -43,12 +35,7 @@ export function ShareAppModal({
       </ModalHeader>
 
       <ModalBody>
-        <ShareApp
-          artifact={artifact}
-          project={project}
-          organization={organization}
-          onSuccess={onSuccess}
-        />
+        <ShareApp artifact={artifact} onSuccess={onSuccess} />
       </ModalBody>
     </Modal>
   );

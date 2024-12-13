@@ -21,6 +21,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
+import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   artifact?: Artifact;
@@ -46,12 +47,9 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
           kind="tertiary"
           onClick={() =>
             openModal((props) => (
-              <ShareAppModal
-                {...props}
-                artifact={artifact}
-                project={project}
-                organization={organization}
-              />
+              <ProjectProvider project={project} organization={organization}>
+                <ShareAppModal {...props} artifact={artifact} />
+              </ProjectProvider>
             ))
           }
         >
