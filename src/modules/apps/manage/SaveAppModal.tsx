@@ -58,6 +58,7 @@ interface Props extends ModalProps {
   code?: string;
   isConfirmation?: boolean;
   onSaveSuccess?: (artifact: Artifact) => void;
+  additionalMetadata?: Partial<ArtifactMetadata>;
 }
 
 export function SaveAppModal({
@@ -66,6 +67,7 @@ export function SaveAppModal({
   code,
   isConfirmation,
   onSaveSuccess,
+  additionalMetadata,
   ...props
 }: Props) {
   const router = useRouter();
@@ -131,6 +133,7 @@ export function SaveAppModal({
                 artifact: artifactProp,
                 messageId: messageId ?? '',
                 code: code ?? '',
+                additionalMetadata,
               }),
             }
           : {
@@ -138,11 +141,12 @@ export function SaveAppModal({
                 formValues: data,
                 messageId: messageId ?? '',
                 code: code ?? '',
+                additionalMetadata,
               }),
             },
       );
     },
-    [isUpdating, artifactProp, messageId, code, mutateSave],
+    [isUpdating, additionalMetadata, artifactProp, messageId, code, mutateSave],
   );
 
   return (
@@ -238,10 +242,12 @@ function createNewArtifactBody({
   formValues: { name, description, icon },
   messageId,
   code,
+  additionalMetadata,
 }: {
   formValues: AppFormValues;
   messageId: string;
   code: string;
+  additionalMetadata?: Partial<ArtifactMetadata>;
 }): ArtifactCreateBody {
   return {
     name,
@@ -250,6 +256,7 @@ function createNewArtifactBody({
     source_code: code,
     type: 'app',
     metadata: encodeMetadata<ArtifactMetadata>({
+      ...additionalMetadata,
       icon,
     }),
   };
@@ -260,11 +267,13 @@ function createUpdateArtifactBody({
   artifact,
   messageId,
   code,
+  additionalMetadata,
 }: {
   formValues: AppFormValues;
   artifact: Artifact;
   messageId: string;
   code: string;
+  additionalMetadata?: Partial<ArtifactMetadata>;
 }): ArtifactUpdateBody {
   return {
     name,
@@ -273,6 +282,7 @@ function createUpdateArtifactBody({
     source_code: code,
     shared: Boolean(artifact.share_url),
     metadata: encodeMetadata<ArtifactMetadata>({
+      ...additionalMetadata,
       icon,
     }),
   };

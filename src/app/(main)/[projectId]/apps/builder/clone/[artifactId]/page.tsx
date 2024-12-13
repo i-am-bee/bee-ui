@@ -50,7 +50,10 @@ export default async function CloneAppPage({
         navbarProps: getAppBuilderNavbarProps(projectId),
       }}
     >
-      <AppBuilderProvider code={artifactResult.source_code}>
+      <AppBuilderProvider
+        code={artifactResult.source_code}
+        isSharedClone={token != null}
+      >
         <AppBuilder assistant={assistant} />
       </AppBuilderProvider>
     </LayoutInitializer>

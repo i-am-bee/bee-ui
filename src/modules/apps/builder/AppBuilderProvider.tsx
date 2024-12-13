@@ -32,11 +32,13 @@ import { ARTIFACT_TEMPLATES } from '../onboarding/templates';
 interface Props {
   code?: string;
   artifact?: Artifact;
+  isSharedClone?: boolean;
 }
 
 export function AppBuilderProvider({
   code: initialCode,
   artifact: initialArtifact,
+  isSharedClone,
   children,
 }: PropsWithChildren<Props>) {
   const searchParams = useSearchParams();
@@ -65,7 +67,7 @@ export function AppBuilderProvider({
 
   return (
     <AppBuilderApiContext.Provider value={apiValue}>
-      <AppBuilderContext.Provider value={{ code, artifact }}>
+      <AppBuilderContext.Provider value={{ code, artifact, isSharedClone }}>
         {children}
       </AppBuilderContext.Provider>
     </AppBuilderApiContext.Provider>
@@ -75,6 +77,7 @@ export function AppBuilderProvider({
 const AppBuilderContext = createContext<{
   code: string | null;
   artifact: Artifact | null;
+  isSharedClone?: boolean;
 }>({
   code: null,
   artifact: null,

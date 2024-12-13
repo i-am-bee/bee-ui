@@ -29,6 +29,7 @@ import { useToast } from '@/layout/providers/ToastProvider';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';
+import pick from 'lodash/pick';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,
@@ -192,6 +193,31 @@ export function AssistantBuilderProvider({
         }, [])
         .filter(isNotNull);
 
+      const metadata: AssistantMetadata = {
+        icon: icon.name,
+        color: icon.color,
+      };
+      if (starterQuestions) {
+        Object.assign(
+          metadata,
+          encodeStarterQuestionsMetadata(starterQuestions),
+        );
+      }
+      // When creating assistant set origin fields, when updating just copy them
+      if (assistant?.id == null) {
+        Object.assign(
+          metadata,
+          assistantTemplate
+            ? { origin: 'template', originTemplate: assistantTemplate.key }
+            : { origin: 'new' },
+        );
+      } else {
+        Object.assign(
+          metadata,
+          pick(assistant.uiMetadata, ['origin', 'originTemplate']),
+        );
+      }
+
       await saveAssistantAsync({
         id: assistant?.id,
         body: {
@@ -205,20 +231,14 @@ export function AssistantBuilderProvider({
               ? { vector_store_ids: [vectorStoreId] }
               : undefined,
           },
-          metadata: encodeMetadata<AssistantMetadata>({
-            icon: icon.name,
-            color: icon.color,
-            ...(starterQuestions
-              ? encodeStarterQuestionsMetadata(starterQuestions)
-              : {}),
-          }),
+          metadata: encodeMetadata(metadata),
           model,
         },
       });
 
       formReturn.reset({}, { keepValues: true });
     },
-    [assistant, formReturn, saveAssistantAsync],
+    [assistant, assistantTemplate, formReturn, saveAssistantAsync],
   );
 
   const handleError = useCallback(() => {
