@@ -26,7 +26,6 @@ import { WaitlistModal } from './WaitlistModal';
 import GoogleIcon from './GoogleIcon.svg';
 import IBMIcon from './IBMIcon.svg';
 import clsx from 'clsx';
-import Image from 'next/image';
 import BeeLogo from '@/layout/shell/BeeLogo.svg';
 
 const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
@@ -133,12 +132,8 @@ export function SignIn({
               />
             )}
 
-            <h1
-              className={clsx(classes.heading, {
-                [classes.logoHeading]: showWaitlist,
-              })}
-            >
-              {showWaitlist ? <BeeLogo /> : APP_NAME}
+            <h1 className={clsx(classes.heading, classes.logoHeading)}>
+              <BeeLogo />
               <VersionTag />
             </h1>
 
