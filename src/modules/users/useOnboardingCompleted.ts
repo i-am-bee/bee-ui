@@ -25,7 +25,7 @@ export function useOnboardingCompleted(section: OnboardingSection | null) {
   const userMetadata = useUserProfile((state) => state.metadata);
 
   useOnMount(() => {
-    if (section)
+    if (section && !userMetadata?.onboarding_section_completed_at?.[section])
       updateUserMutate({
         metadata: encodeMetadata<UserMetadata>({
           ...userMetadata,
