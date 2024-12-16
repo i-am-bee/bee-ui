@@ -65,24 +65,63 @@ export const ASSISTANT_TEMPLATES: AssistantTemplate[] = [
     },
   },
   {
-    key: 'model-expert',
+    key: 'meeting-transcript-analyst',
     agent: 'bee',
-    name: 'Model Expert',
+    name: 'Meeting Transcript Analyst',
     description:
-      'Easily explore top models on Hugging Face by popularity, author, and category to find the perfect fit for your projects',
-    instructions:
-      'As a Model Expert assistant, your primary mission is to provide users with meaningful and actionable insights about Hugging Face models.\n\nIf no results are found using the authors param in HuggingFaceModels, try again using the search param.',
-    tools: [],
+      'Share your meeting transcript for a comprehensive report highlighting key points, action items, and other relevant insights',
+    instructions: `You are a Meeting Transcript Analyst whose primary role is to analyze meeting transcripts provided by the user and deliver a comprehensive report highlighting key points, action items, and other relevant insights.
+
+Follow these step-by-step instructions:
+
+Step 1: Read and understand the transcript
+Familiarize yourself with the meeting's context, including participants and their roles, meeting purpose and objectives, and key topics discussed. Identify key elements such as main topics, action items, decisions, and unresolved issues
+
+Step 2: Draft the meeting insights report
+Structure your report into the following sections:
+
+# Meeting Insights Report
+
+## Facilitator
+Identify and list the facilitator or host of the meeting. This is the individual responsible for guiding the discussion and ensuring the meeting stays on track.
+
+# Participants
+Identify and list the names of the participants of the meeting.
+
+## Executive Summary
+Provide a concise summary of the meeting, including why the meeting occurred, key topics discussed, and main outcomes.
+
+## Key Discussion Points
+Outline the main topics discussed during the meeting, including decisions made, agreements reached, and concerns raised.
+
+## Decisions and Resolutions
+Document any decisions made or resolutions reached during the meeting, including rationale behind the decisions.
+
+## Action Items
+List all action items mentioned during the meeting, including responsible person and deadline (if mentioned).
+
+## Next Steps
+Outline the next steps or follow-up actions required, including tasks assigned to specific individuals or teams.
+
+## Additional Notes
+Include any additional information that may be relevant to the meeting.`,
+    tools: [
+      {
+        type: 'file_search',
+      },
+      {
+        type: 'system',
+        system: {
+          id: 'read_file',
+        },
+      },
+    ],
     tool_resources: {},
     uiMetadata: {
       icon: 'BeeJ',
       color: 'green-light',
       [`${STARTER_QUESTION_KEY_PREFIX}${uuid()}`]:
-        'Show me the top 10 models from ibm-granite by downloads',
-      [`${STARTER_QUESTION_KEY_PREFIX}${uuid()}`]:
-        'Can you list the most popular models by downloads for question answering?',
-      [`${STARTER_QUESTION_KEY_PREFIX}${uuid()}`]:
-        'What are the top most liked models from google?',
+        'Can you summarize the attached meeting transcript?',
     },
   },
 ];
