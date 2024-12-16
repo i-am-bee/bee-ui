@@ -90,7 +90,7 @@ const getCspHeader = (nonce: string) => {
       process.env.NODE_ENV === 'production' ? '' : `'unsafe-eval'`
     };
     style-src 'self' 'nonce-${nonce}';
-    img-src *;
+    img-src * blob: data: www.ibm.com/;
     font-src 'self';
     object-src 'none';
     frame-src ${USERCONTENT_SITE_URL};
