@@ -116,11 +116,12 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     setIsOpen(
       debugMode
         ? debugMode
-        : message.plan &&
+        : message.pending &&
+            message.plan &&
             ((message.plan.pending && !messageHasContent) ||
               (!message.plan.pending && messageHasContent)),
     );
-  }, [debugMode, message.plan, messageHasContent]);
+  }, [debugMode, message.pending, message.plan, messageHasContent]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -184,7 +185,8 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
         <SourcesView
           sources={sources.map(({ steps, ...props }) => ({
             ...props,
-            filtered: !(expandedStep !== null) || steps.includes(expandedStep),
+            filtered:
+              !(expandedStep !== null) || steps.includes(expandedStep.stepId),
           }))}
           show={isOpen}
           enableFetch={enableFetch}
