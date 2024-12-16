@@ -16,20 +16,22 @@
 
 'use client';
 import { Realm } from '@/app/auth/signin/actions';
+import { VersionTag } from '@/components/VersionTag/VersionTag';
 import { useTheme } from '@/layout/providers/ThemeProvider';
+import BeeLogo from '@/layout/shell/BeeLogo.svg';
+import {
+  APP_NAME,
+  BEE_AGENT_PLATFORM_URL,
+  WAITLIST_URL,
+} from '@/utils/constants';
 import { Button, InlineNotification, Loading } from '@carbon/react';
+import clsx from 'clsx';
 import { ReactNode, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import classes from './SignIn.module.scss';
-import { VersionTag } from '@/components/VersionTag/VersionTag';
-import { WaitlistModal } from './WaitlistModal';
 import GoogleIcon from './GoogleIcon.svg';
 import IBMIcon from './IBMIcon.svg';
-import clsx from 'clsx';
-import BeeLogo from '@/layout/shell/BeeLogo.svg';
-
-const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
-const BEE_AGENT_PLATFORM_URL = process.env.NEXT_PUBLIC_BEE_AGENT_PLATFORM_URL;
+import classes from './SignIn.module.scss';
+import { WaitlistModal } from './WaitlistModal';
 
 interface Props {
   error: LoginError | null;
@@ -140,8 +142,8 @@ export function SignIn({
             {showWaitlist && (
               <>
                 <p>
-                  Bee is buzzing with activity, and we’re currently at capacity.
-                  Sign up now to get notified when we expand.
+                  {APP_NAME} is buzzing with activity, and we’re currently at
+                  capacity. Sign up now to get notified when we expand.
                 </p>
 
                 {WAITLIST_URL && (
@@ -243,5 +245,3 @@ export interface LoginError {
   kind: 'warning' | 'error';
   title: string;
 }
-
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;

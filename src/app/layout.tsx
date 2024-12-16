@@ -19,15 +19,14 @@ import { ProgressBarProvider } from '@/layout/providers/ProgressBarProvider';
 import { ThemeProvider } from '@/layout/providers/ThemeProvider';
 import { ToastProvider } from '@/layout/providers/ToastProvider';
 import { StoreProvider } from '@/store/StoreProvider';
+import { APP_NAME } from '@/utils/constants';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { PropsWithChildren, ReactNode } from 'react';
 import { IncludeGlobalStyles } from './IncludeGlobalStyles';
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
-
 export const metadata: Metadata = {
-  title: `IBM Research ${APP_NAME}`,
+  title: `${APP_NAME}`,
   icons: { icon: '//www.ibm.com/favicon.ico' },
 };
 

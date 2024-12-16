@@ -17,9 +17,7 @@
 import { ACCEPT_TOU_PAGE, auth, SIGN_IN_PAGE } from '@/app/auth';
 import { NextMiddleware, NextResponse } from 'next/server';
 import { v4 as uuid } from 'uuid';
-import { USERCONTENT_SITE_URL } from './utils/constants';
-
-const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
+import { DUMMY_JWT_TOKEN, USERCONTENT_SITE_URL } from './utils/constants';
 
 const middleware: NextMiddleware = (...args) => {
   const [request, ev] = args;

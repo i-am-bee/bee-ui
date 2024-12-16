@@ -15,14 +15,13 @@
  */
 
 import 'server-only';
+import { DUMMY_JWT_TOKEN } from '@/utils/constants';
+import { addDaysToDate } from '@/utils/dates';
 import { JWT } from 'next-auth/jwt';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { SIGN_IN_PAGE, auth } from '.';
-import { addDaysToDate } from '@/utils/dates';
 import { readUser } from '../api/users';
-
-const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
 export const getSession = cache(async () => {
   return await auth();

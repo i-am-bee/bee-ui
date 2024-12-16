@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import { Thread } from '@/app/api/threads/types';
-import { readAssistantQuery } from '@/modules/assistants/queries';
-import { useQuery } from '@tanstack/react-query';
-import { runsQuery } from '../queries';
 import { ApiError } from '@/app/api/errors';
-import { useEffect, useState } from 'react';
-import { ThreadAssistant } from '../types';
+import { Thread } from '@/app/api/threads/types';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
-
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
+import { readAssistantQuery } from '@/modules/assistants/queries';
+import { APP_NAME } from '@/utils/constants';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { runsQuery } from '../queries';
+import { ThreadAssistant } from '../types';
 
 export function useGetThreadAssistant(
   thread?: Thread | null,

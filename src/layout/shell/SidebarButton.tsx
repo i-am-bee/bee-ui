@@ -16,6 +16,7 @@
 
 import { VersionTag } from '@/components/VersionTag/VersionTag';
 import { usePrefetchThreads } from '@/modules/chat/history/usePrefetchThreads';
+import { APP_NAME } from '@/utils/constants';
 import { Button, ButtonBaseProps } from '@carbon/react';
 import { Close, Menu } from '@carbon/react/icons';
 import { MouseEvent } from 'react';
@@ -55,7 +56,7 @@ export function SidebarButton({
         <Close />
       </Button>
 
-      <p className={classes.title}>BeeAI</p>
+      <p className={classes.title}>{APP_NAME}</p>
 
       <VersionTag />
     </div>
