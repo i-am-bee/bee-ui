@@ -16,7 +16,7 @@
 
 import { updateUser } from '@/app/api/users';
 import { UserUpdateBody } from '@/app/api/users/types';
-import { encodeMetadata } from '@/app/api/utils';
+import { decodeMetadata } from '@/app/api/utils';
 import { UserMetadata } from '@/store/user-profile/types';
 import { useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
@@ -31,7 +31,7 @@ export function useUpdateUser() {
         ...session,
         userProfile: {
           ...session?.userProfile,
-          metadata: encodeMetadata<UserMetadata>(result?.metadata),
+          metadata: decodeMetadata<UserMetadata>(result?.metadata),
         },
       });
     },

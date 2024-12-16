@@ -42,6 +42,7 @@ import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 
 interface Props {
   message: BotChatMessage;
@@ -74,9 +75,7 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
       project.id,
       thread?.id ?? '',
       message.run_id ?? '',
-      {
-        limit: 100,
-      },
+      PLAN_STEPS_QUERY_PARAMS,
     ),
     enabled: Boolean(!message.plan && thread && message.run_id && inView),
   });
@@ -234,3 +233,5 @@ const getSourcesWithSteps = (
 
   return uniqueSourcesWithSteps;
 };
+
+export const PLAN_STEPS_QUERY_PARAMS = { limit: MAX_API_FETCH_LIMIT };

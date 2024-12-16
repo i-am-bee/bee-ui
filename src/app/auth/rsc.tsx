@@ -21,6 +21,8 @@ import { cache } from 'react';
 import { SIGN_IN_PAGE, auth } from '.';
 import { addDaysToDate } from '@/utils/dates';
 import { readUser } from '../api/users';
+import { decodeMetadata } from '../api/utils';
+import { UserMetadata } from '@/store/user-profile/types';
 
 const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
@@ -31,6 +33,7 @@ export const getSession = cache(async () => {
 export const ensureSession = async () => {
   if (DUMMY_JWT_TOKEN) {
     const user = await readUser(DUMMY_JWT_TOKEN);
+
     if (user)
       return {
         user: {
@@ -38,8 +41,8 @@ export const ensureSession = async () => {
         },
         expires: addDaysToDate(new Date(), SESSION_TEST_EXPIRY_DAYS),
         userProfile: {
-          metadata: {},
           ...user,
+          metadata: decodeMetadata<UserMetadata>(user.metadata),
           name: user.name ?? '',
           email: user.email ?? '',
           firstName: 'Test',
