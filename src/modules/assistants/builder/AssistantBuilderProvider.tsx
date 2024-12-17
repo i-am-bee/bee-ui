@@ -168,14 +168,16 @@ export function AssistantBuilderProvider({
   useEffect(() => {
     reset(
       formValuesFromAssistant(
-        assistantTemplate ? assistantTemplate : (initialAssistant ?? null),
+        assistantTemplate
+          ? assistantTemplate
+          : ((assistant || initialAssistant) ?? null),
         isDuplicate,
       ),
       {
         keepValues: false,
       },
     );
-  }, [isDuplicate, assistantTemplate, initialAssistant, reset]);
+  }, [isDuplicate, assistantTemplate, initialAssistant, assistant, reset]);
 
   useEffect(() => {
     if (!isEmpty(formState.dirtyFields))
