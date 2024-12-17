@@ -15,11 +15,11 @@
  */
 
 'use client';
-import { AssistantBaseIcon } from '@/modules/assistants/icons/AssistantBaseIcon';
-import { memo, useRef } from 'react';
+import { Container } from '@/components/Container/Container';
+import { APP_NAME } from '@/utils/constants';
+import { memo } from 'react';
 import { useChat } from '../providers/ChatProvider';
 import classes from './Disclaimer.module.scss';
-import { Container } from '@/components/Container/Container';
 
 export const Disclaimer = memo(function Disclaimer() {
   const { assistant, disabledTools, builderState, threadSettingsButtonRef } =
@@ -33,8 +33,8 @@ export const Disclaimer = memo(function Disclaimer() {
     <div className={classes.root}>
       <Container size="sm" className={classes.disclaimer}>
         <p>
-          Bee is an experimental AI that can fly off course. Double check all
-          important information.
+          {APP_NAME} is an experimental AI that can fly off course. Double check
+          all important information.
         </p>
         {toolsInUse && (
           <p>

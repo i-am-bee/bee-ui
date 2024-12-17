@@ -40,7 +40,7 @@ export type ChatNavbarProps = {
 
 export type NavbarProps = {
   title?: string;
-  backButton?: { url: string; title?: string };
+  backButton?: { url: string; title?: string; onClick?: () => void };
 } & (
   | AppNavbarProps
   | ChatNavbarProps

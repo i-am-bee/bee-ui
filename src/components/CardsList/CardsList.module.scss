@@ -16,6 +16,16 @@
 
 @use 'styles/common' as *;
 
+.root {
+  :global(.#{$prefix}--actionable-notification) {
+    grid-column: 1 / -1;
+    max-inline-size: none;
+  }
+  :global(.#{$prefix}--actionable-notification__button-wrapper) {
+    inline-size: 100%;
+  }
+}
+
 .header {
   display: flex;
   flex-direction: column;
@@ -26,7 +36,8 @@
 .heading {
   display: flex;
   justify-content: flex-end;
-  gap: $spacing-08;
+  column-gap: $spacing-08;
+  row-gap: $spacing-06;
   align-items: baseline;
 
   h2 {
@@ -38,14 +49,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $spacing-07;
-  :global(.#{$prefix}--actionable-notification) {
-    grid-column: 1 / -1;
-    max-inline-size: none;
-  }
-  :global(.#{$prefix}--actionable-notification__button-wrapper) {
-    inline-size: 100%;
+  gap: $spacing-05;
+  &:not(:empty) + :global(.#{$prefix}--actionable-notification) {
+    margin-block-start: $spacing-05;
   }
 }
 
@@ -99,7 +105,6 @@
   block-size: 100%;
   display: flex;
   justify-content: flex-end;
-  margin-block-start: $spacing-02;
 }
 
 .controlBar {
@@ -111,7 +116,6 @@
 
 .searchBar {
   display: flex;
-  justify-content: flex-end;
   gap: $spacing-04;
   flex-grow: 1;
 
@@ -144,5 +148,34 @@
   }
   :global(.#{$prefix}--search-close)::before {
     display: none;
+  }
+}
+
+@include breakpoint-down(md) {
+  .heading {
+    flex-direction: column;
+  }
+
+  .searchBar {
+    display: none;
+  }
+}
+
+@include breakpoint-up(md) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@include breakpoint-up(lg) {
+  .searchBar {
+    justify-content: flex-end;
+  }
+
+  .grid {
+    gap: $spacing-07;
+    &:not(:empty) + :global(.#{$prefix}--actionable-notification) {
+      margin-block-start: $spacing-07;
+    }
   }
 }

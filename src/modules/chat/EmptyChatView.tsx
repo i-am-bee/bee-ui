@@ -18,6 +18,7 @@
 import { Container } from '@/components/Container/Container';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
+import { APP_NAME } from '@/utils/constants';
 import clsx from 'clsx';
 import { memo } from 'react';
 import { AssistantIcon } from '../assistants/icons/AssistantIcon';
@@ -28,8 +29,6 @@ import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
 import { SendMessageResult, useChat } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
-
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 
 interface Props {
   onMessageSent?: (result: SendMessageResult) => void;

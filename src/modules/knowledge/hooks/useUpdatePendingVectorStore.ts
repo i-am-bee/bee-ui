@@ -28,14 +28,14 @@ import { useEffect } from 'react';
 import { readVectorStoreQuery, vectorStoresQuery } from '../queries';
 import { produce } from 'immer';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export const useUpdatePendingVectorStore = (
   data: VectorStore[],
   params: VectorStoresListQuery,
 ) => {
   const queryClient = useQueryClient();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({
     durationStart: 1000,

@@ -17,7 +17,7 @@
 @use 'styles/common' as *;
 
 .root {
-  padding-block: $spacing-10 $spacing-08;
+  padding-block: $spacing-05 $spacing-06;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -55,4 +55,10 @@
   padding-inline-end: rem(15px);
   border-radius: $spacing-03;
   min-inline-size: rem(175px);
+}
+
+@include breakpoint-up(lg) {
+  .root {
+    padding-block: $spacing-10 $spacing-08;
+  }
 }

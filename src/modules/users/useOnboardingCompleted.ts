@@ -15,10 +15,7 @@
  */
 
 import { encodeMetadata } from '@/app/api/utils';
-import {
-  OnboardingCompletedAt,
-  UserMetadata,
-} from '@/store/user-profile/types';
+import { UserMetadata } from '@/store/user-profile/types';
 import { useUpdateUser } from './useUpdateUser';
 import { useOnMount } from '@/hooks/useOnMount';
 import { useUserProfile } from '@/store/user-profile';
@@ -28,7 +25,7 @@ export function useOnboardingCompleted(section: OnboardingSection | null) {
   const userMetadata = useUserProfile((state) => state.metadata);
 
   useOnMount(() => {
-    if (section)
+    if (section && !userMetadata?.onboarding_section_completed_at?.[section])
       updateUserMutate({
         metadata: encodeMetadata<UserMetadata>({
           ...userMetadata,

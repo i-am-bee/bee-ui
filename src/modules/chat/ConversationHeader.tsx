@@ -19,7 +19,6 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { NewSessionButton } from '@/layout/shell/NewSessionButton';
 import classes from './ConversationHeader.module.scss';
 import { useChat } from './providers/ChatProvider';
-import { AssistantAvatar } from './layout/AssistantAvatar';
 
 export function ConversationHeader() {
   const { assistant: appAssistant } = useAppContext();
@@ -32,16 +31,6 @@ export function ConversationHeader() {
       <div className={classes.holder}>
         <Container size="sm">
           <div className={classes.content}>
-            <h2 className={classes.heading}>
-              <AssistantAvatar
-                assistant={assistant}
-                size="lg"
-                className={classes.icon}
-              />
-
-              <span className={classes.name}>{assistant?.name}</span>
-            </h2>
-
             <NewSessionButton />
           </div>
         </Container>

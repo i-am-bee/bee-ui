@@ -19,7 +19,10 @@ import { Tooltip } from '@/components/Tooltip/Tooltip';
 import classes from './ToolInfoButton.module.scss';
 import { ArrowUpRight, Information } from '@carbon/react/icons';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import {
+  ProjectProvider,
+  useProjectContext,
+} from '@/layout/providers/ProjectProvider';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
@@ -38,36 +41,37 @@ export function ToolInfoButton({ toolReference }: Props) {
 
   if (!tool) return;
 
+  const toolDescription =
+    tool.type === 'user'
+      ? tool.description
+      : (tool.uiMetadata.description_short ?? tool.user_description);
+
   return (
     <Tooltip
       asChild
       content={
         <div className={classes.tooltip}>
-          <span>{tool.description}</span>
+          <span>{toolDescription}</span>
           <LinkButton
+            as="span"
+            className={classes.openDetailBtn}
             icon={ArrowUpRight}
             onClick={() =>
-              openModal((props) =>
-                tool.type === 'user' ? (
-                  isProjectReadOnly ? (
-                    <UserToolModal.View tool={tool} {...props} />
-                  ) : (
-                    <UserToolModal
-                      {...props}
-                      project={project}
-                      organization={organization}
-                      tool={tool}
-                    />
-                  )
-                ) : (
-                  <PublicToolModal
-                    organization={organization}
-                    project={project}
-                    {...props}
-                    tool={tool}
-                  />
-                ),
-              )
+              openModal((props) => (
+                <ProjectProvider project={project} organization={organization}>
+                  <>
+                    {tool.type === 'user' ? (
+                      isProjectReadOnly ? (
+                        <UserToolModal.View tool={tool} {...props} />
+                      ) : (
+                        <UserToolModal {...props} tool={tool} />
+                      )
+                    ) : (
+                      <PublicToolModal {...props} tool={tool} />
+                    )}
+                  </>
+                </ProjectProvider>
+              ))
             }
           >
             View Details
@@ -76,9 +80,9 @@ export function ToolInfoButton({ toolReference }: Props) {
       }
       placement="top"
     >
-      <button className={classes.root}>
+      <span className={classes.root} role="button">
         <Information />
-      </button>
+      </span>
     </Tooltip>
   );
 }

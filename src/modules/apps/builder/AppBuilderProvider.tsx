@@ -16,28 +16,31 @@
 
 'use client';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
+import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
+import { ONBOARDING_PARAM } from '@/utils/constants';
+import { useSearchParams } from 'next/navigation';
 import {
   createContext,
+  Dispatch,
   PropsWithChildren,
+  SetStateAction,
   use,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { Artifact } from '../types';
-import { useSearchParams } from 'next/navigation';
-import { ONBOARDING_PARAM } from '@/utils/constants';
-import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 import { ARTIFACT_TEMPLATES } from '../onboarding/templates';
+import { Artifact } from '../types';
 
 interface Props {
   code?: string;
   artifact?: Artifact;
+  isSharedClone?: boolean;
 }
 
 export function AppBuilderProvider({
   code: initialCode,
   artifact: initialArtifact,
+  isSharedClone,
   children,
 }: PropsWithChildren<Props>) {
   const searchParams = useSearchParams();
@@ -46,6 +49,8 @@ export function AppBuilderProvider({
   const template = templateKey
     ? ARTIFACT_TEMPLATES.find((template) => template.key === templateKey)
     : undefined;
+
+  const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
 
   const [artifact, setArtifact] = useState<Artifact | null>(
     initialArtifact ?? null,
@@ -57,16 +62,23 @@ export function AppBuilderProvider({
       null,
   );
 
-  useOnboardingCompleted(isOnboarding ? 'apps' : null);
+  useOnboardingCompleted('apps');
 
   const apiValue = useMemo(
-    () => ({ setCode, getCode: () => codeRef.current, setArtifact }),
-    [codeRef, setCode],
+    () => ({
+      setCode,
+      getCode: () => codeRef.current,
+      setArtifact,
+      setMobilePreviewOpen,
+    }),
+    [codeRef, setCode, setArtifact, setMobilePreviewOpen],
   );
 
   return (
     <AppBuilderApiContext.Provider value={apiValue}>
-      <AppBuilderContext.Provider value={{ code, artifact }}>
+      <AppBuilderContext.Provider
+        value={{ code, artifact, isSharedClone, mobilePreviewOpen }}
+      >
         {children}
       </AppBuilderContext.Provider>
     </AppBuilderApiContext.Provider>
@@ -76,12 +88,19 @@ export function AppBuilderProvider({
 const AppBuilderContext = createContext<{
   code: string | null;
   artifact: Artifact | null;
-} | null>(null);
+  isSharedClone?: boolean;
+  mobilePreviewOpen: boolean;
+}>({
+  code: null,
+  artifact: null,
+  mobilePreviewOpen: false,
+});
 
 const AppBuilderApiContext = createContext<{
   setCode: (content: string) => void;
   getCode: () => string | null;
   setArtifact: (artifact: Artifact) => void;
+  setMobilePreviewOpen: Dispatch<SetStateAction<boolean>>;
 } | null>(null);
 
 export function useAppBuilderApi() {
@@ -97,11 +116,5 @@ export function useAppBuilderApi() {
 }
 
 export function useAppBuilder() {
-  const context = use(AppBuilderContext);
-
-  if (!context) {
-    throw new Error('useAppBuilder must be used within a AppBuilderProvider');
-  }
-
-  return context;
+  return use(AppBuilderContext);
 }

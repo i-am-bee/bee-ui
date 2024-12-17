@@ -23,8 +23,9 @@ import {
 } from '@/app/api/threads/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import {
   Button,
@@ -75,11 +76,13 @@ export function ThreadItem({ thread }: Props) {
   const { openConfirmation } = useModal();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const id = useId();
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
   const fileCount = useThreadFileCount(thread);
+
+  const isMdDown = useBreakpoint('mdDown');
 
   const href =
     assistant.data?.agent === 'streamlit'
@@ -222,6 +225,7 @@ export function ThreadItem({ thread }: Props) {
             size="sm"
             onOpen={() => setOptionsOpen(true)}
             onClose={() => setOptionsOpen(false)}
+            flipped={isMdDown}
           >
             <OverflowMenuItem
               disabled={!isValid || isSubmitting}

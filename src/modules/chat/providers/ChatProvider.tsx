@@ -67,7 +67,12 @@ import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
 import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
 import { useThreadApi } from '../hooks/useThreadApi';
-import { messagesWithFilesQuery, readRunQuery, runsQuery } from '../queries';
+import {
+  messagesWithFilesQuery,
+  readRunQuery,
+  runsQuery,
+  runStepsQuery,
+} from '../queries';
 import {
   ChatMessage,
   MessageWithFiles,
@@ -87,6 +92,7 @@ import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ApiError } from '@/app/api/errors';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
+import { PLAN_STEPS_QUERY_PARAMS } from '../assistant-plan/PlanWithSources';
 
 interface CancelRunParams {
   threadId: string;
@@ -195,7 +201,11 @@ export function ChatProvider({
   }, [setVectorStoreId, thread?.tool_resources?.file_search?.vector_store_ids]);
 
   const setMessagesWithFilesQueryData = useCallback(
-    (threadId?: string, newMessage?: MessageWithFiles | null) => {
+    (
+      threadId?: string,
+      newMessage?: MessageWithFiles | null,
+      runId?: string,
+    ) => {
       if (threadId) {
         queryClient.setQueryData(
           messagesWithFilesQuery(organization.id, project.id, threadId)
@@ -206,12 +216,30 @@ export function ChatProvider({
             const existingIndex = messages?.findIndex(
               (item) => item.id === newMessage.id,
             );
-            if (existingIndex) {
+            if (existingIndex && existingIndex !== -1) {
               return messages?.toSpliced(existingIndex, 1, newMessage);
             }
             return messages ? [...messages, newMessage] : [newMessage];
           },
         );
+        queryClient.invalidateQueries({
+          queryKey: messagesWithFilesQuery(
+            organization.id,
+            project.id,
+            threadId,
+          ).queryKey,
+        });
+        if (runId) {
+          queryClient.invalidateQueries({
+            queryKey: runStepsQuery(
+              organization.id,
+              project.id,
+              threadId,
+              runId,
+              PLAN_STEPS_QUERY_PARAMS,
+            ).queryKey,
+          });
+        }
       }
     },
     [project.id, organization.id, queryClient],
@@ -642,7 +670,11 @@ export function ChatProvider({
             },
           },
           onMessageCompleted: (response) => {
-            setMessagesWithFilesQueryData(thread?.id, response.data);
+            setMessagesWithFilesQueryData(
+              thread?.id,
+              response.data,
+              response.data?.run_id,
+            );
 
             if (files.length > 0) {
               queryClient.invalidateQueries({
@@ -757,6 +789,7 @@ export function ChatProvider({
       topBarEnabled,
       threadSettingsEnabled,
       initialAssistantMessage,
+      inputPlaceholder,
     ],
   );
 

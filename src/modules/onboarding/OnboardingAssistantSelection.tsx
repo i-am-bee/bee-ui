@@ -21,7 +21,6 @@ import { AssistantTemplateCard } from '../assistants/library/AssistantTemplateCa
 import { AssistantTemplate } from '../assistants/types';
 import classes from './OnboardingAssistantSelection.module.scss';
 import { StartFromScratchCard } from './StartFromScratchCard';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {

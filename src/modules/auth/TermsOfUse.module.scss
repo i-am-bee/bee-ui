@@ -21,7 +21,7 @@
   padding-inline-end: $spacing-06;
 
   > * + * {
-    margin-block-start: $spacing-05;
+    margin-block-start: rem(20px);
   }
 
   p {
@@ -32,11 +32,57 @@
 
   ul {
     list-style: disc;
+    padding-inline-start: $spacing-05;
+  }
+
+  ol {
+    list-style: decimal;
+    padding-inline-start: $spacing-05;
+  }
+
+  ol ul {
+    list-style: lower-latin;
+  }
+
+  ol ul ul {
+    list-style: disc;
+  }
+
+  ol ul ul ol {
+    counter-reset: list;
     padding-inline-start: rem(20px);
+    li {
+      counter-increment: list;
+      &::marker {
+        content: '(' counter(list, decimal) ') ';
+      }
+    }
   }
 
   h2 {
-    @include type-style(heading-02);
+    @include type-style(heading-03);
     font-weight: normal;
+    &:not(:first-child) {
+      margin-block: $spacing-07;
+    }
+  }
+
+  h3,
+  h4 {
+    @include type-style(heading-01);
+  }
+
+  h5,
+  h6 {
+    @include type-style(body-01);
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    + * {
+      margin-block-start: 0;
+    }
   }
 }

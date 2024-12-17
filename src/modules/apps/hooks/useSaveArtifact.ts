@@ -24,14 +24,14 @@ import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { listArtifactsQuery, readArtifactQuery } from '../queries';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 type Props = {
-  project: Project;
-  organization: Organization;
   onSuccess?: (artifact: ArtifactResult) => void;
 };
 
-export function useSaveArtifact({ project, organization, onSuccess }: Props) {
+export function useSaveArtifact({ onSuccess }: Props) {
+  const { project, organization } = useProjectContext();
   const queryClient = useQueryClient();
 
   return useMutation({

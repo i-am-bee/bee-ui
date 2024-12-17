@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useRouter } from 'next-nprogress-bar';
-import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   artifacts?: NonNullable<Artifact>[];
@@ -33,7 +32,7 @@ export function AppsList({
   pageSize = PAGE_SIZE,
   onDeleteSuccess,
 }: Props) {
-  const { project } = useAppContext();
+  const { project } = useProjectContext();
   const router = useRouter();
 
   return (

@@ -21,6 +21,13 @@ export const FEEDBACK_URL = process.env.NEXT_PUBLIC_FEEDBACK_URL!;
 export const USERCONTENT_SITE_URL =
   process.env.NEXT_PUBLIC_USERCONTENT_SITE_URL!;
 export const ARTIFACTS_SITE_URL = process.env.NEXT_PUBLIC_ARTIFACTS_SITE_URL!;
+export const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
+export const BEE_AGENT_PLATFORM_URL =
+  process.env.NEXT_PUBLIC_BEE_AGENT_PLATFORM_URL;
+
+export const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
+
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME!;
 
 export const ONBOARDING_PARAM = 'onboarding';
 export const ONBOARDING_AGENTS_PARAM = 'agents-onboarding';

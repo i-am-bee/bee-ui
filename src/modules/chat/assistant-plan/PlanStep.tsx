@@ -26,7 +26,6 @@ import { ExpandPanelButton } from '@/components/ExpandPanelButton/ExpandPanelBut
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { getToolApprovalId } from '@/modules/tools/utils';
 import { fadeProps } from '@/utils/fadeProps';
@@ -57,6 +56,7 @@ import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   step: AssistantPlanStep;
@@ -71,7 +71,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
   const { run } = useRunContext();
   const { assistant, thread, onToolApprovalSubmitRef, setThread } = useChat();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const { traceData, traceError } = useTraceData();
 
   const queryClient = useQueryClient();
@@ -111,9 +111,9 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   });
   const ToolIcon = toolKey ? toolIcon : null;
 
-  const expandedStep = useExpandedStep();
+  const expandedState = useExpandedStep();
   const { setExpandedStep } = useExpandedStepActions();
-  const expanded = expandedStep === step.id;
+  const expanded = expandedState?.stepId === step.id;
 
   const toolApproval = (
     run?.status === 'requires_action' &&
@@ -160,8 +160,10 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
   const toggleExpand = useCallback(
     (forceOpen?: boolean) =>
-      setExpandedStep((expanded) =>
-        forceOpen || expanded !== step.id ? step.id : null,
+      setExpandedStep((value) =>
+        forceOpen || value?.stepId !== step.id
+          ? { stepId: step.id, initiator: 'user' }
+          : null,
       ),
     [setExpandedStep, step.id],
   );
@@ -173,7 +175,13 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
   useEffect(() => {
     if (toolApproval) {
-      setExpandedStep(step.id);
+      setExpandedStep({ stepId: step.id, initiator: 'approval' });
+    } else {
+      setExpandedStep((value) =>
+        value?.stepId === step.id && value.initiator === 'approval'
+          ? null
+          : value,
+      );
     }
   }, [toolApproval, step.id, setExpandedStep]);
 

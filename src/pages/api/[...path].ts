@@ -16,6 +16,7 @@
 
 import { createApiErrorResponse } from '@/app/api/server-utils';
 import { auth } from '@/app/auth';
+import { DUMMY_JWT_TOKEN } from '@/utils/constants';
 import httpProxy from 'http-proxy';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { JWT } from 'next-auth/jwt';
@@ -45,8 +46,6 @@ const proxy = httpProxy.createProxy({
 // because here we can access raw node request and response
 // so we can use http-proxy package, which handles correctly
 // request cancellation.
-
-const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
 export default async function handler(
   req: NextApiRequest,

@@ -39,6 +39,7 @@ import classes from './UserToolModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
 import { Organization } from '@/app/api/organization/types';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -62,8 +63,6 @@ interface FormValues {
 
 interface Props extends ModalProps {
   tool?: Tool;
-  project: Project;
-  organization: Organization;
   onCreateSuccess?: (tool: ToolResult) => void;
   onSaveSuccess?: (tool: ToolResult) => void;
   onDeleteSuccess?: (tool: Tool) => void;
@@ -71,13 +70,12 @@ interface Props extends ModalProps {
 
 export function UserToolModal({
   tool,
-  project,
-  organization,
   onCreateSuccess,
   onSaveSuccess,
   onDeleteSuccess,
   ...props
 }: Props) {
+  const { project, organization } = useProjectContext();
   const { onRequestClose } = props;
   const { openConfirmation } = useModal();
   const id = useId();

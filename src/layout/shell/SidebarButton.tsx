@@ -16,12 +16,13 @@
 
 import { VersionTag } from '@/components/VersionTag/VersionTag';
 import { usePrefetchThreads } from '@/modules/chat/history/usePrefetchThreads';
+import { APP_NAME } from '@/utils/constants';
 import { Button, ButtonBaseProps } from '@carbon/react';
-import { Menu } from '@carbon/react/icons';
+import { Close, Menu } from '@carbon/react/icons';
+import { MouseEvent } from 'react';
 import { UserSetting } from '../hooks/useUserSetting';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
-import { MouseEvent } from 'react';
 
 interface Props extends Omit<ButtonBaseProps, 'kind' | 'size' | 'className'> {
   sidebarId: SidebarProps['id'];
@@ -51,9 +52,11 @@ export function SidebarButton({
         aria-label="Toggle sidebar"
       >
         <Menu />
+
+        <Close />
       </Button>
 
-      <p className={classes.title}>Bee</p>
+      <p className={classes.title}>{APP_NAME}</p>
 
       <VersionTag />
     </div>

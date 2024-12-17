@@ -29,7 +29,7 @@ import {
 } from './utils';
 import { useEffect, useMemo, useState } from 'react';
 import { GENERATE_EVENT_TOOL_START, TraceData } from './types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   enabled: boolean;
@@ -42,7 +42,7 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
   traceError?: Error;
 } {
   const [hasFailed, setHasFailed] = useState(false);
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const computedEnabled = !hasFailed && Boolean(enabled && threadId && runId);
 
   const { data: runTraceData } = useQuery({
@@ -111,10 +111,12 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
 
     const executionTime = getExecutionTime(spans);
 
-    const tokenCount = iterations.reduce(
-      (tokenCount, iteration) => tokenCount + (iteration?.tokenCount ?? 0),
-      0,
-    );
+    // load token count from iterations if they exist. Otherwise, compute it from all spans.
+    const tokenCount =
+      iterations.reduce(
+        (tokenCount, iteration) => tokenCount + (iteration?.tokenCount ?? 0),
+        0,
+      ) || getGeneratedTokenCountSafe(getLastNewTokenSpan(spans));
 
     const rawPrompt = iterations.find(
       (iteration) => iteration.type === InterationType.FINAL_ANSWER,

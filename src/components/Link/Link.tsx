@@ -15,13 +15,13 @@
  */
 
 'use client';
-import { startTransition } from 'react';
-import NextLink from 'next/link';
 import {
   CONFIRM_MESSAGE_DEFAULT,
   useNavigationControl,
 } from '@/layout/providers/NavigationControlProvider';
 import { useRouter } from 'next-nprogress-bar';
+import NextLink from 'next/link';
+import { startTransition } from 'react';
 
 type Props = Omit<
   Parameters<typeof NextLink>[0],
@@ -35,7 +35,8 @@ type Props = Omit<
  */
 export function Link({ href, children, replace, onClick, ...rest }: Props) {
   const router = useRouter();
-  const { isBlocked, confirmMessage } = useNavigationControl();
+  const { isBlocked, confirmMessage, onLeaveWithConfirmation } =
+    useNavigationControl();
 
   return (
     <NextLink

@@ -16,11 +16,10 @@
 
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { APP_NAME, WAITLIST_URL } from '@/utils/constants';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
-import classes from './WaitlistModal.module.scss';
 import WaitlistGraphics from './WaitlistGraphics.svg';
-
-const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_URL;
+import classes from './WaitlistModal.module.scss';
 
 interface Props extends ModalProps {}
 
@@ -37,9 +36,9 @@ export function WaitlistModal({ ...props }: Props) {
         </div>
         <h1 className={classes.title}>Join the waitlist</h1>
         <p>
-          Bee is buzzing with excitement, and we’re currently at capacity! Sign
-          up now to secure your spot and be among the first to gain access when
-          we expand. Don’t miss out, join today!
+          {APP_NAME} is buzzing with excitement, and we’re currently at
+          capacity! Sign up now to secure your spot and be among the first to
+          gain access when we expand. Don’t miss out, join today!
         </p>
       </ModalBody>
       {WAITLIST_URL && (

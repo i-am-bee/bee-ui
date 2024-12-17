@@ -18,22 +18,17 @@
 import { RunMetadata } from '@/app/api/threads-runs/types';
 import { Thread } from '@/app/api/threads/types';
 import { ToolReference } from '@/app/api/tools/types';
-import { Link } from '@/components/Link/Link';
+import { useOnMount } from '@/hooks/useOnMount';
+import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import { ONBOARDING_PARAM } from '@/utils/constants';
-import {
-  Button,
-  IconButton,
-  InlineLoading,
-  TextArea,
-  TextInput,
-} from '@carbon/react';
-import { ArrowLeft, CheckmarkFilled } from '@carbon/react/icons';
+import { Button, InlineLoading, TextArea, TextInput } from '@carbon/react';
+import { ChatLaunch, CheckmarkFilled, TrashCan } from '@carbon/react/icons';
 import clsx from 'clsx';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next-nprogress-bar';
@@ -45,14 +40,12 @@ import {
   useAssistantBuilder,
   useAssistantBuilderApi,
 } from './AssistantBuilderProvider';
+import { AssistantIconSelector } from './AssistantIconSelector';
 import classes from './Builder.module.scss';
 import { InstructionsTextArea } from './InstructionsTextArea';
 import { KnowledgeSelector } from './KnowledgeSelector';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 import { useDeleteAssistant } from './useDeleteAssistant';
-import { AssistantIconSelector } from './AssistantIconSelector';
-import { useUserSetting } from '@/layout/hooks/useUserSetting';
-import { useOnMount } from '@/hooks/useOnMount';
 
 interface Props {
   thread?: Thread;
@@ -157,7 +150,10 @@ export function Builder({ thread, initialMessages }: Props) {
                 {isDeletePending ? (
                   <InlineLoading title="Deleting..." />
                 ) : (
-                  'Delete agent'
+                  <>
+                    <span className={classes.buttonLabel}>Delete agent</span>
+                    <TrashCan />
+                  </>
                 )}
               </Button>
             )}
@@ -172,7 +168,8 @@ export function Builder({ thread, initialMessages }: Props) {
                 }
                 disabled={isSubmitting}
               >
-                Launch in chat
+                <span className={classes.buttonLabel}>Launch in chat</span>
+                <ChatLaunch />
               </Button>
             )}
             <Button
@@ -224,8 +221,8 @@ export function Builder({ thread, initialMessages }: Props) {
 const NAME_MAX_LENGTH = 55;
 
 function BuilderChat() {
-  const { thread, assistant, reset, getMessages } = useChat();
-  const { project } = useAppContext();
+  const { thread, assistant, reset } = useChat();
+  const { project } = useProjectContext();
 
   const handleClear = () => {
     reset([]);

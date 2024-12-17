@@ -26,9 +26,10 @@ import { useLayout } from '@/store/layout';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
+import { useRouter } from 'next-nprogress-bar';
 import { ReactElement, useMemo } from 'react';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
-import { useAppContext } from '../providers/AppProvider';
+import { useNavigationControl } from '../providers/NavigationControlProvider';
 import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
@@ -41,7 +42,8 @@ interface Props {
 
 export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const { setUserSetting } = useUserSetting();
-  const { project } = useAppContext();
+  const { onLeaveWithConfirmation } = useNavigationControl();
+  const router = useRouter();
   const navbarProps = useLayout((state) => state.navbarProps);
 
   const headingItems = useMemo(() => {
@@ -81,10 +83,10 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
       default:
         return title ? [{ title }] : undefined;
     }
-  }, [navbarProps, project]);
+  }, [navbarProps]);
 
   return (
-    <header className={classes.root}>
+    <header className={classes.root} data-type={navbarProps?.type}>
       <Container size="full" className={classes.container}>
         <SkipNav />
 
@@ -97,7 +99,18 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
             <Button
               size="sm"
               kind="tertiary"
-              href={navbarProps.backButton.url}
+              onClick={() => {
+                if (!navbarProps.backButton) return;
+
+                const { onClick, url } = navbarProps.backButton;
+                if (onClick) {
+                  onClick();
+                } else {
+                  onLeaveWithConfirmation({
+                    onSuccess: () => router.push(url),
+                  });
+                }
+              }}
               className={classes.backButton}
             >
               <ArrowLeft />
@@ -143,7 +156,7 @@ export function NavbarHeading({ items }: { items?: HeadingItem[] }) {
       {items.map(({ url, title, icon }, key) => (
         <li key={key}>
           {icon}
-          {url ? <Link href={url}>{title}</Link> : title}
+          <span>{url ? <Link href={url}>{title}</Link> : title}</span>
         </li>
       ))}
     </ul>

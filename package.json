@@ -1,6 +1,6 @@
 {
   "name": "bee-ui",
-  "version": "0.0.7",
+  "version": "0.0.19",
   "license": "Apache-2.0",
   "author": "IBM Corp.",
   "scripts": {
@@ -23,6 +23,7 @@
   "dependencies": {
     "@ai-zen/node-fetch-event-source": "^2.1.4",
     "@carbon/grid": "^11.22.0",
+    "@carbon/layout": "^11.28.0",
     "@carbon/motion": "^11.22.0",
     "@carbon/react": "^1.64.0",
     "@carbon/styles": "^1.68.0",
@@ -92,6 +93,7 @@
     "@commitlint/config-conventional": "^19.1.0",
     "@release-it/conventional-changelog": "^9.0.2",
     "@svgr/webpack": "^8.1.0",
+    "@types/carbon__layout": "^0.0.3",
     "@types/hast": "^3.0.4",
     "@types/http-proxy": "^1.17.14",
     "@types/lodash": "^4.17.4",

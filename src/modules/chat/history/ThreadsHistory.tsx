@@ -22,7 +22,7 @@ import { PAGE_SIZE, threadsQuery } from './queries';
 import { ThreadItem } from './ThreadItem';
 import classes from './ThreadsHistory.module.scss';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props extends HTMLAttributes<HTMLElement> {
   enableFetch: boolean;
@@ -32,7 +32,7 @@ export const ThreadsHistory = memo(function ThreadsHistory({
   enableFetch,
   className,
 }: Props) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const {
     data,

@@ -1,5 +1,67 @@
 # Changelog
 
+## <small>0.0.19 (2024-12-17)</small>
+
+* feat: add "Show app preview" button and hide dark mode video on mobile (#153) ([cd6d74a](https://github.com/i-am-bee/bee-ui/commit/cd6d74a)), closes [#153](https://github.com/i-am-bee/bee-ui/issues/153)
+* feat: change app name to BeeAI ([394a189](https://github.com/i-am-bee/bee-ui/commit/394a189))
+
+## <small>0.0.18 (2024-12-17)</small>
+
+* fix: responsive layout styles (#152) ([3d5c3fd](https://github.com/i-am-bee/bee-ui/commit/3d5c3fd)), closes [#152](https://github.com/i-am-bee/bee-ui/issues/152)
+
+## <small>0.0.17 (2024-12-16)</small>
+
+* feat: prelaunch qa updates (#151) ([f311258](https://github.com/i-am-bee/bee-ui/commit/f311258)), closes [#151](https://github.com/i-am-bee/bee-ui/issues/151)
+
+## <small>0.0.16 (2024-12-16)</small>
+
+* feat: update styles of ToU (#150) ([12d17cd](https://github.com/i-am-bee/bee-ui/commit/12d17cd)), closes [#150](https://github.com/i-am-bee/bee-ui/issues/150)
+* fix: missing messages, plan button, sources icons (#148) ([a312c17](https://github.com/i-am-bee/bee-ui/commit/a312c17)), closes [#148](https://github.com/i-am-bee/bee-ui/issues/148)
+* chore: minor copy changes ([5a1e34b](https://github.com/i-am-bee/bee-ui/commit/5a1e34b))
+
+## <small>0.0.15 (2024-12-16)</small>
+
+* feat: new BeeAI logo in signin (#145) ([0362f9d](https://github.com/i-am-bee/bee-ui/commit/0362f9d)), closes [#145](https://github.com/i-am-bee/bee-ui/issues/145)
+* feat: responsive updates ([a331f8a](https://github.com/i-am-bee/bee-ui/commit/a331f8a))
+* chore: update assistant templates (#146) ([c277034](https://github.com/i-am-bee/bee-ui/commit/c277034)), closes [#146](https://github.com/i-am-bee/bee-ui/issues/146)
+* fix(assistant-builder): new tool modal error (#144) ([5e4642d](https://github.com/i-am-bee/bee-ui/commit/5e4642d)), closes [#144](https://github.com/i-am-bee/bee-ui/issues/144)
+
+## <small>0.0.14 (2024-12-15)</small>
+
+* feat(sidebar): minor copy update ([9e59455](https://github.com/i-am-bee/bee-ui/commit/9e59455))
+
+## <small>0.0.13 (2024-12-15)</small>
+
+* feat(onboarding): add artifact templates ([a41dcab](https://github.com/i-am-bee/bee-ui/commit/a41dcab))
+* chore: add missing copyright disclaimer ([e6c14b9](https://github.com/i-am-bee/bee-ui/commit/e6c14b9))
+
+## <small>0.0.12 (2024-12-13)</small>
+
+* chore(ci): add usercontent site url to local build arguments (#142) ([0827fc1](https://github.com/i-am-bee/bee-ui/commit/0827fc1)), closes [#142](https://github.com/i-am-bee/bee-ui/issues/142)
+* chore(ci): add usercontent site url to local build arguments (#143) ([53d7f05](https://github.com/i-am-bee/bee-ui/commit/53d7f05)), closes [#143](https://github.com/i-am-bee/bee-ui/issues/143)
+* feat: responsive ui (#139) ([96f44b4](https://github.com/i-am-bee/bee-ui/commit/96f44b4)), closes [#139](https://github.com/i-am-bee/bee-ui/issues/139)
+* feat: track app and assistant origins (#141) ([727c251](https://github.com/i-am-bee/bee-ui/commit/727c251)), closes [#141](https://github.com/i-am-bee/bee-ui/issues/141) [i-am-bee/internal#39](https://github.com/i-am-bee/internal/issues/39)
+* fix(vector-store): process daily limit error on create file (#136) ([151afb3](https://github.com/i-am-bee/bee-ui/commit/151afb3)), closes [#136](https://github.com/i-am-bee/bee-ui/issues/136)
+
+## <small>0.0.11 (2024-12-13)</small>
+
+* fix: session update (#138) ([af9d1f1](https://github.com/i-am-bee/bee-ui/commit/af9d1f1)), closes [#138](https://github.com/i-am-bee/bee-ui/issues/138)
+* feat(observe): add streamlit token count trace info (#137) ([10eee5e](https://github.com/i-am-bee/bee-ui/commit/10eee5e)), closes [#137](https://github.com/i-am-bee/bee-ui/issues/137)
+
+## <small>0.0.10 (2024-12-13)</small>
+
+* feat: qa for launch (#135) ([19b8911](https://github.com/i-am-bee/bee-ui/commit/19b8911)), closes [#135](https://github.com/i-am-bee/bee-ui/issues/135)
+
+## <small>0.0.9 (2024-12-13)</small>
+
+* fix(apps): share modal  (#134) ([ea1166f](https://github.com/i-am-bee/bee-ui/commit/ea1166f)), closes [#134](https://github.com/i-am-bee/bee-ui/issues/134)
+
+## <small>0.0.8 (2024-12-12)</small>
+
+* feat: qa for launch  (#130) ([9476ff3](https://github.com/i-am-bee/bee-ui/commit/9476ff3)), closes [#130](https://github.com/i-am-bee/bee-ui/issues/130)
+* feat: qa for launch (#133) ([b7529f5](https://github.com/i-am-bee/bee-ui/commit/b7529f5)), closes [#133](https://github.com/i-am-bee/bee-ui/issues/133)
+* feat(apps): allow links to open popups (#127) ([425aaac](https://github.com/i-am-bee/bee-ui/commit/425aaac)), closes [#127](https://github.com/i-am-bee/bee-ui/issues/127)
+
 ## <small>0.0.7 (2024-12-11)</small>
 
 * fix: broken auth, api calls on test user (#95) ([856f16f](https://github.com/i-am-bee/bee-ui/commit/856f16f)), closes [#95](https://github.com/i-am-bee/bee-ui/issues/95)

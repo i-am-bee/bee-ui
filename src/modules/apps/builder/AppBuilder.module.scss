@@ -18,15 +18,14 @@
 
 .root {
   display: flex;
-  justify-content: stretch;
   align-items: stretch;
+  justify-content: stretch;
   block-size: 100%;
 }
 
 .chat {
   display: flex;
-  max-inline-size: rem(800px);
-  flex: 1 1 50%;
+  inline-size: 50%;
   border-inline-end: 1px solid $border-subtle;
   > div {
     inline-size: 100%;
@@ -35,11 +34,12 @@
 
 .appPane {
   block-size: 100%;
-  flex: 1 0 50%;
+  inline-size: 50%;
   display: flex;
   flex-direction: column;
   justify-content: stretch;
   position: relative;
+  min-inline-size: 0;
 
   &.empty::after {
     content: '';
@@ -54,7 +54,28 @@
     display: flex;
     align-items: center;
     border-block-end: 1px solid $border-subtle;
-    padding-inline: $spacing-06;
+    padding-inline: $spacing-05;
+    background-color: $layer-01;
+  }
+
+  .appPaneHeaderMobile {
+    position: absolute;
+    inset-block-end: 100%;
+    inset-inline: 0;
+    background-color: $layer-01;
+    z-index: z('header') + 1;
+    border-block-end: 1px solid $border-subtle-00;
+    padding: rem(12px) $grid-margin rem(11px);
+    display: flex;
+    column-gap: $spacing-04;
+    block-size: rem(64px);
+    align-items: center;
+    :global(.#{$prefix}--btn) {
+      padding-inline: $spacing-02;
+      inline-size: rem(32px);
+      justify-content: center;
+      min-inline-size: 0;
+    }
   }
 
   .appActions {
@@ -99,6 +120,55 @@
     > div {
       block-size: 100%;
       inline-size: 100%;
+    }
+  }
+}
+
+@include breakpoint-down(md) {
+  .root {
+    display: grid;
+  }
+
+  .chat,
+  .appPane {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    inline-size: 100%;
+    min-block-size: 0;
+  }
+
+  .appPane {
+    display: none;
+    padding-block-end: rem(64px);
+    .mobilePreviewOpen & {
+      display: flex;
+    }
+
+    .appActions {
+      padding: $spacing-05;
+      background-color: $layer-01;
+      box-shadow: $box-shadow;
+      position: fixed;
+      inset-block-end: 0;
+      inset-inline: 0;
+      z-index: z('header');
+      justify-content: flex-end;
+    }
+  }
+}
+
+@include breakpoint-up(md) {
+  .appPane {
+    .appPaneHeaderMobile {
+      display: none;
+    }
+  }
+}
+
+@include breakpoint-up(lg) {
+  .appPane {
+    .appPaneHeader {
+      padding-inline: $spacing-06;
     }
   }
 }

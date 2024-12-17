@@ -19,24 +19,27 @@ importers:
       '@carbon/grid':
         specifier: ^11.22.0
         version: 11.29.0
+      '@carbon/layout':
+        specifier: ^11.28.0
+        version: 11.28.0
       '@carbon/motion':
         specifier: ^11.22.0
         version: 11.24.0
       '@carbon/react':
         specifier: ^1.64.0
-        version: 1.71.1(react-dom@18.3.1)(react@18.3.1)(sass@1.82.0)
+        version: 1.71.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.82.0)
       '@carbon/styles':
         specifier: ^1.68.0
         version: 1.70.0(sass@1.82.0)
       '@dhmk/zustand-lens':
         specifier: ^5.0.0
-        version: 5.0.0(zustand@5.0.1)
+        version: 5.0.0(zustand@5.0.1(@types/react@18.3.12)(immer@10.1.1)(react@18.3.1))
       '@floating-ui/react':
         specifier: ^0.26.22
-        version: 0.26.28(react-dom@18.3.1)(react@18.3.1)
+        version: 0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@hookform/resolvers':
         specifier: ^3.9.0
-        version: 3.9.1(react-hook-form@7.53.2)
+        version: 3.9.1(react-hook-form@7.53.2(react@18.3.1))
       '@opentelemetry/api-logs':
         specifier: ^0.53.0
         version: 0.53.0
@@ -72,7 +75,7 @@ importers:
         version: 0.0.33
       '@vercel/otel':
         specifier: ^1.10.0
-        version: 1.10.0(@opentelemetry/api-logs@0.53.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.53.0)(@opentelemetry/resources@1.28.0)(@opentelemetry/sdk-logs@0.53.0)(@opentelemetry/sdk-metrics@1.28.0)(@opentelemetry/sdk-trace-base@1.28.0)
+        version: 1.10.0(@opentelemetry/api-logs@0.53.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -93,7 +96,7 @@ importers:
         version: 6.0.0
       framer-motion:
         specifier: ^11.3.24
-        version: 11.13.1(react-dom@18.3.1)(react@18.3.1)
+        version: 11.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       http-proxy:
         specifier: ^1.18.1
         version: 1.18.1
@@ -120,7 +123,7 @@ importers:
         version: 4.17.21
       lottie-react:
         specifier: ^2.4.0
-        version: 2.4.0(react-dom@18.3.1)(react@18.3.1)
+        version: 2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       mdast-util-to-hast:
         specifier: ^13.1.0
         version: 13.2.0
@@ -129,10 +132,10 @@ importers:
         version: 2.1.35
       next:
         specifier: 14.2.10
-        version: 14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1)(react@18.3.1)(sass@1.82.0)
+        version: 14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.82.0)
       next-auth:
         specifier: 5.0.0-beta.16
-        version: 5.0.0-beta.16(patch_hash=u4fiseyb5lneqy7v2ok5das7jq)(next@14.2.10)(react@18.3.1)
+        version: 5.0.0-beta.16(patch_hash=u4fiseyb5lneqy7v2ok5das7jq)(next@14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.82.0))(react@18.3.1)
       next-nprogress-bar:
         specifier: ^2.3.13
         version: 2.3.15
@@ -147,7 +150,7 @@ importers:
         version: 18.3.1
       react-aria:
         specifier: ^3.33.0
-        version: 3.36.0(react-dom@18.3.1)(react@18.3.1)
+        version: 3.36.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
@@ -162,7 +165,7 @@ importers:
         version: 7.53.2(react@18.3.1)
       react-intersection-observer:
         specifier: ^9.8.1
-        version: 9.13.1(react-dom@18.3.1)(react@18.3.1)
+        version: 9.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-markdown:
         specifier: ^9.0.1
         version: 9.0.1(@types/react@18.3.12)(react@18.3.1)
@@ -171,7 +174,7 @@ importers:
         version: 2.1.1
       react-resizable:
         specifier: ^3.0.5
-        version: 3.0.5(react-dom@18.3.1)(react@18.3.1)
+        version: 3.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-syntax-highlighter:
         specifier: ^15.5.0
         version: 15.6.1(react@18.3.1)
@@ -192,10 +195,10 @@ importers:
         version: 5.0.0
       use-local-storage-state:
         specifier: ^19.2.0
-        version: 19.5.0(react-dom@18.3.1)(react@18.3.1)
+        version: 19.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       use-resize-observer:
         specifier: ^9.1.0
-        version: 9.1.0(react-dom@18.3.1)(react@18.3.1)
+        version: 9.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.0(react@18.3.1)
@@ -217,10 +220,13 @@ importers:
         version: 19.6.0
       '@release-it/conventional-changelog':
         specifier: ^9.0.2
-        version: 9.0.3(release-it@17.10.0)
+        version: 9.0.3(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)(release-it@17.10.0(typescript@5.7.2))
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.7.2)
+      '@types/carbon__layout':
+        specifier: ^0.0.3
+        version: 0.0.3
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
@@ -253,7 +259,7 @@ importers:
         version: 9.0.8
       bee-agent-framework:
         specifier: ^0.0.16
-        version: 0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4)(@langchain/community@0.2.33)(@langchain/core@0.2.36)(@langchain/langgraph@0.0.34)(groq-sdk@0.7.0)(ollama@0.5.10)(openai-chat-tokens@0.2.8)(openai@4.75.0)
+        version: 0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36(openai@4.75.0(zod@3.23.8))))(@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.75.0(zod@3.23.8)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.0)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.1)(lodash@4.17.21)(openai@4.75.0(zod@3.23.8)))(@langchain/core@0.2.36(openai@4.75.0(zod@3.23.8)))(@langchain/langgraph@0.0.34(openai@4.75.0(zod@3.23.8)))(groq-sdk@0.7.0)(ollama@0.5.10)(openai-chat-tokens@0.2.8)(openai@4.75.0(zod@3.23.8))
       cross-var:
         specifier: ^1.1.0
         version: 1.1.0
@@ -289,13 +295,13 @@ importers:
         version: 16.11.0(typescript@5.7.2)
       stylelint-config-css-modules:
         specifier: ^4.4.0
-        version: 4.4.0(stylelint@16.11.0)
+        version: 4.4.0(stylelint@16.11.0(typescript@5.7.2))
       stylelint-config-recommended-scss:
         specifier: ^14.0.0
-        version: 14.1.0(postcss@8.4.49)(stylelint@16.11.0)
+        version: 14.1.0(postcss@8.4.49)(stylelint@16.11.0(typescript@5.7.2))
       stylelint-plugin-logical-css:
         specifier: ^1.2.1
-        version: 1.2.1(stylelint@16.11.0)
+        version: 1.2.1(stylelint@16.11.0(typescript@5.7.2))
       typescript:
         specifier: ^5
         version: 5.7.2
@@ -2696,6 +2702,9 @@ packages:
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
+
+  '@types/carbon__layout@0.0.3':
+    resolution: {integrity: sha512-ZAAgNTBecBtxuqm/yQCWkXN2Nlz0TorTORhGKWuy1pO3jF0TRNut/0W8me14396Q6a0BugH/xMa7Jv8miQP3kg==}
 
   '@types/conventional-commits-parser@5.0.1':
     resolution: {integrity: sha512-7uz5EHdzz2TqoMfV7ee61Egf5y6NkcO4FB/1iCCQnbeiI1F3xzv3vK5dBCXUCLQgGYS+mUeigK1iKQzvED+QnQ==}
@@ -8037,14 +8046,14 @@ snapshots:
     dependencies:
       '@ibm/telemetry-js': 1.8.0
 
-  '@carbon/react@1.71.1(react-dom@18.3.1)(react@18.3.1)(sass@1.82.0)':
+  '@carbon/react@1.71.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.82.0)':
     dependencies:
       '@babel/runtime': 7.26.0
       '@carbon/feature-flags': 0.24.0
       '@carbon/icons-react': 11.53.0(react@18.3.1)
       '@carbon/layout': 11.28.0
       '@carbon/styles': 1.70.0(sass@1.82.0)
-      '@floating-ui/react': 0.26.28(react-dom@18.3.1)(react@18.3.1)
+      '@floating-ui/react': 0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ibm/telemetry-js': 1.8.0
       classnames: 2.5.1
       copy-to-clipboard: 3.3.3
@@ -8061,7 +8070,7 @@ snapshots:
       react-is: 18.3.1
       sass: 1.82.0
       tabbable: 6.2.0
-      use-resize-observer: 6.1.0(react-dom@18.3.1)(react@18.3.1)
+      use-resize-observer: 6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       window-or-global: 1.0.1
 
   '@carbon/styles@1.70.0(sass@1.82.0)':
@@ -8083,6 +8092,7 @@ snapshots:
       '@ibm/plex-sans-thai-looped': 0.0.3-alpha.0
       '@ibm/plex-serif': 0.0.3-alpha.0
       '@ibm/telemetry-js': 1.8.0
+    optionalDependencies:
       sass: 1.82.0
 
   '@carbon/themes@11.43.0':
@@ -8158,7 +8168,7 @@ snapshots:
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
       cosmiconfig: 9.0.0(typescript@5.7.2)
-      cosmiconfig-typescript-loader: 5.1.0(@types/node@20.17.9)(cosmiconfig@9.0.0)(typescript@5.7.2)
+      cosmiconfig-typescript-loader: 5.1.0(@types/node@20.17.9)(cosmiconfig@9.0.0(typescript@5.7.2))(typescript@5.7.2)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -8209,7 +8219,7 @@ snapshots:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.3.0
 
-  '@connectrpc/connect-node@1.6.1(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.6.1)':
+  '@connectrpc/connect-node@1.6.1(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.6.1(@bufbuild/protobuf@1.10.0))':
     dependencies:
       '@bufbuild/protobuf': 1.10.0
       '@connectrpc/connect': 1.6.1(@bufbuild/protobuf@1.10.0)
@@ -8222,9 +8232,10 @@ snapshots:
   '@conventional-changelog/git-client@1.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)':
     dependencies:
       '@types/semver': 7.5.8
+      semver: 7.6.3
+    optionalDependencies:
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.0.0
-      semver: 7.6.3
 
   '@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3)':
     dependencies:
@@ -8232,7 +8243,7 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.3': {}
 
-  '@csstools/media-query-list-parser@4.0.2(@csstools/css-parser-algorithms@3.0.4)(@csstools/css-tokenizer@3.0.3)':
+  '@csstools/media-query-list-parser@4.0.2(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)':
     dependencies:
       '@csstools/css-parser-algorithms': 3.0.4(@csstools/css-tokenizer@3.0.3)
       '@csstools/css-tokenizer': 3.0.3
@@ -8243,7 +8254,7 @@ snapshots:
 
   '@dhmk/utils@4.4.1': {}
 
-  '@dhmk/zustand-lens@5.0.0(zustand@5.0.1)':
+  '@dhmk/zustand-lens@5.0.0(zustand@5.0.1(@types/react@18.3.12)(immer@10.1.1)(react@18.3.1))':
     dependencies:
       '@dhmk/utils': 4.4.1
       zustand: 5.0.1(@types/react@18.3.12)(immer@10.1.1)(react@18.3.1)
@@ -8284,15 +8295,15 @@ snapshots:
       '@floating-ui/core': 1.6.8
       '@floating-ui/utils': 0.2.8
 
-  '@floating-ui/react-dom@2.1.2(react-dom@18.3.1)(react@18.3.1)':
+  '@floating-ui/react-dom@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@floating-ui/dom': 1.6.12
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@floating-ui/react@0.26.28(react-dom@18.3.1)(react@18.3.1)':
+  '@floating-ui/react@0.26.28(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@floating-ui/react-dom': 2.1.2(react-dom@18.3.1)(react@18.3.1)
+      '@floating-ui/react-dom': 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@floating-ui/utils': 0.2.8
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -8337,7 +8348,7 @@ snapshots:
       protobufjs: 7.4.0
       yargs: 17.7.2
 
-  '@hookform/resolvers@3.9.1(react-hook-form@7.53.2)':
+  '@hookform/resolvers@3.9.1(react-hook-form@7.53.2(react@18.3.1))':
     dependencies:
       react-hook-form: 7.53.2(react@18.3.1)
 
@@ -8357,15 +8368,16 @@ snapshots:
 
   '@iarna/toml@2.2.5': {}
 
-  '@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36)':
+  '@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36(openai@4.75.0(zod@3.23.8)))':
     dependencies:
       '@ai-zen/node-fetch-event-source': 2.1.4
-      '@langchain/core': 0.2.36(openai@4.75.0)
       fetch-retry: 5.0.6
       http-status-codes: 2.3.0
       openapi-fetch: 0.8.2
       p-queue-compat: 1.0.225
       yaml: 2.6.1
+    optionalDependencies:
+      '@langchain/core': 0.2.36(openai@4.75.0(zod@3.23.8))
     transitivePeerDependencies:
       - encoding
 
@@ -8442,23 +8454,26 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@langchain/community@0.2.33(@langchain/langgraph@0.0.34)(cheerio@1.0.0-rc.12)(ioredis@5.4.1)(lodash@4.17.21)(openai@4.75.0)':
+  '@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.75.0(zod@3.23.8)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.0)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.1)(lodash@4.17.21)(openai@4.75.0(zod@3.23.8))':
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.75.0)
-      '@langchain/langgraph': 0.0.34(openai@4.75.0)
+      '@langchain/core': 0.2.36(openai@4.75.0(zod@3.23.8))
       '@langchain/openai': 0.2.11
       binary-extensions: 2.3.0
-      cheerio: 1.0.0-rc.12
       expr-eval: 2.0.2
       flat: 5.0.2
-      ioredis: 5.4.1
       js-yaml: 4.1.0
-      langchain: 0.2.20(cheerio@1.0.0-rc.12)(ioredis@5.4.1)(openai@4.75.0)
-      langsmith: 0.1.68(openai@4.75.0)
-      lodash: 4.17.21
+      langchain: 0.2.20(axios@1.7.9)(cheerio@1.0.0-rc.12)(fast-xml-parser@4.5.0)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.1)(openai@4.75.0(zod@3.23.8))
+      langsmith: 0.1.68(openai@4.75.0(zod@3.23.8))
       uuid: 10.0.0
       zod: 3.23.8
       zod-to-json-schema: 3.23.5(zod@3.23.8)
+    optionalDependencies:
+      '@langchain/langgraph': 0.0.34(openai@4.75.0(zod@3.23.8))
+      cheerio: 1.0.0-rc.12
+      duck-duck-scrape: 2.2.6
+      ignore: 5.3.2
+      ioredis: 5.4.1
+      lodash: 4.17.21
     transitivePeerDependencies:
       - '@gomomento/sdk-web'
       - '@langchain/anthropic'
@@ -8477,13 +8492,13 @@ snapshots:
       - peggy
       - pyodide
 
-  '@langchain/core@0.2.36(openai@4.75.0)':
+  '@langchain/core@0.2.36(openai@4.75.0(zod@3.23.8))':
     dependencies:
       ansi-styles: 5.2.0
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.15
-      langsmith: 0.1.68(openai@4.75.0)
+      langsmith: 0.1.68(openai@4.75.0(zod@3.23.8))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
@@ -8493,9 +8508,9 @@ snapshots:
     transitivePeerDependencies:
       - openai
 
-  '@langchain/langgraph@0.0.34(openai@4.75.0)':
+  '@langchain/langgraph@0.0.34(openai@4.75.0(zod@3.23.8))':
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.75.0)
+      '@langchain/core': 0.2.36(openai@4.75.0(zod@3.23.8))
       uuid: 10.0.0
       zod: 3.23.8
     transitivePeerDependencies:
@@ -8503,7 +8518,7 @@ snapshots:
 
   '@langchain/openai@0.2.11':
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.75.0)
+      '@langchain/core': 0.2.36(openai@4.75.0(zod@3.23.8))
       js-tiktoken: 1.0.15
       openai: 4.75.0(zod@3.23.8)
       zod: 3.23.8
@@ -8511,9 +8526,9 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@langchain/textsplitters@0.0.3(openai@4.75.0)':
+  '@langchain/textsplitters@0.0.3(openai@4.75.0(zod@3.23.8))':
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.75.0)
+      '@langchain/core': 0.2.36(openai@4.75.0(zod@3.23.8))
       js-tiktoken: 1.0.15
     transitivePeerDependencies:
       - openai
@@ -8964,14 +8979,16 @@ snapshots:
 
   '@radix-ui/react-compose-refs@1.1.0(@types/react@18.3.12)(react@18.3.1)':
     dependencies:
-      '@types/react': 18.3.12
       react: 18.3.1
+    optionalDependencies:
+      '@types/react': 18.3.12
 
   '@radix-ui/react-slot@1.1.0(@types/react@18.3.12)(react@18.3.1)':
     dependencies:
       '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.3.12)(react@18.3.1)
-      '@types/react': 18.3.12
       react: 18.3.1
+    optionalDependencies:
+      '@types/react': 18.3.12
 
   '@react-aria/breadcrumbs@3.5.19(react@18.3.1)':
     dependencies:
@@ -8995,7 +9012,7 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/calendar@3.6.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/calendar@3.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@internationalized/date': 3.6.0
       '@react-aria/i18n': 3.12.4(react@18.3.1)
@@ -9025,13 +9042,13 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/color@3.0.2(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/color@3.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
-      '@react-aria/numberfield': 3.11.9(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/numberfield': 3.11.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/slider': 3.7.14(react@18.3.1)
-      '@react-aria/spinbutton': 3.6.10(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/spinbutton': 3.6.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/textfield': 3.15.0(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-aria/visually-hidden': 3.8.18(react@18.3.1)
@@ -9043,14 +9060,14 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/combobox@3.11.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/combobox@3.11.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/i18n': 3.12.4(react@18.3.1)
-      '@react-aria/listbox': 3.13.6(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/listbox': 3.13.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/live-announcer': 3.4.1
-      '@react-aria/menu': 3.16.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/overlays': 3.24.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/menu': 3.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/overlays': 3.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/textfield': 3.15.0(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/collections': 3.12.0(react@18.3.1)
@@ -9063,7 +9080,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/datepicker@3.12.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/datepicker@3.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@internationalized/date': 3.6.0
       '@internationalized/number': 3.6.0
@@ -9073,7 +9090,7 @@ snapshots:
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/label': 3.7.13(react@18.3.1)
-      '@react-aria/spinbutton': 3.6.10(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/spinbutton': 3.6.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/datepicker': 3.11.0(react@18.3.1)
       '@react-stately/form': 3.1.0(react@18.3.1)
@@ -9086,10 +9103,10 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/dialog@3.5.20(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/dialog@3.5.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
-      '@react-aria/overlays': 3.24.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/overlays': 3.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-types/dialog': 3.5.14(react@18.3.1)
       '@react-types/shared': 3.26.0(react@18.3.1)
@@ -9097,7 +9114,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/disclosure@3.0.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/disclosure@3.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/ssr': 3.9.7(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
@@ -9107,13 +9124,13 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/dnd@3.8.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/dnd@3.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@internationalized/string': 3.2.5
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/live-announcer': 3.4.1
-      '@react-aria/overlays': 3.24.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/overlays': 3.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/dnd': 3.5.0(react@18.3.1)
       '@react-types/button': 3.10.1(react@18.3.1)
@@ -9140,13 +9157,13 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/grid@3.11.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/grid@3.11.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/live-announcer': 3.4.1
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/collections': 3.12.0(react@18.3.1)
       '@react-stately/grid': 3.10.0(react@18.3.1)
@@ -9158,13 +9175,13 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/gridlist@3.10.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/gridlist@3.10.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
-      '@react-aria/grid': 3.11.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/grid': 3.11.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/collections': 3.12.0(react@18.3.1)
       '@react-stately/list': 3.11.1(react@18.3.1)
@@ -9211,11 +9228,11 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/listbox@3.13.6(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/listbox@3.13.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/label': 3.7.13(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/collections': 3.12.0(react@18.3.1)
       '@react-stately/list': 3.11.1(react@18.3.1)
@@ -9229,13 +9246,13 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.15
 
-  '@react-aria/menu@3.16.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/menu@3.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
-      '@react-aria/overlays': 3.24.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/overlays': 3.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/collections': 3.12.0(react@18.3.1)
       '@react-stately/menu': 3.9.0(react@18.3.1)
@@ -9256,11 +9273,11 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/numberfield@3.11.9(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/numberfield@3.11.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
-      '@react-aria/spinbutton': 3.6.10(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/spinbutton': 3.6.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/textfield': 3.15.0(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/form': 3.1.0(react@18.3.1)
@@ -9272,7 +9289,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/overlays@3.24.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/overlays@3.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
@@ -9324,15 +9341,15 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/select@3.15.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/select@3.15.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/form': 3.0.11(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/label': 3.7.13(react@18.3.1)
-      '@react-aria/listbox': 3.13.6(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/menu': 3.16.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/listbox': 3.13.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/menu': 3.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-aria/visually-hidden': 3.8.18(react@18.3.1)
       '@react-stately/select': 3.6.9(react@18.3.1)
@@ -9343,7 +9360,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/selection@3.21.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/selection@3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
@@ -9375,7 +9392,7 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/spinbutton@3.6.10(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/spinbutton@3.6.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/live-announcer': 3.4.1
@@ -9400,10 +9417,10 @@ snapshots:
       '@swc/helpers': 0.5.15
       react: 18.3.1
 
-  '@react-aria/table@3.16.0(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/table@3.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
-      '@react-aria/grid': 3.11.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/grid': 3.11.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/live-announcer': 3.4.1
@@ -9420,11 +9437,11 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/tabs@3.9.8(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/tabs@3.9.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@react-aria/focus': 3.19.0(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/tabs': 3.7.0(react@18.3.1)
       '@react-types/shared': 3.26.0(react@18.3.1)
@@ -9433,13 +9450,13 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@react-aria/tag@3.4.8(react-dom@18.3.1)(react@18.3.1)':
+  '@react-aria/tag@3.4.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@react-aria/gridlist': 3.10.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/gridlist': 3.10.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/label': 3.7.13(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
       '@react-stately/list': 3.11.1(react@18.3.1)
       '@react-types/button': 3.10.1(react@18.3.1)
@@ -9870,12 +9887,12 @@ snapshots:
       '@react-types/shared': 3.26.0(react@18.3.1)
       react: 18.3.1
 
-  '@release-it/conventional-changelog@9.0.3(release-it@17.10.0)':
+  '@release-it/conventional-changelog@9.0.3(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)(release-it@17.10.0(typescript@5.7.2))':
     dependencies:
       concat-stream: 2.0.0
-      conventional-changelog: 6.0.0
+      conventional-changelog: 6.0.0(conventional-commits-filter@5.0.0)
       conventional-recommended-bump: 10.0.0
-      git-semver-tags: 8.0.0(conventional-commits-parser@6.0.0)
+      git-semver-tags: 8.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)
       release-it: 17.10.0(typescript@5.7.2)
       semver: 7.6.3
     transitivePeerDependencies:
@@ -9950,7 +9967,7 @@ snapshots:
       '@babel/types': 7.26.0
       entities: 4.5.0
 
-  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0)':
+  '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.7.2))':
     dependencies:
       '@babel/core': 7.26.0
       '@svgr/babel-preset': 8.1.0(@babel/core@7.26.0)
@@ -9960,7 +9977,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0)(typescript@5.7.2)':
+  '@svgr/plugin-svgo@8.1.0(@svgr/core@8.1.0(typescript@5.7.2))(typescript@5.7.2)':
     dependencies:
       '@svgr/core': 8.1.0(typescript@5.7.2)
       cosmiconfig: 8.3.6(typescript@5.7.2)
@@ -9977,8 +9994,8 @@ snapshots:
       '@babel/preset-react': 7.25.9(@babel/core@7.26.0)
       '@babel/preset-typescript': 7.26.0(@babel/core@7.26.0)
       '@svgr/core': 8.1.0(typescript@5.7.2)
-      '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0)
-      '@svgr/plugin-svgo': 8.1.0(@svgr/core@8.1.0)(typescript@5.7.2)
+      '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.7.2))
+      '@svgr/plugin-svgo': 8.1.0(@svgr/core@8.1.0(typescript@5.7.2))(typescript@5.7.2)
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -10004,6 +10021,8 @@ snapshots:
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
   '@trysound/sax@0.2.0': {}
+
+  '@types/carbon__layout@0.0.3': {}
 
   '@types/conventional-commits-parser@5.0.1':
     dependencies:
@@ -10109,6 +10128,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 7.2.0
       debug: 4.3.7
       eslint: 8.57.1
+    optionalDependencies:
       typescript: 5.7.2
     transitivePeerDependencies:
       - supports-color
@@ -10130,6 +10150,7 @@ snapshots:
       minimatch: 9.0.3
       semver: 7.6.3
       ts-api-utils: 1.4.3(typescript@5.7.2)
+    optionalDependencies:
       typescript: 5.7.2
     transitivePeerDependencies:
       - supports-color
@@ -10141,7 +10162,7 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vercel/otel@1.10.0(@opentelemetry/api-logs@0.53.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.53.0)(@opentelemetry/resources@1.28.0)(@opentelemetry/sdk-logs@0.53.0)(@opentelemetry/sdk-metrics@1.28.0)(@opentelemetry/sdk-trace-base@1.28.0)':
+  '@vercel/otel@1.10.0(@opentelemetry/api-logs@0.53.0)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.53.0
@@ -10189,7 +10210,7 @@ snapshots:
       ajv: 8.17.1
 
   ajv-formats@3.0.1(ajv@8.17.1):
-    dependencies:
+    optionalDependencies:
       ajv: 8.17.1
 
   ajv@6.12.6:
@@ -10903,15 +10924,15 @@ snapshots:
 
   basic-ftp@5.0.5: {}
 
-  bee-agent-framework@0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4)(@langchain/community@0.2.33)(@langchain/core@0.2.36)(@langchain/langgraph@0.0.34)(groq-sdk@0.7.0)(ollama@0.5.10)(openai-chat-tokens@0.2.8)(openai@4.75.0):
+  bee-agent-framework@0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36(openai@4.75.0(zod@3.23.8))))(@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.75.0(zod@3.23.8)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.0)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.1)(lodash@4.17.21)(openai@4.75.0(zod@3.23.8)))(@langchain/core@0.2.36(openai@4.75.0(zod@3.23.8)))(@langchain/langgraph@0.0.34(openai@4.75.0(zod@3.23.8)))(groq-sdk@0.7.0)(ollama@0.5.10)(openai-chat-tokens@0.2.8)(openai@4.75.0(zod@3.23.8)):
     dependencies:
       '@ai-zen/node-fetch-event-source': 2.1.4
       '@connectrpc/connect': 1.6.1(@bufbuild/protobuf@1.10.0)
-      '@connectrpc/connect-node': 1.6.1(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.6.1)
-      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@0.2.36)
-      '@langchain/community': 0.2.33(@langchain/langgraph@0.0.34)(cheerio@1.0.0-rc.12)(ioredis@5.4.1)(lodash@4.17.21)(openai@4.75.0)
-      '@langchain/core': 0.2.36(openai@4.75.0)
-      '@langchain/langgraph': 0.0.34(openai@4.75.0)
+      '@connectrpc/connect-node': 1.6.1(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.6.1(@bufbuild/protobuf@1.10.0))
+      '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@0.2.36(openai@4.75.0(zod@3.23.8)))
+      '@langchain/community': 0.2.33(@langchain/langgraph@0.0.34(openai@4.75.0(zod@3.23.8)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.0)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.1)(lodash@4.17.21)(openai@4.75.0(zod@3.23.8))
+      '@langchain/core': 0.2.36(openai@4.75.0(zod@3.23.8))
+      '@langchain/langgraph': 0.0.34(openai@4.75.0(zod@3.23.8))
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
       bee-proto: 0.0.2
@@ -11219,14 +11240,14 @@ snapshots:
     dependencies:
       compare-func: 2.0.0
 
-  conventional-changelog-core@8.0.0:
+  conventional-changelog-core@8.0.0(conventional-commits-filter@5.0.0):
     dependencies:
       '@hutson/parse-repository-url': 5.0.0
       add-stream: 1.0.0
       conventional-changelog-writer: 8.0.0
       conventional-commits-parser: 6.0.0
-      git-raw-commits: 5.0.0(conventional-commits-parser@6.0.0)
-      git-semver-tags: 8.0.0(conventional-commits-parser@6.0.0)
+      git-raw-commits: 5.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)
+      git-semver-tags: 8.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)
       hosted-git-info: 7.0.2
       normalize-package-data: 6.0.2
       read-package-up: 11.0.0
@@ -11256,13 +11277,13 @@ snapshots:
       meow: 13.2.0
       semver: 7.6.3
 
-  conventional-changelog@6.0.0:
+  conventional-changelog@6.0.0(conventional-commits-filter@5.0.0):
     dependencies:
       conventional-changelog-angular: 8.0.0
       conventional-changelog-atom: 5.0.0
       conventional-changelog-codemirror: 5.0.0
       conventional-changelog-conventionalcommits: 8.0.0
-      conventional-changelog-core: 8.0.0
+      conventional-changelog-core: 8.0.0(conventional-commits-filter@5.0.0)
       conventional-changelog-ember: 5.0.0
       conventional-changelog-eslint: 6.0.0
       conventional-changelog-express: 5.0.0
@@ -11309,7 +11330,7 @@ snapshots:
 
   core-js@2.6.12: {}
 
-  cosmiconfig-typescript-loader@5.1.0(@types/node@20.17.9)(cosmiconfig@9.0.0)(typescript@5.7.2):
+  cosmiconfig-typescript-loader@5.1.0(@types/node@20.17.9)(cosmiconfig@9.0.0(typescript@5.7.2))(typescript@5.7.2):
     dependencies:
       '@types/node': 20.17.9
       cosmiconfig: 9.0.0(typescript@5.7.2)
@@ -11322,6 +11343,7 @@ snapshots:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
+    optionalDependencies:
       typescript: 5.7.2
 
   cosmiconfig@9.0.0(typescript@5.7.2):
@@ -11330,6 +11352,7 @@ snapshots:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
+    optionalDependencies:
       typescript: 5.7.2
 
   cross-fetch@4.0.0:
@@ -11725,11 +11748,12 @@ snapshots:
       '@typescript-eslint/parser': 7.2.0(eslint@8.57.1)(typescript@5.7.2)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
       eslint-plugin-react: 7.37.2(eslint@8.57.1)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.57.1)
+    optionalDependencies:
       typescript: 5.7.2
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
@@ -11748,35 +11772,36 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1):
+  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.3.7
       enhanced-resolve: 5.17.1
       eslint: 8.57.1
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
       fast-glob: 3.3.2
       get-tsconfig: 4.8.1
       is-bun-module: 1.3.0
       is-glob: 4.0.3
       stable-hash: 0.0.4
+    optionalDependencies:
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
-      '@typescript-eslint/parser': 7.2.0(eslint@8.57.1)(typescript@5.7.2)
       debug: 3.2.7
+    optionalDependencies:
+      '@typescript-eslint/parser': 7.2.0(eslint@8.57.1)(typescript@5.7.2)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1)
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
-      '@typescript-eslint/parser': 7.2.0(eslint@8.57.1)(typescript@5.7.2)
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
       array.prototype.flat: 1.3.2
@@ -11785,7 +11810,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@7.2.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -11796,6 +11821,8 @@ snapshots:
       semver: 6.3.1
       string.prototype.trimend: 1.0.8
       tsconfig-paths: 3.15.0
+    optionalDependencies:
+      '@typescript-eslint/parser': 7.2.0(eslint@8.57.1)(typescript@5.7.2)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -12005,7 +12032,7 @@ snapshots:
       format: 0.2.2
 
   fdir@6.4.2(picomatch@4.0.2):
-    dependencies:
+    optionalDependencies:
       picomatch: 4.0.2
 
   fetch-retry@5.0.6: {}
@@ -12086,13 +12113,14 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@11.13.1(react-dom@18.3.1)(react@18.3.1):
+  framer-motion@11.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       motion-dom: 11.13.0
       motion-utils: 11.13.0
+      tslib: 2.8.1
+    optionalDependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      tslib: 2.8.1
 
   fs.realpath@1.0.0: {}
 
@@ -12154,7 +12182,7 @@ snapshots:
       meow: 12.1.1
       split2: 4.2.0
 
-  git-raw-commits@5.0.0(conventional-commits-parser@6.0.0):
+  git-raw-commits@5.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0):
     dependencies:
       '@conventional-changelog/git-client': 1.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)
       meow: 13.2.0
@@ -12162,7 +12190,7 @@ snapshots:
       - conventional-commits-filter
       - conventional-commits-parser
 
-  git-semver-tags@8.0.0(conventional-commits-parser@6.0.0):
+  git-semver-tags@8.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0):
     dependencies:
       '@conventional-changelog/git-client': 1.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)
       meow: 13.2.0
@@ -12841,37 +12869,43 @@ snapshots:
 
   ky@1.7.2: {}
 
-  langchain@0.2.20(cheerio@1.0.0-rc.12)(ioredis@5.4.1)(openai@4.75.0):
+  langchain@0.2.20(axios@1.7.9)(cheerio@1.0.0-rc.12)(fast-xml-parser@4.5.0)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.1)(openai@4.75.0(zod@3.23.8)):
     dependencies:
-      '@langchain/core': 0.2.36(openai@4.75.0)
+      '@langchain/core': 0.2.36(openai@4.75.0(zod@3.23.8))
       '@langchain/openai': 0.2.11
-      '@langchain/textsplitters': 0.0.3(openai@4.75.0)
+      '@langchain/textsplitters': 0.0.3(openai@4.75.0(zod@3.23.8))
       binary-extensions: 2.3.0
-      cheerio: 1.0.0-rc.12
-      ioredis: 5.4.1
       js-tiktoken: 1.0.15
       js-yaml: 4.1.0
       jsonpointer: 5.0.1
-      langsmith: 0.1.68(openai@4.75.0)
+      langsmith: 0.1.68(openai@4.75.0(zod@3.23.8))
       openapi-types: 12.1.3
       p-retry: 4.6.2
       uuid: 10.0.0
       yaml: 2.6.1
       zod: 3.23.8
       zod-to-json-schema: 3.23.5(zod@3.23.8)
+    optionalDependencies:
+      axios: 1.7.9
+      cheerio: 1.0.0-rc.12
+      fast-xml-parser: 4.5.0
+      handlebars: 4.7.8
+      ignore: 5.3.2
+      ioredis: 5.4.1
     transitivePeerDependencies:
       - encoding
       - openai
 
-  langsmith@0.1.68(openai@4.75.0):
+  langsmith@0.1.68(openai@4.75.0(zod@3.23.8)):
     dependencies:
       '@types/uuid': 10.0.0
       commander: 10.0.1
-      openai: 4.75.0(zod@3.23.8)
       p-queue: 6.6.2
       p-retry: 4.6.2
       semver: 7.6.3
       uuid: 10.0.0
+    optionalDependencies:
+      openai: 4.75.0(zod@3.23.8)
 
   language-subtag-registry@0.3.23: {}
 
@@ -12998,7 +13032,7 @@ snapshots:
     dependencies:
       js-tokens: 4.0.0
 
-  lottie-react@2.4.0(react-dom@18.3.1)(react@18.3.1):
+  lottie-react@2.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       lottie-web: 5.12.2
       react: 18.3.1
@@ -13474,20 +13508,19 @@ snapshots:
     dependencies:
       type-fest: 2.19.0
 
-  next-auth@5.0.0-beta.16(patch_hash=u4fiseyb5lneqy7v2ok5das7jq)(next@14.2.10)(react@18.3.1):
+  next-auth@5.0.0-beta.16(patch_hash=u4fiseyb5lneqy7v2ok5das7jq)(next@14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.82.0))(react@18.3.1):
     dependencies:
       '@auth/core': 0.28.1
-      next: 14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1)(react@18.3.1)(sass@1.82.0)
+      next: 14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.82.0)
       react: 18.3.1
 
   next-nprogress-bar@2.3.15:
     dependencies:
       nprogress: 0.2.0
 
-  next@14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1)(react@18.3.1)(sass@1.82.0):
+  next@14.2.10(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.82.0):
     dependencies:
       '@next/env': 14.2.10
-      '@opentelemetry/api': 1.9.0
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001686
@@ -13495,7 +13528,6 @@ snapshots:
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      sass: 1.82.0
       styled-jsx: 5.1.1(@babel/core@7.26.0)(react@18.3.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.2.10
@@ -13507,6 +13539,8 @@ snapshots:
       '@next/swc-win32-arm64-msvc': 14.2.10
       '@next/swc-win32-ia32-msvc': 14.2.10
       '@next/swc-win32-x64-msvc': 14.2.10
+      '@opentelemetry/api': 1.9.0
+      sass: 1.82.0
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
@@ -13635,6 +13669,7 @@ snapshots:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
+    optionalDependencies:
       zod: 3.23.8
     transitivePeerDependencies:
       - encoding
@@ -14025,42 +14060,42 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-aria@3.36.0(react-dom@18.3.1)(react@18.3.1):
+  react-aria@3.36.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@internationalized/string': 3.2.5
       '@react-aria/breadcrumbs': 3.5.19(react@18.3.1)
       '@react-aria/button': 3.11.0(react@18.3.1)
-      '@react-aria/calendar': 3.6.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/calendar': 3.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/checkbox': 3.15.0(react@18.3.1)
-      '@react-aria/color': 3.0.2(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/combobox': 3.11.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/datepicker': 3.12.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/dialog': 3.5.20(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/disclosure': 3.0.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/dnd': 3.8.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/color': 3.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/combobox': 3.11.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/datepicker': 3.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/dialog': 3.5.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/disclosure': 3.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/dnd': 3.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/focus': 3.19.0(react@18.3.1)
-      '@react-aria/gridlist': 3.10.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/gridlist': 3.10.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/i18n': 3.12.4(react@18.3.1)
       '@react-aria/interactions': 3.22.5(react@18.3.1)
       '@react-aria/label': 3.7.13(react@18.3.1)
       '@react-aria/link': 3.7.7(react@18.3.1)
-      '@react-aria/listbox': 3.13.6(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/menu': 3.16.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/listbox': 3.13.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/menu': 3.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/meter': 3.4.18(react@18.3.1)
-      '@react-aria/numberfield': 3.11.9(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/overlays': 3.24.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/numberfield': 3.11.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/overlays': 3.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/progress': 3.4.18(react@18.3.1)
       '@react-aria/radio': 3.10.10(react@18.3.1)
       '@react-aria/searchfield': 3.7.11(react@18.3.1)
-      '@react-aria/select': 3.15.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/selection': 3.21.0(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/select': 3.15.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/selection': 3.21.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/separator': 3.4.4(react@18.3.1)
       '@react-aria/slider': 3.7.14(react@18.3.1)
       '@react-aria/ssr': 3.9.7(react@18.3.1)
       '@react-aria/switch': 3.6.10(react@18.3.1)
-      '@react-aria/table': 3.16.0(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/tabs': 3.9.8(react-dom@18.3.1)(react@18.3.1)
-      '@react-aria/tag': 3.4.8(react-dom@18.3.1)(react@18.3.1)
+      '@react-aria/table': 3.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/tabs': 3.9.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@react-aria/tag': 3.4.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/textfield': 3.15.0(react@18.3.1)
       '@react-aria/tooltip': 3.7.10(react@18.3.1)
       '@react-aria/utils': 3.26.0(react@18.3.1)
@@ -14075,7 +14110,7 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-draggable@4.4.6(react-dom@18.3.1)(react@18.3.1):
+  react-draggable@4.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       clsx: 1.2.1
       prop-types: 15.8.1
@@ -14100,9 +14135,10 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  react-intersection-observer@9.13.1(react-dom@18.3.1)(react@18.3.1):
+  react-intersection-observer@9.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
+    optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)
 
   react-is@16.13.1: {}
@@ -14130,11 +14166,11 @@ snapshots:
 
   react-merge-refs@2.1.1: {}
 
-  react-resizable@3.0.5(react-dom@18.3.1)(react@18.3.1):
+  react-resizable@3.0.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       prop-types: 15.8.1
       react: 18.3.1
-      react-draggable: 4.4.6(react-dom@18.3.1)(react@18.3.1)
+      react-draggable: 4.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - react-dom
 
@@ -14720,33 +14756,35 @@ snapshots:
 
   styled-jsx@5.1.1(@babel/core@7.26.0)(react@18.3.1):
     dependencies:
-      '@babel/core': 7.26.0
       client-only: 0.0.1
       react: 18.3.1
+    optionalDependencies:
+      '@babel/core': 7.26.0
 
-  stylelint-config-css-modules@4.4.0(stylelint@16.11.0):
+  stylelint-config-css-modules@4.4.0(stylelint@16.11.0(typescript@5.7.2)):
     dependencies:
       stylelint: 16.11.0(typescript@5.7.2)
     optionalDependencies:
-      stylelint-scss: 6.10.0(stylelint@16.11.0)
+      stylelint-scss: 6.10.0(stylelint@16.11.0(typescript@5.7.2))
 
-  stylelint-config-recommended-scss@14.1.0(postcss@8.4.49)(stylelint@16.11.0):
+  stylelint-config-recommended-scss@14.1.0(postcss@8.4.49)(stylelint@16.11.0(typescript@5.7.2)):
     dependencies:
-      postcss: 8.4.49
       postcss-scss: 4.0.9(postcss@8.4.49)
       stylelint: 16.11.0(typescript@5.7.2)
-      stylelint-config-recommended: 14.0.1(stylelint@16.11.0)
-      stylelint-scss: 6.10.0(stylelint@16.11.0)
+      stylelint-config-recommended: 14.0.1(stylelint@16.11.0(typescript@5.7.2))
+      stylelint-scss: 6.10.0(stylelint@16.11.0(typescript@5.7.2))
+    optionalDependencies:
+      postcss: 8.4.49
 
-  stylelint-config-recommended@14.0.1(stylelint@16.11.0):
+  stylelint-config-recommended@14.0.1(stylelint@16.11.0(typescript@5.7.2)):
     dependencies:
       stylelint: 16.11.0(typescript@5.7.2)
 
-  stylelint-plugin-logical-css@1.2.1(stylelint@16.11.0):
+  stylelint-plugin-logical-css@1.2.1(stylelint@16.11.0(typescript@5.7.2)):
     dependencies:
       stylelint: 16.11.0(typescript@5.7.2)
 
-  stylelint-scss@6.10.0(stylelint@16.11.0):
+  stylelint-scss@6.10.0(stylelint@16.11.0(typescript@5.7.2)):
     dependencies:
       css-tree: 3.0.1
       is-plain-object: 5.0.0
@@ -14762,7 +14800,7 @@ snapshots:
     dependencies:
       '@csstools/css-parser-algorithms': 3.0.4(@csstools/css-tokenizer@3.0.3)
       '@csstools/css-tokenizer': 3.0.3
-      '@csstools/media-query-list-parser': 4.0.2(@csstools/css-parser-algorithms@3.0.4)(@csstools/css-tokenizer@3.0.3)
+      '@csstools/media-query-list-parser': 4.0.2(@csstools/css-parser-algorithms@3.0.4(@csstools/css-tokenizer@3.0.3))(@csstools/css-tokenizer@3.0.3)
       '@csstools/selector-specificity': 5.0.0(postcss-selector-parser@7.0.0)
       '@dual-bundle/import-meta-resolve': 4.1.0
       balanced-match: 2.0.0
@@ -15051,18 +15089,18 @@ snapshots:
 
   url-join@5.0.0: {}
 
-  use-local-storage-state@19.5.0(react-dom@18.3.1)(react@18.3.1):
+  use-local-storage-state@19.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  use-resize-observer@6.1.0(react-dom@18.3.1)(react@18.3.1):
+  use-resize-observer@6.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       resize-observer-polyfill: 1.5.1
 
-  use-resize-observer@9.1.0(react-dom@18.3.1)(react@18.3.1):
+  use-resize-observer@9.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       react: 18.3.1
@@ -15259,7 +15297,7 @@ snapshots:
   zod@3.23.8: {}
 
   zustand@5.0.1(@types/react@18.3.12)(immer@10.1.1)(react@18.3.1):
-    dependencies:
+    optionalDependencies:
       '@types/react': 18.3.12
       immer: 10.1.1
       react: 18.3.1

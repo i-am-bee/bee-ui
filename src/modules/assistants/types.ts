@@ -26,6 +26,8 @@ export const STARTER_QUESTION_KEY_PREFIX = 'starterQuestion_';
 export interface AssistantMetadata extends StarterQuestionsMetadata {
   icon?: AssitantIconName;
   color?: AssistantIconColor;
+  origin?: 'template' | 'new';
+  originTemplate?: string;
 }
 
 export type Assistant = EntityWithDecodedMetadata<

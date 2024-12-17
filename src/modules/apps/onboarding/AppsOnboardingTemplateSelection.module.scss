@@ -17,13 +17,12 @@
 @use 'styles/common' as *;
 
 .heading {
-  margin-block-end: $spacing-07;
+  margin-block-end: $spacing-06;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $spacing-07;
+  gap: $spacing-05;
   &:not(:last-child) {
     margin-block-end: $spacing-07;
   }
@@ -33,4 +32,20 @@
   @include type-style(body-02);
   line-height: (20 / 16);
   margin-block-end: $spacing-05;
+}
+
+@include breakpoint-up(md) {
+  .heading {
+    margin-block-end: $spacing-07;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@include breakpoint-up(lg) {
+  .grid {
+    gap: $spacing-07;
+  }
 }

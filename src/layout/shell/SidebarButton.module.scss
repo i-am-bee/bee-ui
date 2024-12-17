@@ -38,3 +38,37 @@
   font-size: rem(16px);
   line-height: (18 / 16);
 }
+
+@include breakpoint-down(lg) {
+  .root {
+    margin-inline-start: rem(-6px);
+    :global(.#{$prefix}--btn) {
+      svg {
+        inline-size: rem(20px);
+        block-size: rem(20px);
+        + svg {
+          position: absolute;
+          inset-block-start: 50%;
+          inset-inline-start: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 0;
+        }
+      }
+
+      &[aria-expanded='true'] svg {
+        opacity: 0;
+        + svg {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+@include breakpoint-up(lg) {
+  .root {
+    :global(.#{$prefix}--btn) svg + svg {
+      display: none;
+    }
+  }
+}

@@ -15,14 +15,13 @@
  */
 
 import { LoginError, SignIn } from '@/modules/auth/SignIn';
-import { isAbsoluteUrl } from '@/utils/url';
-import { signIn } from './actions';
-import { redirect } from 'next/navigation';
 import { redis, RedisKey } from '@/redis';
+import { DUMMY_JWT_TOKEN } from '@/utils/constants';
+import { isAbsoluteUrl } from '@/utils/url';
+import { redirect } from 'next/navigation';
+import { signIn } from './actions';
 
 export const dynamic = 'force-dynamic';
-
-const DUMMY_JWT_TOKEN = process.env.DUMMY_JWT_TOKEN!;
 
 interface PageProps {
   searchParams: Record<string, string | string[] | undefined>;

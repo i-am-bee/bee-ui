@@ -19,7 +19,7 @@
 .root {
   display: flex;
   align-items: center;
-  padding: $spacing-05;
+  padding: $spacing-04;
   background-color: $background;
   border-radius: $block-radius;
   box-shadow: $box-shadow;
@@ -30,6 +30,7 @@
   display: flex;
   gap: $spacing-04;
   align-items: center;
+  min-inline-size: 0;
   .icon {
     block-size: rem(40px);
     inline-size: rem(40px);
@@ -39,8 +40,16 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    flex-shrink: 0;
   }
   strong {
+    @include truncate();
     font-size: rem(14px);
+  }
+}
+
+@include breakpoint-up(lg) {
+  .root {
+    padding: $spacing-05;
   }
 }

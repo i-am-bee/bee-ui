@@ -17,7 +17,7 @@
 @use 'styles/common' as *;
 
 .root {
-  inline-size: rem(278px);
+  inline-size: rem(192px);
   display: flex;
   flex-wrap: wrap;
   gap: $spacing-03;
@@ -50,5 +50,11 @@
   [data-color='white'] {
     border: 1px solid $border-subtle;
     border-radius: $block-radius;
+  }
+}
+
+@include breakpoint-up(md) {
+  .root {
+    inline-size: rem(272px);
   }
 }

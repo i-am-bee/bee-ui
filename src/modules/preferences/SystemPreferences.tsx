@@ -16,34 +16,14 @@
 
 'use client';
 import { PreferencesSection, PreferencesLayout } from './PreferencesLayout';
-import {
-  Button,
-  DataTable,
-  DataTableSkeleton,
-  RadioButton,
-  RadioButtonGroup,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableToolbar,
-  TableToolbarContent,
-  TableToolbarSearch,
-  Toggle,
-} from '@carbon/react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { ChangeEvent, useId, useMemo } from 'react';
-import { getLocaleDateString } from '@/utils/dates';
+import { RadioButton, RadioButtonGroup, Toggle } from '@carbon/react';
+import { useId } from 'react';
 import { Theme, useTheme } from '@/layout/providers/ThemeProvider';
 import { Laptop, Moon, Sun } from '@carbon/react/icons';
 import classes from './SystemPreferences.module.scss';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
 
 export function SystemPreferences() {
-  const { project } = useAppContext();
   const id = useId();
   const { getUserSetting, setUserSetting } = useUserSetting();
   const { theme, setTheme } = useTheme();

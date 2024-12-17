@@ -34,17 +34,10 @@ import { Artifact } from './types';
 
 interface Props {
   artifact: Artifact;
-  project: Project;
-  organization: Organization;
   onSuccess?: (artifact: Artifact) => void;
 }
 
-export function ShareApp({
-  artifact,
-  project,
-  organization,
-  onSuccess,
-}: Props) {
+export function ShareApp({ artifact, onSuccess }: Props) {
   const id = useId();
   const [shareUrl, setShareUrl] = useState(artifact.share_url);
   const fullShareUrl = createFullShareUrl({
@@ -58,8 +51,6 @@ export function ShareApp({
     error,
     isPending,
   } = useSaveArtifact({
-    project,
-    organization,
     onSuccess: (result) => {
       const artifact = decodeEntityWithMetadata<Artifact>(result);
 

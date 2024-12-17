@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-import { HTMLAttributes, useMemo } from 'react';
-import { ExtraProps } from 'react-markdown';
-import classes from './PythonAppCode.module.scss';
-import { MessageLoading } from '../MessageLoading';
-import { useRunContext } from '../../providers/RunProvider';
-import { Rocket } from '@carbon/react/icons';
-import { InlineLoading, SkeletonIcon } from '@carbon/react';
+import { AppIcon } from '@/modules/apps/AppIcon';
+import {
+  useAppBuilder,
+  useAppBuilderApi,
+} from '@/modules/apps/builder/AppBuilderProvider';
 import {
   extractAppMetadataFromStreamlitCode,
   extractCodeFromMessageContent,
 } from '@/modules/apps/utils';
+import { InlineLoading } from '@carbon/react';
+import { HTMLAttributes, useMemo } from 'react';
+import { ExtraProps } from 'react-markdown';
+import { useRunContext } from '../../providers/RunProvider';
+import { MessageLoading } from '../MessageLoading';
+import classes from './PythonAppCode.module.scss';
 
 export function PythonAppCode({
   node,
   ...props
 }: HTMLAttributes<HTMLElement> & ExtraProps) {
   const { message } = useRunContext();
+  const { artifact } = useAppBuilder();
+  const { setMobilePreviewOpen } = useAppBuilderApi();
 
   const appName = useMemo(() => {
     if (message?.pending || !message?.content) return null;
@@ -41,7 +47,16 @@ export function PythonAppCode({
   }, [message]);
 
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+      onClick={() => {
+        if (message?.pending || message?.error) {
+          return;
+        }
+
+        setMobilePreviewOpen(true);
+      }}
+    >
       {message?.pending ? (
         <MessageLoading message="Loading the app" showSpinner />
       ) : message?.error ? (
@@ -49,7 +64,11 @@ export function PythonAppCode({
       ) : (
         <div className={classes.app}>
           <span className={classes.icon}>
-            {message?.pending ? <InlineLoading /> : <Rocket />}
+            {message?.pending ? (
+              <InlineLoading />
+            ) : (
+              <AppIcon name={artifact ? artifact.uiMetadata.icon : 'Rocket'} />
+            )}
           </span>
           {/* TODO: handle app error */}
           <strong>{appName ?? 'The app is ready'}</strong>

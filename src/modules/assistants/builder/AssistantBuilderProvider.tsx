@@ -20,15 +20,19 @@ import { SystemToolId } from '@/app/api/threads-runs/types';
 import { ToolReference } from '@/app/api/tools/types';
 import { AssistantTools } from '@/app/api/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import {
   useAppApiContext,
   useAppContext,
 } from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
+import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';
+import pick from 'lodash/pick';
+import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,
@@ -50,7 +54,6 @@ import {
   encodeStarterQuestionsMetadata,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
-import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 
 export type AssistantFormValues = {
   icon: {
@@ -110,6 +113,9 @@ export function AssistantBuilderProvider({
     ? ASSISTANT_TEMPLATES.find((template) => template.key === templateKey)
     : undefined;
 
+  const router = useRouter();
+  const isMdDown = useBreakpoint('mdDown');
+
   useOnboardingCompleted(isOnboarding ? 'assistants' : null);
 
   const { saveAssistantAsync } = useSaveAssistant({
@@ -118,12 +124,17 @@ export function AssistantBuilderProvider({
       const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
       selectAssistant(assistantFromResult);
 
-      if (isNew)
-        window.history.pushState(
-          {},
-          '',
-          `/${project.id}/builder/${assistantFromResult.id}`,
-        );
+      if (isMdDown) {
+        router.push(`/${project.id}/chat/${result.id}`);
+      } else {
+        if (isNew) {
+          window.history.pushState(
+            {},
+            '',
+            `/${project.id}/builder/${assistantFromResult.id}`,
+          );
+        }
+      }
     },
   });
 
@@ -153,7 +164,13 @@ export function AssistantBuilderProvider({
         keepValues: false,
       },
     );
-  }, [isDuplicate, initialAssistant, selectAssistant]);
+  }, [
+    isDuplicate,
+    initialAssistant,
+    selectAssistant,
+    reset,
+    assistantTemplate,
+  ]);
 
   useEffect(() => {
     if (!isEmpty(formState.dirtyFields))
@@ -186,6 +203,31 @@ export function AssistantBuilderProvider({
         }, [])
         .filter(isNotNull);
 
+      const metadata: AssistantMetadata = {
+        icon: icon.name,
+        color: icon.color,
+      };
+      if (starterQuestions) {
+        Object.assign(
+          metadata,
+          encodeStarterQuestionsMetadata(starterQuestions),
+        );
+      }
+      // When creating assistant set origin fields, when updating just copy them
+      if (assistant?.id == null) {
+        Object.assign(
+          metadata,
+          assistantTemplate
+            ? { origin: 'template', originTemplate: assistantTemplate.key }
+            : { origin: 'new' },
+        );
+      } else {
+        Object.assign(
+          metadata,
+          pick(assistant.uiMetadata, ['origin', 'originTemplate']),
+        );
+      }
+
       await saveAssistantAsync({
         id: assistant?.id,
         body: {
@@ -199,20 +241,14 @@ export function AssistantBuilderProvider({
               ? { vector_store_ids: [vectorStoreId] }
               : undefined,
           },
-          metadata: encodeMetadata<AssistantMetadata>({
-            icon: icon.name,
-            color: icon.color,
-            ...(starterQuestions
-              ? encodeStarterQuestionsMetadata(starterQuestions)
-              : {}),
-          }),
+          metadata: encodeMetadata(metadata),
           model,
         },
       });
 
       formReturn.reset({}, { keepValues: true });
     },
-    [assistant, formReturn, saveAssistantAsync],
+    [assistant, assistantTemplate, formReturn, saveAssistantAsync],
   );
 
   const handleError = useCallback(() => {

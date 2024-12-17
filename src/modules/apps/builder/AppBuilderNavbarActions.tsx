@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { useRouter } from 'next-nprogress-bar';
 import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
@@ -36,6 +38,8 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
     onSuccess: () => router.push(`/${project.id}/apps/`),
   });
 
+  const isMdDown = useBreakpoint('mdDown');
+
   if (!artifact) return null;
 
   return (
@@ -46,12 +50,9 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
           kind="tertiary"
           onClick={() =>
             openModal((props) => (
-              <ShareAppModal
-                {...props}
-                artifact={artifact}
-                project={project}
-                organization={organization}
-              />
+              <ProjectProvider project={project} organization={organization}>
+                <ShareAppModal {...props} artifact={artifact} />
+              </ProjectProvider>
             ))
           }
         >
@@ -59,7 +60,7 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
         </Button>
       )}
 
-      <OverflowMenu size="sm" flipped>
+      <OverflowMenu size="sm" flipped direction={isMdDown ? 'top' : 'bottom'}>
         <OverflowMenuItem
           itemText="Edit"
           onClick={() =>

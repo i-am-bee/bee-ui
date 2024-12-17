@@ -20,21 +20,26 @@
   border-radius: $spacing-03;
   background-color: $layer-02;
   display: flex;
-  margin-block-end: $spacing-07;
+  margin-block-end: $spacing-06;
 }
 
 .heading {
-  margin-block-end: $spacing-03;
+  margin-block-end: $spacing-05;
 }
 
 .content {
   @include type-style(body-02);
-  line-height: (20 / 16);
   > * {
     line-height: inherit;
     font-size: inherit;
     + * {
       margin-block-start: rem(20px);
     }
+  }
+}
+
+@include breakpoint-up(md) {
+  .illustration {
+    margin-block-end: $spacing-07;
   }
 }

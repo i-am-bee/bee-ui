@@ -23,14 +23,14 @@ import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { ArrowUpRight } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { HTMLAttributes } from 'react';
-import { useAppContext } from '../providers/AppProvider';
 import classes from './UserNav.module.scss';
 import { UserProfile } from './UserProfile';
+import { useProjectContext } from '../providers/ProjectProvider';
 
 interface Props extends HTMLAttributes<HTMLElement> {}
 
 export function UserNav({ className }: Props) {
-  const { project } = useAppContext();
+  const { project } = useProjectContext();
 
   const prefetchTools = usePrefetchTools({ useDefaultParams: true });
   const prefetchVectoreStores = usePrefetchVectorStores({

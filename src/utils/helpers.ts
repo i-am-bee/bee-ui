@@ -47,6 +47,6 @@ export function simpleHashInRange(
   return min + (hash % (max - min + 1));
 }
 
-export function removeTrailingSlash(url: string): string {
-  return url.endsWith('/') ? url.slice(0, -1) : url;
+export function removeTrailingSlash(url?: string): string {
+  return url?.endsWith('/') ? url.slice(0, -1) : (url ?? '');
 }

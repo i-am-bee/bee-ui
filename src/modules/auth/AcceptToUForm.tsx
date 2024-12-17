@@ -15,6 +15,7 @@
  */
 
 'use client';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { Button, Checkbox, InlineLoading } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
@@ -47,6 +48,8 @@ export function AcceptToUForm({ content, callbackUrl }: Props) {
   const [shouldPauseAnimation, setShouldPauseAnimation] = useState(true);
   const [response, formAction] = useFormState(acceptTou.bind(null), null);
 
+  const isMdDown = useBreakpoint('mdDown');
+
   const { addToast } = useToast();
 
   const onEnterFrame = (event: any) => {
@@ -68,6 +71,13 @@ export function AcceptToUForm({ content, callbackUrl }: Props) {
   };
 
   const onButtonClick: MouseEventHandler<HTMLButtonElement> = (event) => {
+    // Animation is not displayed on smaller screens, so we can submit the form immediately.
+    if (isMdDown) {
+      onComplete();
+
+      return;
+    }
+
     const lottie = lottieRef.current;
 
     setShouldPauseAnimation(false);

@@ -15,7 +15,6 @@
  */
 
 import { Modal } from '@/components/Modal/Modal';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { noop } from '@/utils/helpers';
@@ -30,12 +29,13 @@ import { AppTemplate } from '../types';
 import { AppsOnboardingTemplateSelection } from './AppsOnboardingTemplateSelection';
 import { ARTIFACT_TEMPLATES } from './templates';
 import { ONBOARDING_PARAM } from '@/utils/constants';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props extends ModalProps {}
 
 export function AppsOnboardingModal({ ...props }: Props) {
   const router = useRouter();
-  const { project } = useAppContext();
+  const { project } = useProjectContext();
   const [step, setStep] = useState(Steps.INTRO);
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(
     null,
@@ -49,7 +49,6 @@ export function AppsOnboardingModal({ ...props }: Props) {
         body: <AppsOnboardingIntro />,
         footerProps: {
           onNextClick: () => setStep(Steps.TEMPLATE_SELECTION),
-          nextButtonTitle: 'Start building',
         },
       };
       break;
@@ -68,6 +67,7 @@ export function AppsOnboardingModal({ ...props }: Props) {
               `/${project.id}/apps/builder?${ONBOARDING_PARAM}${selectedTemplate ? `&template=${selectedTemplate.key}` : ''}`,
             ),
           onBackClick: () => setStep(Steps.INTRO),
+          nextButtonTitle: 'Start building',
         },
       };
       break;
@@ -79,7 +79,6 @@ export function AppsOnboardingModal({ ...props }: Props) {
     <ModalControlProvider onRequestClose={noop}>
       <Modal
         {...props}
-        preventCloseOnClickOutside
         className={clsx(classes.root, classes[`step--${step}`])}
       >
         <ModalBody>{body}</ModalBody>

@@ -17,21 +17,37 @@
 @use 'styles/common' as *;
 
 .root {
-  block-size: 100vh;
+  block-size: 100dvh;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  gap: $spacing-07;
   padding-block: $spacing-07;
-  column-gap: $spacing-07;
-}
-
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .heading {
   @include type-style(heading-06);
   @include font-family(serif);
+}
+
+@include breakpoint-down(md) {
+  .root {
+    padding-block-end: $spacing-05;
+  }
+
+  .heading {
+    font-size: rem(32px);
+    line-height: (40 / 32);
+  }
+}
+
+@include breakpoint-up(md) {
+  .root {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }

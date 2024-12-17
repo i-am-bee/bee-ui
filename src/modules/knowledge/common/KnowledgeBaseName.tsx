@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { readVectorStoreQuery } from '../queries';
-import { useQuery } from '@tanstack/react-query';
 import { SkeletonText } from '@carbon/react';
 import classes from './KnowledgeBaseName.module.scss';
 import { useVectorStore } from '../hooks/useVectorStore';

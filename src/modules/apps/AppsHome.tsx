@@ -40,6 +40,8 @@ import classes from './AppsHome.module.scss';
 import Bee from '@/modules/assistants/icons/BeeMain.svg';
 import { useDebounceValue } from 'usehooks-ts';
 import { NewAgentModal } from '../onboarding/NewAgentModal';
+import { Link } from '@/components/Link/Link';
+import { useAssistants } from '../assistants/hooks/useAssistants';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -72,6 +74,12 @@ export function AppsHome() {
     isPending,
     isFetchingNextPage,
   } = useArtifacts({ params });
+
+  const { data: assistantsData } = useAssistants({
+    params: { limit: 1 },
+    enabled: !data?.artifacts.length,
+  });
+  const firstAssistant = assistantsData?.assistants.at(0);
 
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/assistants
@@ -112,11 +120,16 @@ export function AppsHome() {
                 Honey, this hive is empty.
               </div>
               <p>
-                Create your first app or{' '}
-                <a href="" target="_blank" rel="noopener noreferrer">
-                  browse examples
-                </a>
-                .
+                Create your first app, or if that‘s a buzzkill, chat with{' '}
+                <Link
+                  href={
+                    firstAssistant
+                      ? `/${project.id}/chat/${firstAssistant.id}`
+                      : `/${project.id}/builder`
+                  }
+                >
+                  Agent Bee
+                </Link>
               </p>
             </div>
           }

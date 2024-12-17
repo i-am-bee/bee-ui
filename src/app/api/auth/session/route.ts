@@ -21,3 +21,5 @@ export async function GET() {
   const { expires, userProfile } = await ensureSession();
   return NextResponse.json({ expires, userProfile });
 }
+
+export { POST } from '@/app/auth';

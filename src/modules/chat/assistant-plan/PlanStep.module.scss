@@ -96,7 +96,7 @@
 
 .info {
   @include type-style(label-01);
-  padding: rem(20px) $spacing-04 rem(20px) rem(34px);
+  padding: $spacing-05 $spacing-04;
   border-block-start: 1px solid $border-subtle-01;
   display: grid;
   row-gap: $spacing-05;
@@ -168,4 +168,10 @@
   flex-wrap: wrap;
   gap: $spacing-04;
   margin-block-start: $spacing-04;
+}
+
+@include breakpoint-up(md) {
+  .info {
+    padding: rem(20px) $spacing-04 rem(20px) rem(34px);
+  }
 }

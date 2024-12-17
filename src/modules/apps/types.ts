@@ -20,6 +20,7 @@ import { ArtifactResult } from '@/app/api/artifacts/types';
 
 export interface ArtifactMetadata {
   icon?: AppIconName;
+  origin?: 'share' | 'new';
 }
 
 export type Artifact = EntityWithDecodedMetadata<

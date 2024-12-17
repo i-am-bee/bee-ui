@@ -15,11 +15,9 @@
  */
 
 import { Modal } from '@/components/Modal/Modal';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ONBOARDING_PARAM } from '@/utils/constants';
-import { noop } from '@/utils/helpers';
 import { ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
@@ -29,8 +27,6 @@ import { AssistantTemplate } from '../assistants/types';
 import { OnboardingAssistantSelection } from './OnboardingAssistantSelection';
 import { OnboardingIntro } from './OnboardingIntro';
 import classes from './NewAgentModal.module.scss';
-import { Project } from 'next/dist/build/swc';
-import { Organization } from '@/app/api/organization/types';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props extends ModalProps {

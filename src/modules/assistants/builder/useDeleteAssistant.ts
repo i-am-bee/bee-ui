@@ -15,11 +15,11 @@
  */
 
 import { deleteAssistant } from '@/app/api/assistants';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { assistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   assistant: Assistant;
@@ -28,7 +28,7 @@ interface Props {
 
 export function useDeleteAssistant({ assistant, onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({

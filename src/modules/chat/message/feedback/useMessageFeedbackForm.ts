@@ -22,7 +22,7 @@ import { useForm } from 'react-hook-form';
 import { readRunQuery } from '../../queries';
 import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
 import { updateRun } from '@/app/api/threads-runs';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export const MESSAGE_FEEDBACK_FORM_DEFAULTS = {
   comment: '',
@@ -36,7 +36,7 @@ interface Props {
 }
 
 export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useProjectContext();
 
   const form = useForm<MessageFeedback>({
     defaultValues: MESSAGE_FEEDBACK_FORM_DEFAULTS,
