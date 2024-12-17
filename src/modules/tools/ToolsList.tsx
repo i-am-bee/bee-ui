@@ -15,6 +15,7 @@
  */
 
 'use client';
+import { ToolType } from '@/app/api/threads-runs/types';
 import {
   Tool,
   ToolResult,
@@ -26,6 +27,7 @@ import { CardsList } from '@/components/CardsList/CardsList';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { useState } from 'react';
@@ -35,10 +37,9 @@ import { useTools } from './hooks/useTools';
 import { UserToolModal } from './manage/UserToolModal';
 import { toolsQuery } from './queries';
 import { ToolCard } from './ToolCard';
-import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 
 interface Props {
-  type: 'user' | 'public';
+  type?: 'user' | 'public';
 }
 
 export function ToolsList({ type }: Props) {
@@ -49,11 +50,22 @@ export function ToolsList({ type }: Props) {
 
   const queryClient = useQueryClient();
 
+  const publicTools = [
+    'code_interpreter',
+    'file_search',
+    'system',
+  ] as ToolType[];
+  const userTools = ['user'] as ToolType[];
+
+  const isUserOrAllTools = !type || type === 'user';
+
   const params: ToolsListQuery = {
     type:
-      type === 'user'
-        ? ['user']
-        : ['code_interpreter', 'file_search', 'system'],
+      type === 'public'
+        ? publicTools
+        : type === 'user'
+          ? userTools
+          : [...userTools, ...publicTools],
     limit: TOOLS_PAGE_SIZE,
     ...order,
     search: search.length ? search : undefined,
@@ -107,7 +119,7 @@ export function ToolsList({ type }: Props) {
 
   return (
     <CardsList<ToosListQueryOrderBy>
-      heading={type === 'user' ? 'Tools' : undefined}
+      heading={isUserOrAllTools ? 'Tools' : undefined}
       totalCount={data?.totalCount ?? 0}
       onSearchChange={setSearch}
       onFetchNextPage={fetchNextPage}
@@ -123,7 +135,7 @@ export function ToolsList({ type }: Props) {
         onChangeOrder: setOrder,
       }}
       newButtonProps={
-        type === 'user'
+        isUserOrAllTools
           ? {
               title: 'New tool',
               onClick: () =>

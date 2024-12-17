@@ -41,6 +41,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import {
@@ -96,9 +97,10 @@ interface Props {
 }
 
 export function AssistantBuilderProvider({
-  assistant: initialAssistant,
+  assistant: assistantProp,
   children,
 }: Props) {
+  const [initialAssistant, setInitialAssistant] = useState(assistantProp);
   const { addToast } = useToast();
   const { project, assistant } = useAppContext();
   const { selectAssistant } = useAppApiContext();
@@ -123,6 +125,7 @@ export function AssistantBuilderProvider({
       if (!result) return;
       const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
       selectAssistant(assistantFromResult);
+      setInitialAssistant(assistantFromResult);
 
       if (isMdDown) {
         router.push(`/${project.id}/chat/${result.id}`);
@@ -154,7 +157,15 @@ export function AssistantBuilderProvider({
     } else {
       selectAssistant(initialAssistant);
     }
+  }, [isDuplicate, initialAssistant, selectAssistant]);
 
+  useEffect(() => {
+    if (assistantProp) {
+      setInitialAssistant(assistantProp);
+    }
+  }, [assistantProp]);
+
+  useEffect(() => {
     reset(
       formValuesFromAssistant(
         assistantTemplate ? assistantTemplate : (initialAssistant ?? null),
@@ -164,13 +175,7 @@ export function AssistantBuilderProvider({
         keepValues: false,
       },
     );
-  }, [
-    isDuplicate,
-    initialAssistant,
-    selectAssistant,
-    reset,
-    assistantTemplate,
-  ]);
+  }, [isDuplicate, assistantTemplate, initialAssistant, reset]);
 
   useEffect(() => {
     if (!isEmpty(formState.dirtyFields))

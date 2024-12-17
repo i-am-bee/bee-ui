@@ -22,7 +22,7 @@ import { ToolsList } from './ToolsList';
 export function ToolsHome() {
   return (
     <ProjectHome>
-      <ToolsList type="user" />
+      <ToolsList />
     </ProjectHome>
   );
 }
