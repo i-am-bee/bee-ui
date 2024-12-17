@@ -238,14 +238,11 @@ function AppBuilderContent() {
 
   const handleReportError = useCallback(
     async (errorText: string) => {
-      await createMessage(organization.id, project.id, thread!.id, {
-        role: 'user',
-        content: `I have encountered the following error:\n\n\`\`\`error\n${errorText}\n\`\`\``,
-        metadata: encodeMetadata<MessageMetadata>({ type: 'report-error' }),
-      });
-      await sendMessage(`Help me fix the attached error.`);
+      await sendMessage(
+        `I have encountered the following error:\n\n\`\`\`error\n${errorText}\n\`\`\`\n\nFix this error please.`,
+      );
     },
-    [organization, project, thread, sendMessage],
+    [sendMessage],
   );
 
   return (
