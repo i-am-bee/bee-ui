@@ -17,7 +17,7 @@
 @use 'styles/common' as *;
 
 .root {
-  block-size: 100vh;
+  block-size: 100dvh;
   display: grid;
   gap: $spacing-07;
   padding-block: $spacing-07;

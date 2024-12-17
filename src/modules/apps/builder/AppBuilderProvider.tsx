@@ -62,7 +62,7 @@ export function AppBuilderProvider({
       null,
   );
 
-  useOnboardingCompleted(isOnboarding ? 'apps' : null);
+  useOnboardingCompleted('apps');
 
   const apiValue = useMemo(
     () => ({

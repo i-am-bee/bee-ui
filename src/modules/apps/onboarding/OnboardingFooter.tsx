@@ -18,7 +18,7 @@ import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 
 export function OnboardingModalFooter({
-  nextButtonTitle = 'Start building',
+  nextButtonTitle = 'Next',
   onNextClick,
   onBackClick,
 }: {

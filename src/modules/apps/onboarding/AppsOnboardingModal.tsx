@@ -49,7 +49,6 @@ export function AppsOnboardingModal({ ...props }: Props) {
         body: <AppsOnboardingIntro />,
         footerProps: {
           onNextClick: () => setStep(Steps.TEMPLATE_SELECTION),
-          nextButtonTitle: 'Start building',
         },
       };
       break;
@@ -68,6 +67,7 @@ export function AppsOnboardingModal({ ...props }: Props) {
               `/${project.id}/apps/builder?${ONBOARDING_PARAM}${selectedTemplate ? `&template=${selectedTemplate.key}` : ''}`,
             ),
           onBackClick: () => setStep(Steps.INTRO),
+          nextButtonTitle: 'Start building',
         },
       };
       break;
@@ -79,7 +79,6 @@ export function AppsOnboardingModal({ ...props }: Props) {
     <ModalControlProvider onRequestClose={noop}>
       <Modal
         {...props}
-        preventCloseOnClickOutside
         className={clsx(classes.root, classes[`step--${step}`])}
       >
         <ModalBody>{body}</ModalBody>

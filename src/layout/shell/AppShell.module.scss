@@ -24,7 +24,7 @@
     'sidebar main';
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: var(--navbar-height) minmax(0, 1fr);
-  block-size: 100vh;
+  block-size: 100dvh;
 }
 
 .content {

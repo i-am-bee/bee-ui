@@ -88,7 +88,7 @@ const getCspHeader = (nonce: string) => {
       process.env.NODE_ENV === 'production' ? '' : `'unsafe-eval'`
     };
     style-src 'self' 'nonce-${nonce}';
-    img-src 'self' blob: data: www.ibm.com/;
+    img-src * blob: data: www.ibm.com/;
     font-src 'self';
     object-src 'none';
     frame-src ${USERCONTENT_SITE_URL};

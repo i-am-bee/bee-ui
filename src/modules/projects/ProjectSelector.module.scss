@@ -21,7 +21,7 @@
   min-inline-size: rem(176px);
 
   :global(.#{$prefix}--list-box__menu) {
-    max-block-size: calc(100vh - rem(150px));
+    max-block-size: calc(100dvh - rem(150px));
   }
 }
 

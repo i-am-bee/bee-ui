@@ -42,6 +42,7 @@ import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 
 interface Props {
   message: BotChatMessage;
@@ -74,9 +75,7 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
       project.id,
       thread?.id ?? '',
       message.run_id ?? '',
-      {
-        limit: 100,
-      },
+      PLAN_STEPS_QUERY_PARAMS,
     ),
     enabled: Boolean(!message.plan && thread && message.run_id && inView),
   });
@@ -117,11 +116,12 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     setIsOpen(
       debugMode
         ? debugMode
-        : message.plan &&
+        : message.pending &&
+            message.plan &&
             ((message.plan.pending && !messageHasContent) ||
               (!message.plan.pending && messageHasContent)),
     );
-  }, [debugMode, message.plan, messageHasContent]);
+  }, [debugMode, message.pending, message.plan, messageHasContent]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -185,7 +185,8 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
         <SourcesView
           sources={sources.map(({ steps, ...props }) => ({
             ...props,
-            filtered: !(expandedStep !== null) || steps.includes(expandedStep),
+            filtered:
+              !(expandedStep !== null) || steps.includes(expandedStep.stepId),
           }))}
           show={isOpen}
           enableFetch={enableFetch}
@@ -234,3 +235,5 @@ const getSourcesWithSteps = (
 
   return uniqueSourcesWithSteps;
 };
+
+export const PLAN_STEPS_QUERY_PARAMS = { limit: MAX_API_FETCH_LIMIT };

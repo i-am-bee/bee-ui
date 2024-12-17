@@ -111,9 +111,9 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   });
   const ToolIcon = toolKey ? toolIcon : null;
 
-  const expandedStep = useExpandedStep();
+  const expandedState = useExpandedStep();
   const { setExpandedStep } = useExpandedStepActions();
-  const expanded = expandedStep === step.id;
+  const expanded = expandedState?.stepId === step.id;
 
   const toolApproval = (
     run?.status === 'requires_action' &&
@@ -160,8 +160,10 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
   const toggleExpand = useCallback(
     (forceOpen?: boolean) =>
-      setExpandedStep((expanded) =>
-        forceOpen || expanded !== step.id ? step.id : null,
+      setExpandedStep((value) =>
+        forceOpen || value?.stepId !== step.id
+          ? { stepId: step.id, initiator: 'user' }
+          : null,
       ),
     [setExpandedStep, step.id],
   );
@@ -173,7 +175,13 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
   useEffect(() => {
     if (toolApproval) {
-      setExpandedStep(step.id);
+      setExpandedStep({ stepId: step.id, initiator: 'approval' });
+    } else {
+      setExpandedStep((value) =>
+        value?.stepId === step.id && value.initiator === 'approval'
+          ? null
+          : value,
+      );
     }
   }, [toolApproval, step.id, setExpandedStep]);
 

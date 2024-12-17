@@ -1,5 +1,26 @@
 # Changelog
 
+## <small>0.0.18 (2024-12-17)</small>
+
+* fix: responsive layout styles (#152) ([3d5c3fd](https://github.com/i-am-bee/bee-ui/commit/3d5c3fd)), closes [#152](https://github.com/i-am-bee/bee-ui/issues/152)
+
+## <small>0.0.17 (2024-12-16)</small>
+
+* feat: prelaunch qa updates (#151) ([f311258](https://github.com/i-am-bee/bee-ui/commit/f311258)), closes [#151](https://github.com/i-am-bee/bee-ui/issues/151)
+
+## <small>0.0.16 (2024-12-16)</small>
+
+* feat: update styles of ToU (#150) ([12d17cd](https://github.com/i-am-bee/bee-ui/commit/12d17cd)), closes [#150](https://github.com/i-am-bee/bee-ui/issues/150)
+* fix: missing messages, plan button, sources icons (#148) ([a312c17](https://github.com/i-am-bee/bee-ui/commit/a312c17)), closes [#148](https://github.com/i-am-bee/bee-ui/issues/148)
+* chore: minor copy changes ([5a1e34b](https://github.com/i-am-bee/bee-ui/commit/5a1e34b))
+
+## <small>0.0.15 (2024-12-16)</small>
+
+* feat: new BeeAI logo in signin (#145) ([0362f9d](https://github.com/i-am-bee/bee-ui/commit/0362f9d)), closes [#145](https://github.com/i-am-bee/bee-ui/issues/145)
+* feat: responsive updates ([a331f8a](https://github.com/i-am-bee/bee-ui/commit/a331f8a))
+* chore: update assistant templates (#146) ([c277034](https://github.com/i-am-bee/bee-ui/commit/c277034)), closes [#146](https://github.com/i-am-bee/bee-ui/issues/146)
+* fix(assistant-builder): new tool modal error (#144) ([5e4642d](https://github.com/i-am-bee/bee-ui/commit/5e4642d)), closes [#144](https://github.com/i-am-bee/bee-ui/issues/144)
+
 ## <small>0.0.14 (2024-12-15)</small>
 
 * feat(sidebar): minor copy update ([9e59455](https://github.com/i-am-bee/bee-ui/commit/9e59455))

@@ -17,7 +17,7 @@
 @use 'styles/common' as *;
 
 .root {
-  block-size: 100vh;
+  block-size: 100dvh;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -219,7 +219,7 @@
 
   .video {
     max-inline-size: rem(800px);
-    block-size: 100vh;
+    block-size: 100dvh;
     margin-block: -$spacing-09;
   }
 

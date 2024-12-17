@@ -27,10 +27,15 @@ import {
   useState,
 } from 'react';
 
-const ExpandedStepContext = createContext<string | null>(null);
+type ExpandedStepState = {
+  stepId: string;
+  initiator: 'approval' | 'user' | null;
+};
+
+const ExpandedStepContext = createContext<ExpandedStepState | null>(null);
 
 type ExpandedStepActionsContextValue = {
-  setExpandedStep: Dispatch<SetStateAction<string | null>>;
+  setExpandedStep: Dispatch<SetStateAction<ExpandedStepState | null>>;
 };
 
 const ExpandedStepActionsContext =
@@ -39,7 +44,9 @@ const ExpandedStepActionsContext =
   });
 
 export function ExpandedStepProvider({ children }: PropsWithChildren) {
-  const [expandedStep, setExpandedStep] = useState<string | null>(null);
+  const [expandedStep, setExpandedStep] = useState<ExpandedStepState | null>(
+    null,
+  );
 
   const stepsActions = useMemo(
     () => ({
