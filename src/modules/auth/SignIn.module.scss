@@ -31,9 +31,10 @@
 
 // We want to match IBMid login page layout
 .loginGrid {
+  min-block-size: 100%;
   inline-size: 100%;
   max-inline-size: 99rem;
-  padding-inline: $grid-gutter;
+  padding-inline: $grid-margin;
   display: grid;
   align-items: stretch;
   column-gap: $spacing-08;
@@ -178,14 +179,23 @@
 }
 
 .footer {
+  @include type-style(label-01);
   margin-block-start: $spacing-08;
-  font-size: small;
   color: $text-secondary;
 
   > a {
     color: inherit;
     &:hover {
       text-decoration: none;
+    }
+  }
+}
+
+@include breakpoint-down(lg) {
+  .video {
+    :global(.#{$prefix}--g90) & {
+      // TODO: Temporarily hide video due to a bug in mobile Safari
+      display: none;
     }
   }
 }
@@ -205,6 +215,7 @@
     aspect-ratio: 1 / 1;
     grid-row-start: 1;
     margin-inline: auto;
+    min-inline-size: 0;
   }
 }
 

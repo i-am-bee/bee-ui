@@ -32,6 +32,7 @@ import {
   MessageWithFiles,
 } from '@/modules/chat/types';
 import { useLayoutActions } from '@/store/layout';
+import { isNotNull } from '@/utils/helpers';
 import {
   Button,
   IconButton,
@@ -53,12 +54,12 @@ import { AppIcon } from '../AppIcon';
 import { useArtifactsCount } from '../hooks/useArtifactsCount';
 import { SaveAppModal } from '../manage/SaveAppModal';
 import { ShareAppModal } from '../ShareAppModal';
+import { ArtifactMetadata } from '../types';
 import { extractCodeFromMessageContent } from '../utils';
 import classes from './AppBuilder.module.scss';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 import { SourceCodeEditor } from './SourceCodeEditor';
-import { ArtifactMetadata } from '../types';
 
 interface Props {
   thread?: Thread;
@@ -254,7 +255,11 @@ function AppBuilderContent() {
       })}
     >
       <section className={classes.chat}>
-        <ConversationView />
+        <ConversationView
+          onShowMobilePreviewButtonClick={
+            isNotNull(code) ? () => setMobilePreviewOpen(true) : undefined
+          }
+        />
       </section>
       <section
         className={clsx(classes.appPane, { [classes.empty]: code == null })}

@@ -16,9 +16,17 @@
 
 'use client';
 import { Container } from '@/components/Container/Container';
-import { IconButton } from '@carbon/react';
-import { ArrowDown } from '@carbon/react/icons';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { Button, IconButton } from '@carbon/react';
+import { Application, ArrowDown } from '@carbon/react/icons';
+import clsx from 'clsx';
+import {
+  memo,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { ConversationHeader } from './ConversationHeader';
 import classes from './ConversationView.module.scss';
 import { FilesDropzone } from './layout/FilesDropzone';
@@ -26,11 +34,16 @@ import { InputBar } from './layout/InputBar';
 import { Message } from './message/Message';
 import { useChat, useChatMessages } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
-import clsx from 'clsx';
-import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
 import { BotChatMessage } from './types';
+import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
 
-export const ConversationView = memo(function ConversationView() {
+interface Props {
+  onShowMobilePreviewButtonClick?: MouseEventHandler<HTMLButtonElement>;
+}
+
+export const ConversationView = memo(function ConversationView({
+  onShowMobilePreviewButtonClick,
+}: Props) {
   const { dropzone } = useFilesUpload();
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -129,6 +142,20 @@ export const ConversationView = memo(function ConversationView() {
           })}
         </ol>
       </div>
+
+      {onShowMobilePreviewButtonClick && (
+        <div className={classes.previewButton}>
+          <Button
+            kind="secondary"
+            size="sm"
+            onClick={onShowMobilePreviewButtonClick}
+          >
+            <Application />
+            <span>Show app preview</span>
+          </Button>
+        </div>
+      )}
+
       <div className={classes.bottom}>
         {isScrolled && (
           <IconButton
