@@ -54,19 +54,19 @@ export function Sidebar({ id, isOpen }: SidebarProps) {
         <hr />
 
         <div className={classes.content}>
-          <CollapsibleGroup heading="Agents" className={classes.agents}>
+          <div className={classes.agents}>
             <AssistantsNav
-              className={classes.agentsScroll}
+              className={classes.scrollSection}
               enableFetch={Boolean(isOpen)}
             />
-          </CollapsibleGroup>
+          </div>
 
           <hr />
 
           <CollapsibleGroup heading="Sessions" className={classes.history}>
             <ThreadsHistory
               enableFetch={Boolean(isOpen)}
-              className={classes.historyScroll}
+              className={classes.scrollSection}
             />
           </CollapsibleGroup>
         </div>

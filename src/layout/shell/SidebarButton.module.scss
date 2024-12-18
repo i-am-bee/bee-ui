@@ -37,6 +37,15 @@
 .title {
   font-size: rem(16px);
   line-height: (18 / 16);
+  a {
+    color: inherit;
+    text-decoration: none;
+    border-radius: $spacing-02;
+    &:focus-visible {
+      @include focus-outline('outline');
+      outline-offset: 0;
+    }
+  }
 }
 
 @include breakpoint-down(lg) {

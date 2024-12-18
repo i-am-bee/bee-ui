@@ -56,6 +56,9 @@
     flex-shrink: 0;
     padding-block: rem(6px);
     column-gap: 0;
+    :global(.#{$prefix}--skeleton__text) {
+      margin-block: rem(2px);
+    }
   }
   .toolIcon {
     border: 0;
@@ -145,6 +148,7 @@
   block-size: $spacing-06;
   inline-size: $spacing-06;
   flex-shrink: 0;
+  overflow: hidden;
   svg {
     fill: currentColor;
   }

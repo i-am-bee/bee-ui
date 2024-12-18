@@ -20,8 +20,15 @@ import {
   useAppApiContext,
   useAppContext,
 } from '@/layout/providers/AppProvider';
-import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
+import { useModal } from '@/layout/providers/ModalProvider';
 import {
+  ProjectProvider,
+  useProjectContext,
+} from '@/layout/providers/ProjectProvider';
+import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
+import { useLayout } from '@/store/layout';
+import {
+  IconButton,
   OverflowMenu,
   OverflowMenuItem,
   SkeletonIcon,
@@ -31,19 +38,13 @@ import { Add } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import { PropsWithChildren, useState } from 'react';
+import { NewAgentModal } from '../onboarding/NewAgentModal';
 import { ASSISTANTS_ORDER_DEFAULT } from './AssistantsHome';
 import classes from './AssistantsNav.module.scss';
 import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
 import { useAssistants } from './hooks/useAssistants';
 import { AssistantIcon } from './icons/AssistantIcon';
 import { Assistant } from './types';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { NewAgentModal } from '../onboarding/NewAgentModal';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
-import { useLayout } from '@/store/layout';
 
 interface Props {
   enableFetch?: boolean;
@@ -75,27 +76,33 @@ export function AssistantsNav({ enableFetch, className }: Props) {
   });
 
   return (
-    <nav className={clsx(classes.root, className)}>
-      <ul>
-        {data?.assistants.map((assistant) => (
-          <AgentLink key={assistant.id} assistant={assistant}>
-            {assistant.name}
-          </AgentLink>
-        ))}
+    <div className={classes.root}>
+      <header className={classes.header}>
+        <h3 className={classes.heading}>Agents</h3>
 
-        {(isPending || isFetchingNextPage) &&
-          Array.from(
-            { length: isFetchingNextPage ? PAGE_SIZE : INITIAL_SKELETON_COUNT },
-            (_, i) => <AgentLink.Skeleton key={i} />,
-          )}
-      </ul>
-
-      {hasNextPage && <div ref={fetchMoreAnchorRef} />}
-
-      <div className={classes.bottom}>
         <NewButton />
-      </div>
-    </nav>
+      </header>
+
+      <nav className={clsx(classes.nav, className)}>
+        <ul>
+          {data?.assistants.map((assistant) => (
+            <AgentLink key={assistant.id} assistant={assistant}>
+              {assistant.name}
+            </AgentLink>
+          ))}
+
+          {(isPending || isFetchingNextPage) &&
+            Array.from(
+              {
+                length: isFetchingNextPage ? PAGE_SIZE : INITIAL_SKELETON_COUNT,
+              },
+              (_, i) => <AgentLink.Skeleton key={i} />,
+            )}
+        </ul>
+
+        {hasNextPage && <div ref={fetchMoreAnchorRef} />}
+      </nav>
+    </div>
   );
 }
 
@@ -196,9 +203,10 @@ function NewButton() {
   const { openModal } = useModal();
 
   return (
-    <button
-      type="button"
-      className={classes.newButton}
+    <IconButton
+      kind="tertiary"
+      label="New agent"
+      align="right"
       onClick={() =>
         openModal((props) => (
           <ProjectProvider project={project} organization={organization}>
@@ -206,12 +214,9 @@ function NewButton() {
           </ProjectProvider>
         ))
       }
+      className={classes.newButton}
     >
-      <span className={classes.icon}>
-        <Add />
-      </span>
-
-      <span>New agent</span>
-    </button>
+      <Add />
+    </IconButton>
   );
 }

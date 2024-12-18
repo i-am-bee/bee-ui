@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
+import { Link } from '@/components/Link/Link';
 import { VersionTag } from '@/components/VersionTag/VersionTag';
+import { usePrefetchArtifacts } from '@/modules/apps/hooks/usePrefetchArtifacts';
 import { usePrefetchThreads } from '@/modules/chat/history/usePrefetchThreads';
 import { APP_NAME } from '@/utils/constants';
 import { Button, ButtonBaseProps } from '@carbon/react';
 import { Close, Menu } from '@carbon/react/icons';
 import { MouseEvent } from 'react';
 import { UserSetting } from '../hooks/useUserSetting';
+import { useProjectContext } from '../providers/ProjectProvider';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
 
@@ -35,7 +38,10 @@ export function SidebarButton({
   onMouseEnter,
   ...props
 }: Props) {
+  const { project } = useProjectContext();
+
   const prefetchThreads = usePrefetchThreads();
+  const prefetchArtifacts = usePrefetchArtifacts({ useDefaultParams: true });
 
   return (
     <div className={classes.root}>
@@ -56,7 +62,11 @@ export function SidebarButton({
         <Close />
       </Button>
 
-      <p className={classes.title}>{APP_NAME}</p>
+      <p className={classes.title}>
+        <Link href={`/${project.id}`} onMouseEnter={() => prefetchArtifacts()}>
+          {APP_NAME}
+        </Link>
+      </p>
 
       <VersionTag />
     </div>

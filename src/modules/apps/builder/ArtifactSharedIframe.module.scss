@@ -50,7 +50,7 @@
   svg {
     max-block-size: 80%;
     max-inline-size: rem(600px);
-    inline-size: auto;
+    inline-size: 100%;
 
     [data-fill='layer'] {
       fill: $layer-02;
