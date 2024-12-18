@@ -123,7 +123,7 @@ export function getStaticToolName({ type, id, tool }: ToolReference) {
 
   switch (type) {
     case 'system':
-      return SYSTEM_TOOL_NAME[id] ?? Tools;
+      return SYSTEM_TOOL_NAME[id] ?? id;
     case 'code_interpreter':
       return 'Python Intepreter';
     case 'function':
