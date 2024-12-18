@@ -39,6 +39,7 @@ import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
 import { useTools } from './useTools';
+import capitalize from 'lodash/capitalize';
 
 export function useToolInfo({
   toolReference,
@@ -123,7 +124,7 @@ export function getStaticToolName({ type, id, tool }: ToolReference) {
 
   switch (type) {
     case 'system':
-      return SYSTEM_TOOL_NAME[id] ?? id;
+      return SYSTEM_TOOL_NAME[id] ?? id.split('_').map(capitalize).join(' ');
     case 'code_interpreter':
       return 'Python Intepreter';
     case 'function':

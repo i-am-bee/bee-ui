@@ -15,10 +15,7 @@
  */
 
 import { ToolReference } from '@/app/api/tools/types';
-import {
-  getStaticToolName,
-  useToolInfo,
-} from '@/modules/tools/hooks/useToolInfo';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import classes from './ToolNameWithTooltip.module.scss';
 import { ToolInfoButton } from './ToolInfoButton';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
