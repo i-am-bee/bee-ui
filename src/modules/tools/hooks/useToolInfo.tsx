@@ -87,7 +87,7 @@ export function useToolInfo({
         if (tool?.name === 'DuckDuckGo') return DuckDuckGo;
         return SkeletonIcon;
       }
-      return SYSTEM_TOOL_ICONS[id];
+      return SYSTEM_TOOL_ICONS[id] ?? Tools;
     }
     if (type === 'file_search') return SearchLocate;
     if (type === 'code_interpreter' || type === 'function') return Code;
