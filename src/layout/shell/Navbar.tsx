@@ -74,12 +74,16 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
           ]
         );
       case 'chat':
-        return [
-          {
-            title: navbarProps.assistant?.name ?? '',
-            icon: <AssistantIcon assistant={navbarProps.assistant ?? null} />,
-          },
-        ];
+        return navbarProps.assistant
+          ? [
+              {
+                title: navbarProps.assistant.name ?? '',
+                icon: (
+                  <AssistantIcon assistant={navbarProps.assistant ?? null} />
+                ),
+              },
+            ]
+          : undefined;
       default:
         return title ? [{ title }] : undefined;
     }

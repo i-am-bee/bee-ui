@@ -15,17 +15,10 @@
  */
 
 import { Container } from '@/components/Container/Container';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { NewSessionButton } from '@/layout/shell/NewSessionButton';
 import classes from './ConversationHeader.module.scss';
-import { useChat } from './providers/ChatProvider';
 
 export function ConversationHeader() {
-  const { assistant: appAssistant } = useAppContext();
-  const { assistant: threadAssistant } = useChat();
-
-  const assistant = threadAssistant.data ?? appAssistant;
-
   return (
     <div className={classes.root}>
       <div className={classes.holder}>

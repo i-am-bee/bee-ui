@@ -59,6 +59,8 @@ export const ConversationView = memo(function ConversationView({
     initialAssistantMessage,
   } = useChat();
 
+  const showTopBar = topBarEnabled && !assistant.isDeleted;
+
   const scrollToBottom = useCallback(() => {
     const scrollElement = scrollRef.current;
 
@@ -100,7 +102,7 @@ export const ConversationView = memo(function ConversationView({
 
   return (
     <div {...(dropzone ? dropzone.getRootProps({ className }) : { className })}>
-      {topBarEnabled && <ConversationHeader />}
+      {showTopBar && <ConversationHeader />}
 
       <div className={classes.content} ref={scrollRef}>
         <div ref={bottomRef} />

@@ -206,7 +206,7 @@ function NewButton() {
     <IconButton
       kind="tertiary"
       label="New agent"
-      align="right"
+      align="left"
       onClick={() =>
         openModal((props) => (
           <ProjectProvider project={project} organization={organization}>
