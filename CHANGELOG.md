@@ -1,5 +1,10 @@
 # Changelog
 
+## <small>0.0.20 (2024-12-17)</small>
+
+* fix(apps): correct formatting in error message (#154) ([bbfd730](https://github.com/i-am-bee/bee-ui/commit/bbfd730)), closes [#154](https://github.com/i-am-bee/bee-ui/issues/154)
+* fix(apps): use a normal message for error fixing (#155) ([8c3cbac](https://github.com/i-am-bee/bee-ui/commit/8c3cbac)), closes [#155](https://github.com/i-am-bee/bee-ui/issues/155)
+
 ## <small>0.0.19 (2024-12-17)</small>
 
 * feat: add "Show app preview" button and hide dark mode video on mobile (#153) ([cd6d74a](https://github.com/i-am-bee/bee-ui/commit/cd6d74a)), closes [#153](https://github.com/i-am-bee/bee-ui/issues/153)
