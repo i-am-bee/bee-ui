@@ -19,6 +19,7 @@
 .select {
   display: flex;
   align-items: center;
+  column-gap: $spacing-03;
 
   :global(.#{$prefix}--label) {
     @include type-style(body-01);
@@ -29,7 +30,7 @@
     block-size: rem(40px);
   }
   :global(.#{$prefix}--list-box__field) {
-    padding-inline-start: $spacing-02;
+    padding-inline-start: $spacing-04;
     padding-inline-end: $spacing-08;
     border: 0;
   }
