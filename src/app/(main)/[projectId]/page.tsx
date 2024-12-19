@@ -25,9 +25,7 @@ export interface ProjectPageProps {
 
 export default function ProjectHomePage() {
   return (
-    <LayoutInitializer
-      layout={{ navbarProps: { title: 'Apps', type: 'common' } }}
-    >
+    <LayoutInitializer layout={{ navbarProps: { type: 'common' } }}>
       <AppsHome />
     </LayoutInitializer>
   );
