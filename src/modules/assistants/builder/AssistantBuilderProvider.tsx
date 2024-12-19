@@ -41,7 +41,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useState,
 } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import {
@@ -97,10 +96,9 @@ interface Props {
 }
 
 export function AssistantBuilderProvider({
-  assistant: assistantProp,
+  assistant: initialAssistant,
   children,
 }: Props) {
-  const [initialAssistant, setInitialAssistant] = useState(assistantProp);
   const { addToast } = useToast();
   const { project, assistant } = useAppContext();
   const { selectAssistant } = useAppApiContext();
@@ -124,8 +122,8 @@ export function AssistantBuilderProvider({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
       const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
+
       selectAssistant(assistantFromResult);
-      setInitialAssistant(assistantFromResult);
 
       if (isMdDown) {
         router.push(`/${project.id}/chat/${result.id}`);
@@ -141,12 +139,18 @@ export function AssistantBuilderProvider({
     },
   });
 
+  const getDefaultValues = useCallback(
+    () =>
+      formValuesFromAssistant(
+        assistantTemplate ? assistantTemplate : (initialAssistant ?? null),
+        isDuplicate,
+      ),
+    [assistantTemplate, initialAssistant, isDuplicate],
+  );
+
   const formReturn = useForm<AssistantFormValues>({
     mode: 'onChange',
-    defaultValues: formValuesFromAssistant(
-      assistantTemplate ? assistantTemplate : (initialAssistant ?? null),
-      isDuplicate,
-    ),
+    defaultValues: getDefaultValues(),
   });
 
   const { handleSubmit, reset, formState } = formReturn;
@@ -154,30 +158,18 @@ export function AssistantBuilderProvider({
   useEffect(() => {
     if (isDuplicate || !initialAssistant) {
       selectAssistant(null);
+      reset(getDefaultValues());
     } else {
       selectAssistant(initialAssistant);
     }
-  }, [isDuplicate, initialAssistant, selectAssistant]);
+  }, [isDuplicate, initialAssistant, selectAssistant, reset, getDefaultValues]);
 
   useEffect(() => {
-    if (assistantProp) {
-      setInitialAssistant(assistantProp);
+    if (formState.isSubmitSuccessful) {
+      reset(undefined, { keepValues: true });
+      router.refresh();
     }
-  }, [assistantProp]);
-
-  useEffect(() => {
-    reset(
-      formValuesFromAssistant(
-        assistantTemplate
-          ? assistantTemplate
-          : ((assistant || initialAssistant) ?? null),
-        isDuplicate,
-      ),
-      {
-        keepValues: false,
-      },
-    );
-  }, [isDuplicate, assistantTemplate, initialAssistant, assistant, reset]);
+  }, [formState, router, reset]);
 
   useEffect(() => {
     if (!isEmpty(formState.dirtyFields))
@@ -252,10 +244,8 @@ export function AssistantBuilderProvider({
           model,
         },
       });
-
-      formReturn.reset({}, { keepValues: true });
     },
-    [assistant, assistantTemplate, formReturn, saveAssistantAsync],
+    [assistant, assistantTemplate, saveAssistantAsync],
   );
 
   const handleError = useCallback(() => {
