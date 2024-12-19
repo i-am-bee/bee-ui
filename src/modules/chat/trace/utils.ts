@@ -51,3 +51,13 @@ export function getExecutionTime(spans: TraceSpan[]) {
     new Date(firstItem.start_time).getTime()
   );
 }
+
+export function getRawPrompt(spans: TraceSpan[]): string | undefined {
+  const customSpanData = spans.find(
+    (span) => span.attributes.name === 'startCustom',
+  )?.attributes.data;
+
+  return customSpanData?.rawPrompt
+    ? String(customSpanData.rawPrompt)
+    : undefined;
+}
