@@ -26,6 +26,7 @@ import {
   getLastNewTokenSpan,
   getGeneratedTokenCountSafe,
   getExecutionTime,
+  getRawPrompt,
 } from './utils';
 import { useEffect, useMemo, useState } from 'react';
 import { GENERATE_EVENT_TOOL_START, TraceData } from './types';
@@ -79,35 +80,24 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
     if (!spans) return null;
     const iterations = spans
       .filter((span) => span.name.includes('iteration-'))
-      .map((span) => {
-        return {
-          span,
-          children: loadNestedSpans(span, spans).flat(),
-        };
-      })
+      .map((span) => ({
+        span,
+        children: loadNestedSpans(span, spans).flat(),
+      }))
       .filter((span) => span.children.length >= 1)
-      .map((iteration) => {
-        const customEventData = iteration.children.find(
-          (span) => span.attributes.name === 'startCustom',
-        )?.attributes.data;
-        const rawPrompt = customEventData?.rawPrompt
-          ? String(customEventData.rawPrompt)
-          : undefined;
-
-        return {
-          groupId: iteration.span.name,
-          executionTime: getExecutionTime(iteration.children),
-          tokenCount: getGeneratedTokenCountSafe(
-            getLastNewTokenSpan(iteration.children),
-          ),
-          rawPrompt,
-          type: iteration.children.find(
-            (span) => span.attributes.name === GENERATE_EVENT_TOOL_START,
-          )
-            ? InterationType.TOOL
-            : InterationType.FINAL_ANSWER,
-        };
-      });
+      .map((iteration) => ({
+        groupId: iteration.span.name,
+        executionTime: getExecutionTime(iteration.children),
+        tokenCount: getGeneratedTokenCountSafe(
+          getLastNewTokenSpan(iteration.children),
+        ),
+        rawPrompt: getRawPrompt(iteration.children),
+        type: iteration.children.find(
+          (span) => span.attributes.name === GENERATE_EVENT_TOOL_START,
+        )
+          ? InterationType.TOOL
+          : InterationType.FINAL_ANSWER,
+      }));
 
     const executionTime = getExecutionTime(spans);
 
@@ -118,9 +108,11 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
         0,
       ) || getGeneratedTokenCountSafe(getLastNewTokenSpan(spans));
 
-    const rawPrompt = iterations.find(
-      (iteration) => iteration.type === InterationType.FINAL_ANSWER,
-    )?.rawPrompt;
+    // load rawPrompt from iterations if they exist. Otherwise, compute it from all spans.
+    const rawPrompt =
+      iterations.find(
+        (iteration) => iteration.type === InterationType.FINAL_ANSWER,
+      )?.rawPrompt || getRawPrompt(spans);
 
     return { executionTime, tokenCount, rawPrompt, iterations };
   }, [spans]);
