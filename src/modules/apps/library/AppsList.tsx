@@ -18,6 +18,8 @@ import { useRouter } from 'next-nprogress-bar';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { USERCONTENT_SITE_URL } from '@/utils/constants';
+import { useEffect } from 'react';
 
 interface Props {
   artifacts?: NonNullable<Artifact>[];
@@ -34,6 +36,31 @@ export function AppsList({
 }: Props) {
   const { project } = useProjectContext();
   const router = useRouter();
+
+  // Preload app runtime for faster app startup
+  useEffect(() => {
+    (async () => {
+      fetch(USERCONTENT_SITE_URL, { priority: 'low', mode: 'no-cors' });
+      const preload = await (
+        await fetch(`${USERCONTENT_SITE_URL}/meta/preload.json`)
+      ).json();
+      for (const item of preload.items) {
+        fetch(
+          item.url.startsWith('/')
+            ? `${USERCONTENT_SITE_URL}${item.url}`
+            : item.url,
+          {
+            priority: 'low',
+            mode: 'no-cors',
+            headers: {
+              Accept: `${item.contentType}, */*;q=0.01`,
+              'Accept-Encoding': '',
+            },
+          },
+        );
+      }
+    })();
+  });
 
   return (
     <>
