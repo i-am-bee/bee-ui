@@ -22,14 +22,17 @@ import { DOCUMENTATION_URL, FEEDBACK_URL } from '@/utils/constants';
 import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { ArrowUpRight } from '@carbon/react/icons';
 import clsx from 'clsx';
+import { usePathname } from 'next/navigation';
 import { HTMLAttributes } from 'react';
+import { useProjectContext } from '../providers/ProjectProvider';
 import classes from './UserNav.module.scss';
 import { UserProfile } from './UserProfile';
-import { useProjectContext } from '../providers/ProjectProvider';
 
 interface Props extends HTMLAttributes<HTMLElement> {}
 
 export function UserNav({ className }: Props) {
+  const pathname = usePathname();
+
   const { project } = useProjectContext();
 
   const prefetchTools = usePrefetchTools({ useDefaultParams: true });
@@ -58,7 +61,11 @@ export function UserNav({ className }: Props) {
           ({ featureName }) => !featureName || isFeatureEnabled(featureName),
         ).map(({ label, href, prefetchData }) => (
           <li key={href}>
-            <Link href={href} onMouseEnter={() => prefetchData()}>
+            <Link
+              href={href}
+              aria-current={pathname === href ? 'page' : undefined}
+              onMouseEnter={() => prefetchData()}
+            >
               {label}
             </Link>
           </li>
