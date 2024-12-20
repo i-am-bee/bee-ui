@@ -15,9 +15,9 @@
  */
 
 import { ModalProps } from '@/layout/providers/ModalProvider';
-import { Modal } from '../Modal/Modal';
-import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
+import { ModalBody, ModalHeader } from '@carbon/react';
 import { useState } from 'react';
+import { Modal } from '../Modal/Modal';
 
 export function UsageLimitModal(props: ModalProps) {
   const [now] = useState(() => new Date());
@@ -34,16 +34,6 @@ export function UsageLimitModal(props: ModalProps) {
         limit for now. Come back {isResetToday ? '' : 'tomorrow '}
         {`at ${formatter.format(resetTime)}`} to continue.
       </ModalBody>
-      <ModalFooter>
-        <Button
-          kind="secondary"
-          onClick={() => {
-            props.onRequestClose();
-          }}
-        >
-          Ok
-        </Button>
-      </ModalFooter>
     </Modal>
   );
 }

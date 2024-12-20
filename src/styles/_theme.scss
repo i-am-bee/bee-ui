@@ -47,6 +47,8 @@ themes.$white: map.merge(
 
     overlay: rgba($white, 0.5),
     background-inverse: $black,
+    background-hover: $cool-gray-10,
+    background-active: $cool-gray-30,
     layer-hover: $cool-gray-10,
     layer-01: $white,
     layer-02: $cool-gray-10,
@@ -127,6 +129,8 @@ themes.$g90: map.merge(
     background: $cool-gray-90,
     overlay: rgba($cool-gray-100, 0.5),
     background-inverse: $white,
+    background-hover: $cool-gray-80,
+    background-active: $cool-gray-70,
     layer-hover: $cool-gray-80,
 
     layer-01: $cool-gray-90,
