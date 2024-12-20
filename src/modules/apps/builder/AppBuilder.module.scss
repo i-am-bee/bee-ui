@@ -124,6 +124,14 @@
   }
 }
 
+.shareButton {
+  padding-inline: rem(7px);
+  &:global(.#{$prefix}--btn:disabled) {
+    border-color: $border-subtle-00;
+    color: $button-gray-active;
+  }
+}
+
 @include breakpoint-down(md) {
   .root {
     display: grid;

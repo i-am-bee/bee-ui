@@ -19,6 +19,8 @@ import { getAppBuilderNavbarProps } from '@/app/(main)/[projectId]/apps/utils';
 import { createMessage } from '@/app/api/threads-messages';
 import { Thread } from '@/app/api/threads/types';
 import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useModal } from '@/layout/providers/ModalProvider';
 import {
   ProjectProvider,
@@ -33,15 +35,7 @@ import {
 } from '@/modules/chat/types';
 import { useLayoutActions } from '@/store/layout';
 import { isNotNull } from '@/utils/helpers';
-import {
-  Button,
-  IconButton,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from '@carbon/react';
+import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { ArrowLeft, Share } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
@@ -72,6 +66,8 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
   const queryClient = useQueryClient();
   const { setCode, getCode } = useAppBuilderApi();
   const { artifact, code } = useAppBuilder();
+
+  const isXlgDown = useBreakpoint('xlgDown');
 
   const handleMessageCompleted = useCallback(
     (newThread: Thread, content: string) => {
@@ -142,9 +138,15 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }
       inputPlaceholder={{
         initial: isEditAppThread
-          ? 'Describe what this app should do or what you want to change about this app.'
-          : 'Outline what your app should do and how it should work.',
-        ongoing: 'Describe the change(s) you want to make to this app.',
+          ? isXlgDown
+            ? 'Describe the changes to the app'
+            : 'Describe what this app should do or what you want to change about this app.'
+          : isXlgDown
+            ? 'Describe how your app should work'
+            : 'Outline what your app should do and how it should work.',
+        ongoing: isXlgDown
+          ? 'Describe the changes to the app.'
+          : 'Describe the changes you want to make to this app.',
       }}
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
@@ -295,30 +297,40 @@ function AppBuilderContent() {
                 <Tab>Source code</Tab>
               </TabList>
               <div className={classes.appActions}>
-                {artifact && (
-                  <IconButton
-                    label="Share"
+                <Tooltip
+                  content={artifact ? 'Share' : 'Save to share'}
+                  placement="bottom-start"
+                  size="sm"
+                  asChild
+                >
+                  <Button
+                    className={classes.shareButton}
                     kind="tertiary"
                     size="sm"
                     align="bottom"
-                    onClick={() =>
-                      openModal((props) => (
-                        <ProjectProvider
-                          project={project}
-                          organization={organization}
-                        >
-                          <ShareAppModal
-                            {...props}
-                            artifact={artifact}
-                            onSuccess={setArtifact}
-                          />
-                        </ProjectProvider>
-                      ))
+                    disabled={!artifact}
+                    onClick={
+                      artifact
+                        ? () =>
+                            openModal((props) => (
+                              <ProjectProvider
+                                project={project}
+                                organization={organization}
+                              >
+                                <ShareAppModal
+                                  {...props}
+                                  artifact={artifact}
+                                  onSuccess={setArtifact}
+                                />
+                              </ProjectProvider>
+                            ))
+                        : undefined
                     }
                   >
                     <Share />
-                  </IconButton>
-                )}
+                  </Button>
+                </Tooltip>
+
                 <Button
                   kind="secondary"
                   size="sm"

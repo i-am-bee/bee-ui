@@ -153,7 +153,7 @@ export const ConversationView = memo(function ConversationView({
             onClick={onShowMobilePreviewButtonClick}
           >
             <Application />
-            <span>Show app preview</span>
+            <span>View app preview</span>
           </Button>
         </div>
       )}

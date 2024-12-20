@@ -25,8 +25,13 @@
   background-color: $layer-inverse-02;
   color: $text-inverse;
   border-radius: $block-radius;
-  padding: $spacing-03 $spacing-04;
   max-inline-size: rem(264px);
+  .root.size-sm & {
+    padding: $spacing-02 $spacing-03;
+  }
+  .root.size-md & {
+    padding: $spacing-03 $spacing-04;
+  }
 }
 
 .arrow {

@@ -24,7 +24,6 @@ import {
   Placement,
   safePolygon,
   shift,
-  useClick,
   useDismiss,
   useFloating,
   useFocus,
@@ -33,22 +32,38 @@ import {
   useRole,
 } from '@floating-ui/react';
 import { Slot } from '@radix-ui/react-slot';
+import clsx from 'clsx';
 import { PropsWithChildren, ReactNode, useRef, useState } from 'react';
 import classes from './Tooltip.module.scss';
 
 export interface TooltipProps {
   content: ReactNode;
   placement?: Placement;
+  size?: 'sm' | 'md';
   asChild?: boolean;
 }
 
 export function Tooltip({
   content,
   placement = 'bottom',
+  size = 'md',
   asChild,
   children,
 }: PropsWithChildren<TooltipProps>) {
   const arrowRef = useRef(null);
+
+  const SIZE = {
+    sm: {
+      ArrowWidth: 8,
+      ArrowHeight: 4,
+      Offset: 3,
+    },
+    md: {
+      ArrowWidth: 9,
+      ArrowHeight: 7,
+      Offset: 5,
+    },
+  }[size];
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,7 +73,7 @@ export function Tooltip({
     onOpenChange: setIsOpen,
     whileElementsMounted: autoUpdate,
     middleware: [
-      offset(ARROW_HEIGHT + OFFSET),
+      offset(SIZE.ArrowHeight + SIZE.Offset),
       flip({
         fallbackAxisSideDirection: 'start',
       }),
@@ -94,7 +109,7 @@ export function Tooltip({
           <div
             ref={refs.setFloating}
             style={floatingStyles}
-            className={classes.root}
+            className={clsx(classes.root, { [classes[`size-${size}`]]: size })}
             {...getFloatingProps()}
           >
             <div className={classes.content}>{content}</div>
@@ -102,8 +117,8 @@ export function Tooltip({
             <FloatingArrow
               ref={arrowRef}
               context={context}
-              width={ARROW_WIDTH}
-              height={ARROW_HEIGHT}
+              width={SIZE.ArrowWidth}
+              height={SIZE.ArrowHeight}
               className={classes.arrow}
             />
           </div>
@@ -112,7 +127,3 @@ export function Tooltip({
     </>
   );
 }
-
-const ARROW_WIDTH = 9;
-const ARROW_HEIGHT = 7;
-const OFFSET = 5;
