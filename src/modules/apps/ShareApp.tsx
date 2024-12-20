@@ -69,7 +69,7 @@ export function ShareApp({ artifact, onSuccess }: Props) {
         <div className={classes.text}>
           <h3 className={classes.heading}>Public link</h3>
           <p className={classes.description}>
-            Anyone with this link can remix or save this artifact
+            Anyone with this link can save or copy to edit this artifact
           </p>
         </div>
 

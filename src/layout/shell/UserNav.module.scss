@@ -35,8 +35,21 @@
     text-decoration: none;
     line-height: rem(18px);
     padding: rem(7px) $spacing-03;
-    &:hover {
-      text-decoration: underline;
+    position: relative;
+    border-radius: $spacing-03;
+    &::before {
+      content: '';
+      border-radius: inherit;
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+    &:hover::before,
+    &[aria-current='page']::before {
+      background-color: $border-subtle-01;
+    }
+    &:hover:not([aria-current='page'])::before {
+      opacity: 0.5;
     }
     &:focus-visible {
       @include focus-outline('outline');
