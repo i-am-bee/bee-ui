@@ -41,6 +41,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
 } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import {
@@ -118,6 +119,8 @@ export function AssistantBuilderProvider({
 
   useOnboardingCompleted(isOnboarding ? 'assistants' : null);
 
+  const createdAssistantRef = useRef<Assistant | null>(null);
+
   const { saveAssistantAsync } = useSaveAssistant({
     onSuccess: (result: AssistantResult, isNew: boolean) => {
       if (!result) return;
@@ -129,6 +132,7 @@ export function AssistantBuilderProvider({
         router.push(`/${project.id}/chat/${result.id}`);
       } else {
         if (isNew) {
+          createdAssistantRef.current = assistantFromResult;
           window.history.pushState(
             {},
             '',
@@ -156,6 +160,8 @@ export function AssistantBuilderProvider({
   const { handleSubmit, reset, formState } = formReturn;
 
   useEffect(() => {
+    if (createdAssistantRef.current) return;
+
     if (isDuplicate || !initialAssistant) {
       selectAssistant(null);
       reset(getDefaultValues());

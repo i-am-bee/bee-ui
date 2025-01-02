@@ -115,18 +115,21 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   const { setExpandedStep } = useExpandedStepActions();
   const expanded = expandedState?.stepId === step.id;
 
-  const toolApproval = (
-    run?.status === 'requires_action' &&
-    run.required_action?.type === 'submit_tool_approvals'
-      ? run.required_action.submit_tool_approvals.tool_calls
-      : []
-  )
-    .map((tool) => ({
-      id: tool.id,
-      toolId: getToolApprovalId(tool),
-      type: tool.type,
-    }))
-    .find((toolApproval) => toolApproval.toolId === tool.id);
+  const toolApproval = useMemo(
+    () =>
+      (run?.status === 'requires_action' &&
+      run.required_action?.type === 'submit_tool_approvals'
+        ? run.required_action.submit_tool_approvals.tool_calls
+        : []
+      )
+        .map((tool) => ({
+          id: tool.id,
+          toolId: getToolApprovalId(tool),
+          type: tool.type,
+        }))
+        .find((toolApproval) => toolApproval.toolId === tool.id),
+    [run, tool.id],
+  );
 
   const handleToolApprovalSubmit = (value: ToolApprovalValue) => {
     if (value === 'always' && thread && toolApproval?.toolId) {

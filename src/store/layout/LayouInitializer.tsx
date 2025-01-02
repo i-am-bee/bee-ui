@@ -15,7 +15,7 @@
  */
 
 'use client';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { LayoutState } from './types';
 import { useLayoutActions } from '.';
 import { useOnMount } from '@/hooks/useOnMount';
