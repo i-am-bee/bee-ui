@@ -60,8 +60,8 @@
     "lottie-react": "^2.4.0",
     "mdast-util-to-hast": "^13.1.0",
     "mime-types": "^2.1.35",
-    "next": "14.2.10",
-    "next-auth": "5.0.0-beta.16",
+    "next": "14.2.22",
+    "next-auth": "5.0.0-beta.25",
     "next-nprogress-bar": "^2.3.13",
     "openapi-fetch": "0.9.3",
     "pluralize": "^8.0.0",
@@ -121,10 +121,10 @@
     "stylelint-plugin-logical-css": "^1.2.1",
     "typescript": "^5"
   },
+  "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903",
   "pnpm": {
     "patchedDependencies": {
-      "next-auth@5.0.0-beta.16": "patches/next-auth@5.0.0-beta.16.patch"
+      "next-auth@5.0.0-beta.25": "patches/next-auth@5.0.0-beta.25.patch"
     }
-  },
-  "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
+  }
 }

@@ -15,7 +15,7 @@
  */
 
 import { fetchVectorStore } from '@/app/api/rsc';
-import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { KnowledgeDetail } from '@/modules/knowledge/detail/KnowledgeDetail';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';

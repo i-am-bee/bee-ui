@@ -20,7 +20,7 @@ import {
   listMessagesWithFiles,
   MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
-import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { ConversationView } from '@/modules/chat/ConversationView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';

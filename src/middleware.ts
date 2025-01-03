@@ -19,9 +19,7 @@ import { NextMiddleware, NextResponse } from 'next/server';
 import { v4 as uuid } from 'uuid';
 import { DUMMY_JWT_TOKEN, USERCONTENT_SITE_URL } from './utils/constants';
 
-const middleware: NextMiddleware = (...args) => {
-  const [request, ev] = args;
-
+const middleware: NextMiddleware = async (request, ev) => {
   const correlationId = uuid();
 
   const onEnd = () => {
@@ -41,32 +39,40 @@ const middleware: NextMiddleware = (...args) => {
 
   // For protected pages run an next-auth middleware too
   if (!DUMMY_JWT_TOKEN && protectedPages.test(request.nextUrl.pathname)) {
-    return auth((req) => {
-      const session = req.auth;
-      // If there's some problem in the auth middleware, sadly instead of throwing
-      // or returning the 500 response, it continues with a session as string with http status :(
-      if (!session || typeof session !== 'object') {
-        const { pathname, search, origin, basePath } = req.nextUrl;
-        const redirectUrl = new URL(`${basePath}${SIGN_IN_PAGE}`, origin);
-        redirectUrl.searchParams.set(
-          'callbackUrl',
-          `${basePath}${pathname}${search}`,
-        );
-        return NextResponse.redirect(redirectUrl);
-      } else {
-        // check if tou accepted
-        if (!Boolean(session.userProfile.metadata?.tou_accepted_at)) {
-          const { pathname, search, origin, basePath } = req.nextUrl;
-          const redirectUrl = new URL(`${basePath}${ACCEPT_TOU_PAGE}`, origin);
-          redirectUrl.searchParams.set(
-            'callbackUrl',
-            `${basePath}${pathname}${search}`,
-          );
-          return NextResponse.redirect(redirectUrl);
-        }
-      }
-      return onEnd();
-    })(request as any, ev as any);
+    return (
+      // wrong types, auth returns Promise<Function> instead of Functon
+      (
+        await auth((req, ctx) => {
+          const session = req.auth;
+          // If there's some problem in the auth middleware, sadly instead of throwing
+          // or returning the 500 response, it continues with a session as string with http status :(
+          if (!session || typeof session !== 'object') {
+            const { pathname, search, origin, basePath } = req.nextUrl;
+            const redirectUrl = new URL(`${basePath}${SIGN_IN_PAGE}`, origin);
+            redirectUrl.searchParams.set(
+              'callbackUrl',
+              `${basePath}${pathname}${search}`,
+            );
+            return NextResponse.redirect(redirectUrl);
+          } else {
+            // check if tou accepted
+            if (!Boolean(session.userProfile.metadata?.tou_accepted_at)) {
+              const { pathname, search, origin, basePath } = req.nextUrl;
+              const redirectUrl = new URL(
+                `${basePath}${ACCEPT_TOU_PAGE}`,
+                origin,
+              );
+              redirectUrl.searchParams.set(
+                'callbackUrl',
+                `${basePath}${pathname}${search}`,
+              );
+              return NextResponse.redirect(redirectUrl);
+            }
+          }
+          return onEnd();
+        })
+      )(request, ev as any)
+    );
   } else {
     return onEnd();
   }
