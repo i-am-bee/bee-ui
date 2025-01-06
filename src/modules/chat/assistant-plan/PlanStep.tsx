@@ -57,6 +57,7 @@ import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { getToolApproval, getToolReferenceFromToolCall } from './utils';
 
 interface Props {
   step: AssistantPlanStep;
@@ -91,18 +92,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   const status = getStepStatus(step, run);
 
   const toolKey = toolCall.type;
-  const tool =
-    toolKey === 'system'
-      ? {
-          type: toolKey,
-          id: toolCall.toolId,
-        }
-      : toolKey === 'user'
-        ? {
-            type: toolKey,
-            id: toolCall.toolId,
-          }
-        : { type: toolKey, id: toolKey };
+  const tool = getToolReferenceFromToolCall(toolCall);
 
   const { toolName, toolIcon } = useToolInfo({
     organization,
@@ -115,18 +105,10 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   const { setExpandedStep } = useExpandedStepActions();
   const expanded = expandedState?.stepId === step.id;
 
-  const toolApproval = (
-    run?.status === 'requires_action' &&
-    run.required_action?.type === 'submit_tool_approvals'
-      ? run.required_action.submit_tool_approvals.tool_calls
-      : []
-  )
-    .map((tool) => ({
-      id: tool.id,
-      toolId: getToolApprovalId(tool),
-      type: tool.type,
-    }))
-    .find((toolApproval) => toolApproval.toolId === tool.id);
+  const toolApproval = useMemo(
+    () => getToolApproval(toolCall, run),
+    [run, toolCall],
+  );
 
   const handleToolApprovalSubmit = (value: ToolApprovalValue) => {
     if (value === 'always' && thread && toolApproval?.toolId) {

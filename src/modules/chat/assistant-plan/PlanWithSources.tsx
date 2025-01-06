@@ -34,7 +34,11 @@ import { runStepsQuery } from '../queries';
 import { BotChatMessage } from '../types';
 import { PlanView } from './PlanView';
 import classes from './PlanWithSources.module.scss';
-import { updatePlanWithRunStep } from './utils';
+import {
+  getToolApproval,
+  getToolReferenceFromToolCall,
+  updatePlanWithRunStep,
+} from './utils';
 import { TraceData } from '../trace/types';
 import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { TraceInfoView } from '../trace/TraceInfoView';
@@ -107,6 +111,27 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     runId: message.run_id,
     threadId: thread?.id,
   });
+
+  useEffect(() => {
+    if (isOpen) return;
+
+    const steps = plan.steps || [];
+
+    if (
+      steps.some((step) => {
+        if (step.status === 'in_progress') {
+          const lastToolCall = step.toolCalls.at(-1);
+          if (lastToolCall) {
+            const toolApproval = getToolApproval(lastToolCall, message.run);
+            return Boolean(toolApproval);
+          }
+        }
+        return false;
+      })
+    ) {
+      setIsOpen(true);
+    }
+  }, [isOpen, message.run, plan.steps]);
 
   useEffect(() => {
     setShowButton(!debugMode && !plan.pending);

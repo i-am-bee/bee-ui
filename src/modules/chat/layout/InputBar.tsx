@@ -40,7 +40,7 @@ import { FilesMenu } from './FilesMenu';
 import classes from './InputBar.module.scss';
 import { PromptSuggestions } from './PromptSuggestions';
 import { ThreadSettings } from './ThreadSettings';
-import { useMessages } from '../providers/useMessages';
+import { UserChatMessage } from '../types';
 
 interface Props {
   showSuggestions?: boolean;
@@ -100,6 +100,13 @@ export const InputBar = memo(function InputBar({
     inputRef.current?.focus();
   };
 
+  const handleAfterRemoveSentMessage = useCallback(
+    (message: UserChatMessage) => {
+      setValue('input', message.content, { shouldValidate: true });
+    },
+    [setValue],
+  );
+
   const isPending = status !== 'ready';
   const inputValue = watch('input');
   const isFileUploadEnabled = isFeatureEnabled(FeatureName.Files);
@@ -130,7 +137,10 @@ export const InputBar = memo(function InputBar({
         handleSubmit(({ input }) => {
           onMessageSubmit?.();
           resetForm();
-          sendMessage(input).then((result) => {
+
+          sendMessage(input, {
+            onAfterRemoveSentMessage: handleAfterRemoveSentMessage,
+          }).then((result) => {
             onMessageSent?.(result);
           });
         })();
@@ -212,10 +222,8 @@ export const InputBar = memo(function InputBar({
                   size="sm"
                   hasIconOnly
                   iconDescription="Cancel"
-                  disabled={status === 'waiting'}
-                  onClick={() => {
-                    cancel();
-                  }}
+                  disabled={status === 'waiting' || status === 'aborting'}
+                  onClick={() => cancel()}
                 />
               )}
             </div>

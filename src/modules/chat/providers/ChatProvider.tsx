@@ -93,13 +93,15 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import { ApiError } from '@/app/api/errors';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { PLAN_STEPS_QUERY_PARAMS } from '../assistant-plan/PlanWithSources';
+import { useDeleteMessage } from '../api/useDeleteMessage';
+import { Control } from 'react-hook-form';
 
 interface CancelRunParams {
   threadId: string;
   runId: string;
 }
 
-export type ChatStatus = 'ready' | 'fetching' | 'waiting';
+export type ChatStatus = 'ready' | 'fetching' | 'waiting' | 'aborting';
 export interface RunController {
   abortController: AbortController | null;
   status: ChatStatus;
@@ -162,8 +164,13 @@ export function ChatProvider({
   const queryClient = useQueryClient();
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
+  const { mutateAsync: mutateDeleteMessage } = useDeleteMessage({});
+
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
-  const [getMessages, setMessages] = useMessages({
+  const {
+    messages: [getMessages, setMessages],
+    refetch: refetchMessages,
+  } = useMessages({
     thread,
     initialData,
   });
@@ -285,7 +292,8 @@ export function ChatProvider({
 
   const cancel = useCallback(() => {
     controllerRef.current.abortController?.abort();
-  }, [controllerRef]);
+    setController((controller) => ({ ...controller, status: 'aborting' }));
+  }, [controllerRef, setController]);
 
   const reset = useCallback(
     (messages: ChatMessage[]) => {
@@ -374,7 +382,7 @@ export function ChatProvider({
       });
   }, [controllerRef, mutateCancel, threadRef]);
 
-  const handlRunCompleted = useCallback(() => {
+  const handleRunCompleted = useCallback(() => {
     const lastMessage = getMessages().at(-1);
 
     setController(RUN_CONTROLLER_DEFAULT);
@@ -443,7 +451,7 @@ export function ChatProvider({
         } catch (err) {
           handleError(err, { toast: false });
         } finally {
-          handlRunCompleted();
+          handleRunCompleted();
         }
 
         const aborted = controller.abortController?.signal.aborted;
@@ -456,7 +464,7 @@ export function ChatProvider({
       chatStream,
       controller.abortController?.signal.aborted,
       controllerRef,
-      handlRunCompleted,
+      handleRunCompleted,
       handleCancelCurrentRun,
       handleError,
       setController,
@@ -515,7 +523,10 @@ export function ChatProvider({
   ]);
 
   const sendMessage = useCallback(
-    async (input: string, { regenerate }: SendMessageOptions = {}) => {
+    async (
+      input: string,
+      { regenerate, onAfterRemoveSentMessage }: SendMessageOptions = {},
+    ) => {
       if (controllerRef.current.status !== 'ready') {
         return { aborted: true, thread: null };
       }
@@ -528,7 +539,9 @@ export function ChatProvider({
       });
 
       // Remove last bot message if it was empty, and also last user message
-      function removeLastMessagePair(ignoreError?: boolean) {
+      async function removeLastMessagePair(ignoreError?: boolean) {
+        await refetchMessages();
+        if (regenerate) return;
         setMessages((messages) => {
           let message = messages.at(-1);
           let shouldRemoveUserMessage = true;
@@ -542,6 +555,12 @@ export function ChatProvider({
               (ignoreError || message.error == null)
             ) {
               messages.pop();
+              if (thread && message.id) {
+                mutateDeleteMessage({
+                  threadId: thread?.id,
+                  messageId: message.id,
+                });
+              }
               message = messages.at(-1);
             } else {
               shouldRemoveUserMessage = false;
@@ -556,6 +575,12 @@ export function ChatProvider({
           }
           if (message?.role === 'user' && shouldRemoveUserMessage) {
             messages.pop();
+            if (thread && message.id)
+              mutateDeleteMessage({
+                threadId: thread?.id,
+                messageId: message.id,
+              });
+            onAfterRemoveSentMessage?.(message);
           }
         });
       }
@@ -657,44 +682,46 @@ export function ChatProvider({
 
         const { tools, toolApprovals } = getUsedTools(thread);
 
-        await chatStream({
-          action: {
-            id: 'create-run',
-            body: {
-              assistant_id: assistant.id,
-              tools,
-              tool_approvals: toolApprovals,
-              uiMetadata: {
-                resources: getRunResources(thread, assistant),
+        if (!abortController.signal.aborted) {
+          await chatStream({
+            action: {
+              id: 'create-run',
+              body: {
+                assistant_id: assistant.id,
+                tools,
+                tool_approvals: toolApprovals,
+                uiMetadata: {
+                  resources: getRunResources(thread, assistant),
+                },
               },
             },
-          },
-          onMessageCompleted: (response) => {
-            setMessagesWithFilesQueryData(
-              thread?.id,
-              response.data,
-              response.data?.run_id,
-            );
+            onMessageCompleted: (response) => {
+              setMessagesWithFilesQueryData(
+                thread?.id,
+                response.data,
+                response.data?.run_id,
+              );
 
-            if (files.length > 0) {
-              queryClient.invalidateQueries({
-                queryKey: threadsQuery(organization.id, project.id).queryKey,
-              });
+              if (files.length > 0) {
+                queryClient.invalidateQueries({
+                  queryKey: threadsQuery(organization.id, project.id).queryKey,
+                });
 
-              queryClient.invalidateQueries({
-                queryKey: threadQuery(
-                  organization.id,
-                  project.id,
-                  thread?.id ?? '',
-                ).queryKey,
-              });
-            }
-          },
-        });
+                queryClient.invalidateQueries({
+                  queryKey: threadQuery(
+                    organization.id,
+                    project.id,
+                    thread?.id ?? '',
+                  ).queryKey,
+                });
+              }
+            },
+          });
+        }
       } catch (err) {
         handleChatError(err);
       } finally {
-        handlRunCompleted();
+        handleRunCompleted();
       }
 
       const aborted = abortController.signal.aborted;
@@ -727,7 +754,7 @@ export function ChatProvider({
       getMessages,
       setMessagesWithFilesQueryData,
       queryClient,
-      handlRunCompleted,
+      handleRunCompleted,
     ],
   );
 
@@ -804,6 +831,7 @@ export function ChatProvider({
 
 export type SendMessageOptions = {
   regenerate?: boolean;
+  onAfterRemoveSentMessage?: (message: UserChatMessage) => void;
 };
 
 export type SendMessageResult = {

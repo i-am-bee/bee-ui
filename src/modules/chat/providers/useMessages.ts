@@ -33,7 +33,7 @@ export function useMessages({
 }) {
   const { project, organization } = useProjectContext();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     ...messagesWithFilesQuery(organization.id, project.id, thread?.id || '', {
       limit: MESSAGES_PAGE_SIZE,
     }),
@@ -48,7 +48,10 @@ export function useMessages({
     enabled: Boolean(thread),
   });
 
-  return useImmerWithGetter(
-    thread ? getMessagesFromThreadMessages(data ?? []) : [],
-  );
+  return {
+    messages: useImmerWithGetter(
+      thread ? getMessagesFromThreadMessages(data ?? []) : [],
+    ),
+    refetch,
+  };
 }

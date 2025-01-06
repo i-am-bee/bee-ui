@@ -21,6 +21,7 @@ import {
   RunStepDeltaEventResponse,
   StepToolCall,
   SystemToolResult,
+  ThreadRun,
 } from '@/app/api/threads-runs/types';
 import {
   isArXivToolResult,
@@ -28,6 +29,7 @@ import {
   isWebSearchToolResult,
   isWikipediaToolResult,
 } from '@/app/api/threads-runs/utils';
+import { getToolApprovalId } from '@/modules/tools/utils';
 import { isNotNull } from '@/utils/helpers';
 import { v4 as uuid } from 'uuid';
 
@@ -218,4 +220,38 @@ export function updatePlanWithRunStepDelta(
     );
   }
   return plan;
+}
+
+export function getToolReferenceFromToolCall(toolCall: StepToolCall) {
+  const toolKey = toolCall.type;
+  return toolKey === 'system'
+    ? {
+        type: toolKey,
+        id: toolCall.toolId,
+      }
+    : toolKey === 'user'
+      ? {
+          type: toolKey,
+          id: toolCall.toolId,
+        }
+      : { type: toolKey, id: toolKey };
+}
+
+export function getToolApproval(toolCall: StepToolCall, run?: ThreadRun) {
+  const tool = getToolReferenceFromToolCall(toolCall);
+
+  if (
+    run?.status === 'requires_action' &&
+    run.required_action?.type === 'submit_tool_approvals'
+  ) {
+    return run.required_action.submit_tool_approvals.tool_calls
+      .map((tool) => ({
+        id: tool.id,
+        toolId: getToolApprovalId(tool),
+        type: tool.type,
+      }))
+      .find((toolApproval) => toolApproval.toolId === tool.id);
+  }
+
+  return null;
 }
