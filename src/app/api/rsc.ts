@@ -17,7 +17,6 @@
 import { headers } from 'next/headers';
 import { client } from './client';
 import { ensureAccessToken } from '../auth/rsc';
-import { auth } from '@/app/auth';
 
 // App dir, doesn't have a single entrypoint like a in pages _app.tsx
 // where we could put it and have a global effect.
