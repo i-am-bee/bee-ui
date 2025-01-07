@@ -55,28 +55,18 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
     );
   };
 
-  const updateTheme = useCallback((theme: Theme) => {
-    postMessage({ type: PostMessageType.UPDATE_STATE, stateChange: { theme } });
-  }, []);
-
-  const updateCode = useCallback(
-    (code: string | null) => {
-      if (!code) {
-        return;
-      }
-
-      postMessage({
-        type: PostMessageType.UPDATE_STATE,
-        stateChange: {
-          config: {
-            canFixError: Boolean(onFixError),
-          },
-          code,
-        }
-      });
+  const [appState, setAppState] = useState<AppState>({
+    code: sourceCode ?? 'async def main():\n  pass',
+    config: {
+      canFixError: Boolean(onFixError)
     },
-    [onFixError],
-  );
+    theme: theme ?? 'system',
+    fullscreen: false,
+  });
+  const handleIframeLoad = useCallback(() => { theme && setAppState(state => ({ ...state, theme })) }, [theme]);
+  useEffect(() => { theme && setAppState(state => ({ ...state, theme })) }, [theme]);
+  useEffect(() => { sourceCode && setAppState(state => ({ ...state, code: sourceCode })) }, [sourceCode]);
+  useEffect(() => { postMessage({ type: PostMessageType.UPDATE_STATE, stateChange: appState }) }, [appState, state]);
 
   const handleMessage = useCallback(
     async (event: MessageEvent<StliteMessage>) => {
@@ -137,24 +127,6 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
     },
     [project, organization, onFixError],
   );
-
-  const handleIframeLoad = useCallback(() => {
-    if (theme) {
-      updateTheme(theme);
-    }
-  }, [theme, updateTheme]);
-
-  useEffect(() => {
-    if (theme) {
-      updateTheme(theme);
-    }
-  }, [theme, updateTheme]);
-
-  useEffect(() => {
-    if (state === State.READY) {
-      updateCode(sourceCode);
-    }
-  }, [state, theme, sourceCode, updateCode]);
 
   useEffect(() => {
     window.addEventListener('message', handleMessage);
