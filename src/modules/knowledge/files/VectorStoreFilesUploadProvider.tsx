@@ -264,9 +264,7 @@ export const VectorStoreFilesUploadProvider = ({
   const value = useMemo(() => {
     return {
       files,
-      isPending: files.some(
-        (file) => file.status === 'embedding' || file.status === 'uploading',
-      ),
+      isPending: files.some((file) => file.status !== 'complete'),
       vectorStoreId,
       onFileSubmit: (inputFile: VectoreStoreFileUpload, thread?: Thread) => {
         if (inputFile.isReadable && !vectorStoreIdRef.current)

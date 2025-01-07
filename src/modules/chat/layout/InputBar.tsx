@@ -132,7 +132,7 @@ export const InputBar = memo(function InputBar({
       ref={formRef}
       onSubmit={(e) => {
         e.preventDefault();
-        if (isPending || isFilesPending) return;
+        if (isSubmitDisabled) return;
 
         handleSubmit(({ input }) => {
           onMessageSubmit?.();
@@ -154,7 +154,7 @@ export const InputBar = memo(function InputBar({
                 <Attachment
                   size="md"
                   startIcon={
-                    status === 'uploading' || status === 'embedding'
+                    status !== 'complete'
                       ? Spinner
                       : vectorStoreFile?.last_error
                         ? WarningFilled
