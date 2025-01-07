@@ -49,6 +49,10 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   const { project, organization } = useProjectContext();
 
   const postMessage = (message: PostMessage) => {
+    // Avoid sending message to wrong origin
+    // No security error = cross origin iframe not loaded yet
+    try { iframeRef.current?.contentWindow?.document; return; } catch { }
+
     iframeRef.current?.contentWindow?.postMessage(
       message,
       USERCONTENT_SITE_URL,
@@ -62,6 +66,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
     },
     theme: theme ?? 'system',
     fullscreen: false,
+    ancestorOrigin: window.location.origin,
   });
   const handleIframeLoad = useCallback(() => { theme && setAppState(state => ({ ...state, theme })) }, [theme]);
   useEffect(() => { theme && setAppState(state => ({ ...state, theme })) }, [theme]);
@@ -168,6 +173,7 @@ interface AppState {
   config: {
     canFixError: boolean
   },
+  ancestorOrigin: string,
 }
 
 type PostMessage =
@@ -184,12 +190,6 @@ type PostMessage =
 enum PostMessageType {
   RESPONSE = 'bee:response',
   UPDATE_STATE = 'bee:updateState'
-}
-
-enum ScriptRunState {
-  INITIAL = 'initial',
-  NOT_RUNNING = 'notRunning',
-  RUNNING = 'running',
 }
 
 enum State {
