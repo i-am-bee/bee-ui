@@ -20,6 +20,7 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
+import { useMemo } from 'react';
 import classes from './EntityNotFound.module.scss';
 import AgentNotFound from './agent-not-found.svg';
 import AppNotFound from './app-not-found.svg';
@@ -32,22 +33,26 @@ export function EntityNotFound({ type }: Props) {
   const { project } = useAppContext();
   const router = useRouter();
 
-  const { Icon, button } = {
-    app: {
-      Icon: AppNotFound,
-      button: {
-        label: 'Create your own',
-        href: `/${project.id}/apps/builder`,
-      },
-    },
-    agent: {
-      Icon: AgentNotFound,
-      button: {
-        label: 'Back to apps',
-        href: `/${project.id}`,
-      },
-    },
-  }[type];
+  const { Icon, button } = useMemo(
+    () =>
+      ({
+        app: {
+          Icon: AppNotFound,
+          button: {
+            label: 'Create your own',
+            href: `/${project.id}/apps/builder`,
+          },
+        },
+        agent: {
+          Icon: AgentNotFound,
+          button: {
+            label: 'Back to apps',
+            href: `/${project.id}`,
+          },
+        },
+      })[type],
+    [type, project.id],
+  );
 
   return (
     <div className={classes.root}>
