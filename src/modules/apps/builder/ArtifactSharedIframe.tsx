@@ -29,7 +29,7 @@ import AppPlaceholder from './Placeholder.svg';
 
 interface Props {
   sourceCode: string | null;
-  onReportError?: (errorText: string) => void;
+  onFixError?: (errorText: string) => void;
 }
 
 function getErrorMessage(error: unknown) {
@@ -42,7 +42,7 @@ function getErrorMessage(error: unknown) {
   return 'Unknown error when calling LLM function.';
 }
 
-export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
+export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
@@ -68,12 +68,12 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
       postMessage({
         type: PostMessageType.UPDATE_CODE,
         config: {
-          can_fix_error: Boolean(onReportError),
+          canFixError: Boolean(onFixError),
         },
         code,
       });
     },
-    [onReportError],
+    [onFixError],
   );
 
   const handleMessage = useCallback(
@@ -93,6 +93,13 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
       }
 
       if (data.type === RecieveMessageType.REQUEST) {
+        const respond = (payload: unknown = undefined) =>
+          postMessage({
+            type: PostMessageType.RESPONSE,
+            request_id: data.request_id,
+            payload,
+          });
+
         try {
           switch (data.request_type) {
             case 'modules_to_packages':
@@ -101,12 +108,9 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
                 project.id,
                 data.payload.modules,
               );
-              postMessage({
-                type: PostMessageType.RESPONSE,
-                request_id: data.request_id,
-                payload: packagesResponse,
-              });
+              respond(packagesResponse);
               break;
+
             case 'chat_completion':
               const response = await createChatCompletion(
                 organization.id,
@@ -115,29 +119,21 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
               );
               const message = response?.choices[0]?.message?.content;
               if (!message) throw new Error(); // missing completion
-              postMessage({
-                type: PostMessageType.RESPONSE,
-                request_id: data.request_id,
-                payload: { message },
-              });
+              respond({ message });
+              break;
+
+            case 'fix_error':
+              onFixError?.(data.payload.errorText);
+              respond();
               break;
           }
         } catch (err) {
-          postMessage({
-            type: PostMessageType.RESPONSE,
-            request_id: data.request_id,
-            payload: { error: getErrorMessage(err) },
-          });
+          respond({ error: getErrorMessage(err) });
         }
         return;
       }
-
-      if (data.type === RecieveMessageType.REPORT_ERROR) {
-        onReportError?.(data.errorText);
-        return;
-      }
     },
-    [project, organization, onReportError],
+    [project, organization, onFixError],
   );
 
   const handleIframeLoad = useCallback(() => {
@@ -199,7 +195,7 @@ type PostMessage =
       type: PostMessageType.UPDATE_CODE;
       code: string;
       config: {
-        can_fix_error?: boolean;
+        canFixError?: boolean;
       };
     }
   | {
@@ -232,7 +228,6 @@ enum State {
 enum RecieveMessageType {
   SCRIPT_RUN_STATE_CHANGED = 'SCRIPT_RUN_STATE_CHANGED',
   REQUEST = 'bee:request',
-  REPORT_ERROR = 'bee:reportError',
 }
 
 export type StliteMessage =
@@ -253,6 +248,8 @@ export type StliteMessage =
       payload: ChatCompletionCreateBody;
     }
   | {
-      type: RecieveMessageType.REPORT_ERROR;
-      errorText: string;
+      type: RecieveMessageType.REQUEST;
+      request_type: 'fix_error';
+      request_id: string;
+      payload: { errorText: string };
     };
