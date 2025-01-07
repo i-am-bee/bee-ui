@@ -56,7 +56,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   };
 
   const updateTheme = useCallback((theme: Theme) => {
-    postMessage({ type: PostMessageType.UPDATE_THEME, theme });
+    postMessage({ type: PostMessageType.UPDATE_STATE, stateChange: { theme } });
   }, []);
 
   const updateCode = useCallback(
@@ -66,11 +66,13 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
       }
 
       postMessage({
-        type: PostMessageType.UPDATE_CODE,
-        config: {
-          canFixError: Boolean(onFixError),
-        },
-        code,
+        type: PostMessageType.UPDATE_STATE,
+        stateChange: {
+          config: {
+            canFixError: Boolean(onFixError),
+          },
+          code,
+        }
       });
     },
     [onFixError],
@@ -190,17 +192,19 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   );
 }
 
+interface AppState {
+  fullscreen: boolean,
+  theme: 'light' | 'dark' | 'system',
+  code: string,
+  config: {
+    canFixError: boolean
+  },
+}
+
 type PostMessage =
   | {
-      type: PostMessageType.UPDATE_CODE;
-      code: string;
-      config: {
-        canFixError?: boolean;
-      };
-    }
-  | {
-      type: PostMessageType.UPDATE_THEME;
-      theme: Theme;
+      type: PostMessageType.UPDATE_STATE;
+      stateChange: Partial<AppState>;
     }
   | {
       type: PostMessageType.RESPONSE;
@@ -209,9 +213,8 @@ type PostMessage =
     };
 
 enum PostMessageType {
-  UPDATE_CODE = 'bee:updateCode',
-  UPDATE_THEME = 'bee:updateTheme',
   RESPONSE = 'bee:response',
+  UPDATE_STATE = 'bee:updateState'
 }
 
 enum ScriptRunState {
