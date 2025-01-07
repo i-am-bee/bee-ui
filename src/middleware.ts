@@ -90,6 +90,7 @@ export const config = {
 const getCspHeader = (nonce: string) => {
   const cspHeader = `
     default-src 'self';
+    connect-src 'self' ${USERCONTENT_SITE_URL} https://cdn.jsdelivr.net https://pypi.org https://files.pythonhosted.org;
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${
       process.env.NODE_ENV === 'production' ? '' : `'unsafe-eval'`
     };
