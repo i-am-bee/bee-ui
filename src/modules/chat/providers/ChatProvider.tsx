@@ -540,47 +540,48 @@ export function ChatProvider({
 
       // Remove last bot message if it was empty, and also last user message
       async function removeLastMessagePair(ignoreError?: boolean) {
+        // synchronize messages before removing
         await refetchMessages();
-        if (regenerate) return;
+
         setMessages((messages) => {
           let message = messages.at(-1);
-          let shouldRemoveUserMessage = true;
-          if (message?.role === 'assistant') {
-            if (!isBotMessage(message)) {
-              throw new Error('Unexpected last message found.');
-            }
-            if (
-              !message.content &&
-              message.plan == null &&
-              (ignoreError || message.error == null)
-            ) {
-              messages.pop();
-              if (thread && message.id) {
-                mutateDeleteMessage({
-                  threadId: thread?.id,
-                  messageId: message.id,
-                });
-              }
-              message = messages.at(-1);
-            } else {
-              shouldRemoveUserMessage = false;
-              if (message.plan) {
-                message.plan.steps = message.plan.steps.map((step) =>
-                  step.status === 'in_progress'
-                    ? { ...step, status: 'cancelled' }
-                    : step,
-                );
-              }
-            }
+          if (!isBotMessage(message)) {
+            throw new Error('Unexpected last message found.');
           }
-          if (message?.role === 'user' && shouldRemoveUserMessage) {
+
+          if (message.plan) {
+            message.plan.steps = message.plan.steps.map((step) =>
+              step.status === 'in_progress'
+                ? { ...step, status: 'cancelled' }
+                : step,
+            );
+          }
+
+          if (
+            !regenerate &&
+            messages.length > 2 &&
+            !message.content &&
+            message.plan == null &&
+            (ignoreError || message.error == null)
+          ) {
             messages.pop();
-            if (thread && message.id)
+            if (thread && message.id) {
               mutateDeleteMessage({
                 threadId: thread?.id,
                 messageId: message.id,
               });
-            onAfterRemoveSentMessage?.(message);
+            }
+
+            message = messages.at(-1);
+            if (message?.role === 'user') {
+              messages.pop();
+              if (thread && message.id)
+                mutateDeleteMessage({
+                  threadId: thread?.id,
+                  messageId: message.id,
+                });
+              onAfterRemoveSentMessage?.(message);
+            }
           }
         });
       }
@@ -737,7 +738,9 @@ export function ChatProvider({
     [
       controllerRef,
       setController,
+      refetchMessages,
       setMessages,
+      mutateDeleteMessage,
       handleCancelCurrentRun,
       openModal,
       handleError,
@@ -749,10 +752,10 @@ export function ChatProvider({
       assistant,
       ensureThread,
       getUsedTools,
-      chatStream,
       onBeforePostMessage,
       getMessages,
       setMessagesWithFilesQueryData,
+      chatStream,
       queryClient,
       handleRunCompleted,
     ],
