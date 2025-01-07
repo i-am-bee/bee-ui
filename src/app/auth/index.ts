@@ -27,6 +27,7 @@ import {
   encodeMetadata,
   maybeGetJsonBody,
 } from '../api/utils';
+import { noop } from '@/utils/helpers';
 
 const AUTH_PROVIDER_ID = process.env.NEXT_PUBLIC_AUTH_PROVIDER_ID!;
 const AUTH_PROVIDER_NAME = process.env.AUTH_PROVIDER_NAME!;
@@ -143,7 +144,8 @@ const authResult = NextAuth(() => ({
         return `${SIGN_IN_PAGE}?error=service_unavailable`;
       }
     },
-    async jwt({ token, account, user, trigger }) {
+    async jwt({ token: oldToken, account, user, trigger }) {
+      const token = { ...oldToken };
       if (account) {
         if (!account.access_token) throw new Error('Missing access_token');
         if (!account.refresh_token) throw new Error('Missing refresh_token');
@@ -193,13 +195,7 @@ const authResult = NextAuth(() => ({
       return token;
     },
     session({ session, token }) {
-      // delete session.user, that way next-auth will add the value of token to the session
-      // returned from the auth(). This allows us to read accessToken on the server but
-      // not return it from `GET /api/auth/session`.
-      // It isn't ideal though because we can still accidentally pass the session to the client
-      // component. next-auth use react taint api, but it's still experimental so they don't use it
-      delete (session as any).user;
-
+      session.access_token = token.access_token;
       session.userProfile = {
         id: token.userEntity.id,
         name: token.name ?? '',
@@ -226,7 +222,7 @@ const authResult = NextAuth(() => ({
       fetch(AUTH_REVOKE_ENDPOINT, {
         method: 'POST',
         body: data,
-      });
+      }).catch(noop);
     },
   },
 }));
@@ -238,7 +234,6 @@ export const {
   handlers: { GET, POST },
   auth,
   signIn,
-  signOut,
   unstable_update: updateSession,
 } = authResult;
 
@@ -279,6 +274,7 @@ const refreshAccessTokenSchema = z.object({
 
 declare module 'next-auth' {
   interface Session {
+    access_token: string;
     userProfile: UserProfileState;
   }
   interface User {

@@ -17,13 +17,13 @@
 import 'server-only';
 import { DUMMY_JWT_TOKEN } from '@/utils/constants';
 import { addDaysToDate } from '@/utils/dates';
-import { JWT } from 'next-auth/jwt';
 import { redirect } from 'next/navigation';
-import { cache } from 'react';
 import { SIGN_IN_PAGE, auth } from '.';
 import { readUser } from '../api/users';
 import { decodeMetadata } from '../api/utils';
 import { UserMetadata } from '@/store/user-profile/types';
+import { cache } from 'react';
+import { Session } from 'next-auth';
 
 export const getSession = cache(async () => {
   return await auth();
@@ -35,10 +35,12 @@ export const ensureSession = async () => {
 
     if (user)
       return {
-        user: {
-          access_token: DUMMY_JWT_TOKEN,
-        },
-        expires: addDaysToDate(new Date(), SESSION_TEST_EXPIRY_DAYS),
+        user,
+        access_token: DUMMY_JWT_TOKEN,
+        expires: addDaysToDate(
+          new Date(),
+          SESSION_TEST_EXPIRY_DAYS,
+        ).toISOString(),
         userProfile: {
           ...user,
           metadata: decodeMetadata<UserMetadata>(user.metadata),
@@ -47,7 +49,7 @@ export const ensureSession = async () => {
           firstName: 'Test',
           lastName: 'User',
         },
-      };
+      } as Session;
   }
 
   const session = await getSession();
@@ -60,8 +62,7 @@ export const ensureSession = async () => {
 
 export const ensureAccessToken = async () => {
   const session = await ensureSession();
-  const { access_token } = session.user as JWT;
-  return access_token;
+  return session.access_token;
 };
 
 export async function ensureDefaultOrganizationId() {

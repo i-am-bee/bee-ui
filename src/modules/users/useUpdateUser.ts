@@ -27,7 +27,7 @@ export function useUpdateUser() {
   const mutation = useMutation({
     mutationFn: (body?: UserUpdateBody) => updateUser(body),
     onSuccess: (result) => {
-      updateSession({
+      return updateSession({
         ...session,
         userProfile: {
           ...session?.userProfile,

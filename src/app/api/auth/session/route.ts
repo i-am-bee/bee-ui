@@ -15,11 +15,13 @@
  */
 
 import { ensureSession } from '@/app/auth/rsc';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(req: NextRequest): Promise<Response> {
+  const response = await _GET(req);
   const { expires, userProfile } = await ensureSession();
-  return NextResponse.json({ expires, userProfile });
+  return NextResponse.json({ expires, userProfile }, response);
 }
 
+import { GET as _GET } from '@/app/auth';
 export { POST } from '@/app/auth';

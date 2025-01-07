@@ -15,7 +15,7 @@
  */
 
 import { ensureAppBuilderAssistant } from '@/app/api/rsc';
-import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';

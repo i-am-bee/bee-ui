@@ -57,8 +57,7 @@ export default async function handler(
     if (!session) {
       return res.status(401).json(createApiErrorResponse('auth_error'));
     }
-    const { access_token } = session.user as JWT;
-    accessToken = access_token;
+    accessToken = session.access_token;
   }
 
   // Rewrite path

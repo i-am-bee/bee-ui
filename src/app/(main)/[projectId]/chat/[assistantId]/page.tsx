@@ -15,7 +15,7 @@
  */
 
 import { fetchAssistant } from '@/app/api/rsc';
-import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';

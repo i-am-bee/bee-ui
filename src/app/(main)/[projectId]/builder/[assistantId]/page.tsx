@@ -15,7 +15,7 @@
  */
 
 import { fetchAssistant } from '@/app/api/rsc';
-import { ensureDefaultOrganizationId, ensureSession } from '@/app/auth/rsc';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { Builder } from '@/modules/assistants/builder/Builder';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
