@@ -47,17 +47,15 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
   const { project, organization } = useProjectContext();
+  const [iframeLoadCount, setIframeLoadCount] = useState<number>(0);
 
-  const postMessage = (message: PostMessage) => {
-    // Avoid sending message to wrong origin
-    // No security error = cross origin iframe not loaded yet
-    try { iframeRef.current?.contentWindow?.document; return; } catch { }
-
+  const postMessage = useCallback((message: PostMessage) => {
+    if(iframeLoadCount === 0) return;
     iframeRef.current?.contentWindow?.postMessage(
       message,
       USERCONTENT_SITE_URL,
     );
-  };
+  }, [iframeLoadCount])
 
   const [appState, setAppState] = useState<AppState>({
     code: sourceCode ?? 'async def main():\n  pass',
@@ -68,10 +66,9 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
     fullscreen: false,
     ancestorOrigin: window.location.origin,
   });
-  const handleIframeLoad = useCallback(() => { theme && setAppState(state => ({ ...state, theme })) }, [theme]);
   useEffect(() => { theme && setAppState(state => ({ ...state, theme })) }, [theme]);
   useEffect(() => { sourceCode && setAppState(state => ({ ...state, code: sourceCode })) }, [sourceCode]);
-  useEffect(() => { postMessage({ type: PostMessageType.UPDATE_STATE, stateChange: appState }) }, [appState, state]);
+  useEffect(() => { postMessage({ type: PostMessageType.UPDATE_STATE, stateChange: appState }) }, [appState, postMessage]);
 
   const handleMessage = useCallback(
     async (event: MessageEvent<StliteMessage>) => {
@@ -127,7 +124,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
         return;
       }
     },
-    [project, organization, onFixError],
+    [project, organization, onFixError, postMessage],
   );
 
   useEffect(() => {
@@ -152,7 +149,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
           'allow-popups-to-escape-sandbox',
         ].join(' ')}
         className={classes.app}
-        onLoad={handleIframeLoad}
+        onLoad={() => setIframeLoadCount(i => i + 1)}
       />
 
       {!sourceCode ? (
