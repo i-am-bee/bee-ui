@@ -21,15 +21,15 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 
 interface Props {
-  params: {
+  params: Promise<{
     projectId: string;
     knowledgeId?: string;
-  };
+  }>;
 }
 
-export default async function KnowledgeDetailPage({
-  params: { projectId, knowledgeId },
-}: Props) {
+export default async function KnowledgeDetailPage(props: Props) {
+  const { projectId, knowledgeId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
 
   const vectorStore = await fetchVectorStore(

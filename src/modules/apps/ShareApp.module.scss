@@ -62,7 +62,7 @@
 
 .heading {
   @include type-style(body-01);
-  line-height: (16 / 14);
+  line-height: calc(16 / 14);
   font-weight: 600;
   color: $text-dark;
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { headers } from 'next/headers';
+import { headers, type UnsafeUnwrappedHeaders } from 'next/headers';
 import { client } from './client';
 import { ensureAccessToken } from '../auth/rsc';
 
@@ -28,7 +28,7 @@ import { ensureAccessToken } from '../auth/rsc';
 
 client.use({
   async onRequest(req, options) {
-    const correlationId = headers().get('x-correlation-id');
+    const correlationId = (await headers()).get('x-correlation-id');
     if (correlationId) {
       req.headers.set('x-correlation-id', correlationId);
     }

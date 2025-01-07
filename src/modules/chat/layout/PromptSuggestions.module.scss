@@ -39,7 +39,7 @@
 
 .heading {
   @include type-style(label-02);
-  line-height: (22 / 14);
+  line-height: calc(22 / 14);
   color: $text-secondary;
 }
 

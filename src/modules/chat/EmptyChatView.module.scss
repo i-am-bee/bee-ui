@@ -48,12 +48,12 @@
   h1 {
     @include type-style(heading-06);
 
-    line-height: (60 / 42);
+    line-height: calc(60 / 42);
     text-wrap: balance;
     margin: 0;
   }
   p {
     color: $text-secondary;
-    line-height: (24 / 16);
+    line-height: calc(24 / 16);
   }
 }

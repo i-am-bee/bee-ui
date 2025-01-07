@@ -25,7 +25,7 @@
 
 .heading {
   font-size: rem(18px);
-  line-height: (24 / 18);
+  line-height: calc(24 / 18);
   margin-block-end: $spacing-05;
 }
 
@@ -99,7 +99,7 @@
 
   .heading {
     font-size: rem(24px);
-    line-height: (32 / 24);
+    line-height: calc(32 / 24);
     font-weight: normal;
     margin-block-end: $spacing-07;
   }

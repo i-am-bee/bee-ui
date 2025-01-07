@@ -31,15 +31,15 @@ import { MessageResult } from '@/app/api/threads-messages/types';
 import { getAppBuilderNavbarProps } from '../../../utils';
 
 interface Props {
-  params: {
+  params: Promise<{
     projectId: string;
     threadId: string;
-  };
+  }>;
 }
 
-export default async function AppBuilderPage({
-  params: { projectId, threadId },
-}: Props) {
+export default async function AppBuilderPage(props: Props) {
+  const { projectId, threadId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);

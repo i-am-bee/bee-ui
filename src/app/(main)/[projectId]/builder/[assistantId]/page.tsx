@@ -23,15 +23,15 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 
 interface Props {
-  params: {
+  params: Promise<{
     assistantId?: string;
     projectId: string;
-  };
+  }>;
 }
 
-export default async function AssistantBuilderPage({
-  params: { assistantId, projectId },
-}: Props) {
+export default async function AssistantBuilderPage(props: Props) {
+  const { assistantId, projectId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await fetchAssistant(

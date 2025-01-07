@@ -24,17 +24,17 @@ import { notFound } from 'next/navigation';
 import { getAppBuilderNavbarProps } from '../../../utils';
 
 interface Props {
-  params: {
+  params: Promise<{
     projectId: string;
     artifactId: string;
-  };
-  searchParams: { token?: string };
+  }>;
+  searchParams: Promise<{ token?: string }>;
 }
 
-export default async function CloneAppPage({
-  params: { projectId, artifactId },
-  searchParams: { token },
-}: Props) {
+export default async function CloneAppPage(props: Props) {
+  const { token } = await props.searchParams;
+  const { projectId, artifactId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);

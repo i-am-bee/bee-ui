@@ -25,6 +25,6 @@
 .description {
   @include type-style('body-01');
   font-size: rem(14px);
-  line-height: (20 / 14);
+  line-height: calc(20 / 14);
   margin-block-start: $spacing-03;
 }

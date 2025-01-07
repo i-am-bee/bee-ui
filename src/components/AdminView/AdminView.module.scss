@@ -32,7 +32,7 @@
 
 .heading {
   font-size: rem(24px);
-  line-height: (28 / 24);
+  line-height: calc(28 / 24);
   font-weight: 600;
   margin-block-end: $spacing-06;
 }

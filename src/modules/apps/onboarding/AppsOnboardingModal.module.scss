@@ -22,7 +22,7 @@
       padding: $spacing-05;
       h2 {
         font-size: rem(24px);
-        line-height: (28 / 24);
+        line-height: calc(28 / 24);
         font-weight: bold;
         color: $text-dark;
       }

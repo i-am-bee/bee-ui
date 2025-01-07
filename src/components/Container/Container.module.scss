@@ -34,8 +34,8 @@ $max-width-bp: rem(1584px);
     max-inline-size: clamp(
       $min-width,
       #{calc(
-          $min-width + (100vw - $min-width-bp) * #{($max-width - $min-width) /
-            ($max-width-bp - $min-width-bp)}
+          $min-width + (100vw - $min-width-bp) *
+            #{calc(($max-width - $min-width) / ($max-width-bp - $min-width-bp))}
         )},
       $max-width
     );

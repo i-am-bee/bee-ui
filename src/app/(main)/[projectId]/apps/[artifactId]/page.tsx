@@ -22,15 +22,15 @@ import { getAppBuilderNavbarProps } from '../utils';
 import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 
 interface Props {
-  params: {
+  params: Promise<{
     projectId: string;
     artifactId: string;
-  };
+  }>;
 }
 
-export default async function AppBuilderPage({
-  params: { projectId, artifactId },
-}: Props) {
+export default async function AppBuilderPage(props: Props) {
+  const { projectId, artifactId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
   const artifactResult = await fetchArtifact(
     organizationId,

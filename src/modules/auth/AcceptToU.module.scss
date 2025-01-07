@@ -35,7 +35,7 @@
 
   .heading {
     font-size: rem(32px);
-    line-height: (40 / 32);
+    line-height: calc(40 / 32);
   }
 }
 

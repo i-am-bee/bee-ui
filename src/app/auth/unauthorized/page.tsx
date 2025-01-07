@@ -15,14 +15,15 @@
  */
 
 import { LoginError } from '@/modules/auth/SignIn';
-import { useMemo } from 'react';
+import { useMemo, use } from 'react';
 import { Unauthorized } from '@/modules/auth/Unauthorized';
 
 interface PageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default function SignInPage({ searchParams }: PageProps) {
+export default function SignInPage(props: PageProps) {
+  const searchParams = use(props.searchParams);
   const errorCode = Array.isArray(searchParams.error)
     ? searchParams.error[0]
     : (searchParams.error ?? null);

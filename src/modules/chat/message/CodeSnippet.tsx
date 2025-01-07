@@ -17,7 +17,7 @@
 import { Button, CopyButton, Theme } from '@carbon/react';
 import { ChevronDown } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { HTMLAttributes, useRef, useState } from 'react';
+import { HTMLAttributes, RefObject, useRef, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
 import classes from './CodeSnippet.module.scss';
 
@@ -25,7 +25,9 @@ type Props = HTMLAttributes<HTMLElement>;
 
 export function CodeSnippet(props: Props) {
   const nodeRef = useRef<HTMLElement>(null);
-  const { height } = useResizeObserver({ ref: nodeRef });
+  const { height } = useResizeObserver({
+    ref: nodeRef as RefObject<HTMLElement>,
+  });
   const isTaller = height != null && height > COLLAPSED_CODE_HEIGHT;
   const [expanded, setExpanded] = useState(false);
   return (

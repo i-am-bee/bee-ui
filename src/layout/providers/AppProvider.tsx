@@ -27,7 +27,7 @@ import { useUserProfile } from '@/store/user-profile';
 import { useQuery } from '@tanstack/react-query';
 import {
   createContext,
-  MutableRefObject,
+  RefObject,
   PropsWithChildren,
   use,
   useMemo,
@@ -42,7 +42,7 @@ export interface AppContextValue {
   organization: Organization;
   role: ProjectUser['role'] | null;
   isProjectReadOnly?: boolean;
-  onPageLeaveRef: MutableRefObject<() => void>;
+  onPageLeaveRef: RefObject<() => void>;
 }
 
 export interface AppApiContextValue {

@@ -19,7 +19,7 @@
 .list {
   a {
     @include type-style(body-01);
-    line-height: (18 / 14);
+    line-height: calc(18 / 14);
     display: flex;
     justify-content: space-between;
     align-items: center;

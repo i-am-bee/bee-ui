@@ -30,11 +30,11 @@ export const metadata: Metadata = {
   icons: { icon: '//www.ibm.com/favicon.ico' },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   modal,
 }: PropsWithChildren<{ modal: ReactNode }>) {
-  const nonce = headers().get('x-nonce') ?? undefined;
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     // suppressHydrationWarning is added because of ThemeProvider
     <html lang="en" suppressHydrationWarning>

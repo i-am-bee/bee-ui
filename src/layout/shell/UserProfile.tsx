@@ -26,7 +26,14 @@ import { Settings } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { CODE_ESCAPE } from 'keycode-js';
 import { signOut } from 'next-auth/react';
-import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
+import {
+  KeyboardEventHandler,
+  RefObject,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
@@ -50,7 +57,7 @@ export function UserProfile({ className }: Props) {
 
   const isDummyUser = userEmail === DUMMY_USER_EMAIL;
 
-  useOnClickOutside(ref, () => {
+  useOnClickOutside(ref as RefObject<HTMLElement>, () => {
     setOpen(false);
   });
 

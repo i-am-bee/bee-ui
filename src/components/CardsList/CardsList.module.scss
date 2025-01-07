@@ -42,7 +42,7 @@
 
   h2 {
     font-size: rem(24px);
-    line-height: (36 / 24);
+    line-height: calc(36 / 24);
     flex-grow: 1;
   }
 }
@@ -89,7 +89,7 @@
     font-weight: 600;
     &.notFound,
     &.emptyDescr {
-      line-height: (20 / 16);
+      line-height: calc(20 / 16);
       font-weight: 400;
       color: $text-secondary;
       max-inline-size: rem(460px);

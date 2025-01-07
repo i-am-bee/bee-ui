@@ -31,7 +31,7 @@
 
 .subheading {
   @include type-style(body-02);
-  line-height: (20 / 16);
+  line-height: calc(20 / 16);
   margin-block-end: $spacing-05;
 }
 

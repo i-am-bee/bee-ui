@@ -18,16 +18,21 @@ import { ensureSession } from '@/app/auth/rsc';
 import { redirect } from 'next/navigation';
 
 interface Props {
-  params: {
+  params: Promise<{
     artifactId: string;
-  };
-  searchParams: { token?: string };
+  }>;
+  searchParams: Promise<{ token?: string }>;
 }
 
-export default async function CloneAppPage({
-  params: { artifactId },
-  searchParams: { token },
-}: Props) {
+export default async function CloneAppPage(props: Props) {
+  const searchParams = await props.searchParams;
+
+  const { token } = searchParams;
+
+  const params = await props.params;
+
+  const { artifactId } = params;
+
   const session = await ensureSession();
   const { default_project: defaultProjectId } = session.userProfile;
 

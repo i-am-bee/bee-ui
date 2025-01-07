@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
+import { memo, ReactElement } from 'react';
 import Markdown, { Components } from 'react-markdown';
 import rehypeMinifyWhitespace from 'rehype-minify-whitespace';
 import remarkGfm from 'remark-gfm';
@@ -65,10 +65,10 @@ const REMARK_PLUGINS = [
 ] satisfies PluggableList;
 
 interface ExtendedComponents extends Components {
-  attachmentLink?: (props: any) => JSX.Element;
-  attachmentImage?: (props: any) => JSX.Element;
-  previewLink?: (props: any) => JSX.Element;
-  pythonAppCode?: (props: any) => JSX.Element;
+  attachmentLink?: (props: any) => ReactElement;
+  attachmentImage?: (props: any) => ReactElement;
+  previewLink?: (props: any) => ReactElement;
+  pythonAppCode?: (props: any) => ReactElement;
 }
 
 const COMPONENTS = {

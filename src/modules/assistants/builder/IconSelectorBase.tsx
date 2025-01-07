@@ -16,7 +16,13 @@
 
 import { FormItem, usePrefix } from '@carbon/react';
 import { Checkmark, Edit } from '@carbon/react/icons';
-import { PropsWithChildren, ReactNode, useRef, useState } from 'react';
+import {
+  PropsWithChildren,
+  ReactNode,
+  RefObject,
+  useRef,
+  useState,
+} from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import classes from './IconSelectorBase.module.scss';
 
@@ -35,7 +41,7 @@ export function IconSelectorBase({
   const prefix = usePrefix();
   const [opened, setOpened] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(selectorRef, () => {
+  useOnClickOutside(selectorRef as RefObject<HTMLDivElement>, () => {
     setOpened(false);
   });
 

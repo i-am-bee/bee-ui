@@ -23,9 +23,12 @@ interface Props {
   };
 }
 
-export default function ProjectLayout({
-  params: { projectId },
-  children,
-}: PropsWithChildren<Props>) {
+export default async function ProjectLayout(props: PropsWithChildren<Props>) {
+  const params = await props.params;
+
+  const { projectId } = params;
+
+  const { children } = props;
+
   return <AppShell projectId={projectId}>{children}</AppShell>;
 }

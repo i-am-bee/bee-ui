@@ -51,7 +51,7 @@ import truncate from 'lodash/truncate';
 import {
   createContext,
   Dispatch,
-  MutableRefObject,
+  RefObject,
   PropsWithChildren,
   SetStateAction,
   use,
@@ -844,7 +844,7 @@ export type SendMessageResult = {
 
 type ChatContextValue = ChatSetup & {
   status: ChatStatus;
-  threadSettingsButtonRef: MutableRefObject<HTMLButtonElement | null>;
+  threadSettingsButtonRef: RefObject<HTMLButtonElement | null>;
   getMessages: () => ChatMessage[];
   cancel: () => void;
   clear: () => void;
@@ -861,7 +861,7 @@ type ChatContextValue = ChatSetup & {
   builderState?: AssistantBuilderState;
   setDisabledTools: Dispatch<SetStateAction<ToolsUsage>>;
   getThreadTools: () => ToolsUsage;
-  onToolApprovalSubmitRef: MutableRefObject<
+  onToolApprovalSubmitRef: RefObject<
     ((value: ToolApprovalValue) => void) | null
   >;
 };

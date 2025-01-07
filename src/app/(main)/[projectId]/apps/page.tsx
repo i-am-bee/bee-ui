@@ -17,6 +17,8 @@
 import { redirect } from 'next/navigation';
 import { ProjectPageProps } from '../page';
 
-export default function AppsPage({ params: { projectId } }: ProjectPageProps) {
+export default async function AppsPage(props: ProjectPageProps) {
+  const { projectId } = await props.params;
+
   redirect(`/${projectId}`);
 }

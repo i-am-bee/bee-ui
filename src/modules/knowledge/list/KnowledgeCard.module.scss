@@ -39,7 +39,7 @@
 .info {
   @include type-style('body-01');
   font-size: rem(14px);
-  line-height: (18.2 / 14);
+  line-height: calc(18.2 / 14);
   display: flex;
   align-items: center;
   gap: $spacing-03;

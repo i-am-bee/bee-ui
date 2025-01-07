@@ -15,11 +15,6 @@
  */
 
 'use client';
-
-import {
-  CONFIRM_MESSAGE_DEFAULT,
-  useNavigationControl,
-} from '@/layout/providers/NavigationControlProvider';
 import { moderate02 } from '@carbon/motion';
 import { ComposedModal } from '@carbon/react';
 import clsx from 'clsx';

@@ -50,8 +50,8 @@
 @use '@carbon/styles/scss/components/pagination';
 
 // customization of carbon components
-@import './carbon/dropdown';
-@import './carbon/overflow-menu';
+@use './carbon/dropdown' as *;
+@use './carbon/overflow-menu' as *;
 
 html {
   overflow: hidden;
@@ -63,7 +63,7 @@ body {
 
 h1 {
   font-size: rem(24px);
-  line-height: (28 / 24);
+  line-height: calc(28 / 24);
   font-weight: 600;
   margin-block-end: $spacing-06;
 }

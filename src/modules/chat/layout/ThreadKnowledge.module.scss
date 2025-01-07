@@ -61,7 +61,7 @@
 .subHeading,
 .value {
   font-size: rem(12px);
-  line-height: (18 / 12);
+  line-height: calc(18 / 12);
   letter-spacing: rem(0.16px);
 }
 

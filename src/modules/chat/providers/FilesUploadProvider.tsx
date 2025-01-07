@@ -24,7 +24,7 @@ import { isNotNull, noop } from '@/utils/helpers';
 import { useMutation } from '@tanstack/react-query';
 import {
   Dispatch,
-  MutableRefObject,
+  RefObject,
   PropsWithChildren,
   SetStateAction,
   createContext,
@@ -62,7 +62,7 @@ const FilesUploadContext = createContext<{
   reset: () => void;
   clearFiles: () => void;
   setVectorStoreId: Dispatch<SetStateAction<string | null>>;
-  ensureThreadRef: MutableRefObject<() => Promise<Thread>> | null;
+  ensureThreadRef: RefObject<() => Promise<Thread>> | null;
 }>({
   files: [],
   attachments: null,

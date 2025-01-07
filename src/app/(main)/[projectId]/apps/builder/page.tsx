@@ -23,9 +23,9 @@ import { notFound } from 'next/navigation';
 import { getAppBuilderNavbarProps } from '../utils';
 import { ProjectPageProps } from '../../page';
 
-export default async function AppsBuilderPage({
-  params: { projectId },
-}: ProjectPageProps) {
+export default async function AppsBuilderPage(props: ProjectPageProps) {
+  const { projectId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);

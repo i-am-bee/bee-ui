@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url';
+import type { NextConfig } from 'next';
 
 const headers = [
   {
@@ -23,13 +24,11 @@ const headers = [
   },
 ];
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    instrumentationHook: true,
-  },
+const nextConfig: NextConfig = {
   sassOptions: {
     includePaths: [fileURLToPath(new URL('src/', import.meta.url))],
+    quietDeps: true,
+    silenceDeprecations: ['mixed-decls', 'legacy-js-api'],
   },
   async headers() {
     return [
@@ -40,7 +39,7 @@ const nextConfig = {
   },
   webpack(config) {
     // Grab the existing rule that handles SVG imports
-    const fileLoaderRule = config.module.rules.find((rule) =>
+    const fileLoaderRule = config.module.rules.find((rule: { test?: RegExp }) =>
       rule.test?.test?.('.svg'),
     );
 
@@ -82,6 +81,16 @@ const nextConfig = {
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
+  },
+  experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.ts',
+        },
+      },
+    },
   },
   output: 'standalone',
 };

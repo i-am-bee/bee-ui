@@ -53,7 +53,7 @@
   row-gap: $spacing-03;
   strong {
     @include type-style(label-02);
-    line-height: (20 / 14);
+    line-height: calc(20 / 14);
     color: $text-primary;
     font-weight: bold;
     margin-block-start: $spacing-02;

@@ -53,7 +53,7 @@
   > .textarea {
     font-family: font-family('mono');
     font-size: rem(12px);
-    line-height: (16 / 12);
+    line-height: calc(16 / 12);
     letter-spacing: rem(0.32px);
     grid-row: 1 / -1;
     grid-column: 1 /-1;

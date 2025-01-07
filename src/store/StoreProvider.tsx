@@ -26,7 +26,7 @@ export const StoreProvider = ({
   children,
   ...props
 }: PropsWithChildren<InitialStoreState>) => {
-  const storeRef = useRef<Store>();
+  const storeRef = useRef<Store>(null);
 
   if (!storeRef.current) {
     storeRef.current = createStore(props);

@@ -16,7 +16,7 @@
 
 @use 'styles/common' as *;
 
-$line-size: (21 / 14) * 0.875rem;
+$line-size: calc(21 / 14) * 0.875rem;
 
 .root {
   /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */

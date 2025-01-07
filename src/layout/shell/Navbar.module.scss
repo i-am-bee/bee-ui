@@ -49,7 +49,7 @@
     align-items: center;
     column-gap: $spacing-03;
     font-weight: 600;
-    line-height: (20 / 16);
+    line-height: calc(20 / 16);
     min-inline-size: 0;
     &:not(:last-child)::after {
       content: '/';

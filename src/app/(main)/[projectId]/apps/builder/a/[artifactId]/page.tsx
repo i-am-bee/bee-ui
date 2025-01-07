@@ -15,29 +15,24 @@
  */
 
 import { fetchArtifact } from '@/app/api/artifacts';
-import {
-  ensureAppBuilderAssistant,
-  fetchThread,
-  listMessagesWithFiles,
-  MESSAGES_PAGE_SIZE,
-} from '@/app/api/rsc';
+import { ensureAppBuilderAssistant } from '@/app/api/rsc';
 import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
-import { notFound } from 'next/navigation';
 import { getAppBuilderNavbarProps } from '../../../utils';
+import { notFound } from 'next/navigation';
 
 interface Props {
-  params: {
+  params: Promise<{
     projectId: string;
     artifactId: string;
-  };
+  }>;
 }
 
-export default async function AppBuilderPage({
-  params: { projectId, artifactId },
-}: Props) {
+export default async function AppBuilderPage(props: Props) {
+  const { projectId, artifactId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
 
   const assistant = await ensureAppBuilderAssistant(organizationId, projectId);

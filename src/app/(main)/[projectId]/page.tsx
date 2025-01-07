@@ -18,9 +18,9 @@ import { AppsHome } from '@/modules/apps/AppsHome';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 
 export interface ProjectPageProps {
-  params: {
+  params: Promise<{
     projectId: string;
-  };
+  }>;
 }
 
 export default function ProjectHomePage() {

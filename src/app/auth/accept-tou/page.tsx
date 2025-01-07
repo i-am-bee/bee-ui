@@ -21,10 +21,11 @@ import { SIGN_IN_PAGE } from '..';
 import { getSession } from '../rsc';
 
 interface PageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function AcceptToUPage({ searchParams }: PageProps) {
+export default async function AcceptToUPage(props: PageProps) {
+  const searchParams = await props.searchParams;
   let callbackUrl = Array.isArray(searchParams.callbackUrl)
     ? searchParams.callbackUrl[0]
     : searchParams.callbackUrl;

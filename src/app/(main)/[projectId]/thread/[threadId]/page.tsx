@@ -29,15 +29,15 @@ import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 
 interface Props {
-  params: {
+  params: Promise<{
     projectId: string;
     threadId: string;
-  };
+  }>;
 }
 
-export default async function ThreadPage({
-  params: { projectId, threadId },
-}: Props) {
+export default async function ThreadPage(props: Props) {
+  const { projectId, threadId } = await props.params;
+
   const organizationId = await ensureDefaultOrganizationId();
 
   const thread = await fetchThread(organizationId, projectId, threadId);

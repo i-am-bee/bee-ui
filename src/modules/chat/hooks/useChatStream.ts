@@ -53,7 +53,7 @@ import {
   EventStreamContentType,
   fetchEventSource,
 } from '@ai-zen/node-fetch-event-source';
-import { MutableRefObject, RefObject } from 'react';
+import { RefObject } from 'react';
 import {
   updatePlanWithRunStep,
   updatePlanWithRunStepDelta,
@@ -88,9 +88,9 @@ interface ChatStreamParams {
 }
 
 interface Props {
-  threadRef: RefObject<Thread>;
+  threadRef: RefObject<Thread | null>;
   controllerRef: RefObject<RunController>;
-  onToolApprovalSubmitRef: MutableRefObject<
+  onToolApprovalSubmitRef: RefObject<
     ((value: ToolApprovalValue) => void) | null
   >;
   setMessages: Updater<ChatMessage[]>;

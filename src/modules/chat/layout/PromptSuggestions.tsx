@@ -45,7 +45,7 @@ import { useChat } from '../providers/ChatProvider';
 import classes from './PromptSuggestions.module.scss';
 
 interface Props {
-  inputRef: RefObject<HTMLTextAreaElement>;
+  inputRef: RefObject<HTMLTextAreaElement | null>;
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   onSubmit: (input: string) => void;
