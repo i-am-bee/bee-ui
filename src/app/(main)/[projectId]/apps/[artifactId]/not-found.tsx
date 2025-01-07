@@ -16,6 +16,6 @@
 
 import { EntityNotFound } from '@/components/EntityNotFound/EntityNotFound';
 
-export default function AssistantNotFoundPage() {
-  return <EntityNotFound type="agent" />;
+export default function ArtifactNotFoundPage() {
+  return <EntityNotFound type="app" />;
 }

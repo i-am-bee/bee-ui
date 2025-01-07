@@ -14,8 +14,35 @@
  * limitations under the License.
  */
 
-import { EntityNotFound } from '@/components/EntityNotFound/EntityNotFound';
+@use 'styles/common' as *;
 
-export default function AssistantNotFoundPage() {
-  return <EntityNotFound type="agent" />;
+.root {
+  padding: $grid-margin;
+  display: flex;
+}
+
+.content {
+  inline-size: 100%;
+  max-inline-size: rem(608px);
+  margin: auto;
+  h1 {
+    @include type-style(heading-06);
+    margin-block-end: $spacing-03;
+  }
+  p {
+    font-size: rem(20px);
+    line-height: (26 / 20);
+  }
+  :global(.#{$prefix}--btn) {
+    column-gap: $spacing-07;
+    padding-inline-end: rem(15px);
+    margin-block-start: $spacing-06;
+  }
+}
+
+.icon {
+  fill: currentColor;
+  display: block;
+  max-inline-size: 100%;
+  margin-block-end: $spacing-05;
 }
