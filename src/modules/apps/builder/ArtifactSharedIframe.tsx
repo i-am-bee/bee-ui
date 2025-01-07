@@ -19,7 +19,7 @@ import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
-import { Theme, useTheme } from '@/layout/providers/ThemeProvider';
+import { useTheme } from '@/layout/providers/ThemeProvider';
 import { USERCONTENT_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import { Loading } from '@carbon/react';
