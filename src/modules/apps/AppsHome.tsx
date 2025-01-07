@@ -15,33 +15,34 @@
  */
 
 'use client';
+import {
+  ArtifactsListQueryOrderBy,
+  ListArtifactsResponse,
+} from '@/app/api/artifacts/types';
+import { AdminView } from '@/components/AdminView/AdminView';
 import { CardsList } from '@/components/CardsList/CardsList';
+import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ONBOARDING_AGENTS_PARAM, ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
+import Lottie from 'lottie-react';
 import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { useDebounceValue } from 'usehooks-ts';
+import { useAssistants } from '../assistants/hooks/useAssistants';
 import { assistantsQuery } from '../assistants/library/queries';
+import { NewAgentModal } from '../onboarding/NewAgentModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
-import {
-  ArtifactsListQueryOrderBy,
-  ListArtifactsResponse,
-} from '@/app/api/artifacts/types';
+import classes from './AppsHome.module.scss';
+import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
 import { useArtifacts } from './hooks/useArtifacts';
 import { AppsList } from './library/AppsList';
-import { Artifact } from './types';
-import { AdminView } from '@/components/AdminView/AdminView';
-import { listArtifactsQuery } from './queries';
 import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
-import classes from './AppsHome.module.scss';
-import Bee from '@/modules/assistants/icons/BeeMain.svg';
-import { useDebounceValue } from 'usehooks-ts';
-import { NewAgentModal } from '../onboarding/NewAgentModal';
-import { Link } from '@/components/Link/Link';
-import { useAssistants } from '../assistants/hooks/useAssistants';
+import { listArtifactsQuery } from './queries';
+import { Artifact } from './types';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -115,7 +116,11 @@ export function AppsHome() {
           error={error}
           noItemsInfo={
             <div className={classes.noItemsInfo}>
-              <Bee />
+              <Lottie
+                className={classes.noItemsAnimation}
+                animationData={blinkingBeeAnimation}
+                loop
+              />
               <div className={classes.noItemsTitle}>
                 Honey, this hive is empty.
               </div>
