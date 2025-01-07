@@ -35,6 +35,7 @@ import {
 import { ErrorBoundary } from 'react-error-boundary';
 import { v4 as uuid } from 'uuid';
 import { ModalControlProvider } from './ModalControlProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export interface ModalProps {
   /** True if modal is open */

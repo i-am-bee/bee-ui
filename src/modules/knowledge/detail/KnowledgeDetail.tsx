@@ -29,7 +29,7 @@ import {
   VectorStoreFile,
 } from '@/app/api/vector-stores-files/types';
 import { CardsList } from '@/components/CardsList/CardsList';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
 import { ProjectHome } from '@/modules/projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipContent';
 import { IconButton } from '@carbon/react';
@@ -57,7 +57,8 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
   // const [search, setSearch] = useDebounceValue('', 200);
   const queryClient = useQueryClient();
   const { openModal } = useModal();
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const appContext = useAppContext();
+  const { project, organization, isProjectReadOnly } = appContext;
   const router = useRouter();
 
   const params = {
@@ -196,13 +197,15 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
             title: 'Add content',
             onClick: () =>
               openModal((props) => (
-                <AddContentModal
-                  {...props}
-                  organizationId={organization.id}
-                  projectId={project.id}
-                  vectorStore={vectorStore}
-                  onCreateSuccess={onCreateSuccess}
-                />
+                <AppProvider {...appContext}>
+                  <AddContentModal
+                    {...props}
+                    organizationId={organization.id}
+                    projectId={project.id}
+                    vectorStore={vectorStore}
+                    onCreateSuccess={onCreateSuccess}
+                  />
+                </AppProvider>
               )),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (

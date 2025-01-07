@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-export const isFeatureEnabled = (() => {
-  try {
-    const allFeatures = JSON.parse(process.env.NEXT_PUBLIC_FEATURE_FLAGS ?? '');
-    return (feature: FeatureName) =>
-      feature in allFeatures ? !!allFeatures[feature] : false;
-  } catch (err) {
-    console.warn('Unable to parse feature flags!', err);
-    return (_: string) => false;
-  }
-})();
-
 export enum FeatureName {
   Knowledge = 'Knowledge',
   FunctionTools = 'FunctionTools',
@@ -33,3 +22,22 @@ export enum FeatureName {
   TextExtraction = 'TextExtraction',
   Projects = 'Projects',
 }
+
+export const parseFeatureFlags = (featureFlagEnv?: string) => {
+  let features: Record<FeatureName, boolean>;
+  try {
+    const allFeatures = JSON.parse(featureFlagEnv ?? '');
+    features = Object.fromEntries(
+      Object.keys(FeatureName).map((feature) => [
+        feature,
+        feature in allFeatures ? !!allFeatures[feature] : false,
+      ]),
+    ) as Record<FeatureName, boolean>;
+  } catch (err) {
+    console.warn('Unable to parse feature flags!', err);
+    features = Object.fromEntries(
+      Object.keys(FeatureName).map((feature) => [feature, false]),
+    ) as Record<FeatureName, boolean>;
+  }
+  return features;
+};

@@ -18,7 +18,6 @@ import { Container } from '@/components/Container/Container';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import {
   IconButton,
   Tab,
@@ -53,7 +52,7 @@ import { useAssistantModal } from '../providers/AssistantModalProvider';
 export function ThreadSettings() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState(TabsIds.TOOLS);
-  const { assistant } = useAppContext();
+  const { assistant, featureFlags } = useAppContext();
   const { thread, threadSettingsButtonRef } = useChat();
   const { files } = useFilesUpload();
   const { openAssistantModal } = useAssistantModal();
@@ -142,7 +141,7 @@ export function ThreadSettings() {
                         <TabList aria-label="Configuration Groups">
                           <Tab>Tools</Tab>
 
-                          {isFeatureEnabled(FeatureName.Knowledge) ? (
+                          {featureFlags.Knowledge ? (
                             <Tab>Knowledge</Tab>
                           ) : undefined}
                         </TabList>
@@ -154,7 +153,7 @@ export function ThreadSettings() {
                                   assistantTools={assistant?.tools}
                                 />
                               </TabPanel>,
-                              isFeatureEnabled(FeatureName.Knowledge) ? (
+                              featureFlags.Knowledge ? (
                                 <TabPanel key={TabsIds.KNOWLEDGE}>
                                   <ThreadKnowledge
                                     assistantVectorStores={

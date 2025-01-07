@@ -35,10 +35,11 @@ import { useEffect, useId } from 'react';
 import { KnowledgeFilesUpload } from '../files/KnowledgeFilesUpload';
 import { useForm } from 'react-hook-form';
 import {
-  VectorStoreFilesUploadProvider,
   useVectoreStoreFilesUpload,
+  VectorStoreFilesUploadProvider,
 } from '../files/VectorStoreFilesUploadProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
+import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
 
 export interface CreateKnowledgeValues {
   name: string;
@@ -58,6 +59,7 @@ export function CreateKnowledgeModal({
   onSuccess,
   ...props
 }: Props & ModalProps) {
+  const appContext = useAppContext();
   const handleSucces = () => {
     onSuccess();
     props.onRequestClose();
@@ -71,12 +73,14 @@ export function CreateKnowledgeModal({
         projectId={projectId}
         organizationId={organizationId}
       >
-        <CreateKnowledgeModalContent
-          organizationId={organizationId}
-          projectId={projectId}
-          onCreateVectorStore={onCreateVectorStore}
-          onSuccess={handleSucces}
-        />
+        <AppProvider {...appContext}>
+          <CreateKnowledgeModalContent
+            organizationId={organizationId}
+            projectId={projectId}
+            onCreateVectorStore={onCreateVectorStore}
+            onSuccess={handleSucces}
+          />
+        </AppProvider>
       </VectorStoreFilesUploadProvider>
     </Modal>
   );

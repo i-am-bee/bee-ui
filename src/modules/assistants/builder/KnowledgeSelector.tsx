@@ -22,7 +22,7 @@ import {
 } from '@/app/api/vector-stores/types';
 import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
 import { Link } from '@/components/Link/Link';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
@@ -48,7 +48,8 @@ import classes from './KnowledgeSelector.module.scss';
 
 export function KnowledgeSelector() {
   const { openModal } = useModal();
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const appContext = useAppContext();
+  const { project, organization, isProjectReadOnly } = appContext;
   const {
     field: { value, onChange },
   } = useController<AssistantFormValues, 'vectorStoreId'>({
@@ -142,13 +143,15 @@ export function KnowledgeSelector() {
           children: 'New knowledge base',
           onClick: () =>
             openModal((props) => (
-              <CreateKnowledgeModal
-                organizationId={organization.id}
-                projectId={project.id}
-                onCreateVectorStore={onCreateSuccess}
-                onSuccess={handleInvalidateData}
-                {...props}
-              />
+              <AppProvider {...appContext}>
+                <CreateKnowledgeModal
+                  organizationId={organization.id}
+                  projectId={project.id}
+                  onCreateVectorStore={onCreateSuccess}
+                  onSuccess={handleInvalidateData}
+                  {...props}
+                />
+              </AppProvider>
             )),
           disabled: isProjectReadOnly,
         }}

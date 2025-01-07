@@ -19,21 +19,21 @@ import { Link } from '@/components/Link/Link';
 import { usePrefetchVectorStores } from '@/modules/knowledge/hooks/usePrefetchVectorStores';
 import { usePrefetchTools } from '@/modules/tools/hooks/usePrefetchTools';
 import { DOCUMENTATION_URL, FEEDBACK_URL } from '@/utils/constants';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { FeatureName } from '@/utils/parseFeatureFlags';
 import { ArrowUpRight } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { HTMLAttributes } from 'react';
-import { useProjectContext } from '../providers/ProjectProvider';
 import classes from './UserNav.module.scss';
 import { UserProfile } from './UserProfile';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends HTMLAttributes<HTMLElement> {}
 
 export function UserNav({ className }: Props) {
   const pathname = usePathname();
 
-  const { project } = useProjectContext();
+  const { project, featureFlags } = useAppContext();
 
   const prefetchTools = usePrefetchTools({ useDefaultParams: true });
   const prefetchVectoreStores = usePrefetchVectorStores({
@@ -58,7 +58,7 @@ export function UserNav({ className }: Props) {
     <nav className={clsx(classes.root, className)} aria-label="User menu">
       <ul className={classes.nav}>
         {ITEMS.filter(
-          ({ featureName }) => !featureName || isFeatureEnabled(featureName),
+          ({ featureName }) => !featureName || featureFlags[featureName],
         ).map(({ label, href, prefetchData }) => (
           <li key={href}>
             <Link

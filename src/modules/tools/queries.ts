@@ -17,7 +17,6 @@
 import { listTools, readTool } from '@/app/api/tools';
 import { Tool, ToolsListQuery } from '@/app/api/tools/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export const TOOLS_DEFAULT_PAGE_SIZE = 20;
@@ -25,6 +24,7 @@ export const TOOLS_DEFAULT_PAGE_SIZE = 20;
 export const toolsQuery = (
   organizationId: string,
   projectId: string,
+  knowledgeEnabled: boolean,
   params?: ToolsListQuery,
 ) =>
   infiniteQueryOptions({
@@ -49,11 +49,7 @@ export const toolsQuery = (
         totalCount: data.pages.at(0)?.total_count,
         tools: data.pages
           .flatMap((result) => result?.data ?? [])
-          .filter(
-            (tool) =>
-              isFeatureEnabled(FeatureName.Knowledge) ||
-              tool.id !== 'file_search',
-          )
+          .filter((tool) => knowledgeEnabled || tool.id !== 'file_search')
           .map(decodeEntityWithMetadata<Tool>),
       };
     },

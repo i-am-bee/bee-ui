@@ -41,7 +41,6 @@ import {
   toolIncluded,
 } from '@/modules/tools/utils';
 import { isNotNull } from '@/utils/helpers';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import {
   FetchQueryOptions,
   useMutation,
@@ -159,7 +158,8 @@ export function ChatProvider({
     clearFiles,
     ensureThreadRef,
   } = useFilesUpload();
-  const { assistant, onPageLeaveRef, project, organization } = useAppContext();
+  const { assistant, onPageLeaveRef, project, organization, featureFlags } =
+    useAppContext();
   const { selectAssistant } = useAppApiContext();
   const queryClient = useQueryClient();
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
@@ -260,7 +260,7 @@ export function ChatProvider({
           assistant.tools.every((tool) => tool.type !== 'file_search')
             ? [FILE_SEARCH_TOOL_DEFINITION]
             : []),
-          ...(isFeatureEnabled(FeatureName.FunctionTools)
+          ...(featureFlags.FunctionTools
             ? [GET_USER_LOCATION_FUNCTION_TOOL]
             : []),
         ]

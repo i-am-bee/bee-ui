@@ -15,7 +15,7 @@
  */
 
 import { ToolResult } from '@/app/api/tools/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { useFormContext } from 'react-hook-form';
@@ -30,7 +30,7 @@ import {
 
 export function BuilderTools() {
   const { openModal } = useModal();
-  const { isProjectReadOnly } = useAppContext();
+  const appContext = useAppContext();
   const { project, organization } = useProjectContext();
 
   const { setValue, getValues } = useFormContext<AssistantFormValues>();
@@ -51,14 +51,14 @@ export function BuilderTools() {
           children: 'New Tool',
           onClick: () =>
             openModal((props) => (
-              <ProjectProvider project={project} organization={organization}>
+              <AppProvider {...appContext}>
                 <UserToolModal
                   onCreateSuccess={handleUserToolCreateSuccess}
                   {...props}
                 />
-              </ProjectProvider>
+              </AppProvider>
             )),
-          disabled: isProjectReadOnly,
+          disabled: appContext.isProjectReadOnly,
         }}
       />
       <div className={classes.body}>

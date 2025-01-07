@@ -15,7 +15,7 @@
  */
 
 import { fetchProject } from '@/app/api/rsc';
-import { MAIN_ELEMENT_ID } from '@/utils/constants';
+import { featureFlags, MAIN_ELEMENT_ID } from '@/utils/constants';
 import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
@@ -38,7 +38,11 @@ export async function AppShell({
   if (!project) notFound();
 
   return (
-    <AppProvider project={project} organization={{ id: organizationId }}>
+    <AppProvider
+      project={project}
+      organization={{ id: organizationId }}
+      featureFlags={featureFlags}
+    >
       <div className={classes.root}>
         <AppHeader />
 

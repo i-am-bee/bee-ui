@@ -25,13 +25,14 @@ import classes from './PublicToolModal.module.scss';
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends ModalProps {
   tool: Tool;
 }
 
 export function PublicToolModal({ tool, ...props }: Props) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   return (
     <Modal {...props}>
       <ModalHeader />

@@ -16,7 +16,7 @@
 
 import { Tool, ToolReference } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { isNotNull } from '@/utils/helpers';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
@@ -45,7 +45,8 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
     tool,
     onSuccess: () => onDeleteSuccess(tool),
   });
-  const { isProjectReadOnly, project, organization } = useAppContext();
+  const appContext = useAppContext();
+  const { isProjectReadOnly, project, organization } = appContext;
   const { openModal } = useModal();
 
   const toolDescription =
@@ -67,7 +68,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
         }
         onClick={() =>
           openModal((props) => (
-            <ProjectProvider project={project} organization={organization}>
+            <AppProvider {...appContext}>
               {tool.type === 'user' ? (
                 isProjectReadOnly ? (
                   <UserToolModal.View tool={tool} {...props} />
@@ -82,7 +83,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
               ) : (
                 <PublicToolModal {...props} tool={tool} />
               )}
-            </ProjectProvider>
+            </AppProvider>
           ))
         }
         isDeletePending={isDeletePending}

@@ -27,7 +27,7 @@ import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   toolReference: ToolReference;
@@ -35,7 +35,8 @@ interface Props {
 
 export function ToolInfoButton({ toolReference }: Props) {
   const { isProjectReadOnly } = useAppContext();
-  const { project, organization } = useProjectContext();
+  const appContext = useAppContext();
+  const { project, organization } = appContext;
   const { openModal } = useModal();
   const { tool } = useToolInfo({ toolReference, project, organization });
 
@@ -58,7 +59,7 @@ export function ToolInfoButton({ toolReference }: Props) {
             icon={ArrowUpRight}
             onClick={() =>
               openModal((props) => (
-                <ProjectProvider project={project} organization={organization}>
+                <AppProvider {...appContext}>
                   <>
                     {tool.type === 'user' ? (
                       isProjectReadOnly ? (
@@ -70,7 +71,7 @@ export function ToolInfoButton({ toolReference }: Props) {
                       <PublicToolModal {...props} tool={tool} />
                     )}
                   </>
-                </ProjectProvider>
+                </AppProvider>
               ))
             }
           >

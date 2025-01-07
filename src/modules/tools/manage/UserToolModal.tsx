@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Project } from '@/app/api/projects/types';
 import { createTool, deleteTool, updateTool } from '@/app/api/tools';
 import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
@@ -38,8 +37,7 @@ import { readToolQuery, toolsQuery } from '../queries';
 import classes from './UserToolModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
-import { Organization } from '@/app/api/organization/types';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -75,7 +73,7 @@ export function UserToolModal({
   onDeleteSuccess,
   ...props
 }: Props) {
-  const { project, organization } = useProjectContext();
+  const { project, organization, featureFlags } = useAppContext();
   const { onRequestClose } = props;
   const { openConfirmation } = useModal();
   const id = useId();
@@ -112,7 +110,13 @@ export function UserToolModal({
     },
     onSuccess: (tool, { id }) => {
       queryClient.invalidateQueries({
-        queryKey: [toolsQuery(organization.id, project.id).queryKey.at(0)],
+        queryKey: [
+          toolsQuery(
+            organization.id,
+            project.id,
+            featureFlags.Knowledge,
+          ).queryKey.at(0),
+        ],
       });
 
       if (tool) {
@@ -145,7 +149,13 @@ export function UserToolModal({
         onRequestClose();
 
         queryClient.invalidateQueries({
-          queryKey: [toolsQuery(organization.id, project.id).queryKey.at(0)],
+          queryKey: [
+            toolsQuery(
+              organization.id,
+              project.id,
+              featureFlags.Knowledge,
+            ).queryKey.at(0),
+          ],
         });
       },
       meta: {

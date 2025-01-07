@@ -45,7 +45,8 @@ import { listArtifactsQuery } from './queries';
 import { Artifact } from './types';
 
 export function AppsHome() {
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly, featureFlags } =
+    useAppContext();
   const [order, setOrder] = useState<ArtifactsListQueryOrderBy>(
     ARTIFACTS_ORDER_DEFAULT,
   );

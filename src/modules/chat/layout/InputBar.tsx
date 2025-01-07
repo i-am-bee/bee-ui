@@ -21,7 +21,6 @@ import {
   dispatchInputEventOnFormTextarea,
   submitFormOnEnter,
 } from '@/utils/formUtils';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { Send, StopOutlineFilled, WarningFilled } from '@carbon/react/icons';
 import clsx from 'clsx';
@@ -41,6 +40,7 @@ import classes from './InputBar.module.scss';
 import { PromptSuggestions } from './PromptSuggestions';
 import { ThreadSettings } from './ThreadSettings';
 import { UserChatMessage } from '../types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   showSuggestions?: boolean;
@@ -53,6 +53,7 @@ export const InputBar = memo(function InputBar({
   onMessageSubmit,
   onMessageSent,
 }: Props) {
+  const { featureFlags } = useAppContext();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [promptSuggestionsOpen, setPromptSuggestionsOpen] = useState(false);
@@ -109,7 +110,7 @@ export const InputBar = memo(function InputBar({
 
   const isPending = status !== 'ready';
   const inputValue = watch('input');
-  const isFileUploadEnabled = isFeatureEnabled(FeatureName.Files);
+  const isFileUploadEnabled = featureFlags.Files;
 
   const { ref: inputFormRef, ...inputFormProps } = register('input', {
     required: true,

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { parseFeatureFlags } from '@/utils/parseFeatureFlags';
 
 export const TOU_TEXT = process.env.NEXT_PUBLIC_TOU_TEXT!;
 export const PRIVACY_URL = process.env.NEXT_PUBLIC_PRIVACY_URL!;
@@ -33,3 +34,5 @@ export const ONBOARDING_PARAM = 'onboarding';
 export const ONBOARDING_AGENTS_PARAM = 'agents-onboarding';
 
 export const MAIN_ELEMENT_ID = 'main-content';
+
+export const featureFlags = parseFeatureFlags(process.env.FEATURE_FLAGS);

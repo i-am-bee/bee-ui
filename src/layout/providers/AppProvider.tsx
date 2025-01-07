@@ -35,6 +35,7 @@ import {
   useState,
 } from 'react';
 import { ProjectProvider } from './ProjectProvider';
+import { FeatureName } from '@/utils/parseFeatureFlags';
 
 export interface AppContextValue {
   assistant: Assistant | null;
@@ -42,6 +43,7 @@ export interface AppContextValue {
   organization: Organization;
   role: ProjectUser['role'] | null;
   isProjectReadOnly?: boolean;
+  featureFlags: Record<FeatureName, boolean>;
   onPageLeaveRef: MutableRefObject<() => void>;
 }
 
@@ -62,11 +64,13 @@ const AppApiContext = createContext<AppApiContextValue>(
 const ProjectContext = createContext<Props>(null as unknown as Props);
 
 interface Props {
+  featureFlags: Record<FeatureName, boolean>;
   project: Project;
   organization: Organization;
 }
 
 export function AppProvider({
+  featureFlags,
   project: initialProject,
   organization,
   children,
@@ -111,6 +115,7 @@ export function AppProvider({
     <AppApiContext.Provider value={apiValue}>
       <AppContext.Provider
         value={{
+          featureFlags,
           assistant: assistantData ?? assistant,
           project: projectData ?? project,
           organization,

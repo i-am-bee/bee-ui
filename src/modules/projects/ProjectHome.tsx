@@ -19,7 +19,6 @@ import { AdminView } from '@/components/AdminView/AdminView';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useUserProfile } from '@/store/user-profile';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
 import { ReactElement, useState } from 'react';
@@ -35,7 +34,8 @@ interface Props {
 
 export function ProjectHome({ children }: Props) {
   const [usersModalOpened, setUsersModalOpened] = useState(false);
-  const { project, organization, isProjectReadOnly, role } = useAppContext();
+  const { project, organization, isProjectReadOnly, role, featureFlags } =
+    useAppContext();
   const { openModal } = useModal();
   const defaultProject = useUserProfile((state) => state.default_project);
 
@@ -43,7 +43,7 @@ export function ProjectHome({ children }: Props) {
     <>
       <AdminView
         header={
-          isFeatureEnabled(FeatureName.Projects) ? (
+          featureFlags.Projects ? (
             <div className={classes.header}>
               <h1 className={classes.heading}>{project.name}</h1>
               <div className={classes.sharing}>

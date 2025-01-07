@@ -17,14 +17,11 @@
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import {
+  AppProvider,
   useAppApiContext,
   useAppContext,
 } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import { useLayout } from '@/store/layout';
 import {
@@ -199,7 +196,7 @@ AgentLink.Skeleton = function Skeleton() {
 };
 
 function NewButton() {
-  const { project, organization } = useProjectContext();
+  const appContext = useAppContext();
   const { openModal } = useModal();
 
   return (
@@ -209,9 +206,9 @@ function NewButton() {
       align="left"
       onClick={() =>
         openModal((props) => (
-          <ProjectProvider project={project} organization={organization}>
+          <AppProvider {...appContext}>
             <NewAgentModal {...props} />
-          </ProjectProvider>
+          </AppProvider>
         ))
       }
       className={classes.newButton}
