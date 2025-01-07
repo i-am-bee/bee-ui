@@ -76,10 +76,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
         return;
       }
 
-      if (
-        data.type === RecieveMessageType.SCRIPT_RUN_STATE_CHANGED &&
-        data.scriptRunState === ScriptRunState.RUNNING
-      ) {
+      if (data.type === RecieveMessageType.READY) {
         setState(State.READY);
         return;
       }
@@ -158,7 +155,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
           <AppPlaceholder />
         </div>
       ) : (
-        state === State.LOADING && sourceCode && <Loading />
+        state === State.LOADING && <Loading />
       )}
     </div>
   );
@@ -201,14 +198,13 @@ enum State {
 }
 
 enum RecieveMessageType {
-  SCRIPT_RUN_STATE_CHANGED = 'SCRIPT_RUN_STATE_CHANGED',
+  READY = 'bee:ready',
   REQUEST = 'bee:request',
 }
 
 export type StliteMessage =
   | {
-      type: RecieveMessageType.SCRIPT_RUN_STATE_CHANGED;
-      scriptRunState: ScriptRunState;
+      type: RecieveMessageType.READY;
     }
   | {
       type: RecieveMessageType.REQUEST;
