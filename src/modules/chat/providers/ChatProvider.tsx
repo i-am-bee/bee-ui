@@ -164,7 +164,7 @@ export function ChatProvider({
   const queryClient = useQueryClient();
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
-  const { mutateAsync: mutateDeleteMessage } = useDeleteMessage({});
+  const { mutateAsync: mutateDeleteMessage } = useDeleteMessage();
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {

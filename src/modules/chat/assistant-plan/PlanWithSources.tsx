@@ -116,19 +116,17 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     if (isOpen) return;
 
     const steps = plan.steps || [];
-
-    if (
-      steps.some((step) => {
-        if (step.status === 'in_progress') {
-          const lastToolCall = step.toolCalls.at(-1);
-          if (lastToolCall) {
-            const toolApproval = getToolApproval(lastToolCall, message.run);
-            return Boolean(toolApproval);
-          }
+    const hasToolApprovalRequest = steps.some((step) => {
+      if (step.status === 'in_progress') {
+        const lastToolCall = step.toolCalls.at(-1);
+        if (lastToolCall) {
+          const toolApproval = getToolApproval(lastToolCall, message.run);
+          return Boolean(toolApproval);
         }
-        return false;
-      })
-    ) {
+      }
+      return false;
+    });
+    if (hasToolApprovalRequest) {
       setIsOpen(true);
     }
   }, [isOpen, message.run, plan.steps]);

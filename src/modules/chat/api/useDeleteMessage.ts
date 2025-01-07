@@ -19,7 +19,7 @@ import { deleteMessage } from '@/app/api/threads-messages';
 import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { messagesWithFilesQuery } from '../queries';
 
-export function useDeleteMessage({ onSuccess }: { onSuccess?: () => void }) {
+export function useDeleteMessage() {
   const { project, organization } = useProjectContext();
   const queryClient = useQueryClient();
 
