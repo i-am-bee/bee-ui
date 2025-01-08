@@ -17,7 +17,7 @@
 import { useRouter } from 'next-nprogress-bar';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   artifacts?: NonNullable<Artifact>[];
@@ -32,7 +32,7 @@ export function AppsList({
   pageSize = PAGE_SIZE,
   onDeleteSuccess,
 }: Props) {
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
   const router = useRouter();
 
   return (

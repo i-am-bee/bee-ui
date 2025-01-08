@@ -17,7 +17,7 @@
 import { Download } from '@carbon/react/icons';
 import { Attachment, AttachmentProps } from '../../attachments/Attachment';
 import classes from './AttachmentLink.module.scss';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function AttachmentLink({
   fileId,
@@ -30,7 +30,7 @@ export function AttachmentLink({
   title?: string;
   size?: AttachmentProps['size'];
 }) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   const params = new URLSearchParams({
     project: project.id,

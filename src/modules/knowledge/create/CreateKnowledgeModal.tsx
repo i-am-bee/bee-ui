@@ -46,20 +46,16 @@ export interface CreateKnowledgeValues {
 }
 
 interface Props {
-  projectId: string;
-  organizationId: string;
   onCreateVectorStore: (vectorStore: VectorStore) => void;
   onSuccess: () => void;
 }
 
 export function CreateKnowledgeModal({
-  projectId,
-  organizationId,
   onCreateVectorStore,
   onSuccess,
   ...props
 }: Props & ModalProps) {
-  const appContext = useAppContext();
+  const {} = useAppContext();
   const handleSucces = () => {
     onSuccess();
     props.onRequestClose();
@@ -69,37 +65,27 @@ export function CreateKnowledgeModal({
       <ModalHeader>
         <h2>Create new knowledge base</h2>
       </ModalHeader>
-      <VectorStoreFilesUploadProvider
-        projectId={projectId}
-        organizationId={organizationId}
-      >
-        <AppProvider {...appContext}>
-          <CreateKnowledgeModalContent
-            organizationId={organizationId}
-            projectId={projectId}
-            onCreateVectorStore={onCreateVectorStore}
-            onSuccess={handleSucces}
-          />
-        </AppProvider>
+      <VectorStoreFilesUploadProvider>
+        <CreateKnowledgeModalContent
+          onCreateVectorStore={onCreateVectorStore}
+          onSuccess={handleSucces}
+        />
       </VectorStoreFilesUploadProvider>
     </Modal>
   );
 }
 
 interface ContentProps {
-  projectId: string;
-  organizationId: string;
   onSuccess: () => void;
   onCreateVectorStore: (vectorStore: VectorStore) => void;
 }
 
 function CreateKnowledgeModalContent({
-  projectId,
-  organizationId,
   onCreateVectorStore,
   onSuccess,
 }: ContentProps) {
   const { addToast } = useToast();
+  const { organization, project } = useAppContext();
   const { files, setFiles, onFileSubmit, setVectorStoreId } =
     useVectoreStoreFilesUpload();
 
@@ -107,7 +93,7 @@ function CreateKnowledgeModalContent({
 
   const { mutateAsync } = useMutation({
     mutationFn: (body: VectorStoreCreateBody) =>
-      createVectorStore(organizationId, projectId, body),
+      createVectorStore(organization.id, project.id, body),
     onSuccess: (response) => {
       if (response) {
         setVectorStoreId(response.id);

@@ -30,7 +30,7 @@ import {
 } from './utils';
 import { useEffect, useMemo, useState } from 'react';
 import { GENERATE_EVENT_TOOL_START, TraceData } from './types';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   enabled: boolean;
@@ -43,7 +43,7 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
   traceError?: Error;
 } {
   const [hasFailed, setHasFailed] = useState(false);
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const computedEnabled = !hasFailed && Boolean(enabled && threadId && runId);
 
   const { data: runTraceData } = useQuery({

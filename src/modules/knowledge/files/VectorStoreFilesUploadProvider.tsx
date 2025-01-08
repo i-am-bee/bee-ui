@@ -42,6 +42,7 @@ import { useHandleError } from '@/layout/hooks/useHandleError';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ApiError } from '@/app/api/errors';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export type VectoreStoreFileUpload = {
   id: string;
@@ -74,15 +75,11 @@ const Context = createContext<{
 
 interface Props {
   vectorStoreId?: string;
-  projectId: string;
-  organizationId: string;
   onCreateFileSuccess?: (vectorStoreFile: VectorStoreFile) => void;
 }
 
 export const VectorStoreFilesUploadProvider = ({
   vectorStoreId: propsVectorStoreId,
-  projectId,
-  organizationId,
   onCreateFileSuccess,
   children,
 }: PropsWithChildren<Props>) => {
@@ -91,11 +88,12 @@ export const VectorStoreFilesUploadProvider = ({
     string | null
   >(propsVectorStoreId ?? null);
   const { addToast } = useToast();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   const vectorStoreFiles = useWatchPendingVectorStoreFiles(
-    organizationId,
-    projectId,
+    organization.id,
+    project.id,
     vectorStoreId,
     files.map(({ vectorStoreFile }) => vectorStoreFile).filter(isNotNull),
   );
@@ -124,8 +122,8 @@ export const VectorStoreFilesUploadProvider = ({
             queryClient.invalidateQueries({
               queryKey: [
                 vectorStoresFilesQuery(
-                  organizationId,
-                  projectId,
+                  organization.id,
+                  project.id,
                   vectorStoreId,
                 ).queryKey.at(0),
               ],
@@ -151,8 +149,8 @@ export const VectorStoreFilesUploadProvider = ({
     vectorStoreFiles,
     queryClient,
     vectorStoreId,
-    projectId,
-    organizationId,
+    organization.id,
+    project.id,
   ]);
 
   const handleError = useHandleError();
@@ -166,7 +164,7 @@ export const VectorStoreFilesUploadProvider = ({
       vectorStoreId: string;
       inputFile: VectoreStoreFileUpload;
     }) =>
-      createVectorStoreFile(organizationId, projectId, vectorStoreId, {
+      createVectorStoreFile(organization.id, project.id, vectorStoreId, {
         file_id: inputFile.file?.id ?? '',
       }),
     onSuccess: (response, { inputFile }) => {
@@ -211,7 +209,7 @@ export const VectorStoreFilesUploadProvider = ({
       inputFile: VectoreStoreFileUpload;
       thread?: Thread;
     }) => {
-      return await createFile(organizationId, projectId, {
+      return await createFile(organization.id, project.id, {
         file: inputFile.originalFile,
         purpose: 'assistants',
         depends_on_thread_id: thread?.id,

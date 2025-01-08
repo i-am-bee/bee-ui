@@ -108,8 +108,6 @@ function ToolsInfo({
           return (
             <span key={toolReference.id}>
               <ToolName
-                organization={organization}
-                project={project}
                 index={index}
                 tool={toolReference}
                 setLoadingStates={setLoadingStates}
@@ -128,18 +126,12 @@ function ToolName({
   index,
   tool,
   setLoadingStates,
-  organization,
-  project,
 }: {
   index: number;
   tool: ToolReference;
-  organization: Organization;
-  project: Project;
   setLoadingStates: Dispatch<SetStateAction<boolean[]>>;
 }) {
   const { toolName, isLoading } = useToolInfo({
-    organization,
-    project,
     toolReference: tool,
   });
 

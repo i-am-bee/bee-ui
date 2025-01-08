@@ -26,7 +26,7 @@ import { useId, useMemo } from 'react';
 import { useChat } from '../providers/ChatProvider';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import classes from './ThreadKnowledge.module.scss';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   assistantVectorStores: string[];
@@ -48,7 +48,7 @@ export function ThreadKnowledge({
   const { getMessages, disabledTools, setDisabledTools } = useChat();
   const { getThreadTools } = useChat();
   const { files } = useFilesUpload();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   // TODO: We don't currently support paging of messages, so this works. When pagination is available, we need to figure out the functionality differently.
   const allFiles = useMemo(
     () => [

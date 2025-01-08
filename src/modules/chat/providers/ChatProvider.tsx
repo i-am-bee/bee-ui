@@ -265,7 +265,7 @@ export function ChatProvider({
             : []),
         ]
       : [];
-  }, [assistant, vectorStoreId]);
+  }, [assistant, featureFlags.FunctionTools, vectorStoreId]);
 
   const getUsedTools = useCallback(
     (thread: Thread) => {

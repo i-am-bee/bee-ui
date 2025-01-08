@@ -34,7 +34,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { ProjectProvider } from './ProjectProvider';
 import { FeatureName } from '@/utils/parseFeatureFlags';
 
 export interface AppContextValue {
@@ -124,13 +123,7 @@ export function AppProvider({
           onPageLeaveRef,
         }}
       >
-        {/* TODO: remove duplicity of props in AppContext */}
-        <ProjectProvider
-          project={projectData ?? project}
-          organization={organization}
-        >
-          {children}
-        </ProjectProvider>
+        {children}
       </AppContext.Provider>
     </AppApiContext.Provider>
   );

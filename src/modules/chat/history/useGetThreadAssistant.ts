@@ -16,19 +16,19 @@
 
 import { ApiError } from '@/app/api/errors';
 import { Thread } from '@/app/api/threads/types';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { readAssistantQuery } from '@/modules/assistants/queries';
 import { APP_NAME } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { runsQuery } from '../queries';
 import { ThreadAssistant } from '../types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useGetThreadAssistant(
   thread?: Thread | null,
   initialAssistant?: ThreadAssistant,
 ) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   const { assistantId: threadAssistantId, assistantName } =
     thread?.uiMetadata ?? {};

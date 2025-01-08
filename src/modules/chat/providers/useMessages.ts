@@ -22,7 +22,7 @@ import { messagesWithFilesQuery } from '../queries';
 import { MessageMetadata, MessageWithFiles } from '../types';
 import { getMessagesFromThreadMessages } from '../utils';
 import { decodeMetadata } from '@/app/api/utils';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useMessages({
   thread,
@@ -31,7 +31,7 @@ export function useMessages({
   thread?: Thread | null;
   initialData?: MessageWithFiles[];
 }) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   const { data, refetch } = useQuery({
     ...messagesWithFilesQuery(organization.id, project.id, thread?.id || '', {

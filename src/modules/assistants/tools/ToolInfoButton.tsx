@@ -19,15 +19,11 @@ import { Tooltip } from '@/components/Tooltip/Tooltip';
 import classes from './ToolInfoButton.module.scss';
 import { ArrowUpRight, Information } from '@carbon/react/icons';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
-import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   toolReference: ToolReference;
@@ -35,10 +31,8 @@ interface Props {
 
 export function ToolInfoButton({ toolReference }: Props) {
   const { isProjectReadOnly } = useAppContext();
-  const appContext = useAppContext();
-  const { project, organization } = appContext;
   const { openModal } = useModal();
-  const { tool } = useToolInfo({ toolReference, project, organization });
+  const { tool } = useToolInfo({ toolReference });
 
   if (!tool) return;
 
@@ -59,19 +53,17 @@ export function ToolInfoButton({ toolReference }: Props) {
             icon={ArrowUpRight}
             onClick={() =>
               openModal((props) => (
-                <AppProvider {...appContext}>
-                  <>
-                    {tool.type === 'user' ? (
-                      isProjectReadOnly ? (
-                        <UserToolModal.View tool={tool} {...props} />
-                      ) : (
-                        <UserToolModal {...props} tool={tool} />
-                      )
+                <>
+                  {tool.type === 'user' ? (
+                    isProjectReadOnly ? (
+                      <UserToolModal.View tool={tool} {...props} />
                     ) : (
-                      <PublicToolModal {...props} tool={tool} />
-                    )}
-                  </>
-                </AppProvider>
+                      <UserToolModal {...props} tool={tool} />
+                    )
+                  ) : (
+                    <PublicToolModal {...props} tool={tool} />
+                  )}
+                </>
               ))
             }
           >

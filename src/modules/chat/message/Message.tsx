@@ -43,7 +43,7 @@ import { MessageContent } from './MessageContent';
 import { RunSetup } from '@/modules/assistants/builder/Builder';
 import { RunSetupDelta } from './RunSetupDelta';
 import isEqual from 'lodash/isEqual';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   message: ChatMessage;
@@ -62,7 +62,7 @@ export const Message = memo(function Message({
 }: Props) {
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const { setMessages } = useChat();
   const { ref: inViewRef, inView } = useInView({
     rootMargin: '30% 0%',

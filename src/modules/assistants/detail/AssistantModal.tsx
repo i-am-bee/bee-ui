@@ -111,14 +111,7 @@ export default function AssistantModal({
                   <ul className={classes.tools}>
                     {assistant.tools.map((item, index) => {
                       const tool = getAssistantToolReference(item);
-                      return (
-                        <ToolListItem
-                          organization={organization}
-                          project={project}
-                          key={tool.id}
-                          tool={tool}
-                        />
-                      );
+                      return <ToolListItem key={tool.id} tool={tool} />;
                     })}
                   </ul>
                 </dt>
@@ -186,24 +179,14 @@ export default function AssistantModal({
   );
 }
 
-function ToolListItem({
-  tool,
-  organization,
-  project,
-}: {
-  tool: ToolReference;
-  organization: Organization;
-  project: Project;
-}) {
-  const { toolIcon: Icon, toolName } = useToolInfo({
-    organization,
-    project,
+function ToolListItem({ tool }: { tool: ToolReference }) {
+  const { toolName } = useToolInfo({
     toolReference: tool,
   });
 
   return (
     <li>
-      <ToolIcon organization={organization} project={project} tool={tool} />
+      <ToolIcon tool={tool} />
       {toolName}
     </li>
   );

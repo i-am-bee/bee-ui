@@ -18,7 +18,7 @@ import { useQuery } from '@tanstack/react-query';
 import classes from './AttachmentImage.module.scss';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { readFileContent } from '@/app/api/files';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function AttachmentImage({
   fileId,
@@ -29,7 +29,7 @@ export function AttachmentImage({
   alt: string;
   title?: string;
 }) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const { data: content, isLoading } = useQuery({
     queryKey: ['files/{file_id}/content', project.id, fileId],
     queryFn: () => readFileContent(organization.id, project.id, fileId),

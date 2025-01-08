@@ -22,6 +22,7 @@ import { AppProvider } from '../providers/AppProvider';
 import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
 import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
+import { ModalProvider } from '../providers/ModalProvider';
 
 interface Props {
   projectId: string;
@@ -43,13 +44,15 @@ export async function AppShell({
       organization={{ id: organizationId }}
       featureFlags={featureFlags}
     >
-      <div className={classes.root}>
-        <AppHeader />
+      <ModalProvider>
+        <div className={classes.root}>
+          <AppHeader />
 
-        <main id={MAIN_ELEMENT_ID} className={classes.content}>
-          {children}
-        </main>
-      </div>
+          <main id={MAIN_ELEMENT_ID} className={classes.content}>
+            {children}
+          </main>
+        </div>
+      </ModalProvider>
     </AppProvider>
   );
 }

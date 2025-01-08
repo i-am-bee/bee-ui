@@ -20,18 +20,16 @@ import {
   ArtifactResult,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { listArtifactsQuery, readArtifactQuery } from '../queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 type Props = {
   onSuccess?: (artifact: ArtifactResult) => void;
 };
 
 export function useSaveArtifact({ onSuccess }: Props) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   return useMutation({

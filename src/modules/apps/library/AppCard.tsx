@@ -23,10 +23,7 @@ import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
 import classes from './AppCard.module.scss';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   artifact: Artifact;
@@ -46,7 +43,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
       onDeleteSuccess?.(artifact);
     },
   });
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   return (
     <>
@@ -67,9 +64,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
             itemText: 'Share',
             onClick: () =>
               openModal((props) => (
-                <ProjectProvider project={project} organization={organization}>
-                  <ShareAppModal {...props} artifact={artifact} />
-                </ProjectProvider>
+                <ShareAppModal {...props} artifact={artifact} />
               )),
           },
           {

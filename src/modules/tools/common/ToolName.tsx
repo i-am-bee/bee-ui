@@ -29,8 +29,6 @@ interface Props {
 
 export function ToolName({ tool, organization, project }: Props) {
   const { toolName } = useToolInfo({
-    organization,
-    project,
     toolReference: tool,
   });
   return toolName;

@@ -17,7 +17,6 @@
 import { ToolsListQuery } from '@/app/api/tools/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { toolsQuery } from '../queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useTools({

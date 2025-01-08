@@ -45,10 +45,7 @@ export default async function AssistantChatPage({
 
   return (
     <LayoutInitializer layout={{ navbarProps: { type: 'chat', assistant } }}>
-      <VectorStoreFilesUploadProvider
-        projectId={projectId}
-        organizationId={organizationId}
-      >
+      <VectorStoreFilesUploadProvider>
         <FilesUploadProvider>
           <ChatProvider
             assistant={{

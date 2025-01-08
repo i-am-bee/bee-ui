@@ -36,20 +36,17 @@ import {
 import { SkeletonIcon } from '@carbon/react';
 import { ToolName } from '../common/ToolName';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { useTools } from './useTools';
 import capitalize from 'lodash/capitalize';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useToolInfo({
   toolReference,
-  organization,
-  project,
 }: {
   toolReference: ToolReference;
-  organization: Organization;
-  project: Project;
 }) {
+  const { project, organization } = useAppContext();
+
   const { tool: toolProp, id, type } = toolReference;
   const isQueryable = type === 'user' || type === 'system';
   const { data, isLoading, error } = useQuery({

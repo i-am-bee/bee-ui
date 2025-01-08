@@ -66,7 +66,7 @@ import { Thread } from '@/app/api/threads/types';
 import { getToolApprovalId } from '@/modules/tools/utils';
 import { RunController } from '../providers/ChatProvider';
 import { EntityWithDecodedMetadata } from '@/app/api/types';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 type RunsCreateBodyDecoded = EntityWithDecodedMetadata<
   RunsCreateBody,
@@ -105,7 +105,7 @@ export function useChatStream({
   updateController,
 }: Props) {
   const queryClient = useQueryClient();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   const getThread = () => {
     const thread = threadRef.current;

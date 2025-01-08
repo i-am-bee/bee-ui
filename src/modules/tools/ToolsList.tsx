@@ -25,7 +25,7 @@ import {
 } from '@/app/api/tools/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
@@ -42,8 +42,8 @@ interface Props {
 }
 
 export function ToolsList({ type }: Props) {
-  const appContext = useAppContext();
-  const { project, organization, isProjectReadOnly, featureFlags } = appContext;
+  const { project, organization, isProjectReadOnly, featureFlags } =
+    useAppContext();
   const [order, setOrder] = useState<ToosListQueryOrderBy>(TOOLS_ORDER_DEFAULT);
   const { openModal } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
@@ -148,12 +148,10 @@ export function ToolsList({ type }: Props) {
               title: 'New tool',
               onClick: () =>
                 openModal((props) => (
-                  <AppProvider {...appContext}>
-                    <UserToolModal
-                      {...props}
-                      onSaveSuccess={handleCreateSuccess}
-                    />
-                  </AppProvider>
+                  <UserToolModal
+                    {...props}
+                    onSaveSuccess={handleCreateSuccess}
+                  />
                 )),
               disabled: isProjectReadOnly,
               tooltipContent: isProjectReadOnly ? (

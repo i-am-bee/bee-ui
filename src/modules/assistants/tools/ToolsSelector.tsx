@@ -30,7 +30,6 @@ import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import clsx from 'clsx';
 import { ToolNameWithTooltip } from './ToolNameWithTooltip';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 export function ToolsSelector() {
   const prefix = usePrefix();
@@ -82,12 +81,11 @@ function SelectedToolsItem({
   tool: ToolReference;
   onToggle: (tool: ToolReference, toggled: boolean) => void;
 }) {
-  const { project, organization } = useProjectContext();
   const {
     toolIcon: Icon,
     tool,
     error,
-  } = useToolInfo({ toolReference: toolProp, project, organization });
+  } = useToolInfo({ toolReference: toolProp });
 
   const isUserTool = tool && tool.type === 'user';
 

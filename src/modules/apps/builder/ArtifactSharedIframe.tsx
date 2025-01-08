@@ -18,7 +18,6 @@
 import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { Theme, useTheme } from '@/layout/providers/ThemeProvider';
 import { USERCONTENT_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
@@ -26,6 +25,7 @@ import { Loading } from '@carbon/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './ArtifactSharedIframe.module.scss';
 import AppPlaceholder from './Placeholder.svg';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   sourceCode: string | null;
@@ -46,7 +46,7 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   const postMessage = (message: PostMessage) => {
     iframeRef.current?.contentWindow?.postMessage(

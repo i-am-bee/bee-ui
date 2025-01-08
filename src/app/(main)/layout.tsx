@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { ModalProvider } from '@/layout/providers/ModalProvider';
 import { UserProfileInitializer } from '@/store/user-profile/UserProfileInitializer';
 import { SessionProvider } from 'next-auth/react';
 import { PropsWithChildren } from 'react';
@@ -27,9 +26,7 @@ export default async function MainLayout({ children }: PropsWithChildren) {
   return (
     <SessionProvider>
       <UserProfileInitializer userProfile={session.userProfile}>
-        <QueryProvider>
-          <ModalProvider>{children}</ModalProvider>
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
       </UserProfileInitializer>
     </SessionProvider>
   );

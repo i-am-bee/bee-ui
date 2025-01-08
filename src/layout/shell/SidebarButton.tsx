@@ -23,9 +23,9 @@ import { Button, ButtonBaseProps } from '@carbon/react';
 import { Close, Menu } from '@carbon/react/icons';
 import { MouseEvent } from 'react';
 import { UserSetting } from '../hooks/useUserSetting';
-import { useProjectContext } from '../providers/ProjectProvider';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
+import { useAppContext } from '../providers/AppProvider';
 
 interface Props extends Omit<ButtonBaseProps, 'kind' | 'size' | 'className'> {
   sidebarId: SidebarProps['id'];
@@ -38,7 +38,7 @@ export function SidebarButton({
   onMouseEnter,
   ...props
 }: Props) {
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
 
   const prefetchThreads = usePrefetchThreads();
   const prefetchArtifacts = usePrefetchArtifacts({ useDefaultParams: true });

@@ -16,7 +16,7 @@
 
 import { Tool, ToolReference } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { isNotNull } from '@/utils/helpers';
 import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
@@ -31,7 +31,6 @@ import classes from './ToolCard.module.scss';
 import { getToolReferenceFromTool } from './utils';
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
-import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   tool: Tool;
@@ -45,8 +44,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
     tool,
     onSuccess: () => onDeleteSuccess(tool),
   });
-  const appContext = useAppContext();
-  const { isProjectReadOnly, project, organization } = appContext;
+  const { isProjectReadOnly, project, organization } = useAppContext();
   const { openModal } = useModal();
 
   const toolDescription =
@@ -59,16 +57,10 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={
-          <ToolIcon
-            organization={organization}
-            project={project}
-            tool={getToolReferenceFromTool(tool)}
-          />
-        }
+        icon={<ToolIcon tool={getToolReferenceFromTool(tool)} />}
         onClick={() =>
           openModal((props) => (
-            <AppProvider {...appContext}>
+            <>
               {tool.type === 'user' ? (
                 isProjectReadOnly ? (
                   <UserToolModal.View tool={tool} {...props} />
@@ -83,7 +75,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
               ) : (
                 <PublicToolModal {...props} tool={tool} />
               )}
-            </AppProvider>
+            </>
           ))
         }
         isDeletePending={isDeletePending}
@@ -125,18 +117,12 @@ export function ToolIcon({
   tool,
   size = 'md',
   className,
-  project,
-  organization,
 }: {
   tool: ToolReference;
   className?: string;
   size?: 'md' | 'sm';
-  organization: Organization;
-  project: Project;
 }) {
   const { toolIcon: Icon } = useToolInfo({
-    organization,
-    project,
     toolReference: tool,
   });
   return (

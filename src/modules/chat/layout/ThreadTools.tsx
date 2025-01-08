@@ -20,7 +20,7 @@ import { Assistant } from '@/modules/assistants/types';
 import { useChat } from '../providers/ChatProvider';
 import { EmptyList } from './EmptyList';
 import classes from './ThreadTools.module.scss';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   assistantTools?: Assistant['tools'];
@@ -28,7 +28,7 @@ interface Props {
 
 export function ThreadTools({ assistantTools = [] }: Props) {
   const { disabledTools, setDisabledTools } = useChat();
-  const { organization, project } = useProjectContext();
+  const { organization, project } = useAppContext();
 
   if (assistantTools.length === 0) {
     return (
@@ -62,8 +62,6 @@ export function ThreadTools({ assistantTools = [] }: Props) {
         return (
           <li className={classes.item} key={index}>
             <ToolToggle
-              organization={organization}
-              project={project}
               tool={toolReference}
               toggled={toggled}
               onToggle={() =>

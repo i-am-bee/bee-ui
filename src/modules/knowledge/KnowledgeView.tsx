@@ -148,15 +148,11 @@ export function KnowledgeView() {
           title: 'Create a knowledge base',
           onClick: () =>
             openModal((props) => (
-              <AppProvider {...appContext}>
-                <CreateKnowledgeModal
-                  {...props}
-                  organizationId={organization.id}
-                  projectId={project.id}
-                  onCreateVectorStore={onCreateSuccess}
-                  onSuccess={handleInvalidateData}
-                />
-              </AppProvider>
+              <CreateKnowledgeModal
+                {...props}
+                onCreateVectorStore={onCreateSuccess}
+                onSuccess={handleInvalidateData}
+              />
             )),
           disabled: isProjectReadOnly,
           tooltipContent: isProjectReadOnly ? (

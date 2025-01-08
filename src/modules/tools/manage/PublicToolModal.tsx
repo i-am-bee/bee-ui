@@ -22,28 +22,19 @@ import { ModalBody, ModalHeader } from '@carbon/react';
 import { ToolDescription, ToolIcon } from '../ToolCard';
 import { getToolReferenceFromTool } from '../utils';
 import classes from './PublicToolModal.module.scss';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends ModalProps {
   tool: Tool;
 }
 
 export function PublicToolModal({ tool, ...props }: Props) {
-  const { project, organization } = useAppContext();
   return (
     <Modal {...props}>
       <ModalHeader />
       <ModalBody>
         <div className={classes.header}>
           <div>
-            <ToolIcon
-              organization={organization}
-              project={project}
-              tool={getToolReferenceFromTool(tool)}
-            />
+            <ToolIcon tool={getToolReferenceFromTool(tool)} />
           </div>
           <h2>{tool.name}</h2>
           <div>

@@ -17,7 +17,6 @@
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import {
-  AppProvider,
   useAppApiContext,
   useAppContext,
 } from '@/layout/providers/AppProvider';
@@ -196,7 +195,6 @@ AgentLink.Skeleton = function Skeleton() {
 };
 
 function NewButton() {
-  const appContext = useAppContext();
   const { openModal } = useModal();
 
   return (
@@ -204,13 +202,7 @@ function NewButton() {
       kind="tertiary"
       label="New agent"
       align="left"
-      onClick={() =>
-        openModal((props) => (
-          <AppProvider {...appContext}>
-            <NewAgentModal {...props} />
-          </AppProvider>
-        ))
-      }
+      onClick={() => openModal((props) => <NewAgentModal {...props} />)}
       className={classes.newButton}
     >
       <Add />
