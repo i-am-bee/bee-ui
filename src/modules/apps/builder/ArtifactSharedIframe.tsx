@@ -66,8 +66,8 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
     fullscreen: false,
     ancestorOrigin: window.location.origin,
   });
-  useEffect(() => { theme && setAppState(state => ({ ...state, theme })) }, [theme]);
-  useEffect(() => { sourceCode && setAppState(state => ({ ...state, code: sourceCode })) }, [sourceCode]);
+  useEffect(() => { if(theme) setAppState(state => ({ ...state, theme })) }, [theme]);
+  useEffect(() => { if(sourceCode) setAppState(state => ({ ...state, code: sourceCode })) }, [sourceCode]);
   useEffect(() => { postMessage({ type: PostMessageType.UPDATE_STATE, stateChange: appState }) }, [appState, postMessage]);
 
   const handleMessage = useCallback(
