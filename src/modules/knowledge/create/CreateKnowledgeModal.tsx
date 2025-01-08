@@ -55,7 +55,6 @@ export function CreateKnowledgeModal({
   onSuccess,
   ...props
 }: Props & ModalProps) {
-  const {} = useAppContext();
   const handleSucces = () => {
     onSuccess();
     props.onRequestClose();
