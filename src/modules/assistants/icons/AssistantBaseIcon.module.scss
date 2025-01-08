@@ -29,6 +29,11 @@
     --icon-size: 1rem;
     --font-size: 0.875rem;
   }
+  &[data-size='xlg'] {
+    --size: 3rem;
+    --icon-size: 1.5rem;
+    --font-size: 1rem;
+  }
   &[data-size='xl'] {
     --size: 3.5rem;
     --icon-size: 1.8rem;

@@ -23,6 +23,7 @@
     column-gap: $spacing-03;
     padding: 0;
     min-block-size: 0;
+    color: $link-primary;
     &:hover,
     &:active {
       background-color: transparent;
