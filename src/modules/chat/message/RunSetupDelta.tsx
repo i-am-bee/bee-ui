@@ -44,16 +44,14 @@ export function RunSetupDelta({
     differenceWith(tools, nextRunTools, isEqual).forEach((tool) =>
       deltaMessages.push(
         <>
-          <ToolName organization={organization} project={project} tool={tool} />{' '}
-          tool removed
+          <ToolName tool={tool} /> tool removed
         </>,
       ),
     );
     differenceWith(nextRunTools, tools, isEqual).forEach((tool) =>
       deltaMessages.push(
         <>
-          <ToolName organization={organization} project={project} tool={tool} />{' '}
-          tool added
+          <ToolName tool={tool} /> tool added
         </>,
       ),
     );
@@ -81,7 +79,7 @@ export function RunSetupDelta({
     }
 
     return deltaMessages;
-  }, [run, nextRunSetup, organization, project]);
+  }, [run, nextRunSetup]);
 
   if (!deltaMessages.length) return null;
 
