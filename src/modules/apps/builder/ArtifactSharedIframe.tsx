@@ -165,20 +165,18 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   );
 }
 
-interface AppState {
-  fullscreen: boolean,
-  theme: 'light' | 'dark' | 'system',
-  code: string,
-  config: {
-    canFixError: boolean
-  },
-  ancestorOrigin: string,
-}
-
 type PostMessage =
   | {
       type: PostMessageType.UPDATE_STATE;
-      stateChange: Partial<AppState>;
+      stateChange: Partial<{
+        fullscreen: boolean,
+        theme: 'light' | 'dark' | 'system',
+        code: string,
+        config: {
+          canFixError: boolean
+        },
+        ancestorOrigin: string,
+      }>;
     }
   | {
       type: PostMessageType.RESPONSE;
