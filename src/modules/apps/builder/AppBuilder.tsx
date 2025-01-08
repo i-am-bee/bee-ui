@@ -233,7 +233,7 @@ function AppBuilderContent() {
     totalCount,
   ]);
 
-  const handleReportError = useCallback(
+  const handleFixError = useCallback(
     async (errorText: string) => {
       await sendMessage(
         `I have encountered the following error:\n\n\`\`\`error\n${errorText}\n\`\`\`\n\nFix this error please.`,
@@ -349,7 +349,7 @@ function AppBuilderContent() {
             <TabPanel key={TabsKeys.Preview}>
               <ArtifactSharedIframe
                 sourceCode={code}
-                onReportError={handleReportError}
+                onFixError={handleFixError}
               />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>

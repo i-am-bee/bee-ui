@@ -1,5 +1,14 @@
 # Changelog
 
+## <small>0.0.22 (2025-01-08)</small>
+
+* chore(feature-flags): make feature flags configurable at runtime (#172) ([5df12c3](https://github.com/i-am-bee/bee-ui/commit/5df12c3)), closes [#172](https://github.com/i-am-bee/bee-ui/issues/172)
+* fix(auth): token revalidation and session update (#166) ([d794c1f](https://github.com/i-am-bee/bee-ui/commit/d794c1f)), closes [#166](https://github.com/i-am-bee/bee-ui/issues/166)
+* fix(chat): cancel run (#168) ([f8b1201](https://github.com/i-am-bee/bee-ui/commit/f8b1201)), closes [#168](https://github.com/i-am-bee/bee-ui/issues/168)
+* fix(chat): disable submit on pending file upload (#173) ([5e308b3](https://github.com/i-am-bee/bee-ui/commit/5e308b3)), closes [#173](https://github.com/i-am-bee/bee-ui/issues/173)
+* feat: post-launch qa updates 2 ([a9afce3](https://github.com/i-am-bee/bee-ui/commit/a9afce3))
+* feat(observe): add raw prompt for streamlit agent (#161) ([586e66f](https://github.com/i-am-bee/bee-ui/commit/586e66f)), closes [#161](https://github.com/i-am-bee/bee-ui/issues/161)
+
 ## <small>0.0.21 (2024-12-19)</small>
 
 * fix: assistant builder form edit bug (#162) ([623863b](https://github.com/i-am-bee/bee-ui/commit/623863b)), closes [#162](https://github.com/i-am-bee/bee-ui/issues/162)

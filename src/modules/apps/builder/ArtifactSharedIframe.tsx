@@ -18,7 +18,7 @@
 import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
-import { Theme, useTheme } from '@/layout/providers/ThemeProvider';
+import { useTheme } from '@/layout/providers/ThemeProvider';
 import { USERCONTENT_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import { Loading } from '@carbon/react';
@@ -29,7 +29,7 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   sourceCode: string | null;
-  onReportError?: (errorText: string) => void;
+  onFixError?: (errorText: string) => void;
 }
 
 function getErrorMessage(error: unknown) {
@@ -42,39 +42,38 @@ function getErrorMessage(error: unknown) {
   return 'Unknown error when calling LLM function.';
 }
 
-export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
+export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
   const { project, organization } = useAppContext();
+  const [iframeLoadCount, setIframeLoadCount] = useState<number>(0);
 
-  const postMessage = (message: PostMessage) => {
-    iframeRef.current?.contentWindow?.postMessage(
-      message,
-      USERCONTENT_SITE_URL,
-    );
-  };
-
-  const updateTheme = useCallback((theme: Theme) => {
-    postMessage({ type: PostMessageType.UPDATE_THEME, theme });
-  }, []);
-
-  const updateCode = useCallback(
-    (code: string | null) => {
-      if (!code) {
-        return;
-      }
-
-      postMessage({
-        type: PostMessageType.UPDATE_CODE,
-        config: {
-          can_fix_error: Boolean(onReportError),
-        },
-        code,
-      });
+  const postMessage = useCallback(
+    (message: PostMessage) => {
+      if (iframeLoadCount === 0) return;
+      iframeRef.current?.contentWindow?.postMessage(
+        message,
+        USERCONTENT_SITE_URL,
+      );
     },
-    [onReportError],
+    [iframeLoadCount],
   );
+
+  useEffect(() => {
+    postMessage({
+      type: PostMessageType.UPDATE_STATE,
+      stateChange: {
+        code: sourceCode ?? undefined,
+        config: {
+          canFixError: Boolean(onFixError),
+        },
+        theme: theme ?? 'system',
+        fullscreen: false,
+        ancestorOrigin: window.location.origin,
+      },
+    });
+  }, [sourceCode, onFixError, theme, postMessage]);
 
   const handleMessage = useCallback(
     async (event: MessageEvent<StliteMessage>) => {
@@ -84,15 +83,19 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
         return;
       }
 
-      if (
-        data.type === RecieveMessageType.SCRIPT_RUN_STATE_CHANGED &&
-        data.scriptRunState === ScriptRunState.RUNNING
-      ) {
+      if (data.type === RecieveMessageType.READY) {
         setState(State.READY);
         return;
       }
 
       if (data.type === RecieveMessageType.REQUEST) {
+        const respond = (payload: unknown = undefined) =>
+          postMessage({
+            type: PostMessageType.RESPONSE,
+            request_id: data.request_id,
+            payload,
+          });
+
         try {
           switch (data.request_type) {
             case 'modules_to_packages':
@@ -101,12 +104,9 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
                 project.id,
                 data.payload.modules,
               );
-              postMessage({
-                type: PostMessageType.RESPONSE,
-                request_id: data.request_id,
-                payload: packagesResponse,
-              });
+              respond(packagesResponse);
               break;
+
             case 'chat_completion':
               const response = await createChatCompletion(
                 organization.id,
@@ -115,48 +115,22 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
               );
               const message = response?.choices[0]?.message?.content;
               if (!message) throw new Error(); // missing completion
-              postMessage({
-                type: PostMessageType.RESPONSE,
-                request_id: data.request_id,
-                payload: { message },
-              });
+              respond({ message });
+              break;
+
+            case 'fix_error':
+              onFixError?.(data.payload.errorText);
+              respond();
               break;
           }
         } catch (err) {
-          postMessage({
-            type: PostMessageType.RESPONSE,
-            request_id: data.request_id,
-            payload: { error: getErrorMessage(err) },
-          });
+          respond({ error: getErrorMessage(err) });
         }
         return;
       }
-
-      if (data.type === RecieveMessageType.REPORT_ERROR) {
-        onReportError?.(data.errorText);
-        return;
-      }
     },
-    [project, organization, onReportError],
+    [project, organization, onFixError, postMessage],
   );
-
-  const handleIframeLoad = useCallback(() => {
-    if (theme) {
-      updateTheme(theme);
-    }
-  }, [theme, updateTheme]);
-
-  useEffect(() => {
-    if (theme) {
-      updateTheme(theme);
-    }
-  }, [theme, updateTheme]);
-
-  useEffect(() => {
-    if (state === State.READY) {
-      updateCode(sourceCode);
-    }
-  }, [state, theme, sourceCode, updateCode]);
 
   useEffect(() => {
     window.addEventListener('message', handleMessage);
@@ -180,7 +154,7 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
           'allow-popups-to-escape-sandbox',
         ].join(' ')}
         className={classes.app}
-        onLoad={handleIframeLoad}
+        onLoad={() => setIframeLoadCount((i) => i + 1)}
       />
 
       {!sourceCode ? (
@@ -188,7 +162,7 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
           <AppPlaceholder />
         </div>
       ) : (
-        state === State.LOADING && sourceCode && <Loading />
+        state === State.LOADING && <Loading />
       )}
     </div>
   );
@@ -196,15 +170,16 @@ export function ArtifactSharedIframe({ sourceCode, onReportError }: Props) {
 
 type PostMessage =
   | {
-      type: PostMessageType.UPDATE_CODE;
-      code: string;
-      config: {
-        can_fix_error?: boolean;
-      };
-    }
-  | {
-      type: PostMessageType.UPDATE_THEME;
-      theme: Theme;
+      type: PostMessageType.UPDATE_STATE;
+      stateChange: Partial<{
+        fullscreen: boolean;
+        theme: 'light' | 'dark' | 'system';
+        code: string;
+        config: {
+          canFixError: boolean;
+        };
+        ancestorOrigin: string;
+      }>;
     }
   | {
       type: PostMessageType.RESPONSE;
@@ -213,15 +188,8 @@ type PostMessage =
     };
 
 enum PostMessageType {
-  UPDATE_CODE = 'bee:updateCode',
-  UPDATE_THEME = 'bee:updateTheme',
   RESPONSE = 'bee:response',
-}
-
-enum ScriptRunState {
-  INITIAL = 'initial',
-  NOT_RUNNING = 'notRunning',
-  RUNNING = 'running',
+  UPDATE_STATE = 'bee:updateState',
 }
 
 enum State {
@@ -230,15 +198,13 @@ enum State {
 }
 
 enum RecieveMessageType {
-  SCRIPT_RUN_STATE_CHANGED = 'SCRIPT_RUN_STATE_CHANGED',
+  READY = 'bee:ready',
   REQUEST = 'bee:request',
-  REPORT_ERROR = 'bee:reportError',
 }
 
 export type StliteMessage =
   | {
-      type: RecieveMessageType.SCRIPT_RUN_STATE_CHANGED;
-      scriptRunState: ScriptRunState;
+      type: RecieveMessageType.READY;
     }
   | {
       type: RecieveMessageType.REQUEST;
@@ -253,6 +219,8 @@ export type StliteMessage =
       payload: ChatCompletionCreateBody;
     }
   | {
-      type: RecieveMessageType.REPORT_ERROR;
-      errorText: string;
+      type: RecieveMessageType.REQUEST;
+      request_type: 'fix_error';
+      request_id: string;
+      payload: { errorText: string };
     };
