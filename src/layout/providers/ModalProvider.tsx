@@ -24,10 +24,10 @@ import { FallbackModal } from '@/components/FallbackModal/FallbackModal';
 import { useIsomorphicLayoutEffect } from '@/hooks';
 import { noop } from '@/utils/helpers';
 import {
-  PropsWithChildren,
-  ReactNode,
   createContext,
   memo,
+  PropsWithChildren,
+  ReactNode,
   useCallback,
   useContext,
   useState,
@@ -35,7 +35,6 @@ import {
 import { ErrorBoundary } from 'react-error-boundary';
 import { v4 as uuid } from 'uuid';
 import { ModalControlProvider } from './ModalControlProvider';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export interface ModalProps {
   /** True if modal is open */
