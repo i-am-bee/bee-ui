@@ -17,7 +17,6 @@
 'use client';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
-import { ONBOARDING_PARAM } from '@/utils/constants';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,
@@ -44,7 +43,6 @@ export function AppBuilderProvider({
   children,
 }: PropsWithChildren<Props>) {
   const searchParams = useSearchParams();
-  const isOnboarding = searchParams?.has(ONBOARDING_PARAM);
   const templateKey = searchParams?.get('template');
   const template = templateKey
     ? ARTIFACT_TEMPLATES.find((template) => template.key === templateKey)

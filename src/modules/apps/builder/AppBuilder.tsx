@@ -28,6 +28,7 @@ import {
   ChatMessage,
   MessageMetadata,
   MessageWithFiles,
+  UserChatMessage,
 } from '@/modules/chat/types';
 import { useLayoutActions } from '@/store/layout';
 import { isNotNull } from '@/utils/helpers';
@@ -51,6 +52,7 @@ import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 import { SourceCodeEditor } from './SourceCodeEditor';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { isBotMessage, isUserMessage } from '@/modules/chat/utils';
 
 interface Props {
   thread?: Thread;
@@ -83,6 +85,14 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }
     },
     [organization.id, project.id, queryClient, setCode, thread],
+  );
+
+  const handleMessageContentUpdated = useCallback(
+    (message: string) => {
+      const pythonAppCode = extractCodeFromMessageContent(message);
+      if (pythonAppCode) setCode(pythonAppCode);
+    },
+    [setCode],
   );
 
   const handleBeforePostMessage = useCallback(
@@ -147,6 +157,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }}
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
+      onMessageDeltaEventResponse={handleMessageContentUpdated}
     >
       <AppBuilderContent />
     </ChatProvider>
@@ -159,7 +170,7 @@ function AppBuilderContent() {
   const router = useRouter();
   const { project, organization } = useAppContext();
   const { openModal } = useModal();
-  const { getMessages, sendMessage, thread } = useChat();
+  const { getMessages, sendMessage } = useChat();
   const { setArtifact, setMobilePreviewOpen } = useAppBuilderApi();
   const { code, artifact, mobilePreviewOpen, isSharedClone } = useAppBuilder();
   const { setLayout } = useLayoutActions();
@@ -182,6 +193,11 @@ function AppBuilderContent() {
   );
 
   const icon = artifact?.uiMetadata.icon;
+
+  const isCodePending = message?.pending;
+  useEffect(() => {
+    setSelectedTab(isCodePending ? TabsKeys.SourceCode : TabsKeys.Preview);
+  }, [isCodePending]);
 
   useEffect(() => {
     const navbarProps = getAppBuilderNavbarProps(
@@ -350,6 +366,7 @@ function AppBuilderContent() {
               <ArtifactSharedIframe
                 sourceCode={code}
                 onFixError={handleFixError}
+                isPending={isCodePending}
               />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
@@ -370,7 +387,8 @@ enum TabsKeys {
 }
 
 export function getLastMessageWithCode(messages: ChatMessage[]) {
-  return messages.find((message) =>
+  const lastMessage = messages.findLast((message) =>
     Boolean(extractCodeFromMessageContent(message.content)),
   );
+  return isBotMessage(lastMessage) ? lastMessage : undefined;
 }

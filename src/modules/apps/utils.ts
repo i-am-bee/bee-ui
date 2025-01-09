@@ -15,7 +15,17 @@
  */
 
 export function extractCodeFromMessageContent(content: string) {
-  return [...content.matchAll(/```python-app\n([\s\S]*?)```/g)].at(-1)?.at(-1);
+  const testCompleteCodeRegex = /```python-app\n[\s\S]*?```/g;
+  const completeCodeRegex = /```python-app\n([\s\S]*?)```/g;
+  const incompleteCodeRegex = /```python-app\n([\s\S]*)/g;
+
+  return [
+    ...(testCompleteCodeRegex.test(content)
+      ? content.matchAll(completeCodeRegex)
+      : content.matchAll(incompleteCodeRegex)),
+  ]
+    .at(-1)
+    ?.at(-1);
 }
 
 export function extractAppMetadataFromStreamlitCode(code: string) {

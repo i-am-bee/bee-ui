@@ -93,7 +93,6 @@ import { ApiError } from '@/app/api/errors';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { PLAN_STEPS_QUERY_PARAMS } from '../assistant-plan/PlanWithSources';
 import { useDeleteMessage } from '../api/useDeleteMessage';
-import { Control } from 'react-hook-form';
 
 interface CancelRunParams {
   threadId: string;
@@ -125,6 +124,7 @@ interface Props extends ChatSetup {
   thread?: Thread;
   assistant?: ThreadAssistant;
   initialData?: MessageWithFiles[];
+  onMessageDeltaEventResponse?: (message: string) => void;
   onMessageCompleted?: (thread: Thread, content: string) => void;
   onBeforePostMessage?: (
     thread: Thread,
@@ -142,6 +142,7 @@ export function ChatProvider({
   builderState,
   inputPlaceholder,
   onMessageCompleted,
+  onMessageDeltaEventResponse,
   onBeforePostMessage,
   children,
 }: PropsWithChildren<Props>) {
@@ -181,6 +182,7 @@ export function ChatProvider({
     threadRef,
     controllerRef,
     onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
+    onMessageDeltaEventResponse,
     setMessages,
     updateController: (data: Partial<RunController>) => {
       setController((controller) => ({ ...controller, ...data }));

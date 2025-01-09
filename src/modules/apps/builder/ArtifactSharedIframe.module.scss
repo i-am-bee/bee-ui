@@ -30,7 +30,7 @@
 
   :global(.#{$prefix}--loading-overlay) {
     position: absolute;
-    background-color: $layer-02;
+    // background-color: $layer-02;
   }
 }
 .app {
