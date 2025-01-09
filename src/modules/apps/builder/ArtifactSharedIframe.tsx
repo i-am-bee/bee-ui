@@ -18,16 +18,18 @@
 import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useTheme } from '@/layout/providers/ThemeProvider';
 import { USERCONTENT_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import { Loading } from '@carbon/react';
+import clsx from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './ArtifactSharedIframe.module.scss';
 import AppPlaceholder from './Placeholder.svg';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
+  variant: 'detail' | 'builder';
   sourceCode: string | null;
   onFixError?: (errorText: string) => void;
 }
@@ -42,7 +44,11 @@ function getErrorMessage(error: unknown) {
   return 'Unknown error when calling LLM function.';
 }
 
-export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
+export function ArtifactSharedIframe({
+  variant,
+  sourceCode,
+  onFixError,
+}: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
@@ -141,7 +147,11 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   }, [handleMessage]);
 
   return (
-    <div className={classes.root}>
+    <div
+      className={clsx(classes.root, {
+        [classes[`variant-${variant}`]]: variant,
+      })}
+    >
       <iframe
         ref={iframeRef}
         src={USERCONTENT_SITE_URL}

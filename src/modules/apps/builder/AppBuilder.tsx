@@ -348,6 +348,7 @@ function AppBuilderContent() {
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
               <ArtifactSharedIframe
+                variant="builder"
                 sourceCode={code}
                 onFixError={handleFixError}
               />
