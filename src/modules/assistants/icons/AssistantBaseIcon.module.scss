@@ -17,19 +17,17 @@
 @use 'styles/common' as *;
 
 .root {
-  --size: 1.5rem;
-  --icon-size: 0.75rem;
-  --font-size: 0.75rem;
-
   &[data-size='sm'] {
-    --size: 1rem;
+    --size: 1.5rem;
+    --icon-size: 0.75rem;
+    --font-size: 0.75rem;
   }
-  &[data-size='lg'] {
+  &[data-size='md'] {
     --size: 2rem;
     --icon-size: 1rem;
     --font-size: 0.875rem;
   }
-  &[data-size='xlg'] {
+  &[data-size='lg'] {
     --size: 3rem;
     --icon-size: 1.5rem;
     --font-size: 1rem;
@@ -39,7 +37,7 @@
     --icon-size: 1.8rem;
     --font-size: 1.3rem;
   }
-  &[data-size='xxl'] {
+  &[data-size='2xl'] {
     --size: 5rem;
     --icon-size: 2.5rem;
     --font-size: 2rem;

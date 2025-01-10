@@ -84,7 +84,7 @@ export default function AssistantModal({
 
         <ModalBody>
           <div className={classes.content}>
-            <AssistantIcon assistant={assistant} size="xlg" />
+            <AssistantIcon assistant={assistant} size="lg" />
 
             <h2 className={classes.heading}>{name}</h2>
 

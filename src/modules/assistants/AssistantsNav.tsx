@@ -130,7 +130,7 @@ function AgentLink({
         })}
       >
         <span className={classes.icon}>
-          <AssistantIcon assistant={assistant} size="lg" />
+          <AssistantIcon assistant={assistant} />
         </span>
 
         <button

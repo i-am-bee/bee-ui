@@ -224,14 +224,13 @@ function Sender({ message }: { message: ChatMessage }) {
             onClick={() => openAssistantModal(assistantData)}
             scale={0.875}
           >
-            <AssistantIcon assistant={assistantData} size="lg" />
+            <AssistantIcon assistant={assistantData} />
           </BounceButton>
         ) : (
           <AssistantIcon
             assistant={assistantData}
             iconName={assistant.data?.agent === 'streamlit' ? 'Bee' : undefined}
             color="black"
-            size="lg"
           />
         )}
 
