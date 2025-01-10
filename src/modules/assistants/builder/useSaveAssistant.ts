@@ -22,7 +22,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { assistantsQuery } from '../library/queries';
 import { readAssistantQuery } from '../queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   onSuccess?: (assistant: AssistantResult, isNew: boolean) => void;
@@ -30,7 +30,7 @@ interface Props {
 
 export function useSaveAssistant({ onSuccess }: Props) {
   const queryClient = useQueryClient();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const {
     mutate: saveAssistant,
     mutateAsync: saveAssistantAsync,

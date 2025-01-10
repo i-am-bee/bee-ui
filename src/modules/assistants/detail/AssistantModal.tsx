@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { ToolReference } from '@/app/api/tools/types';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Modal } from '@/components/Modal/Modal';
 import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
-import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
@@ -121,15 +118,7 @@ export default function AssistantModal({
                   <ul className={classes.tools}>
                     {tools.map((item) => {
                       const tool = getAssistantToolReference(item);
-
-                      return (
-                        <ToolListItem
-                          organization={organization}
-                          project={project}
-                          key={tool.id}
-                          tool={tool}
-                        />
-                      );
+                      return <ToolListItem key={tool.id} tool={tool} />;
                     })}
                   </ul>
                 </div>
@@ -185,15 +174,7 @@ export default function AssistantModal({
   );
 }
 
-function ToolListItem({
-  tool,
-  organization,
-  project,
-}: {
-  tool: ToolReference;
-  organization: Organization;
-  project: Project;
-}) {
+function ToolListItem({ tool }: { tool: ToolReference }) {
   const { openModal } = useModal();
 
   const {
@@ -201,8 +182,6 @@ function ToolListItem({
     tool: toolData,
     isLoading,
   } = useToolInfo({
-    organization,
-    project,
     toolReference: tool,
   });
 
@@ -213,13 +192,7 @@ function ToolListItem({
 
   return (
     <li className={classes.tool}>
-      <ToolIcon
-        organization={organization}
-        project={project}
-        tool={tool}
-        size="sm"
-        className={classes.toolIcon}
-      />
+      <ToolIcon tool={tool} size="sm" className={classes.toolIcon} />
 
       <div className={classes.toolBody}>
         <button
@@ -228,18 +201,13 @@ function ToolListItem({
           onClick={
             toolData
               ? () =>
-                  openModal((props) => (
-                    <ProjectProvider
-                      project={project}
-                      organization={organization}
-                    >
-                      {tool.type === 'user' ? (
-                        <UserToolModal.View tool={toolData} {...props} />
-                      ) : (
-                        <PublicToolModal {...props} tool={toolData} />
-                      )}
-                    </ProjectProvider>
-                  ))
+                  openModal((props) =>
+                    tool.type === 'user' ? (
+                      <UserToolModal.View tool={toolData} {...props} />
+                    ) : (
+                      <PublicToolModal {...props} tool={toolData} />
+                    ),
+                  )
               : noop
           }
         >

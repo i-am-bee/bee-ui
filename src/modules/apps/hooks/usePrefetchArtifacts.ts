@@ -18,7 +18,7 @@ import { ArtifactsListQuery } from '@/app/api/artifacts/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { ARTIFACTS_ORDER_DEFAULT } from '../AppsHome';
 import { listArtifactsQuery } from '../queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 const DEFAULT_PARAMS: Partial<ArtifactsListQuery> = {
   ...ARTIFACTS_ORDER_DEFAULT,
@@ -29,7 +29,7 @@ export function usePrefetchArtifacts({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   return (params?: ArtifactsListQuery) =>

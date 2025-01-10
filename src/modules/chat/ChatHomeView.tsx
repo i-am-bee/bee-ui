@@ -28,7 +28,7 @@ import {
 } from './providers/ChatProvider';
 import { Thread } from '@/app/api/threads/types';
 import { ChatMessage } from './types';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export interface ChatState {
   thread: Thread;
@@ -40,7 +40,7 @@ export function ChatHomeView() {
     useChat();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const handleMessageSent = ({ thread }: SendMessageResult) => {
     if (thread) {
       // We could use normal nextjs router and navigate to /thread/[threadId] page

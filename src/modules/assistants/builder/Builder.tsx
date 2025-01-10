@@ -21,7 +21,6 @@ import { ToolReference } from '@/app/api/tools/types';
 import { useOnMount } from '@/hooks/useOnMount';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -190,10 +189,7 @@ export function Builder({ thread, initialMessages }: Props) {
         </div>
       </section>
       <section className={classes.chat}>
-        <VectorStoreFilesUploadProvider
-          projectId={project.id}
-          organizationId={organization.id}
-        >
+        <VectorStoreFilesUploadProvider>
           <FilesUploadProvider>
             <ChatProvider
               assistant={{
@@ -222,7 +218,7 @@ const NAME_MAX_LENGTH = 55;
 
 function BuilderChat() {
   const { thread, assistant, reset } = useChat();
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
 
   const handleClear = () => {
     reset([]);

@@ -18,19 +18,13 @@ import { SkeletonText } from '@carbon/react';
 import classes from './ToolName.module.scss';
 import { ToolReference } from '@/app/api/tools/types';
 import { useToolInfo } from '../hooks/useToolInfo';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 
 interface Props {
   tool: ToolReference;
-  organization: Organization;
-  project: Project;
 }
 
-export function ToolName({ tool, organization, project }: Props) {
+export function ToolName({ tool }: Props) {
   const { toolName } = useToolInfo({
-    organization,
-    project,
     toolReference: tool,
   });
   return toolName;

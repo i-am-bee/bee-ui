@@ -43,10 +43,9 @@ import { TraceData } from '../trace/types';
 import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { TraceDataProvider } from '../trace/TraceDataProvider';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Spinner } from '@/components/Spinner/Spinner';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   message: BotChatMessage;
@@ -55,7 +54,7 @@ interface Props {
 }
 
 function PlanWithSourcesComponent({ message, inView }: Props) {
-  const { project, organization } = useProjectContext();
+  const { project, organization, featureFlags } = useAppContext();
   const { thread } = useChat();
   const { setExpandedStep } = useExpandedStepActions();
   const expandedStep = useExpandedStep();
@@ -106,8 +105,7 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
 
   const { traceData, traceError } = useBuildTraceData({
     enabled:
-      isFeatureEnabled(FeatureName.Observe) &&
-      Boolean(debugMode && !message.pending && inView),
+      featureFlags.Observe && Boolean(debugMode && !message.pending && inView),
     runId: message.run_id,
     threadId: thread?.id,
   });

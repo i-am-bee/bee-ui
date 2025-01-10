@@ -19,7 +19,7 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { assistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   assistant: Assistant;
@@ -28,7 +28,7 @@ interface Props {
 
 export function useDeleteAssistant({ assistant, onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({

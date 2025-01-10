@@ -21,7 +21,7 @@ import { AssistantTemplateCard } from '../assistants/library/AssistantTemplateCa
 import { AssistantTemplate } from '../assistants/types';
 import classes from './OnboardingAssistantSelection.module.scss';
 import { StartFromScratchCard } from './StartFromScratchCard';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   templates?: AssistantTemplate[];
@@ -33,7 +33,7 @@ export function OnboardingAssistantSelection({
   selected,
   onSelect,
 }: Props) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   return (
     <div>

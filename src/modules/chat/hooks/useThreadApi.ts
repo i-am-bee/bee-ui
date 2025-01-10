@@ -29,11 +29,11 @@ import { createThread, deleteThread, updateThread } from '@/app/api/threads';
 import { threadQuery, threadsQuery } from '../history/queries';
 import { produce } from 'immer';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useThreadApi(thread: Thread | null) {
   const queryClient = useQueryClient();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   const updateMutation = useMutation({
     mutationFn: async (body: ThreadUpdateBody) => {

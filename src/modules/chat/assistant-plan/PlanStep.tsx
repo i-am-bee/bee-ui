@@ -27,7 +27,6 @@ import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
-import { getToolApprovalId } from '@/modules/tools/utils';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
 import { Button } from '@carbon/react';
@@ -56,8 +55,8 @@ import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { getToolApproval, getToolReferenceFromToolCall } from './utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   step: AssistantPlanStep;
@@ -72,7 +71,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
   const { run } = useRunContext();
   const { assistant, thread, onToolApprovalSubmitRef, setThread } = useChat();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const { traceData, traceError } = useTraceData();
 
   const queryClient = useQueryClient();
@@ -95,8 +94,6 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   const tool = getToolReferenceFromToolCall(toolCall);
 
   const { toolName, toolIcon } = useToolInfo({
-    organization,
-    project,
     toolReference: tool,
   });
   const ToolIcon = toolKey ? toolIcon : null;

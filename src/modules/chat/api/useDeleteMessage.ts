@@ -16,11 +16,11 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMessage } from '@/app/api/threads-messages';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { messagesWithFilesQuery } from '../queries';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useDeleteMessage() {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({

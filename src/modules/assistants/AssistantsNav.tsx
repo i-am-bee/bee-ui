@@ -21,10 +21,6 @@ import {
   useAppContext,
 } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import { useLayout } from '@/store/layout';
 import {
@@ -199,7 +195,6 @@ AgentLink.Skeleton = function Skeleton() {
 };
 
 function NewButton() {
-  const { project, organization } = useProjectContext();
   const { openModal } = useModal();
 
   return (
@@ -207,13 +202,7 @@ function NewButton() {
       kind="tertiary"
       label="New agent"
       align="left"
-      onClick={() =>
-        openModal((props) => (
-          <ProjectProvider project={project} organization={organization}>
-            <NewAgentModal {...props} />
-          </ProjectProvider>
-        ))
-      }
+      onClick={() => openModal((props) => <NewAgentModal {...props} />)}
       className={classes.newButton}
     >
       <Add />

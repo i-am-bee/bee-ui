@@ -143,8 +143,6 @@ export function KnowledgeSelector() {
           onClick: () =>
             openModal((props) => (
               <CreateKnowledgeModal
-                organizationId={organization.id}
-                projectId={project.id}
                 onCreateVectorStore={onCreateSuccess}
                 onSuccess={handleInvalidateData}
                 {...props}

@@ -27,7 +27,6 @@ import { CardsList } from '@/components/CardsList/CardsList';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { ProjectProvider } from '@/layout/providers/ProjectProvider';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { useState } from 'react';
@@ -43,7 +42,8 @@ interface Props {
 }
 
 export function ToolsList({ type }: Props) {
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { project, organization, isProjectReadOnly, featureFlags } =
+    useAppContext();
   const [order, setOrder] = useState<ToosListQueryOrderBy>(TOOLS_ORDER_DEFAULT);
   const { openModal } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
@@ -85,13 +85,20 @@ export function ToolsList({ type }: Props) {
   const handleInvalidateData = () => {
     // invalidate all queries on GET:/tools
     queryClient.invalidateQueries({
-      queryKey: [toolsQuery(organization.id, project.id).queryKey.at(0)],
+      queryKey: [
+        toolsQuery(
+          organization.id,
+          project.id,
+          featureFlags.Knowledge,
+        ).queryKey.at(0),
+      ],
     });
   };
 
   const handleCreateSuccess = (tool: ToolResult) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-      toolsQuery(organization.id, project.id, params).queryKey,
+      toolsQuery(organization.id, project.id, featureFlags.Knowledge, params)
+        .queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         const firstPage = draft.pages.at(0);
@@ -103,7 +110,8 @@ export function ToolsList({ type }: Props) {
 
   const handleDeleteSuccess = (tool: Tool) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-      toolsQuery(organization.id, project.id, params).queryKey,
+      toolsQuery(organization.id, project.id, featureFlags.Knowledge, params)
+        .queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -140,15 +148,10 @@ export function ToolsList({ type }: Props) {
               title: 'New tool',
               onClick: () =>
                 openModal((props) => (
-                  <ProjectProvider
-                    project={project}
-                    organization={organization}
-                  >
-                    <UserToolModal
-                      {...props}
-                      onSaveSuccess={handleCreateSuccess}
-                    />
-                  </ProjectProvider>
+                  <UserToolModal
+                    {...props}
+                    onSaveSuccess={handleCreateSuccess}
+                  />
                 )),
               disabled: isProjectReadOnly,
               tooltipContent: isProjectReadOnly ? (

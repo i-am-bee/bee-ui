@@ -24,14 +24,14 @@ import clsx from 'clsx';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import classes from './ProjectUserRow.module.scss';
 import { projectUsersQuery } from './queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   user: ProjectUser;
 }
 
 export function ProjectUserRow({ user }: Props) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const userId = useUserProfile((state) => state.id);
   const queryClient = useQueryClient();
 

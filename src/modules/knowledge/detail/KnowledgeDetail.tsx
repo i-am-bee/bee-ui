@@ -198,8 +198,6 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
               openModal((props) => (
                 <AddContentModal
                   {...props}
-                  organizationId={organization.id}
-                  projectId={project.id}
                   vectorStore={vectorStore}
                   onCreateSuccess={onCreateSuccess}
                 />

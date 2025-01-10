@@ -23,7 +23,6 @@ import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { ChatNavbarActions } from '@/modules/chat/ChatNavbarActions';
 import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 import { useLayout } from '@/store/layout';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
@@ -34,6 +33,7 @@ import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
 import { SkipNav } from './SkipNav';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -43,6 +43,7 @@ interface Props {
 export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const { setUserSetting } = useUserSetting();
   const { onLeaveWithConfirmation } = useNavigationControl();
+  const { featureFlags } = useAppContext();
   const router = useRouter();
   const navbarProps = useLayout((state) => state.navbarProps);
 
@@ -145,7 +146,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
             <ChatNavbarActions assistant={navbarProps.assistant} />
           )}
 
-          {isFeatureEnabled(FeatureName.Projects) && <ProjectSelector />}
+          {featureFlags.Projects && <ProjectSelector />}
         </div>
       </Container>
     </header>

@@ -24,10 +24,10 @@ import { FallbackModal } from '@/components/FallbackModal/FallbackModal';
 import { useIsomorphicLayoutEffect } from '@/hooks';
 import { noop } from '@/utils/helpers';
 import {
-  PropsWithChildren,
-  ReactNode,
   createContext,
   memo,
+  PropsWithChildren,
+  ReactNode,
   useCallback,
   useContext,
   useState,

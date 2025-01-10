@@ -27,7 +27,7 @@ import { AssistantTemplate } from '../assistants/types';
 import { OnboardingAssistantSelection } from './OnboardingAssistantSelection';
 import { OnboardingIntro } from './OnboardingIntro';
 import classes from './NewAgentModal.module.scss';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends ModalProps {
   isOnboarding?: boolean;
@@ -35,7 +35,7 @@ interface Props extends ModalProps {
 
 export function NewAgentModal({ isOnboarding, ...props }: Props) {
   const router = useRouter();
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
   const [step, setStep] = useState(
     isOnboarding ? Steps.INTRO : Steps.ASSISTANT_SELECTION,
   );

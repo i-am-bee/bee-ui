@@ -20,7 +20,7 @@ import classes from './PreferencesLayout.module.scss';
 import { Tab, TabList, Tabs } from '@carbon/react';
 import { useRouter } from 'next-nprogress-bar';
 import { ReactElement } from 'react';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   section: PreferencesSection;
@@ -29,7 +29,7 @@ interface Props {
 
 export function PreferencesLayout({ section, children }: Props) {
   const router = useRouter();
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
 
   return (
     <AdminView title="User Preferences">

@@ -70,10 +70,7 @@ export default async function ThreadPage({
         navbarProps: { type: 'chat', assistant: threadAssistant.data },
       }}
     >
-      <VectorStoreFilesUploadProvider
-        projectId={projectId}
-        organizationId={organizationId}
-      >
+      <VectorStoreFilesUploadProvider>
         <FilesUploadProvider>
           <ChatProvider
             thread={thread}

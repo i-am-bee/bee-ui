@@ -23,15 +23,10 @@ import { AssistantFormValues } from '../builder/AssistantBuilderProvider';
 import classes from './BuilderTools.module.scss';
 import { ToolsSelector } from './ToolsSelector';
 import { BuilderSectionHeading } from '../builder/BuilderSectionHeading';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
 
 export function BuilderTools() {
   const { openModal } = useModal();
   const { isProjectReadOnly } = useAppContext();
-  const { project, organization } = useProjectContext();
 
   const { setValue, getValues } = useFormContext<AssistantFormValues>();
 
@@ -51,12 +46,10 @@ export function BuilderTools() {
           children: 'New Tool',
           onClick: () =>
             openModal((props) => (
-              <ProjectProvider project={project} organization={organization}>
-                <UserToolModal
-                  onCreateSuccess={handleUserToolCreateSuccess}
-                  {...props}
-                />
-              </ProjectProvider>
+              <UserToolModal
+                onCreateSuccess={handleUserToolCreateSuccess}
+                {...props}
+              />
             )),
           disabled: isProjectReadOnly,
         }}

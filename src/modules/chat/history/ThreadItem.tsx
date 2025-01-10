@@ -25,7 +25,6 @@ import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import {
   Button,
@@ -60,6 +59,7 @@ import {
   useGetThreadAssistant,
 } from './useGetThreadAssistant';
 import { useThreadFileCount } from './useThreadFileCount';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   thread: Thread;
@@ -76,7 +76,7 @@ export function ThreadItem({ thread }: Props) {
   const { openConfirmation } = useModal();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const id = useId();
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;

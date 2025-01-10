@@ -18,15 +18,13 @@ import { ToolReference } from '@/app/api/tools/types';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import classes from './ToolNameWithTooltip.module.scss';
 import { ToolInfoButton } from './ToolInfoButton';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 
 interface Props {
   toolReference: ToolReference;
 }
 
 export function ToolNameWithTooltip({ toolReference }: Props) {
-  const { project, organization } = useProjectContext();
-  const { toolName } = useToolInfo({ toolReference, project, organization });
+  const { toolName } = useToolInfo({ toolReference });
 
   return (
     <span className={classes.root}>

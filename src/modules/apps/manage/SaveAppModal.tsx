@@ -42,9 +42,9 @@ import { AppIconSelector } from '../builder/AppIconSelector';
 import { useSaveArtifact } from '../hooks/useSaveArtifact';
 import { Artifact, ArtifactMetadata } from '../types';
 import { extractAppMetadataFromStreamlitCode } from '../utils';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
 import { useRouter } from 'next-nprogress-bar';
 import classes from './SaveAppModal.module.scss';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export type AppFormValues = {
   name: string;
@@ -74,7 +74,7 @@ export function SaveAppModal({
   const { onRequestClose } = props;
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
 
   const isUpdating = !!artifactProp;
 

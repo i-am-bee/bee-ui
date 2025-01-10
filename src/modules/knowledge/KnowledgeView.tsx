@@ -22,7 +22,7 @@ import {
   VectorStoresListQueryOrderBy,
 } from '@/app/api/vector-stores/types';
 import { CardsList } from '@/components/CardsList/CardsList';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InfiniteData,
@@ -45,7 +45,8 @@ export function KnowledgeView() {
   const [order, setOrder] = useState<VectorStoresListQueryOrderBy>(
     VECTOR_STORES_ORDER_DEFAULT,
   );
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const appContext = useAppContext();
+  const { project, organization, isProjectReadOnly } = appContext;
   const queryClient = useQueryClient();
   const { openModal } = useModal();
 
@@ -149,8 +150,6 @@ export function KnowledgeView() {
             openModal((props) => (
               <CreateKnowledgeModal
                 {...props}
-                organizationId={organization.id}
-                projectId={project.id}
                 onCreateVectorStore={onCreateSuccess}
                 onSuccess={handleInvalidateData}
               />

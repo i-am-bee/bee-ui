@@ -22,10 +22,6 @@ import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useModal } from '@/layout/providers/ModalProvider';
-import {
-  ProjectProvider,
-  useProjectContext,
-} from '@/layout/providers/ProjectProvider';
 import { NavbarHeading } from '@/layout/shell/Navbar';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
 import {
@@ -54,6 +50,7 @@ import classes from './AppBuilder.module.scss';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 import { SourceCodeEditor } from './SourceCodeEditor';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   thread?: Thread;
@@ -62,7 +59,7 @@ interface Props {
 }
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
   const { setCode, getCode } = useAppBuilderApi();
   const { artifact, code } = useAppBuilder();
@@ -160,7 +157,7 @@ function AppBuilderContent() {
   const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
 
   const router = useRouter();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const { openModal } = useModal();
   const { getMessages, sendMessage, thread } = useChat();
   const { setArtifact, setMobilePreviewOpen } = useAppBuilderApi();
@@ -203,17 +200,15 @@ function AppBuilderContent() {
 
             if (isFirstNewApp || hasUnsavedChanges) {
               openModal((props) => (
-                <ProjectProvider project={project} organization={organization}>
-                  <SaveAppModal
-                    artifact={artifact}
-                    messageId={message?.id}
-                    code={code ?? undefined}
-                    onSaveSuccess={setArtifact}
-                    isConfirmation
-                    additionalMetadata={additionalMetadata}
-                    {...props}
-                  />
-                </ProjectProvider>
+                <SaveAppModal
+                  artifact={artifact}
+                  messageId={message?.id}
+                  code={code ?? undefined}
+                  onSaveSuccess={setArtifact}
+                  isConfirmation
+                  additionalMetadata={additionalMetadata}
+                  {...props}
+                />
               ));
               return;
             }
@@ -238,7 +233,7 @@ function AppBuilderContent() {
     totalCount,
   ]);
 
-  const handleReportError = useCallback(
+  const handleFixError = useCallback(
     async (errorText: string) => {
       await sendMessage(
         `I have encountered the following error:\n\n\`\`\`error\n${errorText}\n\`\`\`\n\nFix this error please.`,
@@ -313,16 +308,11 @@ function AppBuilderContent() {
                       artifact
                         ? () =>
                             openModal((props) => (
-                              <ProjectProvider
-                                project={project}
-                                organization={organization}
-                              >
-                                <ShareAppModal
-                                  {...props}
-                                  artifact={artifact}
-                                  onSuccess={setArtifact}
-                                />
-                              </ProjectProvider>
+                              <ShareAppModal
+                                {...props}
+                                artifact={artifact}
+                                onSuccess={setArtifact}
+                              />
                             ))
                         : undefined
                     }
@@ -337,19 +327,14 @@ function AppBuilderContent() {
                   onClick={() => {
                     if (code) {
                       openModal((props) => (
-                        <ProjectProvider
-                          project={project}
-                          organization={organization}
-                        >
-                          <SaveAppModal
-                            artifact={artifact}
-                            messageId={message?.id}
-                            code={code}
-                            onSaveSuccess={setArtifact}
-                            additionalMetadata={additionalMetadata}
-                            {...props}
-                          />
-                        </ProjectProvider>
+                        <SaveAppModal
+                          artifact={artifact}
+                          messageId={message?.id}
+                          code={code}
+                          onSaveSuccess={setArtifact}
+                          additionalMetadata={additionalMetadata}
+                          {...props}
+                        />
                       ));
                     }
                   }}
@@ -364,7 +349,7 @@ function AppBuilderContent() {
             <TabPanel key={TabsKeys.Preview}>
               <ArtifactSharedIframe
                 sourceCode={code}
-                onReportError={handleReportError}
+                onFixError={handleFixError}
               />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>

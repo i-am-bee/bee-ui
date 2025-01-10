@@ -23,11 +23,11 @@ import { useHandleError } from '@/layout/hooks/useHandleError';
 import { isNotNull, noop } from '@/utils/helpers';
 import { useMutation } from '@tanstack/react-query';
 import {
+  createContext,
   Dispatch,
   MutableRefObject,
   PropsWithChildren,
   SetStateAction,
-  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -49,7 +49,6 @@ import {
 import { Thread } from '@/app/api/threads/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { isMimeTypeReadable } from '@/modules/files/utils';
 
 const FilesUploadContext = createContext<{
@@ -82,7 +81,7 @@ const ERROR_MESSAGES = {
 };
 
 export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
-  const { project, organization, assistant } = useAppContext();
+  const { project, organization, assistant, featureFlags } = useAppContext();
   const {
     files,
     setFiles,
@@ -170,8 +169,8 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
         originalFile: file,
         status: 'new' as const,
         isReadable:
-          isFeatureEnabled(FeatureName.Knowledge) &&
-          isMimeTypeReadable(file.type),
+          featureFlags.Knowledge &&
+          isMimeTypeReadable(file.type, featureFlags.TextExtraction),
       }));
 
       setFiles((files) => [...files, ...newFiles]);
@@ -188,7 +187,14 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
         onFileSubmit(inputFile, thread);
       });
     },
-    [mutateCreateVectorStore, onFileSubmit, setFiles, vectorStoreId],
+    [
+      mutateCreateVectorStore,
+      onFileSubmit,
+      setFiles,
+      vectorStoreId,
+      featureFlags.Knowledge,
+      featureFlags.TextExtraction,
+    ],
   );
 
   const onDropRejected = useCallback(
@@ -228,7 +234,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     noClick: true,
     noKeyboard: true,
     maxFiles: CHAT_MAX_FILES_UPLOAD,
-    disabled: !isFeatureEnabled(FeatureName.Files) || !assistant,
+    disabled: !featureFlags.Files || !assistant,
     onDropAccepted,
     onDropRejected,
   });

@@ -18,7 +18,7 @@ import { OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { useRouter } from 'next-nprogress-bar';
 import { Assistant } from '../assistants/types';
 import { useDeleteAssistant } from '../assistants/builder/useDeleteAssistant';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   assistant: Assistant;
@@ -26,7 +26,7 @@ interface Props {
 
 export function ChatNavbarActions({ assistant }: Props) {
   const router = useRouter();
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
   const { deleteAssistant } = useDeleteAssistant({
     assistant,
     onSuccess: () => router.push(`/${project.id}/`),

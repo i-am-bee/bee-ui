@@ -29,13 +29,13 @@ import { AppTemplate } from '../types';
 import { AppsOnboardingTemplateSelection } from './AppsOnboardingTemplateSelection';
 import { ARTIFACT_TEMPLATES } from './templates';
 import { ONBOARDING_PARAM } from '@/utils/constants';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends ModalProps {}
 
 export function AppsOnboardingModal({ ...props }: Props) {
   const router = useRouter();
-  const { project } = useProjectContext();
+  const { project } = useAppContext();
   const [step, setStep] = useState(Steps.INTRO);
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(
     null,

@@ -36,11 +36,11 @@ import { Controller, useForm } from 'react-hook-form';
 import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import { projectUsersQuery, readProjectUserQuery, usersQuery } from './queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function AddUserForm() {
   const htmlId = useId();
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const userId = useUserProfile((state) => state.id);
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();

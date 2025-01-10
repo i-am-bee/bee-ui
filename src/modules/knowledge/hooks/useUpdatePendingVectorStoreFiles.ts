@@ -29,14 +29,14 @@ import {
   VectorStoreFilesListQuery,
 } from '@/app/api/vector-stores-files/types';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export const useUpdatePendingVectorStoreFiles = (
   vectorStore: VectorStore,
   data: VectorStoreFile[],
   params: VectorStoreFilesListQuery,
 ) => {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
 
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({

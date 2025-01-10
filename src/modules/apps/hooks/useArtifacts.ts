@@ -17,10 +17,10 @@
 import { ArtifactsListQuery } from '@/app/api/artifacts/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { listArtifactsQuery } from '../queries';
-import { useProjectContext } from '@/layout/providers/ProjectProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useArtifacts({ params }: { params?: ArtifactsListQuery } = {}) {
-  const { project, organization } = useProjectContext();
+  const { project, organization } = useAppContext();
 
   const query = useInfiniteQuery({
     ...listArtifactsQuery(organization.id, project.id, params),

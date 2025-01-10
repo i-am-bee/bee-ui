@@ -15,21 +15,26 @@
  */
 
 import { useToast } from '@/layout/providers/ToastProvider';
-import { FeatureName, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import { FileUploaderItem } from '@carbon/react';
 import { CloudUpload } from '@carbon/react/icons';
 import clsx from 'clsx';
-import mimeType from 'mime-types';
-import { Dispatch, SetStateAction, SyntheticEvent, useCallback } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  SyntheticEvent,
+  useCallback,
+  useMemo,
+} from 'react';
 import { ErrorCode, FileRejection, useDropzone } from 'react-dropzone';
 import { v4 as uuid } from 'uuid';
 import classes from './KnowledgeFilesUpload.module.scss';
 import { VectoreStoreFileUpload } from './VectorStoreFilesUploadProvider';
 import {
-  ALLOWED_MIME_TYPES,
+  getAllowedMimeTypes,
   HUMAN_ALLOWED_EXTENSIONS_EXTRACTION,
   HUMAN_ALLOWED_EXTENSIONS_TEXT_EXAMPLE,
 } from '@/modules/files/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   files: VectoreStoreFileUpload[];
@@ -39,6 +44,7 @@ interface Props {
 
 export function KnowledgeFilesUpload({ files, disabled, onSetFiles }: Props) {
   const { addToast } = useToast();
+  const { featureFlags } = useAppContext();
 
   const onDropAccepted = useCallback(
     async (acceptedFiles: File[]) => {
@@ -67,10 +73,22 @@ export function KnowledgeFilesUpload({ files, disabled, onSetFiles }: Props) {
     [addToast],
   );
 
+  const allowedMimeTypes = useMemo(
+    () =>
+      getAllowedMimeTypes(featureFlags.TextExtraction).reduce(
+        (result: { [key: string]: [] }, type) => {
+          result[type] = [];
+          return result;
+        },
+        {},
+      ),
+    [featureFlags.TextExtraction],
+  );
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDropAccepted,
     onDropRejected,
-    accept: DROPZONE_ALLOWED_MIME_TYPES,
+    accept: allowedMimeTypes,
     validator: (file) => {
       if (file.size > MAX_SIZE)
         return { message: 'File is too big.', code: ErrorCode.FileTooLarge };
@@ -102,7 +120,7 @@ export function KnowledgeFilesUpload({ files, disabled, onSetFiles }: Props) {
           <p className={classes.description}>
             Supports files up to {HUMAN_MAX_SIZE}. Accepted formats: plain text
             ({HUMAN_ALLOWED_EXTENSIONS_TEXT_EXAMPLE}, ...)
-            {isFeatureEnabled(FeatureName.TextExtraction)
+            {featureFlags.TextExtraction
               ? ` and other files containing text (
             ${HUMAN_ALLOWED_EXTENSIONS_EXTRACTION})`
               : ''}
@@ -167,11 +185,3 @@ function UploadFileItem({ value, onDelete }: UploadFileItemProps) {
     />
   );
 }
-
-const DROPZONE_ALLOWED_MIME_TYPES = ALLOWED_MIME_TYPES.reduce(
-  (result: { [key: string]: [] }, type) => {
-    result[type] = [];
-    return result;
-  },
-  {},
-);
