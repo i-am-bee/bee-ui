@@ -17,7 +17,14 @@
 import { FormLabel } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { CSSProperties, ReactNode, TextareaHTMLAttributes } from 'react';
+import {
+  CSSProperties,
+  ReactNode,
+  TextareaHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import python from 'react-syntax-highlighter/dist/cjs/languages/hljs/python';
 import defaultStyle from 'react-syntax-highlighter/dist/cjs/styles/hljs/default-style';
@@ -122,7 +129,7 @@ interface Props
   onChange?: (value: string) => void;
   invalid?: boolean;
   readOnly?: boolean;
-  // showLineNumbers?: boolean;
+  showLineNumbers?: boolean;
 }
 
 export function EditableSyntaxHighlighter({
@@ -132,19 +139,44 @@ export function EditableSyntaxHighlighter({
   onChange,
   invalid,
   readOnly,
-  // showLineNumbers,
+  showLineNumbers,
   ...props
 }: Props) {
+  const [lineNumberWidth, setLineNumberWidth] = useState<number>(0);
+  const preRef = useRef<HTMLPreElement>(null);
+
+  const PreTag = (preProps: any) => <pre {...preProps} ref={preRef} />;
+
+  useEffect(() => {
+    if (!preRef.current) {
+      return;
+    }
+
+    const lineNumberElement = [
+      ...preRef.current.querySelectorAll('.linenumber'),
+    ].at(-1);
+
+    setLineNumberWidth(
+      lineNumberElement ? (lineNumberElement as HTMLElement).offsetWidth : 0,
+    );
+  }, [value]);
+
   return (
     <div className={classes.root}>
       {labelText && <FormLabel id={id}>{labelText}</FormLabel>}
 
-      <div className={clsx(classes.wrapper, { [classes.invalid]: invalid })}>
+      <div
+        className={clsx(classes.wrapper, { [classes.invalid]: invalid })}
+        style={
+          { [`--line-number-width`]: `${lineNumberWidth}px` } as CSSProperties
+        }
+      >
         <SyntaxHighlighter
+          PreTag={PreTag}
           language="python"
           style={style}
-          // TODO: resolve text wrapping
-          // showLineNumbers={showLineNumbers}
+          showLineNumbers={showLineNumbers}
+          wrapLongLines
         >
           {value.at(-1) === '\n' ? `${value} ` : value}
         </SyntaxHighlighter>

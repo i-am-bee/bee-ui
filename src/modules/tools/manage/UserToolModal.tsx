@@ -224,6 +224,7 @@ export function UserToolModal({
                     required
                     invalid={errors.sourceCode != null}
                     rows={16}
+                    showLineNumbers
                   />
                 )}
               />

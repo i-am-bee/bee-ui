@@ -64,10 +64,18 @@
     padding: $spacing-05;
   }
 
+  > .textarea {
+    padding-inline-start: calc(var(--line-number-width) + #{$spacing-05});
+  }
+
   code {
     display: block;
     inline-size: 100%;
     white-space: pre-wrap !important;
+  }
+
+  :global(.linenumber) {
+    min-inline-size: var(--line-number-width) !important;
   }
 
   &.invalid {
