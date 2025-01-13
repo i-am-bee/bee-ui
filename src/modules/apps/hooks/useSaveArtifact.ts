@@ -20,9 +20,9 @@ import {
   ArtifactResult,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { listArtifactsQuery, readArtifactQuery } from '../queries';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { readArtifactQuery, useArtifactsQueries } from '../queries';
 
 type Props = {
   onSuccess?: (artifact: ArtifactResult) => void;
@@ -31,6 +31,7 @@ type Props = {
 export function useSaveArtifact({ onSuccess }: Props) {
   const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
+  const artifactsQueries = useArtifactsQueries();
 
   return useMutation({
     mutationFn: ({
@@ -52,12 +53,6 @@ export function useSaveArtifact({ onSuccess }: Props) {
             body as ArtifactCreateBody,
           ),
     onSuccess: (artifact) => {
-      queryClient.invalidateQueries({
-        queryKey: [
-          listArtifactsQuery(organization.id, project.id).queryKey.at(0),
-        ],
-      });
-
       if (artifact) {
         queryClient.invalidateQueries({
           queryKey: readArtifactQuery(organization.id, project.id, artifact.id)
@@ -68,6 +63,7 @@ export function useSaveArtifact({ onSuccess }: Props) {
       }
     },
     meta: {
+      invalidates: [artifactsQueries.lists()],
       errorToast: {
         title: 'Failed to save the app',
       },

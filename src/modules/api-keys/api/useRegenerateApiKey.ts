@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createApiKey, deleteApiKey } from '@/app/api/api-keys';
 import { ApiKey } from '@/app/api/api-keys/types';
-import { apiKeysQuery } from './queries';
-import { Organization } from '@/app/api/organization/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation } from '@tanstack/react-query';
+import { useApiKeysQueries } from './queries';
 
 export function useRegenerateApiKey({
-  organization,
   onSuccess,
 }: {
   onSuccess?: (apiKey?: ApiKey) => void;
-  organization: Organization;
 }) {
-  const queryClient = useQueryClient();
+  const { organization } = useAppContext();
+  const apiKeysQueries = useApiKeysQueries();
 
   const mutation = useMutation({
     mutationFn: async ({ id, name, project }: ApiKey) => {
@@ -35,13 +34,9 @@ export function useRegenerateApiKey({
       await deleteApiKey(organization.id, project.id, id);
       return result;
     },
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({
-        queryKey: [apiKeysQuery(organization.id).queryKey.at(0)],
-      });
-      onSuccess?.(result);
-    },
+    onSuccess,
     meta: {
+      invalidates: [apiKeysQueries.lists()],
       errorToast: {
         title: 'Failed to regenerate the api key',
         includeErrorMessage: true,

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { createApiKey } from '@/app/api/api-keys';
 import { ApiKey } from '@/app/api/api-keys/types';
 import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { TextWithCopyButton } from '@/components/TextWithCopyButton/TextWithCopyButton';
 import { useOnMount } from '@/hooks/useOnMount';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
 import { useProjects } from '@/modules/projects/hooks/useProjects';
 import { ProjectWithScope } from '@/modules/projects/types';
@@ -35,38 +35,29 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useCallback, useEffect, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { apiKeysQuery } from '../api/queries';
+import { useCreateApiKey } from '../api/useCreateApiKey';
 import { useDeleteApiKey } from '../api/useDeleteApiKey';
 import { useRegenerateApiKey } from '../api/useRegenerateApiKey';
 import classes from './ApiKeyModal.module.scss';
-import { Organization } from '@/app/api/organization/types';
 
 interface FormValues {
   name: string;
-  project?: ProjectWithScope;
+  project: ProjectWithScope;
 }
 
 interface Props extends ModalProps {
-  project: ProjectWithScope;
-  organization: Organization;
   onSuccess?: () => void;
 }
 
-export function ApiKeyModal({
-  project: currentProject,
-  organization,
-  onSuccess,
-  ...props
-}: Props) {
+export function ApiKeyModal({ onSuccess, ...props }: Props) {
   const { onRequestClose } = props;
   const id = useId();
   const { openModal } = useModal();
 
-  const queryClient = useQueryClient();
+  const { organization, project } = useAppContext();
 
   const { projects, isLoading, isFetching, hasNextPage, fetchNextPage } =
     useProjects({ organization, withRole: true });
@@ -83,37 +74,25 @@ export function ApiKeyModal({
   } = useForm<FormValues>({
     defaultValues: {
       name: '',
-      project: currentProject,
+      project,
     },
     mode: 'onChange',
   });
 
-  const { mutateAsync: mutateSaveTool } = useMutation({
-    mutationFn: ({ project, ...body }: FormValues) =>
-      createApiKey(organization.id, project?.id ?? '', body),
+  const { mutateAsync: mutateCreate } = useCreateApiKey({
     onSuccess: (result) => {
-      queryClient.invalidateQueries({
-        queryKey: [apiKeysQuery(organization.id).queryKey.at(0)],
-      });
-
       if (result) {
         onRequestClose();
         openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
       }
     },
-    meta: {
-      errorToast: {
-        title: 'Failed to create API key',
-        includeErrorMessage: true,
-      },
-    },
   });
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (values) => {
-      await mutateSaveTool(values);
+      await mutateCreate(values);
     },
-    [mutateSaveTool],
+    [mutateCreate],
   );
 
   return (
@@ -145,7 +124,7 @@ export function ApiKeyModal({
                 name="project"
                 control={control}
                 rules={{ required: true }}
-                render={({ field: { onChange, value, ref } }) => (
+                render={({ field: { onChange, value } }) => (
                   <ComboBox
                     id={`${id}:project`}
                     items={projects ?? []}
@@ -191,16 +170,13 @@ export function ApiKeyModal({
 
 ApiKeyModal.Regenerate = function RegenerateModal({
   apiKey,
-  organization,
   ...props
 }: {
-  organization: Organization;
   apiKey: ApiKey;
 } & ModalProps) {
   const { openModal } = useModal();
 
   const { mutate } = useRegenerateApiKey({
-    organization,
     onSuccess: (result) => {
       if (result) {
         openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
@@ -253,15 +229,12 @@ ApiKeyModal.View = function ViewModal({
 
 ApiKeyModal.Delete = function DeleteModal({
   apiKey,
-  organization,
   ...props
 }: {
   apiKey: ApiKey;
-  organization: Organization;
 } & ModalProps) {
-  const { mutate, isPending } = useDeleteApiKey({
+  const { mutate: mutateDelete, isPending } = useDeleteApiKey({
     onSuccess: () => props.onRequestClose(),
-    organization,
   });
 
   return (
@@ -286,12 +259,7 @@ ApiKeyModal.Delete = function DeleteModal({
           kind="danger"
           type="submit"
           disabled={isPending}
-          onClick={() =>
-            mutate({
-              id: apiKey.id,
-              projectId: apiKey.project.id,
-            })
-          }
+          onClick={() => mutateDelete(apiKey)}
         >
           {isPending ? <InlineLoading title="Deleting..." /> : 'Delete key'}
         </Button>

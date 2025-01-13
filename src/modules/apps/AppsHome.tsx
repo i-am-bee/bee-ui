@@ -41,7 +41,7 @@ import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
 import { useArtifacts } from './hooks/useArtifacts';
 import { AppsList } from './library/AppsList';
 import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
-import { listArtifactsQuery } from './queries';
+import { useArtifactsQueries } from './queries';
 import { Artifact } from './types';
 
 export function AppsHome() {
@@ -59,6 +59,7 @@ export function AppsHome() {
     !isProjectReadOnly && searchParams?.has(ONBOARDING_AGENTS_PARAM);
 
   const queryClient = useQueryClient();
+  const artifactsQueries = useArtifactsQueries();
 
   const params = {
     ...order,
@@ -91,7 +92,7 @@ export function AppsHome() {
 
   const handleDeleteArtifactSuccess = (artifact: Artifact) => {
     queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-      listArtifactsQuery(organization.id, project.id, params).queryKey,
+      artifactsQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {

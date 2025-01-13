@@ -17,11 +17,13 @@
 'use client';
 
 import {
+  matchQuery,
   MutationCache,
   QueryCache,
   QueryClient,
   QueryClientConfig,
   QueryClientProvider,
+  QueryKey,
 } from '@tanstack/react-query';
 import { PropsWithChildren } from 'react';
 import { useHandleError } from '../hooks/useHandleError';
@@ -33,14 +35,17 @@ interface QueryMetadata extends Record<string, unknown> {
 declare module '@tanstack/react-query' {
   interface Register {
     queryMeta: QueryMetadata;
-    mutationMeta: QueryMetadata;
+    mutationMeta: QueryMetadata & {
+      invalidates?: QueryKey[];
+    };
   }
 }
 
 function makeQueryClient(
+  handleError: HandleErrorFn,
   config: Omit<QueryClientConfig, 'defaultOptions'> = {},
 ) {
-  return new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         // With SSR, we usually want to set some default staleTime
@@ -48,8 +53,35 @@ function makeQueryClient(
         staleTime: 60 * 1000,
       },
     },
+    queryCache: new QueryCache({
+      onError(error, query) {
+        handleError(error, {
+          toast: query.meta?.errorToast,
+        });
+      },
+    }),
+    mutationCache: new MutationCache({
+      onError(error, variables, context, mutation) {
+        handleError(error, {
+          toast: mutation.meta?.errorToast,
+        });
+      },
+      onSuccess(data, variables, context, mutation) {
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            return (
+              mutation.meta?.invalidates?.some((queryKey) =>
+                matchQuery({ queryKey }, query),
+              ) ?? false
+            );
+          },
+        });
+      },
+    }),
     ...config,
   });
+
+  return queryClient;
 }
 
 let browserQueryClient: QueryClient | undefined = undefined;
@@ -57,45 +89,20 @@ let browserQueryClient: QueryClient | undefined = undefined;
 function getQueryClient(handleError: HandleErrorFn) {
   if (typeof window === 'undefined') {
     // Server: always make a new query client
-    return makeQueryClient({
-      queryCache: getQueryCache(handleError),
-      mutationCache: getMutationCache(handleError),
-    });
+    return makeQueryClient(handleError);
   } else {
     // Browser: make a new query client if we don't already have one
     // This is very important so we don't re-make a new client if React
     // suspends during the initial render. This may not be needed if we
     // have a suspense boundary BELOW the creation of the query client
-    if (!browserQueryClient)
-      browserQueryClient = makeQueryClient({
-        queryCache: getQueryCache(handleError),
-        mutationCache: getMutationCache(handleError),
-      });
+    if (!browserQueryClient) {
+      browserQueryClient = makeQueryClient(handleError);
+    }
     return browserQueryClient;
   }
 }
 
 type HandleErrorFn = ReturnType<typeof useHandleError>;
-
-function getQueryCache(handleError: HandleErrorFn) {
-  return new QueryCache({
-    onError(error, query) {
-      handleError(error, {
-        toast: query.meta?.errorToast,
-      });
-    },
-  });
-}
-
-function getMutationCache(handleError: HandleErrorFn) {
-  return new MutationCache({
-    onError(error, variables, context, mutation) {
-      handleError(error, {
-        toast: mutation.meta?.errorToast,
-      });
-    },
-  });
-}
 
 export function QueryProvider({ children }: PropsWithChildren) {
   const handleError = useHandleError();

@@ -20,8 +20,7 @@ import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { Artifact } from './types';
 import { ArtifactsListQuery } from '@/app/api/artifacts/types';
 import { isNotNull } from '@/utils/helpers';
-
-export const chatCompletionsQuery = () => {};
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export const readArtifactQuery = (
   organizationId: string,
@@ -35,38 +34,52 @@ export const readArtifactQuery = (
     staleTime: 10 * 60 * 1000,
   });
 
-export const listArtifactsQuery = (
-  organizationId: string,
-  projectId: string,
-  params?: ArtifactsListQuery,
-) =>
-  infiniteQueryOptions({
-    queryKey: ['artifacts', organizationId, projectId, params],
-    queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listArtifacts(organizationId, projectId, {
-        ...params,
-        limit: params?.limit || PAGE_SIZE,
-        after: pageParam,
+export function useArtifactsQueries() {
+  const { organization, project } = useAppContext();
+
+  const artifactsQueries = {
+    all: () => ['artifacts'] as const,
+    lists: () => [...artifactsQueries.all(), 'list'] as const,
+    list: (params?: ArtifactsListQuery) =>
+      infiniteQueryOptions({
+        queryKey: [...artifactsQueries.lists(), { params }],
+        queryFn: ({ pageParam }: { pageParam?: string }) =>
+          listArtifacts(organization.id, project.id, {
+            ...params,
+            limit: params?.limit || PAGE_SIZE,
+            after: pageParam,
+          }),
+        initialPageParam: undefined,
+        getNextPageParam(lastPage) {
+          return lastPage?.has_more && lastPage?.last_id
+            ? lastPage.last_id
+            : undefined;
+        },
+        select(data) {
+          const artifacts = data.pages
+            .flatMap((page) => page?.data)
+            .filter(isNotNull)
+            .map((item) => decodeEntityWithMetadata<Artifact>(item));
+
+          return {
+            artifacts,
+            totalCount: data.pages.at(0)?.total_count,
+          };
+        },
+        meta: {
+          errorToast: false,
+        },
       }),
-    initialPageParam: undefined,
-    getNextPageParam(lastPage) {
-      return lastPage?.has_more && lastPage?.last_id
-        ? lastPage.last_id
-        : undefined;
-    },
-    select(data) {
-      const artifacts = data.pages
-        .flatMap((page) => page?.data)
-        .filter(isNotNull)
-        .map((item) => decodeEntityWithMetadata<Artifact>(item));
-      return {
-        artifacts,
-        totalCount: data.pages.at(0)?.total_count,
-      };
-    },
-    meta: {
-      errorToast: false,
-    },
-  });
+    details: () => [...artifactsQueries.all(), 'detail'] as const,
+    // detail: () => queryOptions({
+    //   queryKey: ['artifact', organizationId, projectId, id],
+    //   queryFn: () => readArtifact(organizationId, projectId, id),
+    //   select: (data) => (data ? decodeEntityWithMetadata<Artifact>(data) : null),
+    //   staleTime: 10 * 60 * 1000,
+    // })
+  };
+
+  return artifactsQueries;
+}
 
 const PAGE_SIZE = 10;

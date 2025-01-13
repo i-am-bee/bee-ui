@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import { deleteArtifact } from '@/app/api/artifacts';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { useArtifactsQueries } from '../queries';
 import { Artifact } from '../types';
-import { deleteArtifact } from '@/app/api/artifacts';
-import { listArtifactsQuery } from '../queries';
 
 interface Props {
   artifact?: Artifact;
@@ -28,22 +28,14 @@ interface Props {
 
 export function useDeleteArtifact({ artifact, onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project, organization } = useAppContext();
-  const queryClient = useQueryClient();
+  const { organization, project } = useAppContext();
+  const artifactsQueries = useArtifactsQueries();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (id: string) => deleteArtifact(organization.id, project.id, id),
-    onSuccess: () => {
-      onSuccess?.();
-
-      // invalidate all queries on GET:/artifacts
-      queryClient.invalidateQueries({
-        queryKey: [
-          listArtifactsQuery(organization.id, project.id).queryKey.at(0),
-        ],
-      });
-    },
+    onSuccess,
     meta: {
+      invalidates: [artifactsQueries.lists()],
       errorToast: {
         title: 'Failed to delete the app',
         includeErrorMessage: true,

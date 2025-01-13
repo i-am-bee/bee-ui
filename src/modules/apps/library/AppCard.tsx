@@ -43,7 +43,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
       onDeleteSuccess?.(artifact);
     },
   });
-  const { project, organization } = useAppContext();
+  const { project } = useAppContext();
 
   return (
     <>

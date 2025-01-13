@@ -116,6 +116,8 @@ const authResult = NextAuth(() => ({
           return true;
         }
       } catch (error) {
+        console.log('bagr', { error });
+
         if (
           error instanceof TypeError &&
           checkErrorCode(error) === 'ECONNREFUSED'

@@ -16,24 +16,32 @@
 
 import { listApiKeys } from '@/app/api/api-keys';
 import { ApiKeysListQuery } from '@/app/api/api-keys/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { queryOptions } from '@tanstack/react-query';
 
-export const apiKeysQuery = (
-  organizationId: string,
-  params?: ApiKeysListQuery,
-) =>
-  queryOptions({
-    queryKey: ['api-keys', params],
-    queryFn: () =>
-      listApiKeys(organizationId, {
-        order_by: 'created_at',
-        order: 'desc',
-        ...params,
+export function useApiKeysQueries() {
+  const { organization } = useAppContext();
+
+  const apiKeysQueries = {
+    all: () => ['api-keys'] as const,
+    lists: () => [...apiKeysQueries.all(), 'list'] as const,
+    list: (params?: ApiKeysListQuery) =>
+      queryOptions({
+        queryKey: [...apiKeysQueries.lists(), { params }],
+        queryFn: () =>
+          listApiKeys(organization.id, {
+            order_by: 'created_at',
+            order: 'desc',
+            ...params,
+          }),
+        meta: {
+          errorToast: {
+            title: 'Failed to load api keys',
+            includeErrorMessage: true,
+          },
+        },
       }),
-    meta: {
-      errorToast: {
-        title: 'Failed to load api keys',
-        includeErrorMessage: true,
-      },
-    },
-  });
+  };
+
+  return apiKeysQueries;
+}

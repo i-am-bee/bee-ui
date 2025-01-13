@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateApiKey } from '@/app/api/api-keys';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation } from '@tanstack/react-query';
+import { useApiKeysQueries } from './queries';
 
-export function useRenameApiKey({ onSuccess }: { onSuccess?: () => void }) {
-  const queryClient = useQueryClient();
+export function useRenameApiKey() {
+  const { organization } = useAppContext();
+  const apiKeysQueries = useApiKeysQueries();
 
   const mutation = useMutation({
     mutationFn: ({
-      id,
       projectId,
-      organizationId,
+      id,
       name,
     }: {
-      id: string;
       projectId: string;
-      organizationId: string;
+      id: string;
       name: string;
-    }) => updateApiKey(organizationId, projectId, id, { name }),
-    onSuccess,
+    }) => updateApiKey(organization.id, projectId, id, { name }),
     meta: {
+      invalidates: [apiKeysQueries.lists()],
       errorToast: {
         title: 'Failed to rename the api key',
         includeErrorMessage: true,
