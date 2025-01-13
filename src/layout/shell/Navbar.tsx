@@ -80,7 +80,10 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
               {
                 title: navbarProps.assistant.name ?? '',
                 icon: (
-                  <AssistantIcon assistant={navbarProps.assistant ?? null} />
+                  <AssistantIcon
+                    assistant={navbarProps.assistant ?? null}
+                    size="sm"
+                  />
                 ),
               },
             ]

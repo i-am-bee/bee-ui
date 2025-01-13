@@ -24,13 +24,9 @@
   justify-content: center;
   align-items: center;
   z-index: 1;
-  iframe {
-    max-inline-size: rem(800px);
-  }
 
   :global(.#{$prefix}--loading-overlay) {
     position: absolute;
-    // background-color: $layer-02;
   }
 }
 .app {
@@ -63,6 +59,19 @@
     }
     [data-fill='background'] {
       fill: $background;
+    }
+  }
+}
+
+@include breakpoint-up(md) {
+  .root {
+    &.variant-detail iframe {
+      min-inline-size: rem(624px);
+      max-inline-size: rem(1264px);
+      inline-size: 50%;
+    }
+    &.variant-builder iframe {
+      max-inline-size: rem(800px);
     }
   }
 }
