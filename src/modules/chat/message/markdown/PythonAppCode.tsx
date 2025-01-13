@@ -51,6 +51,9 @@ export function PythonAppCode({
     [],
   );
 
+  // hide, the error is displayed elsewhere
+  if (message?.error) return null;
+
   return (
     <div
       className={classes.root}
@@ -64,8 +67,6 @@ export function PythonAppCode({
     >
       {message?.pending ? (
         <MessageLoading message={loadingMessage} showSpinner />
-      ) : message?.error ? (
-        'There was an error loading the app'
       ) : (
         <div className={classes.app}>
           <span className={classes.icon}>

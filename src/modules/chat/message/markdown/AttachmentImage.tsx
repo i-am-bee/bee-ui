@@ -19,6 +19,7 @@ import classes from './AttachmentImage.module.scss';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { readFileContent } from '@/app/api/files';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 export function AttachmentImage({
   fileId,
@@ -39,7 +40,7 @@ export function AttachmentImage({
     <span className={classes.root}>
       {isLoading ? (
         <>
-          Loading image <Spinner />
+          Loading image <Spinner size="sm" />
         </>
       ) : (
         <>

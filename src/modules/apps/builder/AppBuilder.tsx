@@ -52,7 +52,7 @@ import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 import { SourceCodeEditor } from './SourceCodeEditor';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { isBotMessage, isUserMessage } from '@/modules/chat/utils';
+import { isBotMessage } from '@/modules/chat/utils';
 
 interface Props {
   thread?: Thread;
@@ -196,8 +196,13 @@ function AppBuilderContent() {
 
   const isCodePending = message?.pending;
   useEffect(() => {
-    setSelectedTab(isCodePending ? TabsKeys.SourceCode : TabsKeys.Preview);
-  }, [isCodePending]);
+    if (isCodePending) {
+      setSelectedTab(TabsKeys.SourceCode);
+      setMobilePreviewOpen(true);
+    } else {
+      setSelectedTab(TabsKeys.Preview);
+    }
+  }, [isCodePending, setMobilePreviewOpen]);
 
   useEffect(() => {
     const navbarProps = getAppBuilderNavbarProps(

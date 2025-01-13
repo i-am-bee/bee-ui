@@ -23,6 +23,8 @@ import { ChatMessage } from '../types';
 import { MarkdownContent } from './MarkdownContent';
 import classes from './MessageContent.module.scss';
 import { MessageLoading } from './MessageLoading';
+import { useChat } from '../providers/ChatProvider';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 export function MessageContent({ message }: { message: ChatMessage }) {
   const { run } = useRunContext();
@@ -75,20 +77,16 @@ export function MessageContent({ message }: { message: ChatMessage }) {
 
       return null;
     }
-    return (
-      <blockquote>
-        <MarkdownContent content={message.content} />
-      </blockquote>
-    );
   }
   return (
     <blockquote>
-      <p>{message.content}</p>
+      <MarkdownContent content={message.content} />
     </blockquote>
   );
 }
 
 function PendingThought({ plan }: { plan?: AssistantPlan }) {
+  const { assistant } = useChat();
   const THROTTLE_WAIT = 2000;
   const [thought, setThought] = useState(null);
   const pendingThought = getLastCompletedStep(plan)?.thought;
@@ -115,7 +113,7 @@ function PendingThought({ plan }: { plan?: AssistantPlan }) {
     </blockquote>
   ) : (
     <blockquote>
-      <MessageLoading message="Thinking" showSpinner />
+      <Spinner />
     </blockquote>
   );
 }

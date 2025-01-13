@@ -46,6 +46,7 @@ import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props {
   message: BotChatMessage;

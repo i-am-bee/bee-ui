@@ -24,6 +24,7 @@ import { PlanStep } from './PlanStep';
 import classes from './PlanView.module.scss';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props {
   plan: AssistantPlan;
@@ -77,7 +78,7 @@ export function PlanView({ plan, show, allStepsDone }: Props) {
                   key={`${id}:trace`}
                   className={classes.trace}
                 >
-                  <Spinner />
+                  <Spinner size="sm" />
                 </motion.li>
               )}
             </AnimatePresence>
