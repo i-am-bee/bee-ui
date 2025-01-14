@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
+import { createVectorStore } from '@/app/api/vector-stores';
+import {
+  VectorStore,
+  VectorStoreCreateBody,
+} from '@/app/api/vector-stores/types';
 import { Modal } from '@/components/Modal/Modal';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { ModalProps } from '@/layout/providers/ModalProvider';
+import { useToast } from '@/layout/providers/ToastProvider';
 import {
   Button,
   InlineLoading,
@@ -23,23 +31,16 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import classes from './CreateKnowledgeModal.module.scss';
-import { ModalProps } from '@/layout/providers/ModalProvider';
-import {
-  VectorStore,
-  VectorStoreCreateBody,
-} from '@/app/api/vector-stores/types';
-import { createVectorStore } from '@/app/api/vector-stores';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useId } from 'react';
-import { KnowledgeFilesUpload } from '../files/KnowledgeFilesUpload';
 import { useForm } from 'react-hook-form';
+import { KnowledgeFilesUpload } from '../files/KnowledgeFilesUpload';
 import {
   useVectoreStoreFilesUpload,
   VectorStoreFilesUploadProvider,
 } from '../files/VectorStoreFilesUploadProvider';
-import { useToast } from '@/layout/providers/ToastProvider';
-import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
+import { useVectorStoresQueries } from '../queries';
+import classes from './CreateKnowledgeModal.module.scss';
 
 export interface CreateKnowledgeValues {
   name: string;
@@ -47,7 +48,7 @@ export interface CreateKnowledgeValues {
 
 interface Props {
   onCreateVectorStore: (vectorStore: VectorStore) => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 export function CreateKnowledgeModal({
@@ -56,7 +57,7 @@ export function CreateKnowledgeModal({
   ...props
 }: Props & ModalProps) {
   const handleSucces = () => {
-    onSuccess();
+    onSuccess?.();
     props.onRequestClose();
   };
   return (
@@ -85,6 +86,7 @@ function CreateKnowledgeModalContent({
 }: ContentProps) {
   const { addToast } = useToast();
   const { organization, project } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
   const { files, setFiles, onFileSubmit, setVectorStoreId } =
     useVectoreStoreFilesUpload();
 
@@ -100,6 +102,7 @@ function CreateKnowledgeModalContent({
       }
     },
     meta: {
+      invalidates: [vectorStoresQueries.lists()],
       errorToast: {
         title: 'Failed to create the knowledge base',
         includeErrorMessage: true,

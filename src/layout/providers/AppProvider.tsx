@@ -19,11 +19,12 @@ import { Organization } from '@/app/api/organization/types';
 import { ProjectUser } from '@/app/api/projects-users/types';
 import { Project } from '@/app/api/projects/types';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
-import { readAssistantQuery } from '@/modules/assistants/queries';
+import { getAssistantsQueries } from '@/modules/assistants/queries';
 import { Assistant } from '@/modules/assistants/types';
-import { readProjectQuery } from '@/modules/projects/queries';
+import { getProjectsQueries } from '@/modules/projects/queries';
 import { readProjectUserQuery } from '@/modules/projects/users/queries';
 import { useUserProfile } from '@/store/user-profile';
+import { FeatureName } from '@/utils/parseFeatureFlags';
 import { useQuery } from '@tanstack/react-query';
 import {
   createContext,
@@ -34,7 +35,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { FeatureName } from '@/utils/parseFeatureFlags';
 
 export interface AppContextValue {
   assistant: Assistant | null;
@@ -60,8 +60,6 @@ const AppApiContext = createContext<AppApiContextValue>(
   null as unknown as AppApiContextValue,
 );
 
-const ProjectContext = createContext<Props>(null as unknown as Props);
-
 interface Props {
   featureFlags: Record<FeatureName, boolean>;
   project: Project;
@@ -78,14 +76,16 @@ export function AppProvider({
   const [assistant, setAssistant] = useState<Assistant | null>(null);
   const onPageLeaveRef = useRef(() => null);
   const userId = useUserProfile((state) => state.id);
+  const projectsQueries = getProjectsQueries({ organization });
+  const assistantsQueries = getAssistantsQueries({ organization, project });
 
   const { data: projectData } = useQuery({
-    ...readProjectQuery(organization.id, project.id),
+    ...projectsQueries.detail(project.id),
     initialData: project,
   });
 
   const { data: assistantData } = useQuery({
-    ...readAssistantQuery(organization.id, project.id, assistant?.id ?? ''),
+    ...assistantsQueries.detail(assistant?.id ?? ''),
     enabled: Boolean(assistant),
     initialData: assistant
       ? encodeEntityWithMetadata<Assistant>(assistant)

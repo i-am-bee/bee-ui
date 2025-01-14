@@ -19,6 +19,9 @@ import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
+import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
 import {
   Button,
@@ -33,11 +36,8 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { readToolQuery, toolsQuery } from '../queries';
+import { useToolsQueries } from '../queries';
 import classes from './UserToolModal.module.scss';
-import { useModalControl } from '@/layout/providers/ModalControlProvider';
-import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -73,7 +73,7 @@ export function UserToolModal({
   onDeleteSuccess,
   ...props
 }: Props) {
-  const { project, organization, featureFlags } = useAppContext();
+  const { project, organization } = useAppContext();
   const { onRequestClose } = props;
   const { openConfirmation } = useModal();
   const id = useId();
@@ -82,6 +82,7 @@ export function UserToolModal({
   const editMode = tool != undefined;
 
   const queryClient = useQueryClient();
+  const toolsQueries = useToolsQueries();
 
   const {
     control,
@@ -109,21 +110,8 @@ export function UserToolModal({
         : createTool(organization.id, project.id, body);
     },
     onSuccess: (tool, { id }) => {
-      queryClient.invalidateQueries({
-        queryKey: [
-          toolsQuery(
-            organization.id,
-            project.id,
-            featureFlags.Knowledge,
-          ).queryKey.at(0),
-        ],
-      });
-
       if (tool) {
-        queryClient.invalidateQueries({
-          queryKey: readToolQuery(organization.id, project.id, tool.id)
-            .queryKey,
-        });
+        queryClient.invalidateQueries(toolsQueries.detail(tool.id));
 
         if (!id) {
           onCreateSuccess?.(tool);
@@ -135,6 +123,7 @@ export function UserToolModal({
       onRequestClose();
     },
     meta: {
+      invalidates: [toolsQueries.lists()],
       errorToast: {
         title: id ? 'Failed to update tool' : 'Failed to create a new tool',
       },
@@ -147,18 +136,9 @@ export function UserToolModal({
       onSuccess: () => {
         tool && onDeleteSuccess?.(tool);
         onRequestClose();
-
-        queryClient.invalidateQueries({
-          queryKey: [
-            toolsQuery(
-              organization.id,
-              project.id,
-              featureFlags.Knowledge,
-            ).queryKey.at(0),
-          ],
-        });
       },
       meta: {
+        invalidates: [toolsQueries.lists()],
         errorToast: {
           title: 'Failed to delete tool',
           includeErrorMessage: true,

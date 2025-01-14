@@ -16,13 +16,12 @@
 
 'use client';
 import { Thread } from '@/app/api/threads/types';
+import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { HTMLAttributes, memo } from 'react';
-import { PAGE_SIZE, threadsQuery } from './queries';
+import { THREADS_DEFAULT_PAGE_SIZE, useThreadsQueries } from './queries';
 import { ThreadItem } from './ThreadItem';
 import classes from './ThreadsHistory.module.scss';
-import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends HTMLAttributes<HTMLElement> {
   enableFetch: boolean;
@@ -32,7 +31,7 @@ export const ThreadsHistory = memo(function ThreadsHistory({
   enableFetch,
   className,
 }: Props) {
-  const { project, organization } = useAppContext();
+  const threadsQueries = useThreadsQueries();
 
   const {
     data,
@@ -44,7 +43,7 @@ export const ThreadsHistory = memo(function ThreadsHistory({
     isPending,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    ...threadsQuery(organization.id, project.id),
+    ...threadsQueries.list(),
     enabled: enableFetch,
   });
 
@@ -95,7 +94,7 @@ function ThreadsList({
         ))}
 
         {isLoading &&
-          Array.from({ length: PAGE_SIZE }, (_, i) => (
+          Array.from({ length: THREADS_DEFAULT_PAGE_SIZE }, (_, i) => (
             <ThreadItem.Skeleton key={i} />
           ))}
 

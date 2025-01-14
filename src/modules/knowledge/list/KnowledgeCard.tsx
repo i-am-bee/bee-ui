@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-import { Folder, TrashCan, WarningAlt } from '@carbon/react/icons';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { useMutation } from '@tanstack/react-query';
+import { deleteVectorStore } from '@/app/api/vector-stores';
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import classes from './KnowledgeCard.module.scss';
-import { useRouter } from 'next-nprogress-bar';
-import { deleteVectorStore } from '@/app/api/vector-stores';
-import { RenameModal } from './RenameModal';
-import { KnowledgeAppsInfo } from '../detail/KnowledgeAppsInfo';
-import pluralize from 'pluralize';
-import { InlineLoading } from '@carbon/react';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { InlineLoading } from '@carbon/react';
+import { Folder, TrashCan, WarningAlt } from '@carbon/react/icons';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next-nprogress-bar';
+import pluralize from 'pluralize';
+import { KnowledgeAppsInfo } from '../detail/KnowledgeAppsInfo';
+import { useVectorStoresQueries } from '../queries';
+import classes from './KnowledgeCard.module.scss';
+import { RenameModal } from './RenameModal';
 
 interface Props {
   vectorStore: VectorStore;
@@ -44,6 +45,7 @@ export function KnowledgeCard({
   const { openConfirmation, openModal } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const { mutateAsync: mutateDeleteStore, isPending: isDeletePending } =
     useMutation({
@@ -51,6 +53,7 @@ export function KnowledgeCard({
         deleteVectorStore(organization.id, project.id, id),
       onSuccess: () => onDeleteSuccess(vectorStore),
       meta: {
+        invalidates: [vectorStoresQueries.lists()],
         errorToast: {
           title: 'Failed to delete knowledge base',
           includeErrorMessage: true,

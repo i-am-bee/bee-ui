@@ -24,6 +24,7 @@ import {
 import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import {
@@ -52,14 +53,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useThreadApi } from '../hooks/useThreadApi';
 import { listMessagesQuery } from '../queries';
 import { FileCount } from './FileCount';
-import { threadsQuery } from './queries';
+import { useThreadsQueries } from './queries';
 import classes from './ThreadItem.module.scss';
 import {
   getThreadAssistantName,
   useGetThreadAssistant,
 } from './useGetThreadAssistant';
 import { useThreadFileCount } from './useThreadFileCount';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   thread: Thread;
@@ -81,6 +81,7 @@ export function ThreadItem({ thread }: Props) {
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
   const fileCount = useThreadFileCount(thread);
+  const threadsQueries = useThreadsQueries();
 
   const isMdDown = useBreakpoint('mdDown');
 
@@ -119,7 +120,7 @@ export function ThreadItem({ thread }: Props) {
       },
       onSuccess: () => {
         queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-          threadsQuery(organization.id, project.id).queryKey,
+          threadsQueries.list().queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -132,12 +133,9 @@ export function ThreadItem({ thread }: Props) {
             }
           }),
         );
-
-        queryClient.invalidateQueries({
-          queryKey: threadsQuery(organization.id, project.id).queryKey,
-        });
       },
       meta: {
+        invalidates: [threadsQueries.lists()],
         errorToast: {
           title: 'Failed to delete session',
           includeErrorMessage: true,

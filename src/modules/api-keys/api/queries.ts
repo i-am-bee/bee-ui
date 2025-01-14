@@ -25,22 +25,24 @@ export function useApiKeysQueries() {
   const apiKeysQueries = {
     all: () => ['api-keys'] as const,
     lists: () => [...apiKeysQueries.all(), 'list'] as const,
-    list: (params?: ApiKeysListQuery) =>
-      queryOptions({
-        queryKey: [...apiKeysQueries.lists(), { params }],
-        queryFn: () =>
-          listApiKeys(organization.id, {
-            order_by: 'created_at',
-            order: 'desc',
-            ...params,
-          }),
+    list: (params?: ApiKeysListQuery) => {
+      const usedParams: ApiKeysListQuery = {
+        order: 'desc',
+        order_by: 'created_at',
+        ...params,
+      };
+
+      return queryOptions({
+        queryKey: [...apiKeysQueries.lists(), usedParams],
+        queryFn: () => listApiKeys(organization.id, usedParams),
         meta: {
           errorToast: {
             title: 'Failed to load api keys',
             includeErrorMessage: true,
           },
         },
-      }),
+      });
+    },
   };
 
   return apiKeysQueries;

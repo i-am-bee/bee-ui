@@ -17,8 +17,7 @@
 import { AssistantsListQuery } from '@/app/api/assistants/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { ASSISTANTS_ORDER_DEFAULT } from '../AssistantsHome';
-import { assistantsQuery } from '../library/queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useAssistantsQueries } from '../queries';
 
 const DEFAULT_PARAMS: Partial<AssistantsListQuery> = {
   ...ASSISTANTS_ORDER_DEFAULT,
@@ -29,12 +28,12 @@ export function usePrefetchAssistants({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
+  const assistantsQueries = useAssistantsQueries();
 
   return (params?: AssistantsListQuery) =>
     queryClient.prefetchInfiniteQuery(
-      assistantsQuery(organization.id, project.id, {
+      assistantsQueries.list({
         ...(useDefaultParams ? DEFAULT_PARAMS : {}),
         ...params,
       }),

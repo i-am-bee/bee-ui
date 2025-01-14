@@ -16,8 +16,7 @@
 
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { useQuery } from '@tanstack/react-query';
-import { readVectorStoreQuery } from '../queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useVectorStoresQueries } from '../queries';
 
 export function useVectorStore(
   id: string | undefined,
@@ -29,10 +28,10 @@ export function useVectorStore(
     initialData?: VectorStore;
   } = {},
 ) {
-  const { project, organization } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const query = useQuery({
-    ...readVectorStoreQuery(organization.id, project.id, id ?? ''),
+    ...vectorStoresQueries.detail(id ?? ''),
     enabled: Boolean(id) && enabled,
     initialData,
   });

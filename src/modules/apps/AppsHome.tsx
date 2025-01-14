@@ -33,7 +33,6 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { useAssistants } from '../assistants/hooks/useAssistants';
-import { assistantsQuery } from '../assistants/library/queries';
 import { NewAgentModal } from '../onboarding/NewAgentModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import classes from './AppsHome.module.scss';
@@ -83,13 +82,6 @@ export function AppsHome() {
   });
   const firstAssistant = assistantsData?.assistants.at(0);
 
-  const handleInvalidateData = () => {
-    // invalidate all queries on GET:/assistants
-    queryClient.invalidateQueries({
-      queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
-    });
-  };
-
   const handleDeleteArtifactSuccess = (artifact: Artifact) => {
     queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
       artifactsQueries.list(params).queryKey,
@@ -103,7 +95,6 @@ export function AppsHome() {
         }
       }),
     );
-    handleInvalidateData();
   };
 
   return (

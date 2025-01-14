@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
+import { Organization } from '@/app/api/organization/types';
+import { createProject } from '@/app/api/projects';
+import { Project, ProjectCreateBody } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   InlineLoading,
@@ -23,17 +27,12 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { ModalProps } from '@/layout/providers/ModalProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Project, ProjectCreateBody } from '@/app/api/projects/types';
-import { createProject } from '@/app/api/projects';
-import { useRouter } from 'next-nprogress-bar';
-import { PROJECTS_QUERY_PARAMS } from '../ProjectSelector';
-import { projectsQuery } from '../queries';
 import { useProjects } from '../hooks/useProjects';
-import { Organization } from '@/app/api/organization/types';
+import { useProjectsQueries } from '../queries';
 
 interface CreateProjectValues {
   name: string;
@@ -50,9 +49,9 @@ export function CreateProjectModal({
   ...props
 }: Props & ModalProps) {
   const htmlId = useId();
-  const queryClient = useQueryClient();
   const router = useRouter();
 
+  const projectsQueries = useProjectsQueries();
   const { data: projects } = useProjects({ organization });
 
   const projectNames = useMemo(
@@ -65,19 +64,12 @@ export function CreateProjectModal({
       createProject(organization.id, body),
     onSuccess: (response) => {
       if (response) {
-        queryClient.invalidateQueries({
-          queryKey: [
-            projectsQuery(organization.id, PROJECTS_QUERY_PARAMS).queryKey.at(
-              0,
-            ),
-          ],
-        });
         router.push(`/${response.id}`);
-
         onSuccess?.(response);
       }
     },
     meta: {
+      invalidates: [projectsQueries.lists()],
       errorToast: {
         title: 'Failed to create the project',
         includeErrorMessage: true,

@@ -15,80 +15,70 @@
  */
 
 import { listThreads, readThread } from '@/app/api/threads';
-import { Thread, ThreadsListResponse } from '@/app/api/threads/types';
+import { Thread, ThreadsListQuery } from '@/app/api/threads/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-export const PAGE_SIZE = 20;
+export function useThreadsQueries() {
+  const { organization, project } = useAppContext();
 
-export function threadsQuery(organizationId: string, projectId: string) {
-  return infiniteQueryOptions({
-    queryKey: ['threads', projectId],
-    queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listThreads(organizationId, projectId, {
-        limit: PAGE_SIZE,
-        after: pageParam,
-      }),
-    initialPageParam: undefined,
-    getNextPageParam(lastPage) {
-      return lastPage?.has_more && lastPage?.last_id
-        ? lastPage.last_id
-        : undefined;
-    },
-    select(data) {
-      return data.pages
-        .flatMap((page) => page?.data)
-        .map((item) => {
-          if (!item) return null;
-          const thread = decodeEntityWithMetadata<Thread>(item);
-          return thread.uiMetadata.title ? thread : null;
-        })
-        .filter(isNotNull);
-    },
-    meta: {
-      errorToast: false,
-    },
-  });
-}
+  const threadsQueries = {
+    all: () => [project.id, 'threads'] as const,
+    lists: () => [...threadsQueries.all(), 'list'] as const,
+    list: (params?: ThreadsListQuery) => {
+      const usedParams = {
+        limit: THREADS_DEFAULT_PAGE_SIZE,
+        ...params,
+      };
 
-export function lastThreadQuery(organizationId: string, projectId: string) {
-  return {
-    queryKey: ['threads', 'last', projectId],
-    queryFn: () =>
-      listThreads(organizationId, projectId, {
-        limit: 1,
-        order: 'desc',
-        order_by: 'created_at',
+      return infiniteQueryOptions({
+        queryKey: [...threadsQueries.lists(), usedParams],
+        queryFn: ({ pageParam }: { pageParam?: string }) =>
+          listThreads(organization.id, project.id, {
+            ...usedParams,
+            after: pageParam,
+          }),
+        initialPageParam: undefined,
+        getNextPageParam(lastPage) {
+          return lastPage?.has_more && lastPage?.last_id
+            ? lastPage.last_id
+            : undefined;
+        },
+        select(data) {
+          return data.pages
+            .flatMap((page) => page?.data)
+            .map((item) => {
+              if (!item) return null;
+              const thread = decodeEntityWithMetadata<Thread>(item);
+              return thread.uiMetadata.title ? thread : null;
+            })
+            .filter(isNotNull);
+        },
+        meta: {
+          errorToast: false,
+        },
+      });
+    },
+    // TODO: The thread detail is not used anywhere on the client, so it's probably not necessary.
+    details: () => [...threadsQueries.all(), 'detail'] as const,
+    detail: (id: string) =>
+      queryOptions({
+        queryKey: [...threadsQueries.details(), id],
+        queryFn: () => readThread(organization.id, project.id, id),
+        select: (data) =>
+          data ? decodeEntityWithMetadata<Thread>(data) : null,
+        meta: {
+          errorToast: {
+            title: 'Failed to load thread',
+            includeErrorMessage: true,
+          },
+        },
       }),
-    staleTime: 60 * 60 * 1000,
-    select: ({ data }: ThreadsListResponse) => {
-      const result = data.at(0);
-      return result ? decodeEntityWithMetadata<Thread>(result) : undefined;
-    },
-    meta: {
-      errorToast: {
-        title: 'Failed to read last session',
-        includeErrorMessage: true,
-      },
-    },
   };
+
+  return threadsQueries;
 }
 
-export function threadQuery(
-  organizationId: string,
-  projectId: string,
-  threadId: string,
-) {
-  return queryOptions({
-    queryKey: ['thread', projectId, threadId],
-    queryFn: () => readThread(organizationId, projectId, threadId),
-    select: (data) => (data ? decodeEntityWithMetadata<Thread>(data) : null),
-    meta: {
-      errorToast: {
-        title: 'Failed to load thread',
-        includeErrorMessage: true,
-      },
-    },
-  });
-}
+export const THREADS_DEFAULT_PAGE_SIZE = 20;

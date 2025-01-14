@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
+import { Organization } from '@/app/api/organization/types';
+import { Project } from '@/app/api/projects/types';
+import { updateVectorStore } from '@/app/api/vector-stores';
+import { VectorStore } from '@/app/api/vector-stores/types';
 import { Modal } from '@/components/Modal/Modal';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   InlineLoading,
@@ -23,15 +28,11 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { ModalProps } from '@/layout/providers/ModalProvider';
-import { VectorStore } from '@/app/api/vector-stores/types';
-import { useId } from 'react';
-import { updateVectorStore } from '@/app/api/vector-stores';
 import { useMutation } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
 import { CODE_ENTER } from 'keycode-js';
-import { Project } from '@/app/api/projects/types';
-import { Organization } from '@/app/api/organization/types';
+import { useId } from 'react';
+import { useForm } from 'react-hook-form';
+import { useVectorStoresQueries } from '../queries';
 
 interface Props extends ModalProps {
   vectorStore: VectorStore;
@@ -48,9 +49,10 @@ export function RenameModal({
   ...props
 }: Props) {
   const htmlId = useId();
+  const vectorStoresQueries = useVectorStoresQueries();
   const { id, name } = vectorStore;
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: (newName: string) =>
       updateVectorStore(organization.id, project.id, id, { name: newName }),
     onSuccess: (store) => {
@@ -58,6 +60,7 @@ export function RenameModal({
       props.onRequestClose();
     },
     meta: {
+      invalidates: [vectorStoresQueries.lists()],
       errorToast: {
         title: 'Failed to rename the knowledge base',
         includeErrorMessage: true,

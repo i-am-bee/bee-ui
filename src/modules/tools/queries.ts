@@ -17,55 +17,64 @@
 import { listTools, readTool } from '@/app/api/tools';
 import { Tool, ToolsListQuery } from '@/app/api/tools/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-export const TOOLS_DEFAULT_PAGE_SIZE = 20;
+export function useToolsQueries() {
+  const { organization, project, featureFlags } = useAppContext();
 
-export const toolsQuery = (
-  organizationId: string,
-  projectId: string,
-  knowledgeEnabled: boolean,
-  params?: ToolsListQuery,
-) =>
-  infiniteQueryOptions({
-    queryKey: ['tools', organizationId, projectId, params],
-    queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listTools(organizationId, projectId, {
+  const toolsQueries = {
+    all: () => [project.id, 'tools'] as const,
+    lists: () => [...toolsQueries.all(), 'list'] as const,
+    list: (params?: ToolsListQuery) => {
+      const usedParams: ToolsListQuery = {
         limit: TOOLS_DEFAULT_PAGE_SIZE,
-        after: pageParam,
-        order_by: 'type',
         order: 'asc',
+        order_by: 'type',
         type: ['code_interpreter', 'system', 'file_search', 'user'],
         ...params,
-      }),
-    initialPageParam: undefined,
-    getNextPageParam(lastPage) {
-      return lastPage?.has_more && lastPage?.last_id
-        ? lastPage.last_id
-        : undefined;
-    },
-    select(data) {
-      return {
-        totalCount: data.pages.at(0)?.total_count,
-        tools: data.pages
-          .flatMap((result) => result?.data ?? [])
-          .filter((tool) => knowledgeEnabled || tool.id !== 'file_search')
-          .map(decodeEntityWithMetadata<Tool>),
       };
-    },
-    meta: {
-      errorToast: false,
-    },
-  });
 
-export const readToolQuery = (
-  organizationId: string,
-  projectId: string,
-  id: string,
-) =>
-  queryOptions({
-    queryKey: ['tool', organizationId, projectId, id],
-    queryFn: () => readTool(organizationId, projectId, id),
-    staleTime: 60 * 60 * 1_000,
-    select: (data) => data && decodeEntityWithMetadata<Tool>(data),
-  });
+      return infiniteQueryOptions({
+        queryKey: [...toolsQueries.lists(), usedParams],
+        queryFn: ({ pageParam }: { pageParam?: string }) =>
+          listTools(organization.id, project.id, {
+            ...usedParams,
+            after: pageParam,
+          }),
+        initialPageParam: undefined,
+        getNextPageParam(lastPage) {
+          return lastPage?.has_more && lastPage?.last_id
+            ? lastPage.last_id
+            : undefined;
+        },
+        select(data) {
+          return {
+            totalCount: data.pages.at(0)?.total_count,
+            tools: data.pages
+              .flatMap((result) => result?.data ?? [])
+              .filter(
+                (tool) => featureFlags.Knowledge || tool.id !== 'file_search',
+              )
+              .map(decodeEntityWithMetadata<Tool>),
+          };
+        },
+        meta: {
+          errorToast: false,
+        },
+      });
+    },
+    details: () => [...toolsQueries.all(), 'detail'] as const,
+    detail: (id: string) =>
+      queryOptions({
+        queryKey: [...toolsQueries.details(), id],
+        queryFn: () => readTool(organization.id, project.id, id),
+        staleTime: 60 * 60 * 1_000,
+        select: (data) => data && decodeEntityWithMetadata<Tool>(data),
+      }),
+  };
+
+  return toolsQueries;
+}
+
+const TOOLS_DEFAULT_PAGE_SIZE = 20;

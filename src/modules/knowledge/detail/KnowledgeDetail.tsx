@@ -40,8 +40,8 @@ import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVecto
 import { useVectorStore } from '../hooks/useVectorStore';
 import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
 import {
-  PAGE_SIZE,
-  readVectorStoreQuery,
+  VECTOR_STORES_DEFAULT_PAGE_SIZE,
+  useVectorStoresQueries,
   vectorStoresFilesQuery,
 } from '../queries';
 import { AddContentModal } from './AddContentModal';
@@ -59,6 +59,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
   const { openModal } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const params = {
     // search, TODO: api not ready
@@ -148,13 +149,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
         params,
       ).queryKey,
     });
-    queryClient.invalidateQueries({
-      queryKey: readVectorStoreQuery(
-        organization.id,
-        project.id,
-        vectorStore.id,
-      ).queryKey,
-    });
+    queryClient.invalidateQueries(vectorStoresQueries.detail(vectorStore.id));
   };
 
   const remainsToFetchCount =
@@ -224,9 +219,9 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
             ? Array.from(
                 {
                   length:
-                    remainsToFetchCount < PAGE_SIZE
+                    remainsToFetchCount < VECTOR_STORES_DEFAULT_PAGE_SIZE
                       ? remainsToFetchCount
-                      : PAGE_SIZE,
+                      : VECTOR_STORES_DEFAULT_PAGE_SIZE,
                 },
                 (_, i) => <KnowledgeFileCard.Skeleton key={i} />,
               )

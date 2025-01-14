@@ -29,8 +29,6 @@ import { PublicToolModal } from './manage/PublicToolModal';
 import { UserToolModal } from './manage/UserToolModal';
 import classes from './ToolCard.module.scss';
 import { getToolReferenceFromTool } from './utils';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 
 interface Props {
   tool: Tool;
@@ -44,7 +42,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
     tool,
     onSuccess: () => onDeleteSuccess(tool),
   });
-  const { isProjectReadOnly, project, organization } = useAppContext();
+  const { isProjectReadOnly } = useAppContext();
   const { openModal } = useModal();
 
   const toolDescription =

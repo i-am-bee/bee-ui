@@ -21,51 +21,65 @@ import {
 } from '@/app/api/vector-stores-files';
 import { VectorStoreFilesListQuery } from '@/app/api/vector-stores-files/types';
 import { VectorStoresListQuery } from '@/app/api/vector-stores/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-export const PAGE_SIZE = 6;
+export function useVectorStoresQueries() {
+  const { organization, project } = useAppContext();
 
-export const vectorStoresQuery = (
-  organizationId: string,
-  projectId: string,
-  params?: VectorStoresListQuery,
-) => {
-  const paramsWithoutDependant: VectorStoresListQuery = {
-    ...params,
-    show_dependent: false,
-  };
-  return infiniteQueryOptions({
-    queryKey: [
-      'vector-stores',
-      organizationId,
-      projectId,
-      paramsWithoutDependant,
-    ],
-    queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listVectorStores(organizationId, projectId, {
-        ...paramsWithoutDependant,
-        limit: params?.limit || PAGE_SIZE,
-        after: pageParam,
-      }),
-    initialPageParam: undefined,
-    getNextPageParam(lastPage) {
-      return lastPage?.has_more && lastPage?.last_id
-        ? lastPage.last_id
-        : undefined;
-    },
-    select(data) {
-      const stores = data.pages.flatMap((page) => page?.data).filter(isNotNull);
-      return {
-        stores,
-        totalCount: data.pages.at(0)?.total_count,
+  const vectorStoresQueries = {
+    all: () => [project.id, 'vector-stores'] as const,
+    lists: () => [...vectorStoresQueries.all(), 'list'] as const,
+    list: (params?: VectorStoresListQuery) => {
+      const usedParams: VectorStoresListQuery = {
+        show_dependent: false,
+        limit: VECTOR_STORES_DEFAULT_PAGE_SIZE,
+        ...params,
       };
+
+      return infiniteQueryOptions({
+        queryKey: [...vectorStoresQueries.all(), usedParams],
+        queryFn: ({ pageParam }: { pageParam?: string }) =>
+          listVectorStores(organization.id, project.id, {
+            ...usedParams,
+            after: pageParam,
+          }),
+        initialPageParam: undefined,
+        getNextPageParam(lastPage) {
+          return lastPage?.has_more && lastPage?.last_id
+            ? lastPage.last_id
+            : undefined;
+        },
+        select(data) {
+          const stores = data.pages
+            .flatMap((page) => page?.data)
+            .filter(isNotNull);
+          return {
+            stores,
+            totalCount: data.pages.at(0)?.total_count,
+          };
+        },
+        meta: {
+          errorToast: false,
+        },
+      });
     },
-    meta: {
-      errorToast: false,
-    },
-  });
-};
+    details: () => [...vectorStoresQueries.all(), 'detail'] as const,
+    detail: (id: string) =>
+      queryOptions({
+        queryKey: [...vectorStoresQueries.details(), id],
+        queryFn: () => readVectorStore(organization.id, project.id, id),
+        meta: {
+          errorToast: false,
+        },
+      }),
+  };
+
+  return vectorStoresQueries;
+}
+
+export const VECTOR_STORES_DEFAULT_PAGE_SIZE = 6;
 
 export const vectorStoresFilesQuery = (
   organizationId: string,
@@ -78,7 +92,7 @@ export const vectorStoresFilesQuery = (
     queryFn: ({ pageParam }: { pageParam?: string }) =>
       listVectorStoreFiles(organizationId, projectId, storeId, {
         ...params,
-        limit: params?.limit || PAGE_SIZE,
+        limit: params?.limit || VECTOR_STORES_DEFAULT_PAGE_SIZE,
         after: pageParam,
       }),
     initialPageParam: undefined,
@@ -94,19 +108,6 @@ export const vectorStoresFilesQuery = (
         totalCount: data.pages.at(0)?.total_count,
       };
     },
-    meta: {
-      errorToast: false,
-    },
-  });
-
-export const readVectorStoreQuery = (
-  organizationId: string,
-  projectId: string,
-  id: string,
-) =>
-  queryOptions({
-    queryKey: ['vector-store', organizationId, projectId, id],
-    queryFn: () => readVectorStore(organizationId, projectId, id),
     meta: {
       errorToast: false,
     },

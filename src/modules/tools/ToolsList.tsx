@@ -34,7 +34,7 @@ import { useDebounceValue } from 'usehooks-ts';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import { useTools } from './hooks/useTools';
 import { UserToolModal } from './manage/UserToolModal';
-import { toolsQuery } from './queries';
+import { useToolsQueries } from './queries';
 import { ToolCard } from './ToolCard';
 
 interface Props {
@@ -49,6 +49,7 @@ export function ToolsList({ type }: Props) {
   const [search, setSearch] = useDebounceValue('', 200);
 
   const queryClient = useQueryClient();
+  const toolsQueries = useToolsQueries();
 
   const publicTools = [
     'code_interpreter',
@@ -82,36 +83,20 @@ export function ToolsList({ type }: Props) {
     isFetchingNextPage,
   } = useTools({ params });
 
-  const handleInvalidateData = () => {
-    // invalidate all queries on GET:/tools
-    queryClient.invalidateQueries({
-      queryKey: [
-        toolsQuery(
-          organization.id,
-          project.id,
-          featureFlags.Knowledge,
-        ).queryKey.at(0),
-      ],
-    });
-  };
-
   const handleCreateSuccess = (tool: ToolResult) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-      toolsQuery(organization.id, project.id, featureFlags.Knowledge, params)
-        .queryKey,
+      toolsQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         const firstPage = draft.pages.at(0);
         if (firstPage) firstPage.data.unshift(tool);
       }),
     );
-    handleInvalidateData();
   };
 
   const handleDeleteSuccess = (tool: Tool) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-      toolsQuery(organization.id, project.id, featureFlags.Knowledge, params)
-        .queryKey,
+      toolsQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -122,7 +107,6 @@ export function ToolsList({ type }: Props) {
         }
       }),
     );
-    handleInvalidateData();
   };
 
   return (
@@ -169,7 +153,6 @@ export function ToolsList({ type }: Props) {
           key={tool.id}
           tool={tool}
           onDeleteSuccess={handleDeleteSuccess}
-          onSaveSuccess={handleInvalidateData}
         />
       ))}
 

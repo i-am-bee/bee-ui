@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
+import { Organization } from '@/app/api/organization/types';
+import { updateProject } from '@/app/api/projects';
+import { Project, ProjectsListResponse } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   InlineLoading,
@@ -23,21 +27,17 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { ModalProps } from '@/layout/providers/ModalProvider';
-import { useCallback, useId, useMemo } from 'react';
 import {
   InfiniteData,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { Controller, useForm } from 'react-hook-form';
-import { Project, ProjectsListResponse } from '@/app/api/projects/types';
-import { updateProject } from '@/app/api/projects';
-import { projectsQuery, readProjectQuery } from '../queries';
 import { produce } from 'immer';
+import { useCallback, useId, useMemo } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { PROJECTS_QUERY_PARAMS } from '../ProjectSelector';
 import { useProjects } from '../hooks/useProjects';
-import { Organization } from '@/app/api/organization/types';
+import { useProjectsQueries } from '../queries';
 
 interface Props extends ModalProps {
   project: Project;
@@ -50,6 +50,7 @@ export function RenameModal({ project, organization, ...props }: Props) {
   const { id, name } = project;
   const queryClient = useQueryClient();
 
+  const projectsQueries = useProjectsQueries();
   const { data: projects } = useProjects({ organization });
 
   const { mutateAsync } = useMutation({
@@ -58,7 +59,7 @@ export function RenameModal({ project, organization, ...props }: Props) {
     onSuccess: (result, newName) => {
       if (result) {
         queryClient.setQueryData<InfiniteData<ProjectsListResponse>>(
-          projectsQuery(organization.id, PROJECTS_QUERY_PARAMS).queryKey,
+          projectsQueries.list(PROJECTS_QUERY_PARAMS).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -69,15 +70,11 @@ export function RenameModal({ project, organization, ...props }: Props) {
           }),
         );
       }
-      queryClient.invalidateQueries({
-        queryKey: [projectsQuery(organization.id).queryKey.at(0)],
-      });
-      queryClient.invalidateQueries({
-        queryKey: readProjectQuery(organization.id, id).queryKey,
-      });
+      queryClient.invalidateQueries(projectsQueries.detail(id));
       props.onRequestClose();
     },
     meta: {
+      invalidates: [projectsQueries.lists()],
       errorToast: {
         title: 'Failed to rename the workspace',
         includeErrorMessage: true,

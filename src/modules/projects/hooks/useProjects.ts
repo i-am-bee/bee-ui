@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { Organization } from '@/app/api/organization/types';
 import { ProjectsListQuery } from '@/app/api/projects/types';
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import { useUserProfile } from '@/store/user-profile';
 import { useInfiniteQuery, useQueries } from '@tanstack/react-query';
 import { useEffect, useMemo } from 'react';
-import { projectsQuery } from '../queries';
+import { useProjectsQueries } from '../queries';
 import { ProjectWithScope } from '../types';
 import { readProjectUserQuery } from '../users/queries';
-import { Organization } from '@/app/api/organization/types';
 
 export function useProjects({
   withRole,
@@ -32,10 +32,9 @@ export function useProjects({
   organization: Organization;
 }) {
   const userId = useUserProfile((state) => state.id);
+  const projectsQueries = useProjectsQueries();
 
-  const query = useInfiniteQuery(
-    projectsQuery(organization.id, PROJECTS_QUERY_PARAMS),
-  );
+  const query = useInfiniteQuery(projectsQueries.list(PROJECTS_QUERY_PARAMS));
 
   const queries = useQueries({
     queries:

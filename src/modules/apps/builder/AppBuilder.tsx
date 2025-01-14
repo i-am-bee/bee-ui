@@ -21,6 +21,7 @@ import { Thread } from '@/app/api/threads/types';
 import { decodeMetadata, encodeMetadata } from '@/app/api/utils';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { NavbarHeading } from '@/layout/shell/Navbar';
 import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
@@ -39,7 +40,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
-import { threadsQuery } from '../../chat/history/queries';
+import { useThreadsQueries } from '../../chat/history/queries';
 import { AppIcon } from '../AppIcon';
 import { useArtifactsCount } from '../hooks/useArtifactsCount';
 import { SaveAppModal } from '../manage/SaveAppModal';
@@ -50,7 +51,6 @@ import classes from './AppBuilder.module.scss';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 import { SourceCodeEditor } from './SourceCodeEditor';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   thread?: Thread;
@@ -63,6 +63,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
   const queryClient = useQueryClient();
   const { setCode, getCode } = useAppBuilderApi();
   const { artifact, code } = useAppBuilder();
+  const threadsQueries = useThreadsQueries();
 
   const isXlgDown = useBreakpoint('xlgDown');
 
@@ -78,11 +79,11 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
           `/${project.id}/apps/builder/t/${newThread.id}`,
         );
         queryClient.invalidateQueries({
-          queryKey: threadsQuery(organization.id, project.id).queryKey,
+          queryKey: threadsQueries.lists(),
         });
       }
     },
-    [organization.id, project.id, queryClient, setCode, thread],
+    [project.id, queryClient, setCode, thread, threadsQueries],
   );
 
   const handleBeforePostMessage = useCallback(

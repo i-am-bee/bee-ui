@@ -32,17 +32,13 @@ import {
   SkeletonText,
 } from '@carbon/react';
 import { Edit } from '@carbon/react/icons';
-import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import pluralize from 'pluralize';
 import { useDeleteAssistant } from '../builder/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
-import { assistantsQuery } from '../library/queries';
 import { Assistant } from '../types';
 import classes from './AssistantModal.module.scss';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 
 export interface AssistantModalProps {
   onDeleteSuccess?: () => void;
@@ -54,18 +50,13 @@ export default function AssistantModal({
   onDeleteSuccess,
   ...props
 }: AssistantModalProps & ModalProps) {
-  const { project, organization, isProjectReadOnly } = useAppContext();
-  const queryClient = useQueryClient();
+  const { project, isProjectReadOnly } = useAppContext();
   const router = useRouter();
+
   const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
     assistant: assistant!,
     onSuccess: async () => {
       onDeleteSuccess?.();
-
-      // invalidate all queries on GET:/assistants
-      queryClient.invalidateQueries({
-        queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
-      });
     },
   });
 

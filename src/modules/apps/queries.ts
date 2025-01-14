@@ -15,38 +15,30 @@
  */
 
 import { listArtifacts, readArtifact } from '@/app/api/artifacts';
+import { ArtifactsListQuery } from '@/app/api/artifacts/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { Artifact } from './types';
-import { ArtifactsListQuery } from '@/app/api/artifacts/types';
-import { isNotNull } from '@/utils/helpers';
-import { useAppContext } from '@/layout/providers/AppProvider';
-
-export const readArtifactQuery = (
-  organizationId: string,
-  projectId: string,
-  id: string,
-) =>
-  queryOptions({
-    queryKey: ['artifact', organizationId, projectId, id],
-    queryFn: () => readArtifact(organizationId, projectId, id),
-    select: (data) => (data ? decodeEntityWithMetadata<Artifact>(data) : null),
-    staleTime: 10 * 60 * 1000,
-  });
 
 export function useArtifactsQueries() {
   const { organization, project } = useAppContext();
 
   const artifactsQueries = {
-    all: () => ['artifacts'] as const,
+    all: () => [project.id, 'artifacts'] as const,
     lists: () => [...artifactsQueries.all(), 'list'] as const,
-    list: (params?: ArtifactsListQuery) =>
-      infiniteQueryOptions({
-        queryKey: [...artifactsQueries.lists(), { params }],
+    list: (params?: ArtifactsListQuery) => {
+      const usedParams: ArtifactsListQuery = {
+        limit: ARTIFACTS_DEFAULT_PAGE_SIZE,
+        ...params,
+      };
+
+      return infiniteQueryOptions({
+        queryKey: [...artifactsQueries.lists(), usedParams],
         queryFn: ({ pageParam }: { pageParam?: string }) =>
           listArtifacts(organization.id, project.id, {
-            ...params,
-            limit: params?.limit || PAGE_SIZE,
+            ...usedParams,
             after: pageParam,
           }),
         initialPageParam: undefined,
@@ -69,17 +61,20 @@ export function useArtifactsQueries() {
         meta: {
           errorToast: false,
         },
-      }),
+      });
+    },
     details: () => [...artifactsQueries.all(), 'detail'] as const,
-    // detail: () => queryOptions({
-    //   queryKey: ['artifact', organizationId, projectId, id],
-    //   queryFn: () => readArtifact(organizationId, projectId, id),
-    //   select: (data) => (data ? decodeEntityWithMetadata<Artifact>(data) : null),
-    //   staleTime: 10 * 60 * 1000,
-    // })
+    detail: (id: string) =>
+      queryOptions({
+        queryKey: [...artifactsQueries.details(), id],
+        queryFn: () => readArtifact(organization.id, project.id, id),
+        select: (data) =>
+          data ? decodeEntityWithMetadata<Artifact>(data) : null,
+        staleTime: 10 * 60 * 1000,
+      }),
   };
 
   return artifactsQueries;
 }
 
-const PAGE_SIZE = 10;
+const ARTIFACTS_DEFAULT_PAGE_SIZE = 10;

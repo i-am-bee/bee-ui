@@ -14,43 +14,42 @@
  * limitations under the License.
  */
 
-import { useQuery } from '@tanstack/react-query';
-import { Tool, ToolReference } from '@/app/api/tools/types';
-import { readToolQuery } from '../queries';
-import { ComponentType, useMemo } from 'react';
 import { SystemToolId } from '@/app/api/threads-runs/types';
+import { Tool, ToolReference } from '@/app/api/tools/types';
+import { encodeEntityWithMetadata } from '@/app/api/utils';
+import { SkeletonIcon } from '@carbon/react';
+import {
+  Calculator,
+  Code,
+  DocumentView,
+  IbmWatsonDiscovery,
+  IbmWatsonxAssistant,
+  PartlyCloudy,
+  SearchLocate,
+  Tools,
+} from '@carbon/react/icons';
+import { useQuery } from '@tanstack/react-query';
+import capitalize from 'lodash/capitalize';
+import { ComponentType, useMemo } from 'react';
+import { ToolName } from '../common/ToolName';
 import Arxiv from '../icons/arxiv.svg';
 import DuckDuckGo from '../icons/duckduckgo.svg';
 import Google from '../icons/google.svg';
 import Wikipedia from '../icons/wikipedia.svg';
-import {
-  Code,
-  DocumentView,
-  IbmWatsonDiscovery,
-  PartlyCloudy,
-  SearchLocate,
-  Tools,
-  Calculator,
-  IbmWatsonxAssistant,
-} from '@carbon/react/icons';
-import { SkeletonIcon } from '@carbon/react';
-import { ToolName } from '../common/ToolName';
-import { encodeEntityWithMetadata } from '@/app/api/utils';
+import { useToolsQueries } from '../queries';
 import { useTools } from './useTools';
-import capitalize from 'lodash/capitalize';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useToolInfo({
   toolReference,
 }: {
   toolReference: ToolReference;
 }) {
-  const { project, organization } = useAppContext();
+  const toolsQueries = useToolsQueries();
 
   const { tool: toolProp, id, type } = toolReference;
   const isQueryable = type === 'user' || type === 'system';
   const { data, isLoading, error } = useQuery({
-    ...readToolQuery(organization.id, project.id, id),
+    ...toolsQueries.detail(id),
     enabled: isQueryable,
     initialData: toolProp
       ? encodeEntityWithMetadata<Tool>(toolProp)

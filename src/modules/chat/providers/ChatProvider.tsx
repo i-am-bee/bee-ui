@@ -15,6 +15,7 @@
  */
 
 'use client';
+import { ApiError } from '@/app/api/errors';
 import { createMessage } from '@/app/api/threads-messages';
 import { cancelRun } from '@/app/api/threads-runs';
 import {
@@ -26,6 +27,7 @@ import { isRequiredActionToolApprovals } from '@/app/api/threads-runs/utils';
 import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { Updater } from '@/hooks/useImmerWithGetter';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useHandleError } from '@/layout/hooks/useHandleError';
@@ -33,7 +35,9 @@ import {
   useAppApiContext,
   useAppContext,
 } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
 import { FILE_SEARCH_TOOL_DEFINITION } from '@/modules/assistants/builder/AssistantBuilderProvider';
+import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
 import { GET_USER_LOCATION_FUNCTION_TOOL } from '@/modules/assistants/tools/functionTools';
 import {
   getToolUsageId,
@@ -61,7 +65,9 @@ import {
   useState,
 } from 'react';
 import { v4 as uuid } from 'uuid';
-import { threadQuery, threadsQuery } from '../history/queries';
+import { useDeleteMessage } from '../api/useDeleteMessage';
+import { PLAN_STEPS_QUERY_PARAMS } from '../assistant-plan/PlanWithSources';
+import { useThreadsQueries } from '../history/queries';
 import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
 import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
@@ -87,13 +93,6 @@ import {
 import { AssistantModalProvider } from './AssistantModalProvider';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
-import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { ApiError } from '@/app/api/errors';
-import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
-import { PLAN_STEPS_QUERY_PARAMS } from '../assistant-plan/PlanWithSources';
-import { useDeleteMessage } from '../api/useDeleteMessage';
-import { Control } from 'react-hook-form';
 
 interface CancelRunParams {
   threadId: string;
@@ -162,6 +161,7 @@ export function ChatProvider({
     useAppContext();
   const { selectAssistant } = useAppApiContext();
   const queryClient = useQueryClient();
+  const threadsQueries = useThreadsQueries();
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const { mutateAsync: mutateDeleteMessage } = useDeleteMessage();
@@ -705,16 +705,13 @@ export function ChatProvider({
 
               if (files.length > 0) {
                 queryClient.invalidateQueries({
-                  queryKey: threadsQuery(organization.id, project.id).queryKey,
+                  queryKey: threadsQueries.lists(),
                 });
 
-                queryClient.invalidateQueries({
-                  queryKey: threadQuery(
-                    organization.id,
-                    project.id,
-                    thread?.id ?? '',
-                  ).queryKey,
-                });
+                // TODO: The thread detail is not used anywhere on the client, so it's probably not necessary.
+                queryClient.invalidateQueries(
+                  threadsQueries.detail(thread?.id ?? ''),
+                );
               }
             },
           });
@@ -758,6 +755,7 @@ export function ChatProvider({
       chatStream,
       queryClient,
       handleRunCompleted,
+      threadsQueries,
     ],
   );
 

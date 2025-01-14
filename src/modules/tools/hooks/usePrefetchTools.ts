@@ -16,9 +16,8 @@
 
 import { ToolsListQuery } from '@/app/api/tools/types';
 import { useQueryClient } from '@tanstack/react-query';
-import { toolsQuery } from '../queries';
+import { useToolsQueries } from '../queries';
 import { TOOLS_ORDER_DEFAULT, TOOLS_PAGE_SIZE } from '../ToolsList';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 const DEFAULT_PARAMS: Partial<ToolsListQuery> = {
   type: ['user'],
@@ -31,12 +30,12 @@ export function usePrefetchTools({
 }: {
   useDefaultParams?: boolean;
 }) {
-  const { project, organization, featureFlags } = useAppContext();
   const queryClient = useQueryClient();
+  const toolsQueries = useToolsQueries();
 
   return (params?: ToolsListQuery) =>
     queryClient.prefetchInfiniteQuery(
-      toolsQuery(organization.id, project.id, featureFlags.Knowledge, {
+      toolsQueries.list({
         ...(useDefaultParams ? DEFAULT_PARAMS : {}),
         ...params,
       }),

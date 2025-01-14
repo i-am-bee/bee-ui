@@ -22,7 +22,7 @@ import {
 } from '@/app/api/artifacts/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { readArtifactQuery, useArtifactsQueries } from '../queries';
+import { useArtifactsQueries } from '../queries';
 
 type Props = {
   onSuccess?: (artifact: ArtifactResult) => void;
@@ -54,10 +54,7 @@ export function useSaveArtifact({ onSuccess }: Props) {
           ),
     onSuccess: (artifact) => {
       if (artifact) {
-        queryClient.invalidateQueries({
-          queryKey: readArtifactQuery(organization.id, project.id, artifact.id)
-            .queryKey,
-        });
+        queryClient.invalidateQueries(artifactsQueries.detail(artifact.id));
 
         onSuccess?.(artifact);
       }

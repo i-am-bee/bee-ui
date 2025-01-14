@@ -16,17 +16,16 @@
 
 import { AssistantsListQuery } from '@/app/api/assistants/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { assistantsQuery } from '../library/queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useAssistantsQueries } from '../queries';
 
 export function useAssistants({
   params,
   enabled = true,
 }: { params?: AssistantsListQuery; enabled?: boolean } = {}) {
-  const { project, organization } = useAppContext();
+  const assistantsQueries = useAssistantsQueries();
 
   const query = useInfiniteQuery({
-    ...assistantsQuery(organization.id, project.id, params),
+    ...assistantsQueries.list(params),
     enabled,
   });
 

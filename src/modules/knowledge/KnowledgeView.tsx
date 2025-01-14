@@ -22,7 +22,7 @@ import {
   VectorStoresListQueryOrderBy,
 } from '@/app/api/vector-stores/types';
 import { CardsList } from '@/components/CardsList/CardsList';
-import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InfiniteData,
@@ -38,17 +38,20 @@ import { CreateKnowledgeModal } from './create/CreateKnowledgeModal';
 import { useUpdatePendingVectorStore } from './hooks/useUpdatePendingVectorStore';
 import { useVectorStores } from './hooks/useVectorStores';
 import { KnowledgeCard } from './list/KnowledgeCard';
-import { PAGE_SIZE, vectorStoresQuery } from './queries';
+import {
+  useVectorStoresQueries,
+  VECTOR_STORES_DEFAULT_PAGE_SIZE,
+} from './queries';
 
 export function KnowledgeView() {
   const [search, setSearch] = useDebounceValue('', 200);
   const [order, setOrder] = useState<VectorStoresListQueryOrderBy>(
     VECTOR_STORES_ORDER_DEFAULT,
   );
-  const appContext = useAppContext();
-  const { project, organization, isProjectReadOnly } = appContext;
+  const { project, organization, isProjectReadOnly } = useAppContext();
   const queryClient = useQueryClient();
   const { openModal } = useModal();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const params = {
     ...order,
@@ -72,7 +75,7 @@ export function KnowledgeView() {
 
   const onCreateSuccess = (response: VectorStoreCreateResponse) => {
     queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQuery(organization.id, project.id, params).queryKey,
+      vectorStoresQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
 
@@ -80,23 +83,11 @@ export function KnowledgeView() {
         pageFirst && pageFirst.data.unshift(response);
       }),
     );
-
-    queryClient.invalidateQueries({
-      queryKey: [
-        vectorStoresQuery(organization.id, project.id, params).queryKey.at(0),
-      ],
-    });
-  };
-
-  const handleInvalidateData = () => {
-    queryClient.invalidateQueries({
-      queryKey: [vectorStoresQuery(organization.id, project.id).queryKey.at(0)],
-    });
   };
 
   const onUpdateQueryData = (updater: ListVectorStoresDataUpdater) => {
     queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQuery(organization.id, project.id, params).queryKey,
+      vectorStoresQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -104,8 +95,6 @@ export function KnowledgeView() {
         }
       }),
     );
-
-    handleInvalidateData();
   };
 
   const onUpdateSuccess = (store: VectorStore) => {
@@ -151,7 +140,6 @@ export function KnowledgeView() {
               <CreateKnowledgeModal
                 {...props}
                 onCreateVectorStore={onCreateSuccess}
-                onSuccess={handleInvalidateData}
               />
             )),
           disabled: isProjectReadOnly,
@@ -173,7 +161,7 @@ export function KnowledgeView() {
         ))}
 
         {isLoading
-          ? Array.from({ length: PAGE_SIZE }, (_, i) => (
+          ? Array.from({ length: VECTOR_STORES_DEFAULT_PAGE_SIZE }, (_, i) => (
               <KnowledgeCard.Skeleton key={i} />
             ))
           : undefined}

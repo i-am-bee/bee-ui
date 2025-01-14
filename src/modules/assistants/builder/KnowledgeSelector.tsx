@@ -28,8 +28,8 @@ import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledge
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
 import { useVectorStores } from '@/modules/knowledge/hooks/useVectorStores';
 import {
+  useVectorStoresQueries,
   vectorStoresFilesQuery,
-  vectorStoresQuery,
 } from '@/modules/knowledge/queries';
 import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
@@ -49,6 +49,7 @@ import classes from './KnowledgeSelector.module.scss';
 export function KnowledgeSelector() {
   const { openModal } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
   const {
     field: { value, onChange },
   } = useController<AssistantFormValues, 'vectorStoreId'>({
@@ -94,28 +95,13 @@ export function KnowledgeSelector() {
     handleConnectKnowledge(response.id);
 
     queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQuery(organization.id, project.id, VECTOR_STORES_QUERY_PARAMS)
-        .queryKey,
+      vectorStoresQueries.list(VECTOR_STORES_QUERY_PARAMS).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         const pageFirst = draft?.pages.at(0);
         pageFirst && pageFirst.data.unshift(response);
       }),
     );
-
-    queryClient.invalidateQueries({
-      queryKey: [vectorStoresQuery(organization.id, project.id).queryKey.at(0)],
-    });
-  };
-
-  const handleInvalidateData = () => {
-    queryClient.invalidateQueries({
-      queryKey: vectorStoresQuery(
-        organization.id,
-        project.id,
-        VECTOR_STORES_QUERY_PARAMS,
-      ).queryKey,
-    });
   };
 
   const { data, isFetching } = useVectorStores({
@@ -144,7 +130,6 @@ export function KnowledgeSelector() {
             openModal((props) => (
               <CreateKnowledgeModal
                 onCreateVectorStore={onCreateSuccess}
-                onSuccess={handleInvalidateData}
                 {...props}
               />
             )),
