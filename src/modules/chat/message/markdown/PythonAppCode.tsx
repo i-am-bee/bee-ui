@@ -52,7 +52,7 @@ export function PythonAppCode({
   );
 
   // hide, the error is displayed elsewhere
-  if (message?.error) return null;
+  if (message?.error) return <></>;
 
   return (
     <div

@@ -17,14 +17,13 @@
 import { AssistantPlan } from '@/app/api/threads-runs/types';
 import { fadeProps } from '@/utils/fadeProps';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useId, useMemo } from 'react';
+import { useId } from 'react';
 import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { PlanStep } from './PlanStep';
 import classes from './PlanView.module.scss';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
-import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props {
   plan: AssistantPlan;

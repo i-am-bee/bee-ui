@@ -34,11 +34,7 @@ import { runStepsQuery } from '../queries';
 import { BotChatMessage } from '../types';
 import { PlanView } from './PlanView';
 import classes from './PlanWithSources.module.scss';
-import {
-  getToolApproval,
-  getToolReferenceFromToolCall,
-  updatePlanWithRunStep,
-} from './utils';
+import { getToolApproval, updatePlanWithRunStep } from './utils';
 import { TraceData } from '../trace/types';
 import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { TraceInfoView } from '../trace/TraceInfoView';
@@ -46,7 +42,6 @@ import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props {
   message: BotChatMessage;
