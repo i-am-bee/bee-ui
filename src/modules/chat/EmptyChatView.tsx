@@ -27,8 +27,8 @@ import { AssistantAvatar } from './layout/AssistantAvatar';
 import { Disclaimer } from './layout/Disclaimer';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
-import { SendMessageResult, useChat } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
+import { SendMessageResult, useChat } from './providers/chat-context';
 
 interface Props {
   onMessageSent?: (result: SendMessageResult) => void;

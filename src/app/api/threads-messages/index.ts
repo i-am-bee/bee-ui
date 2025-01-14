@@ -17,17 +17,13 @@
 import { isNotNull } from '@/utils/helpers';
 import { client } from '../client';
 import { readFile } from '../files';
-import {
-  assertSuccessResponse,
-  decodeMetadata,
-  getRequestHeaders,
-} from '../utils';
+import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import {
   MessageCreateBody,
   MessagesListQuery,
   MessageUpdateBody,
 } from './types';
-import { MessageMetadata, MessageWithFiles } from '@/modules/chat/types';
+import { MessageWithFiles } from '@/modules/chat/types';
 
 export const MESSAGES_PAGE_SIZE = 100;
 

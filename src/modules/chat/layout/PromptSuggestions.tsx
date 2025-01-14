@@ -41,7 +41,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import classes from './PromptSuggestions.module.scss';
 
 interface Props {

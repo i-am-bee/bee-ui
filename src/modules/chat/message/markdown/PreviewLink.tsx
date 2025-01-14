@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Spinner } from '@/components/Spinner/Spinner';
+import { Spinner } from '@/components/BouncingDots/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { SkeletonIcon } from '@carbon/react';
 import { Launch } from '@carbon/react/icons';

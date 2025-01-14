@@ -23,7 +23,7 @@ import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { NavbarHeading } from '@/layout/shell/Navbar';
-import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
+import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import {
   ChatMessage,
   MessageMetadata,
@@ -51,6 +51,7 @@ import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 import { SourceCodeEditor } from './SourceCodeEditor';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useChat } from '@/modules/chat/providers/chat-context';
 
 interface Props {
   thread?: Thread;
@@ -159,7 +160,7 @@ function AppBuilderContent() {
   const router = useRouter();
   const { project, organization } = useAppContext();
   const { openModal } = useModal();
-  const { getMessages, sendMessage, thread } = useChat();
+  const { getMessages, sendMessage } = useChat();
   const { setArtifact, setMobilePreviewOpen } = useAppBuilderApi();
   const { code, artifact, mobilePreviewOpen, isSharedClone } = useAppBuilder();
   const { setLayout } = useLayoutActions();

@@ -18,7 +18,7 @@ import { deleteMessage } from '@/app/api/threads-messages';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { useMutation } from '@tanstack/react-query';
 import { v4 as uuid } from 'uuid';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import { ChatMessage } from '../types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 

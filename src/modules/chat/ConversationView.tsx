@@ -32,10 +32,10 @@ import classes from './ConversationView.module.scss';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
 import { Message } from './message/Message';
-import { useChat, useChatMessages } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
 import { BotChatMessage } from './types';
 import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
+import { useChat, useChatMessages } from './providers/chat-context';
 
 interface Props {
   onShowMobilePreviewButtonClick?: MouseEventHandler<HTMLButtonElement>;

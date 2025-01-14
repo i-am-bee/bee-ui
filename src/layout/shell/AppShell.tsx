@@ -20,9 +20,9 @@ import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
 import { AppHeader } from './AppHeader';
-import classes from './AppShell.module.scss';
 import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { ModalProvider } from '../providers/ModalProvider';
+import classes from './AppShell.module.scss';
 
 interface Props {
   projectId: string;

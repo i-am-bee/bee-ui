@@ -22,7 +22,7 @@ import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { PlanStep } from './PlanStep';
 import classes from './PlanView.module.scss';
-import { Spinner } from '@/components/Spinner/Spinner';
+import { Spinner } from '@/components/BouncingDots/Spinner';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
 
 interface Props {

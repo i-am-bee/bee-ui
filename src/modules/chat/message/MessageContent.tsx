@@ -15,7 +15,7 @@
  */
 
 import { AssistantPlan } from '@/app/api/threads-runs/types';
-import { Spinner } from '@/components/Spinner/Spinner';
+import { Spinner } from '@/components/BouncingDots/Spinner';
 import throttle from 'lodash/throttle';
 import { useEffect, useMemo, useState } from 'react';
 import { getLastCompletedStep } from '../assistant-plan/utils';

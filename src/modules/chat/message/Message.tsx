@@ -29,7 +29,7 @@ import { PlanWithSources } from '../assistant-plan/PlanWithSources';
 import { AttachmentsList } from '../attachments/AttachmentsList';
 import { getThreadAssistantName } from '../history/useGetThreadAssistant';
 import { useAssistantModal } from '../providers/AssistantModalProvider';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import { MessageFeedbackProvider } from '../providers/MessageFeedbackProvider';
 import { RunProvider } from '../providers/RunProvider';
 import { readRunQuery } from '../queries';

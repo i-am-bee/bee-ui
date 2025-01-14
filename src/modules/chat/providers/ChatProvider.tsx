@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 'use client';
 import { createMessage } from '@/app/api/threads-messages';
 import { cancelRun } from '@/app/api/threads-runs';
@@ -26,7 +25,6 @@ import { isRequiredActionToolApprovals } from '@/app/api/threads-runs/utils';
 import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
-import { Updater } from '@/hooks/useImmerWithGetter';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useHandleError } from '@/layout/hooks/useHandleError';
 import {
@@ -48,12 +46,7 @@ import {
 } from '@tanstack/react-query';
 import truncate from 'lodash/truncate';
 import {
-  createContext,
-  Dispatch,
-  MutableRefObject,
   PropsWithChildren,
-  SetStateAction,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -87,24 +80,22 @@ import {
 import { AssistantModalProvider } from './AssistantModalProvider';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
-import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { ApiError } from '@/app/api/errors';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { PLAN_STEPS_QUERY_PARAMS } from '../assistant-plan/PlanWithSources';
 import { useDeleteMessage } from '../api/useDeleteMessage';
-import { Control } from 'react-hook-form';
+import {
+  ChatContext,
+  ChatMessagesContext,
+  ChatSetup,
+  RunController,
+  SendMessageOptions,
+} from './chat-context';
 
 interface CancelRunParams {
   threadId: string;
   runId: string;
-}
-
-export type ChatStatus = 'ready' | 'fetching' | 'waiting' | 'aborting';
-export interface RunController {
-  abortController: AbortController | null;
-  status: ChatStatus;
-  runId: string | null;
 }
 
 const RUN_CONTROLLER_DEFAULT: RunController = {
@@ -112,14 +103,6 @@ const RUN_CONTROLLER_DEFAULT: RunController = {
   status: 'ready',
   runId: null,
 };
-
-interface ChatSetup {
-  topBarEnabled?: boolean;
-  threadSettingsEnabled?: boolean;
-  builderState?: AssistantBuilderState;
-  initialAssistantMessage?: string;
-  inputPlaceholder?: { initial: string; ongoing: string };
-}
 
 interface Props extends ChatSetup {
   thread?: Thread;
@@ -830,64 +813,4 @@ export function ChatProvider({
       </ChatMessagesContext.Provider>
     </ChatContext.Provider>
   );
-}
-
-export type SendMessageOptions = {
-  regenerate?: boolean;
-  onAfterRemoveSentMessage?: (message: UserChatMessage) => void;
-};
-
-export type SendMessageResult = {
-  aborted: boolean;
-  thread: Thread | null;
-};
-
-type ChatContextValue = ChatSetup & {
-  status: ChatStatus;
-  threadSettingsButtonRef: MutableRefObject<HTMLButtonElement | null>;
-  getMessages: () => ChatMessage[];
-  cancel: () => void;
-  clear: () => void;
-  reset: (messages: ChatMessage[]) => void;
-  setMessages: Updater<ChatMessage[]>;
-  sendMessage: (
-    input: string,
-    opts?: SendMessageOptions,
-  ) => Promise<SendMessageResult>;
-  setThread: Dispatch<SetStateAction<Thread | null>>;
-  thread: Thread | null;
-  assistant: ThreadAssistant;
-  disabledTools: ToolsUsage;
-  builderState?: AssistantBuilderState;
-  setDisabledTools: Dispatch<SetStateAction<ToolsUsage>>;
-  getThreadTools: () => ToolsUsage;
-  onToolApprovalSubmitRef: MutableRefObject<
-    ((value: ToolApprovalValue) => void) | null
-  >;
-};
-
-const ChatContext = createContext<ChatContextValue>(
-  null as unknown as ChatContextValue,
-);
-
-const ChatMessagesContext = createContext<ChatMessage[]>([]);
-
-export function useChat() {
-  const context = use(ChatContext);
-
-  if (!context) {
-    throw new Error('useChat must be used within a ChatProvider');
-  }
-
-  return context;
-}
-
-export function useChatMessages() {
-  const context = use(ChatMessagesContext);
-
-  if (!context) {
-    throw new Error('useChatMessages must be used within a ChatProvider');
-  }
-
-  return context;
 }

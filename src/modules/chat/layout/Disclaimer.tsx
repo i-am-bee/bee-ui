@@ -18,7 +18,7 @@
 import { Container } from '@/components/Container/Container';
 import { APP_NAME } from '@/utils/constants';
 import { memo } from 'react';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import classes from './Disclaimer.module.scss';
 
 export const Disclaimer = memo(function Disclaimer() {

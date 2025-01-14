@@ -22,7 +22,7 @@ import { useOnMount } from '@/hooks/useOnMount';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
-import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
+import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
@@ -45,6 +45,7 @@ import { InstructionsTextArea } from './InstructionsTextArea';
 import { KnowledgeSelector } from './KnowledgeSelector';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 import { useDeleteAssistant } from './useDeleteAssistant';
+import { useChat } from '@/modules/chat/providers/chat-context';
 
 interface Props {
   thread?: Thread;

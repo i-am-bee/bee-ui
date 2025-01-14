@@ -21,14 +21,14 @@ import { useEffect } from 'react';
 import { ConversationView } from './ConversationView';
 import { EmptyChatView } from './EmptyChatView';
 import { threadsQuery } from './history/queries';
+import { Thread } from '@/app/api/threads/types';
+import { ChatMessage } from './types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   SendMessageResult,
   useChat,
   useChatMessages,
-} from './providers/ChatProvider';
-import { Thread } from '@/app/api/threads/types';
-import { ChatMessage } from './types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+} from './providers/chat-context';
 
 export interface ChatState {
   thread: Thread;
