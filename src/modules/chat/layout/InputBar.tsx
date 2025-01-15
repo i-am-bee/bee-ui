@@ -60,6 +60,7 @@ export const InputBar = memo(function InputBar({
   const {
     files,
     isPending: isFilesPending,
+    hasFilesToUpload,
     dropzone,
     removeFile,
   } = useFilesUpload();
@@ -117,7 +118,10 @@ export const InputBar = memo(function InputBar({
   });
 
   const isSubmitDisabled =
-    isFilesPending || !inputValue || (builderState && !builderState.isSaved);
+    isFilesPending ||
+    hasFilesToUpload ||
+    !inputValue ||
+    (builderState && !builderState.isSaved);
 
   const placeholder = inputPlaceholder
     ? messages.length
