@@ -39,7 +39,7 @@ import {
   VectorStoreFilesUploadProvider,
 } from '../files/VectorStoreFilesUploadProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { AppProvider, useAppContext } from '@/layout/providers/AppProvider';
+import { useAppContext } from '@/layout/providers/AppProvider';
 
 export interface CreateKnowledgeValues {
   name: string;

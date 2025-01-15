@@ -56,6 +56,7 @@ export type VectoreStoreFileUpload = {
 const Context = createContext<{
   files: VectoreStoreFileUpload[];
   isPending: boolean;
+  hasFilesToUpload: boolean;
   vectorStoreId: string | null;
   removeFile: (id: string) => void;
   clearFiles: () => void;
@@ -65,6 +66,7 @@ const Context = createContext<{
 }>({
   files: [],
   isPending: false,
+  hasFilesToUpload: false,
   vectorStoreId: null,
   removeFile: noop,
   clearFiles: noop,
@@ -262,7 +264,10 @@ export const VectorStoreFilesUploadProvider = ({
   const value = useMemo(() => {
     return {
       files,
-      isPending: files.some((file) => file.status !== 'complete'),
+      isPending: files.some(
+        (file) => file.status === 'uploading' || file.status === 'embedding',
+      ),
+      hasFilesToUpload: files.some((file) => file.status === 'new'),
       vectorStoreId,
       onFileSubmit: (inputFile: VectoreStoreFileUpload, thread?: Thread) => {
         if (inputFile.isReadable && !vectorStoreIdRef.current)
