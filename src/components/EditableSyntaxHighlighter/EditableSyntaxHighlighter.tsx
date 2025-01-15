@@ -132,11 +132,12 @@ export function EditableSyntaxHighlighter({
   onChange,
   invalid,
   readOnly,
+  className,
   // showLineNumbers,
   ...props
 }: Props) {
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.root, className)}>
       {labelText && <FormLabel id={id}>{labelText}</FormLabel>}
 
       <div className={clsx(classes.wrapper, { [classes.invalid]: invalid })}>

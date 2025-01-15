@@ -301,11 +301,11 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
                   <AnimatePresence>
                     {debugMode &&
                       !traceError &&
-                      !stepTrace &&
+                      !traceData &&
                       expanded &&
                       allStepsDone && (
                         <motion.section {...fadeProps()} key={`${id}:trace`}>
-                          <Spinner />
+                          <Spinner size="sm" />
                         </motion.section>
                       )}
                   </AnimatePresence>
