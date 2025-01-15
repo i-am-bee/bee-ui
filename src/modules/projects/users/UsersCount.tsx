@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-import { Project } from '@/app/api/projects/types';
-import classes from './UsersCount.module.scss';
 import { SkeletonText } from '@carbon/react';
-import { useProjectUsersCount } from './useProjectUsersCount';
 import pluralize from 'pluralize';
-import { Organization } from '@/app/api/organization/types';
+import { useProjectUsersCount } from './useProjectUsersCount';
+import classes from './UsersCount.module.scss';
 
-interface Props {
-  project: Project;
-  organization: Organization;
-}
-
-export function UsersCount({ project, organization }: Props) {
-  const { totalCount, isLoading } = useProjectUsersCount(organization, project);
+export function UsersCount({ projectId }: { projectId: string }) {
+  const { totalCount, isLoading } = useProjectUsersCount(projectId);
 
   return (
     <div className={classes.root}>

@@ -57,10 +57,10 @@ export function ApiKeyModal({ onSuccess, ...props }: Props) {
   const id = useId();
   const { openModal } = useModal();
 
-  const { organization, project } = useAppContext();
+  const { project } = useAppContext();
 
   const { projects, isLoading, isFetching, hasNextPage, fetchNextPage } =
-    useProjects({ organization, withRole: true });
+    useProjects({ withRole: true });
 
   useEffect(() => {
     if (!isFetching && hasNextPage) fetchNextPage();

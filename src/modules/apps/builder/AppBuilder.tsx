@@ -42,7 +42,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { ConversationView } from '../../chat/ConversationView';
-import { useThreadsQueries } from '../../chat/history/queries';
+import { useThreadsQueries } from '../../chat/queries';
 import { AppIcon } from '../AppIcon';
 import { useArtifactsCount } from '../hooks/useArtifactsCount';
 import { SaveAppModal } from '../manage/SaveAppModal';

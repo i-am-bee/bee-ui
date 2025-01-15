@@ -29,7 +29,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { produce } from 'immer';
-import { useThreadsQueries } from '../history/queries';
+import { useThreadsQueries } from '../queries';
 
 export function useThreadApi(thread: Thread | null) {
   const queryClient = useQueryClient();

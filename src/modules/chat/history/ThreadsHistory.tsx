@@ -19,7 +19,7 @@ import { Thread } from '@/app/api/threads/types';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { HTMLAttributes, memo } from 'react';
-import { THREADS_DEFAULT_PAGE_SIZE, useThreadsQueries } from './queries';
+import { THREADS_DEFAULT_PAGE_SIZE, useThreadsQueries } from '../queries';
 import { ThreadItem } from './ThreadItem';
 import classes from './ThreadsHistory.module.scss';
 

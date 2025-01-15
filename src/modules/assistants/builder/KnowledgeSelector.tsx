@@ -27,10 +27,7 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
 import { useVectorStores } from '@/modules/knowledge/hooks/useVectorStores';
-import {
-  useVectorStoresQueries,
-  vectorStoresFilesQuery,
-} from '@/modules/knowledge/queries';
+import { useVectorStoresQueries } from '@/modules/knowledge/queries';
 import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import {
@@ -48,7 +45,7 @@ import classes from './KnowledgeSelector.module.scss';
 
 export function KnowledgeSelector() {
   const { openModal } = useModal();
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { project, isProjectReadOnly } = useAppContext();
   const vectorStoresQueries = useVectorStoresQueries();
   const {
     field: { value, onChange },
@@ -109,9 +106,7 @@ export function KnowledgeSelector() {
   });
 
   const { data: dataFiles } = useInfiniteQuery({
-    ...vectorStoresFilesQuery(
-      organization.id,
-      project.id,
+    ...vectorStoresQueries.filesList(
       value ?? '',
       VECTOR_STORE_FILES_QUERY_PARAMS,
     ),

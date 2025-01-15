@@ -51,9 +51,8 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useThreadApi } from '../hooks/useThreadApi';
-import { listMessagesQuery } from '../queries';
 import { FileCount } from './FileCount';
-import { useThreadsQueries } from './queries';
+import { useThreadsQueries } from '../queries';
 import classes from './ThreadItem.module.scss';
 import {
   getThreadAssistantName,
@@ -106,7 +105,7 @@ export function ThreadItem({ thread }: Props) {
 
   // Fallback for when the message is not saved in thread metadata
   const { data, isLoading, error, refetch } = useQuery({
-    ...listMessagesQuery(organization.id, project.id, thread.id, { limit: 1 }),
+    ...threadsQueries.messagesList(thread.id, { limit: 1 }),
     enabled: !title,
   });
 

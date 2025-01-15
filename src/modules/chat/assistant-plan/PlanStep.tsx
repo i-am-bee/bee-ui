@@ -24,7 +24,9 @@ import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { ExpandPanel } from '@/components/ExpandPanel/ExpandPanel';
 import { ExpandPanelButton } from '@/components/ExpandPanelButton/ExpandPanelButton';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
+import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
@@ -41,22 +43,19 @@ import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import JSON5 from 'json5';
 import { ReactElement, useCallback, useEffect, useId, useMemo } from 'react';
+import { useThreadsQueries } from '../queries';
 import { useThreadApi } from '../hooks/useThreadApi';
+import { useChat } from '../providers/chat-context';
 import {
   useExpandedStep,
   useExpandedStepActions,
 } from '../providers/ExpandedStepProvider';
 import { useRunContext } from '../providers/RunProvider';
-import { readRunQuery } from '../queries';
 import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { ToolApprovalValue } from '../types';
 import classes from './PlanStep.module.scss';
-import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { getToolApproval, getToolReferenceFromToolCall } from './utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { Spinner } from '@/components/Spinner/Spinner';
-import { useChat } from '../providers/chat-context';
 
 interface Props {
   step: AssistantPlanStep;
@@ -71,7 +70,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
   const { run } = useRunContext();
   const { assistant, thread, onToolApprovalSubmitRef, setThread } = useChat();
-  const { project, organization } = useAppContext();
+  const threadsQueries = useThreadsQueries();
   const { traceData, traceError } = useTraceData();
 
   const queryClient = useQueryClient();
@@ -124,8 +123,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
     onToolApprovalSubmitRef.current?.(value);
 
     queryClient.setQueryData(
-      readRunQuery(organization.id, project.id, thread?.id ?? '', run?.id ?? '')
-        .queryKey,
+      threadsQueries.runDetail(thread?.id ?? '', run?.id ?? '').queryKey,
       (run) =>
         run
           ? {

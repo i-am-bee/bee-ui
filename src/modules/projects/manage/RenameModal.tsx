@@ -51,7 +51,7 @@ export function RenameModal({ project, organization, ...props }: Props) {
   const queryClient = useQueryClient();
 
   const projectsQueries = useProjectsQueries();
-  const { data: projects } = useProjects({ organization });
+  const { data: projects } = useProjects();
 
   const { mutateAsync } = useMutation({
     mutationFn: (newName: string) =>

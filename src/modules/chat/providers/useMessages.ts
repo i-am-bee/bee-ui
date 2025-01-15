@@ -16,13 +16,12 @@
 
 import { MESSAGES_PAGE_SIZE } from '@/app/api/threads-messages';
 import { Thread } from '@/app/api/threads/types';
+import { decodeMetadata } from '@/app/api/utils';
 import { useImmerWithGetter } from '@/hooks/useImmerWithGetter';
 import { useQuery } from '@tanstack/react-query';
-import { messagesWithFilesQuery } from '../queries';
+import { useThreadsQueries } from '../queries';
 import { MessageMetadata, MessageWithFiles } from '../types';
 import { getMessagesFromThreadMessages } from '../utils';
-import { decodeMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useMessages({
   thread,
@@ -31,10 +30,10 @@ export function useMessages({
   thread?: Thread | null;
   initialData?: MessageWithFiles[];
 }) {
-  const { project, organization } = useAppContext();
+  const threadsQueries = useThreadsQueries();
 
   const { data, refetch } = useQuery({
-    ...messagesWithFilesQuery(organization.id, project.id, thread?.id || '', {
+    ...threadsQueries.messagesWithFilesList(thread?.id ?? '', {
       limit: MESSAGES_PAGE_SIZE,
     }),
     select: (messages) =>

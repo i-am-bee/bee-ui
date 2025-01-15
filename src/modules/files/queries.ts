@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-import { readFile } from '@/app/api/files';
+import { readFile, readFileContent } from '@/app/api/files';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { queryOptions } from '@tanstack/react-query';
 
-export const readFileQuery = (
-  organizationId: string,
-  projectId: string,
-  id: string,
-) =>
-  queryOptions({
-    queryKey: ['files/{file_id}', organizationId, projectId, id],
-    queryFn: () => readFile(organizationId, projectId, id),
-    staleTime: 60 * 60 * 1000,
-  });
+export function useFilesQueries() {
+  const { organization, project } = useAppContext();
+
+  const filesQueries = {
+    all: () => [project.id, 'files'] as const,
+    details: () => [...filesQueries.all(), 'detail'] as const,
+    detail: (id: string) =>
+      queryOptions({
+        queryKey: [...filesQueries.details(), id],
+        queryFn: () => readFile(organization.id, project.id, id),
+        staleTime: 60 * 60 * 1000,
+      }),
+    content: (id: string) =>
+      queryOptions({
+        queryKey: [...filesQueries.detail(id).queryKey, 'content'],
+        queryFn: () => readFileContent(organization.id, project.id, id),
+      }),
+  };
+
+  return filesQueries;
+}

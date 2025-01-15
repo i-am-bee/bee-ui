@@ -91,5 +91,13 @@ export const useUpdatePendingVectorStore = (
     if (isSomeUpdated) {
       queryClient.invalidateQueries({ queryKey: vectorStoresQueries.lists() });
     }
-  }, [data, params, organization.id, project.id, queries, queryClient]);
+  }, [
+    data,
+    params,
+    organization.id,
+    project.id,
+    queries,
+    queryClient,
+    vectorStoresQueries,
+  ]);
 };

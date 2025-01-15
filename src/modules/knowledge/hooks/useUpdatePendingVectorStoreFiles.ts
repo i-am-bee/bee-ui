@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { VectorStore } from '@/app/api/vector-stores/types';
-import {
-  InfiniteData,
-  useQueries,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { readVectorStoreFileQuery, vectorStoresFilesQuery } from '../queries';
-import { produce } from 'immer';
 import {
   ListVectorStoreFilesResponse,
   VectorStoreFile,
   VectorStoreFilesListQuery,
 } from '@/app/api/vector-stores-files/types';
+import { VectorStore } from '@/app/api/vector-stores/types';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import {
+  InfiniteData,
+  useQueries,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { produce } from 'immer';
+import { useEffect } from 'react';
+import { useVectorStoresQueries } from '../queries';
 
 export const useUpdatePendingVectorStoreFiles = (
   vectorStore: VectorStore,
@@ -38,6 +38,7 @@ export const useUpdatePendingVectorStoreFiles = (
 ) => {
   const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({
     durationStart: 1000,
@@ -54,12 +55,7 @@ export const useUpdatePendingVectorStoreFiles = (
       .filter((file) => file.status === 'in_progress')
       .map((file) => {
         return {
-          ...readVectorStoreFileQuery(
-            organization.id,
-            project.id,
-            vectorStore.id,
-            file.id,
-          ),
+          ...vectorStoresQueries.fileDetail(vectorStore.id, file.id),
           refetchInterval: getDuration,
         };
       }),
@@ -79,12 +75,7 @@ export const useUpdatePendingVectorStoreFiles = (
         isSomeUpdated = true;
 
         queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
-          vectorStoresFilesQuery(
-            organization.id,
-            project.id,
-            vectorStore.id,
-            params,
-          ).queryKey,
+          vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -103,13 +94,7 @@ export const useUpdatePendingVectorStoreFiles = (
 
     if (isSomeUpdated) {
       queryClient.invalidateQueries({
-        queryKey: [
-          vectorStoresFilesQuery(
-            organization.id,
-            project.id,
-            vectorStore.id,
-          ).queryKey.at(0),
-        ],
+        queryKey: vectorStoresQueries.filesLists(vectorStore.id),
       });
     }
   }, [
@@ -120,5 +105,6 @@ export const useUpdatePendingVectorStoreFiles = (
     queries,
     queryClient,
     vectorStore.id,
+    vectorStoresQueries,
   ]);
 };

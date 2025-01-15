@@ -52,7 +52,7 @@ export function CreateProjectModal({
   const router = useRouter();
 
   const projectsQueries = useProjectsQueries();
-  const { data: projects } = useProjects({ organization });
+  const { data: projects } = useProjects();
 
   const projectNames = useMemo(
     () => projects?.projects.map(({ name }) => name),

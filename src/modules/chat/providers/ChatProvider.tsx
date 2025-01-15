@@ -58,18 +58,11 @@ import {
 } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useDeleteMessage } from '../api/useDeleteMessage';
-import { PLAN_STEPS_QUERY_PARAMS } from '../assistant-plan/PlanWithSources';
-import { useThreadsQueries } from '../history/queries';
+import { useThreadsQueries } from '../queries';
 import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
 import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
 import { useThreadApi } from '../hooks/useThreadApi';
-import {
-  messagesWithFilesQuery,
-  readRunQuery,
-  runsQuery,
-  runStepsQuery,
-} from '../queries';
 import {
   ChatMessage,
   MessageWithFiles,
@@ -202,8 +195,7 @@ export function ChatProvider({
     ) => {
       if (threadId) {
         queryClient.setQueryData(
-          messagesWithFilesQuery(organization.id, project.id, threadId)
-            .queryKey,
+          threadsQueries.messagesWithFilesList(threadId).queryKey,
           (messages) => {
             if (!newMessage) return messages;
 
@@ -217,26 +209,16 @@ export function ChatProvider({
           },
         );
         queryClient.invalidateQueries({
-          queryKey: messagesWithFilesQuery(
-            organization.id,
-            project.id,
-            threadId,
-          ).queryKey,
+          queryKey: threadsQueries.messagesWithFilesLists(threadId),
         });
         if (runId) {
           queryClient.invalidateQueries({
-            queryKey: runStepsQuery(
-              organization.id,
-              project.id,
-              threadId,
-              runId,
-              PLAN_STEPS_QUERY_PARAMS,
-            ).queryKey,
+            queryKey: threadsQueries.runStepsLists(threadId, runId),
           });
         }
       }
     },
-    [project.id, organization.id, queryClient],
+    [queryClient, threadsQueries],
   );
 
   const getThreadTools = useCallback(() => {
@@ -382,26 +364,23 @@ export function ChatProvider({
     });
 
     if (threadRef.current) {
-      queryClient.invalidateQueries({
-        queryKey: readRunQuery(
-          organization.id,
-          project.id,
+      queryClient.invalidateQueries(
+        threadsQueries.runDetail(
           threadRef.current.id,
           lastMessage?.run_id ?? '',
-        ).queryKey,
-      });
+        ),
+      );
 
       onMessageCompleted?.(threadRef.current, lastMessage?.content ?? '');
     }
   }, [
     getMessages,
     onMessageCompleted,
-    project.id,
-    organization.id,
     queryClient,
     setController,
     setMessages,
     threadRef,
+    threadsQueries,
   ]);
 
   const requireUserApproval = useCallback(
@@ -465,7 +444,7 @@ export function ChatProvider({
     if (thread && getMessages().at(-1)?.role !== 'assistant') {
       queryClient
         .fetchQuery(
-          runsQuery(organization.id, project.id, thread.id, {
+          threadsQueries.runsList(thread.id, {
             limit: 1,
             order: 'desc',
             order_by: 'created_at',
@@ -504,9 +483,8 @@ export function ChatProvider({
     getMessages,
     setMessages,
     queryClient,
-    project.id,
-    organization.id,
     requireUserApproval,
+    threadsQueries,
   ]);
 
   const sendMessage = useCallback(

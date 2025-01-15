@@ -17,14 +17,14 @@
 import { deleteProjectUser, updateProjectUser } from '@/app/api/projects-users';
 import { ProjectUser, ProjectUserRole } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { SkeletonPlaceholder, SkeletonText } from '@carbon/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import classes from './ProjectUserRow.module.scss';
-import { projectUsersQuery } from './queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useProjectUsersQueries } from './queries';
 
 interface Props {
   user: ProjectUser;
@@ -33,17 +33,13 @@ interface Props {
 export function ProjectUserRow({ user }: Props) {
   const { project, organization } = useAppContext();
   const userId = useUserProfile((state) => state.id);
-  const queryClient = useQueryClient();
+  const projectUsersQueries = useProjectUsersQueries();
 
   const { mutateAsync: mutateDelete, isPending: isDeletePending } = useMutation(
     {
       mutationFn: () => deleteProjectUser(organization.id, project.id, user.id),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: projectUsersQuery(organization.id, project.id).queryKey,
-        });
-      },
       meta: {
+        invalidates: [projectUsersQueries.lists()],
         errorToast: {
           title: 'Failed to remove the user',
           includeErrorMessage: true,
@@ -52,23 +48,17 @@ export function ProjectUserRow({ user }: Props) {
     },
   );
 
-  const { mutateAsync: mutateUpdate, isPending: isUpdatePending } = useMutation(
-    {
-      mutationFn: (role: ProjectUserRole) =>
-        updateProjectUser(organization.id, project.id, user.id, role),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: projectUsersQuery(organization.id, project.id).queryKey,
-        });
-      },
-      meta: {
-        errorToast: {
-          title: 'Failed to remove the user',
-          includeErrorMessage: true,
-        },
+  const { mutateAsync: mutateUpdate } = useMutation({
+    mutationFn: (role: ProjectUserRole) =>
+      updateProjectUser(organization.id, project.id, user.id, role),
+    meta: {
+      invalidates: [projectUsersQueries.lists()],
+      errorToast: {
+        title: 'Failed to remove the user',
+        includeErrorMessage: true,
       },
     },
-  );
+  });
 
   return (
     <fieldset

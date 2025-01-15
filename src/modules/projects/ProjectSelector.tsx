@@ -36,10 +36,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
   const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
-  const { projects, data, isFetching } = useProjects({
-    organization,
-    withRole: true,
-  });
+  const { projects, data, isFetching } = useProjects({ withRole: true });
 
   const selectedItem = useMemo(
     () => projects?.find(({ id }) => id === project.id),

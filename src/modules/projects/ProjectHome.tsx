@@ -49,7 +49,7 @@ export function ProjectHome({ children }: Props) {
               <div className={classes.sharing}>
                 {!isProjectReadOnly && (
                   <>
-                    <UsersCount project={project} organization={organization} />
+                    <UsersCount projectId={project.id} />
                     <Button
                       renderIcon={Add}
                       kind="tertiary"

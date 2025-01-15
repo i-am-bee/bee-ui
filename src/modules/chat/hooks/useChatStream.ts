@@ -33,11 +33,13 @@ import {
   isStepDeltaEventResponse,
   isStepEventResponse,
 } from '@/app/api/threads-runs/utils';
+import { Thread } from '@/app/api/threads/types';
 import {
   SubmitToolApprovalsBody,
   SubmitToolOutput,
   SubmitToolOutputsBody,
 } from '@/app/api/tools/types';
+import { EntityWithDecodedMetadata } from '@/app/api/types';
 import {
   encodeEntityWithMetadata,
   getProjectHeaders,
@@ -45,28 +47,26 @@ import {
   maybeGetJsonBody,
 } from '@/app/api/utils';
 import { Updater } from '@/hooks/useImmerWithGetter';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   FunctionTool,
   getUserLocation,
 } from '@/modules/assistants/tools/functionTools';
+import { getToolApprovalId } from '@/modules/tools/utils';
 import {
   EventStreamContentType,
   fetchEventSource,
 } from '@ai-zen/node-fetch-event-source';
+import { useQueryClient } from '@tanstack/react-query';
 import { MutableRefObject, RefObject } from 'react';
 import {
   updatePlanWithRunStep,
   updatePlanWithRunStepDelta,
 } from '../assistant-plan/utils';
+import { useThreadsQueries } from '../queries';
+import { RunController } from '../providers/chat-context';
 import { ChatMessage, ToolApprovalValue } from '../types';
 import { isBotMessage } from '../utils';
-import { useQueryClient } from '@tanstack/react-query';
-import { readRunQuery } from '../queries';
-import { Thread } from '@/app/api/threads/types';
-import { getToolApprovalId } from '@/modules/tools/utils';
-import { EntityWithDecodedMetadata } from '@/app/api/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { RunController } from '../providers/chat-context';
 
 type RunsCreateBodyDecoded = EntityWithDecodedMetadata<
   RunsCreateBody,
@@ -108,6 +108,7 @@ export function useChatStream({
 }: Props) {
   const queryClient = useQueryClient();
   const { project, organization } = useAppContext();
+  const threadsQueries = useThreadsQueries();
 
   const getThread = () => {
     const thread = threadRef.current;
@@ -184,17 +185,12 @@ export function useChatStream({
       let approve = toolId && approvedTools?.includes(toolId);
       if (!approve) {
         queryClient.setQueryData(
-          readRunQuery(organization.id, project.id, thread.id, runId).queryKey,
+          threadsQueries.runDetail(thread.id, runId).queryKey,
           (run) => (run ? { ...run, required_action: action } : undefined),
         );
-        queryClient.invalidateQueries({
-          queryKey: readRunQuery(
-            organization.id,
-            project.id,
-            thread.id,
-            getRunId(),
-          ).queryKey,
-        });
+        queryClient.invalidateQueries(
+          threadsQueries.runDetail(thread.id, getRunId()),
+        );
 
         const waitForApproval = new Promise<ToolApprovalValue>((resolve) => {
           onToolApprovalSubmitRef.current = resolve;

@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-import { useQueryClient } from '@tanstack/react-query';
-import { useThreadsQueries } from '../queries';
+import { fetchLinkPreview } from '@/app/api/link-preview';
+import { queryOptions } from '@tanstack/react-query';
 
-export function usePrefetchThreads() {
-  const queryClient = useQueryClient();
-  const threadsQueries = useThreadsQueries();
+export function useLinkPreviewQueries() {
+  const linkPreviewQueries = {
+    all: () => ['link-preview'] as const,
+    detail: (url: string) =>
+      queryOptions({
+        queryKey: [...linkPreviewQueries.all(), url],
+        queryFn: () => fetchLinkPreview(url),
+      }),
+  };
 
-  return () => queryClient.prefetchInfiniteQuery(threadsQueries.list());
+  return linkPreviewQueries;
 }

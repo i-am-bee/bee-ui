@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
-import { vectorStoresFilesQuery } from '@/modules/knowledge/queries';
+import { useVectorStoresQueries } from '@/modules/knowledge/queries';
 import { toolsEqual } from '@/modules/tools/utils';
 import { SkeletonText, Toggle } from '@carbon/react';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -26,7 +27,6 @@ import { useId, useMemo } from 'react';
 import { useChat } from '../providers/chat-context';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import classes from './ThreadKnowledge.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   assistantVectorStores: string[];
@@ -49,6 +49,8 @@ export function ThreadKnowledge({
   const { getThreadTools } = useChat();
   const { files } = useFilesUpload();
   const { project, organization } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
+
   // TODO: We don't currently support paging of messages, so this works. When pagination is available, we need to figure out the functionality differently.
   const allFiles = useMemo(
     () => [
@@ -79,14 +81,9 @@ export function ThreadKnowledge({
     isLoading: isThreadKnowledgeFilesLoading,
   } = useInfiniteQuery({
     // We support only one vector store per thread
-    ...vectorStoresFilesQuery(
-      organization.id,
-      project.id,
-      threadVectorStores.at(0)!,
-      {
-        limit: VECTOR_STORES_FILES_LIMIT,
-      },
-    ),
+    ...vectorStoresQueries.filesList(threadVectorStores.at(0)!, {
+      limit: VECTOR_STORES_FILES_LIMIT,
+    }),
     enabled: enableFetch && threadVectorStores.length > 0,
   });
 

@@ -22,7 +22,7 @@ import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { getAssistantsQueries } from '@/modules/assistants/queries';
 import { Assistant } from '@/modules/assistants/types';
 import { getProjectsQueries } from '@/modules/projects/queries';
-import { readProjectUserQuery } from '@/modules/projects/users/queries';
+import { getProjectUsersQueries } from '@/modules/projects/users/queries';
 import { useUserProfile } from '@/store/user-profile';
 import { FeatureName } from '@/utils/parseFeatureFlags';
 import { useQuery } from '@tanstack/react-query';
@@ -78,6 +78,7 @@ export function AppProvider({
   const userId = useUserProfile((state) => state.id);
   const projectsQueries = getProjectsQueries({ organization });
   const assistantsQueries = getAssistantsQueries({ organization, project });
+  const projectUsersQueries = getProjectUsersQueries({ organization });
 
   const { data: projectData } = useQuery({
     ...projectsQueries.detail(project.id),
@@ -93,7 +94,7 @@ export function AppProvider({
   });
 
   const { data: projectUser } = useQuery({
-    ...readProjectUserQuery(organization.id, project.id, userId),
+    ...projectUsersQueries.detail(project.id, userId),
     enabled: Boolean(userId),
   });
 

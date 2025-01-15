@@ -15,7 +15,10 @@
  */
 
 import { AssistantPlan, AssistantPlanStep } from '@/app/api/threads-runs/types';
+import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
+import { Spinner } from '@/components/Spinner/Spinner';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
 import { ActionableNotification, Button } from '@carbon/react';
 import { ChevronDown } from '@carbon/react/icons';
@@ -23,6 +26,7 @@ import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import { useThreadsQueries } from '../queries';
 import { SourcesView } from '../layout/SourcesView';
 import { useChat } from '../providers/chat-context';
 import {
@@ -30,18 +34,14 @@ import {
   useExpandedStep,
   useExpandedStepActions,
 } from '../providers/ExpandedStepProvider';
-import { runStepsQuery } from '../queries';
+import { TraceDataProvider } from '../trace/TraceDataProvider';
+import { TraceInfoView } from '../trace/TraceInfoView';
+import { TraceData } from '../trace/types';
+import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { BotChatMessage } from '../types';
 import { PlanView } from './PlanView';
 import classes from './PlanWithSources.module.scss';
 import { getToolApproval, updatePlanWithRunStep } from './utils';
-import { TraceData } from '../trace/types';
-import { useBuildTraceData } from '../trace/useBuildTraceData';
-import { TraceInfoView } from '../trace/TraceInfoView';
-import { TraceDataProvider } from '../trace/TraceDataProvider';
-import { Spinner } from '@/components/Spinner/Spinner';
-import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   message: BotChatMessage;
@@ -50,7 +50,8 @@ interface Props {
 }
 
 function PlanWithSourcesComponent({ message, inView }: Props) {
-  const { project, organization, featureFlags } = useAppContext();
+  const { featureFlags } = useAppContext();
+  const threadsQueries = useThreadsQueries();
   const { thread } = useChat();
   const { setExpandedStep } = useExpandedStepActions();
   const expandedStep = useExpandedStep();
@@ -69,11 +70,9 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     error,
     refetch,
   } = useQuery({
-    ...runStepsQuery(
-      organization.id,
-      project.id,
+    ...threadsQueries.runStepsList(
       thread?.id ?? '',
-      message.run_id ?? '',
+      message?.run_id ?? '',
       PLAN_STEPS_QUERY_PARAMS,
     ),
     enabled: Boolean(!message.plan && thread && message.run_id && inView),

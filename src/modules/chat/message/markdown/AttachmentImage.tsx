@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
+import { Spinner } from '@/components/Spinner/Spinner';
+import { useFilesQueries } from '@/modules/files/queries';
 import { useQuery } from '@tanstack/react-query';
 import classes from './AttachmentImage.module.scss';
-import { Spinner } from '@/components/Spinner/Spinner';
-import { readFileContent } from '@/app/api/files';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function AttachmentImage({
   fileId,
@@ -29,11 +28,8 @@ export function AttachmentImage({
   alt: string;
   title?: string;
 }) {
-  const { project, organization } = useAppContext();
-  const { data: content, isLoading } = useQuery({
-    queryKey: ['files/{file_id}/content', project.id, fileId],
-    queryFn: () => readFileContent(organization.id, project.id, fileId),
-  });
+  const filesQueries = useFilesQueries();
+  const { data: content, isLoading } = useQuery(filesQueries.content(fileId));
 
   return (
     <span className={classes.root}>

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
+import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import { VectorStore } from '@/app/api/vector-stores/types';
 import { Modal } from '@/components/Modal/Modal';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   InlineLoading,
@@ -22,16 +25,13 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@carbon/react';
-import { ModalProps } from '@/layout/providers/ModalProvider';
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { useCallback, useEffect } from 'react';
 import classes from '../create/CreateKnowledgeModal.module.scss';
 import { KnowledgeFilesUpload } from '../files/KnowledgeFilesUpload';
-import { useCallback, useEffect } from 'react';
 import {
   useVectoreStoreFilesUpload,
   VectorStoreFilesUploadProvider,
 } from '../files/VectorStoreFilesUploadProvider';
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
 
 interface Props extends ModalProps {
   vectorStore: VectorStore;

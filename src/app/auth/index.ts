@@ -16,6 +16,7 @@
 
 import { UserMetadata, UserProfileState } from '@/store/user-profile/types';
 import { checkErrorCode } from '@/utils/handleApiError';
+import { noop } from '@/utils/helpers';
 import NextAuth from 'next-auth';
 import type { OAuthConfig } from 'next-auth/providers';
 import * as z from 'zod';
@@ -27,7 +28,6 @@ import {
   encodeMetadata,
   maybeGetJsonBody,
 } from '../api/utils';
-import { noop } from '@/utils/helpers';
 
 const AUTH_PROVIDER_ID = process.env.NEXT_PUBLIC_AUTH_PROVIDER_ID!;
 const AUTH_PROVIDER_NAME = process.env.AUTH_PROVIDER_NAME!;
@@ -116,8 +116,6 @@ const authResult = NextAuth(() => ({
           return true;
         }
       } catch (error) {
-        console.log('bagr', { error });
-
         if (
           error instanceof TypeError &&
           checkErrorCode(error) === 'ECONNREFUSED'

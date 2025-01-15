@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { SkeletonIcon } from '@carbon/react';
 import { Launch } from '@carbon/react/icons';
@@ -21,9 +22,8 @@ import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Link } from 'mdast';
 import { AnchorHTMLAttributes, useState } from 'react';
-import { linkPreviewQuery } from '../../queries';
+import { useLinkPreviewQueries } from '../../../link-preview/queries';
 import classes from './PreviewLink.module.scss';
-import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
   node?: Link;
@@ -32,6 +32,9 @@ interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
 export function PreviewLink({ node, className, ...props }: Props) {
   const [enableFetch, setEnableFetch] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const linkPreviewQueries = useLinkPreviewQueries();
+
   const url = props.href || '';
 
   const onImageError = () => {
@@ -39,7 +42,7 @@ export function PreviewLink({ node, className, ...props }: Props) {
   };
 
   const { data, isLoading } = useQuery({
-    ...linkPreviewQuery(url),
+    ...linkPreviewQueries.detail(url),
     enabled: enableFetch,
   });
 
