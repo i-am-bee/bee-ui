@@ -23,30 +23,22 @@ import { useTheme } from '@/layout/providers/ThemeProvider';
 import { USERCONTENT_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import { Loading } from '@carbon/react';
-import clsx from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './ArtifactSharedIframe.module.scss';
 import AppPlaceholder from './Placeholder.svg';
+import clsx from 'clsx';
 
 interface Props {
   variant: 'detail' | 'builder';
   sourceCode: string | null;
+  isPending?: boolean;
   onFixError?: (errorText: string) => void;
 }
 
-function getErrorMessage(error: unknown) {
-  if (error instanceof ApiError && error.code === 'too_many_requests') {
-    return 'You have exceeded the limit for using LLM functions';
-  }
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-  return 'Unknown error when calling LLM function.';
-}
-
 export function ArtifactSharedIframe({
-  variant,
   sourceCode,
+  isPending,
+  variant,
   onFixError,
 }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -67,6 +59,8 @@ export function ArtifactSharedIframe({
   );
 
   useEffect(() => {
+    if (isPending) return;
+
     postMessage({
       type: PostMessageType.UPDATE_STATE,
       stateChange: {
@@ -79,7 +73,7 @@ export function ArtifactSharedIframe({
         ancestorOrigin: window.location.origin,
       },
     });
-  }, [sourceCode, onFixError, theme, postMessage]);
+  }, [sourceCode, onFixError, theme, postMessage, isPending]);
 
   const handleMessage = useCallback(
     async (event: MessageEvent<StliteMessage>) => {
@@ -172,7 +166,7 @@ export function ArtifactSharedIframe({
           <AppPlaceholder />
         </div>
       ) : (
-        state === State.LOADING && <Loading />
+        (state === State.LOADING || isPending) && <Loading />
       )}
     </div>
   );
@@ -234,3 +228,13 @@ export type StliteMessage =
       request_id: string;
       payload: { errorText: string };
     };
+
+function getErrorMessage(error: unknown) {
+  if (error instanceof ApiError && error.code === 'too_many_requests') {
+    return 'You have exceeded the limit for using LLM functions';
+  }
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+  return 'Unknown error when calling LLM function.';
+}

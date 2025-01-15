@@ -95,12 +95,14 @@ interface Props {
   >;
   setMessages: Updater<ChatMessage[]>;
   updateController: (data: Partial<RunController>) => void;
+  onMessageDeltaEventResponse?: (message: string) => void;
 }
 
 export function useChatStream({
   threadRef,
   controllerRef,
   onToolApprovalSubmitRef,
+  onMessageDeltaEventResponse,
   setMessages,
   updateController,
 }: Props) {
@@ -269,6 +271,8 @@ export function useChatStream({
             message.content += response.data?.delta.content
               .map(({ text: { value } }) => value)
               .join('');
+
+            onMessageDeltaEventResponse?.(message.content);
 
             if (message.plan) message.plan.pending = false;
           } else if (isMessageCompletedEventResponse(response)) {

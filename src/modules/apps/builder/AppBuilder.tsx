@@ -52,6 +52,7 @@ import { ArtifactSharedIframe } from './ArtifactSharedIframe';
 import { SourceCodeEditor } from './SourceCodeEditor';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useChat } from '@/modules/chat/providers/chat-context';
+import { isBotMessage } from '@/modules/chat/utils';
 
 interface Props {
   thread?: Thread;
@@ -84,6 +85,14 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }
     },
     [organization.id, project.id, queryClient, setCode, thread],
+  );
+
+  const handleMessageContentUpdated = useCallback(
+    (message: string) => {
+      const pythonAppCode = extractCodeFromMessageContent(message);
+      if (pythonAppCode) setCode(pythonAppCode);
+    },
+    [setCode],
   );
 
   const handleBeforePostMessage = useCallback(
@@ -148,6 +157,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }}
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
+      onMessageDeltaEventResponse={handleMessageContentUpdated}
     >
       <AppBuilderContent />
     </ChatProvider>
@@ -183,6 +193,16 @@ function AppBuilderContent() {
   );
 
   const icon = artifact?.uiMetadata.icon;
+
+  const isCodePending = message?.pending;
+  useEffect(() => {
+    if (isCodePending) {
+      setSelectedTab(TabsKeys.SourceCode);
+      setMobilePreviewOpen(true);
+    } else {
+      setSelectedTab(TabsKeys.Preview);
+    }
+  }, [isCodePending, setMobilePreviewOpen]);
 
   useEffect(() => {
     const navbarProps = getAppBuilderNavbarProps(
@@ -352,6 +372,7 @@ function AppBuilderContent() {
                 variant="builder"
                 sourceCode={code}
                 onFixError={handleFixError}
+                isPending={isCodePending}
               />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
@@ -372,7 +393,8 @@ enum TabsKeys {
 }
 
 export function getLastMessageWithCode(messages: ChatMessage[]) {
-  return messages.find((message) =>
+  const lastMessage = messages.findLast((message) =>
     Boolean(extractCodeFromMessageContent(message.content)),
   );
+  return isBotMessage(lastMessage) ? lastMessage : undefined;
 }

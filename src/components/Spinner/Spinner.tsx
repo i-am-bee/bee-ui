@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 IBM Corp.
+ * Copyright 2025 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-@use 'styles/common' as *;
+import Lottie from 'lottie-react';
+import SpinnerAnimation from './BouncingDotsAnimation.json';
+import classes from './Spinner.module.scss';
+import clsx from 'clsx';
 
-@keyframes pulse {
-  0% {
-    color: $color-cool-gray-30;
-  }
-  30% {
-    color: $color-cool-gray-50;
-  }
-  100% {
-    color: $color-cool-gray-30;
-  }
+interface Props {
+  size?: 'sm' | 'md';
 }
 
-p.loading {
-  color: $text-placeholder;
-  fill: currentColor;
-  animation: pulse 2.5s infinite;
+export function Spinner({ size = 'md' }: Props) {
+  return (
+    <div className={clsx(classes.root, classes[`size-${size}`])}>
+      <Lottie
+        className={classes.content}
+        animationData={SpinnerAnimation}
+        loop
+      />
+    </div>
+  );
 }

@@ -15,7 +15,7 @@
  */
 
 'use client';
-import { Spinner } from '@/components/BouncingDots/Spinner';
+import { Spinner } from '@/components/Spinner/Spinner';
 import { TextAreaAutoHeight } from '@/components/TextAreaAutoHeight/TextAreaAutoHeight';
 import {
   dispatchInputEventOnFormTextarea,

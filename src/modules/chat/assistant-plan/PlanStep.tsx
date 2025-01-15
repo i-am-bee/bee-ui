@@ -24,7 +24,6 @@ import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { ExpandPanel } from '@/components/ExpandPanel/ExpandPanel';
 import { ExpandPanelButton } from '@/components/ExpandPanelButton/ExpandPanelButton';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
-import { Spinner } from '@/components/BouncingDots/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { fadeProps } from '@/utils/fadeProps';
@@ -56,7 +55,7 @@ import classes from './PlanStep.module.scss';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { getToolApproval, getToolReferenceFromToolCall } from './utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useChat } from '../providers/chat-context';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props {
   step: AssistantPlanStep;
@@ -335,7 +334,7 @@ const getStepStatus = (
 
 const STEP_STATUS_ICON: Record<ExtendedStepStatus, ReactElement> = {
   completed: <CheckmarkFilled size={16} aria-label="finished" />,
-  in_progress: <Spinner aria-label="executing" />,
+  in_progress: <Spinner size="sm" aria-label="executing" />,
   unknown: <WarningFilled size={16} aria-label="unknown" />,
   failed: <StepStatusIcon icon={ErrorFilled} label="Failed" />,
   cancelled: <StepStatusIcon icon={ErrorOutline} label="Cancelled" />,

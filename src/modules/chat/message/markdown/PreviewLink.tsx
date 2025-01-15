@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Spinner } from '@/components/BouncingDots/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { SkeletonIcon } from '@carbon/react';
 import { Launch } from '@carbon/react/icons';
@@ -24,6 +23,7 @@ import { Link } from 'mdast';
 import { AnchorHTMLAttributes, useState } from 'react';
 import { linkPreviewQuery } from '../../queries';
 import classes from './PreviewLink.module.scss';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
   node?: Link;
@@ -49,7 +49,7 @@ export function PreviewLink({ node, className, ...props }: Props) {
       content={
         isLoading ? (
           <>
-            Loading link preview <Spinner />
+            Loading link preview <Spinner size="sm" />
           </>
         ) : data && 'error' in data ? (
           data.error

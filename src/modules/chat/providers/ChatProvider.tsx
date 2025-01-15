@@ -108,6 +108,7 @@ interface Props extends ChatSetup {
   thread?: Thread;
   assistant?: ThreadAssistant;
   initialData?: MessageWithFiles[];
+  onMessageDeltaEventResponse?: (message: string) => void;
   onMessageCompleted?: (thread: Thread, content: string) => void;
   onBeforePostMessage?: (
     thread: Thread,
@@ -125,6 +126,7 @@ export function ChatProvider({
   builderState,
   inputPlaceholder,
   onMessageCompleted,
+  onMessageDeltaEventResponse,
   onBeforePostMessage,
   children,
 }: PropsWithChildren<Props>) {
@@ -164,6 +166,7 @@ export function ChatProvider({
     threadRef,
     controllerRef,
     onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
+    onMessageDeltaEventResponse,
     setMessages,
     updateController: (data: Partial<RunController>) => {
       setController((controller) => ({ ...controller, ...data }));
