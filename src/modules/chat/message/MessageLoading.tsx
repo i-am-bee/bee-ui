@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Spinner } from '@/components/Spinner/Spinner';
 import classes from './MessageLoading.module.scss';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 interface Props {
   message: string;

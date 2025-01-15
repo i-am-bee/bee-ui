@@ -18,6 +18,7 @@
 import { createChatCompletion, modulesToPackages } from '@/app/api/apps';
 import { ChatCompletionCreateBody } from '@/app/api/apps/types';
 import { ApiError } from '@/app/api/errors';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useTheme } from '@/layout/providers/ThemeProvider';
 import { USERCONTENT_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
@@ -25,24 +26,21 @@ import { Loading } from '@carbon/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './ArtifactSharedIframe.module.scss';
 import AppPlaceholder from './Placeholder.svg';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import clsx from 'clsx';
 
 interface Props {
+  variant: 'detail' | 'builder';
   sourceCode: string | null;
+  isPending?: boolean;
   onFixError?: (errorText: string) => void;
 }
 
-function getErrorMessage(error: unknown) {
-  if (error instanceof ApiError && error.code === 'too_many_requests') {
-    return 'You have exceeded the limit for using LLM functions';
-  }
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-  return 'Unknown error when calling LLM function.';
-}
-
-export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
+export function ArtifactSharedIframe({
+  sourceCode,
+  isPending,
+  variant,
+  onFixError,
+}: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
   const { appliedTheme: theme } = useTheme();
@@ -61,6 +59,8 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   );
 
   useEffect(() => {
+    if (isPending) return;
+
     postMessage({
       type: PostMessageType.UPDATE_STATE,
       stateChange: {
@@ -73,7 +73,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
         ancestorOrigin: window.location.origin,
       },
     });
-  }, [sourceCode, onFixError, theme, postMessage]);
+  }, [sourceCode, onFixError, theme, postMessage, isPending]);
 
   const handleMessage = useCallback(
     async (event: MessageEvent<StliteMessage>) => {
@@ -141,7 +141,11 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
   }, [handleMessage]);
 
   return (
-    <div className={classes.root}>
+    <div
+      className={clsx(classes.root, {
+        [classes[`variant-${variant}`]]: variant,
+      })}
+    >
       <iframe
         ref={iframeRef}
         src={USERCONTENT_SITE_URL}
@@ -162,7 +166,7 @@ export function ArtifactSharedIframe({ sourceCode, onFixError }: Props) {
           <AppPlaceholder />
         </div>
       ) : (
-        state === State.LOADING && <Loading />
+        (state === State.LOADING || isPending) && <Loading />
       )}
     </div>
   );
@@ -224,3 +228,13 @@ export type StliteMessage =
       request_id: string;
       payload: { errorText: string };
     };
+
+function getErrorMessage(error: unknown) {
+  if (error instanceof ApiError && error.code === 'too_many_requests') {
+    return 'You have exceeded the limit for using LLM functions';
+  }
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+  return 'Unknown error when calling LLM function.';
+}

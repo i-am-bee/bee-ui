@@ -27,7 +27,7 @@ import {
   SendMessageResult,
   useChat,
   useChatMessages,
-} from './providers/ChatProvider';
+} from './providers/chat-context';
 import { ChatMessage } from './types';
 
 export interface ChatState {

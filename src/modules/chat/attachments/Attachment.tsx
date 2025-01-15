@@ -23,8 +23,8 @@ import { Tooltip } from '@/components/Tooltip/Tooltip';
 
 export interface AttachmentProps {
   size?: 'md';
-  startIcon?: ComponentType<CarbonIconProps> | null;
-  endIcon?: ComponentType<CarbonIconProps> | null;
+  startIcon?: ComponentType | null;
+  endIcon?: ComponentType | null;
   onRemoveClick?: MouseEventHandler;
   className?: string;
   description?: string;

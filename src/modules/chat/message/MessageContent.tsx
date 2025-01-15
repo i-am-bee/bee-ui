@@ -15,7 +15,6 @@
  */
 
 import { AssistantPlan } from '@/app/api/threads-runs/types';
-import { Spinner } from '@/components/Spinner/Spinner';
 import throttle from 'lodash/throttle';
 import { useEffect, useMemo, useState } from 'react';
 import { getLastCompletedStep } from '../assistant-plan/utils';
@@ -24,6 +23,7 @@ import { ChatMessage } from '../types';
 import { MarkdownContent } from './MarkdownContent';
 import classes from './MessageContent.module.scss';
 import { MessageLoading } from './MessageLoading';
+import { Spinner } from '@/components/Spinner/Spinner';
 
 export function MessageContent({ message }: { message: ChatMessage }) {
   const { run } = useRunContext();
@@ -76,15 +76,10 @@ export function MessageContent({ message }: { message: ChatMessage }) {
 
       return null;
     }
-    return (
-      <blockquote>
-        <MarkdownContent content={message.content} />
-      </blockquote>
-    );
   }
   return (
     <blockquote>
-      <p>{message.content}</p>
+      <MarkdownContent content={message.content} />
     </blockquote>
   );
 }
@@ -116,7 +111,7 @@ function PendingThought({ plan }: { plan?: AssistantPlan }) {
     </blockquote>
   ) : (
     <blockquote>
-      <MessageLoading message="Thinking" showSpinner />
+      <Spinner />
     </blockquote>
   );
 }

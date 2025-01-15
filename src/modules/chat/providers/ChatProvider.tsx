@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 'use client';
 import { ApiError } from '@/app/api/errors';
 import { createMessage } from '@/app/api/threads-messages';
@@ -28,7 +27,6 @@ import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
-import { Updater } from '@/hooks/useImmerWithGetter';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useHandleError } from '@/layout/hooks/useHandleError';
 import {
@@ -37,7 +35,6 @@ import {
 } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { FILE_SEARCH_TOOL_DEFINITION } from '@/modules/assistants/builder/AssistantBuilderProvider';
-import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
 import { GET_USER_LOCATION_FUNCTION_TOOL } from '@/modules/assistants/tools/functionTools';
 import {
   getToolUsageId,
@@ -52,12 +49,7 @@ import {
 } from '@tanstack/react-query';
 import truncate from 'lodash/truncate';
 import {
-  createContext,
-  Dispatch,
-  MutableRefObject,
   PropsWithChildren,
-  SetStateAction,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -91,6 +83,13 @@ import {
   isBotMessage,
 } from '../utils';
 import { AssistantModalProvider } from './AssistantModalProvider';
+import {
+  ChatContext,
+  ChatMessagesContext,
+  ChatSetup,
+  RunController,
+  SendMessageOptions,
+} from './chat-context';
 import { useFilesUpload } from './FilesUploadProvider';
 import { useMessages } from './useMessages';
 
@@ -99,31 +98,17 @@ interface CancelRunParams {
   runId: string;
 }
 
-export type ChatStatus = 'ready' | 'fetching' | 'waiting' | 'aborting';
-export interface RunController {
-  abortController: AbortController | null;
-  status: ChatStatus;
-  runId: string | null;
-}
-
 const RUN_CONTROLLER_DEFAULT: RunController = {
   abortController: null,
   status: 'ready',
   runId: null,
 };
 
-interface ChatSetup {
-  topBarEnabled?: boolean;
-  threadSettingsEnabled?: boolean;
-  builderState?: AssistantBuilderState;
-  initialAssistantMessage?: string;
-  inputPlaceholder?: { initial: string; ongoing: string };
-}
-
 interface Props extends ChatSetup {
   thread?: Thread;
   assistant?: ThreadAssistant;
   initialData?: MessageWithFiles[];
+  onMessageDeltaEventResponse?: (message: string) => void;
   onMessageCompleted?: (thread: Thread, content: string) => void;
   onBeforePostMessage?: (
     thread: Thread,
@@ -141,6 +126,7 @@ export function ChatProvider({
   builderState,
   inputPlaceholder,
   onMessageCompleted,
+  onMessageDeltaEventResponse,
   onBeforePostMessage,
   children,
 }: PropsWithChildren<Props>) {
@@ -181,6 +167,7 @@ export function ChatProvider({
     threadRef,
     controllerRef,
     onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
+    onMessageDeltaEventResponse,
     setMessages,
     updateController: (data: Partial<RunController>) => {
       setController((controller) => ({ ...controller, ...data }));
@@ -828,64 +815,4 @@ export function ChatProvider({
       </ChatMessagesContext.Provider>
     </ChatContext.Provider>
   );
-}
-
-export type SendMessageOptions = {
-  regenerate?: boolean;
-  onAfterRemoveSentMessage?: (message: UserChatMessage) => void;
-};
-
-export type SendMessageResult = {
-  aborted: boolean;
-  thread: Thread | null;
-};
-
-type ChatContextValue = ChatSetup & {
-  status: ChatStatus;
-  threadSettingsButtonRef: MutableRefObject<HTMLButtonElement | null>;
-  getMessages: () => ChatMessage[];
-  cancel: () => void;
-  clear: () => void;
-  reset: (messages: ChatMessage[]) => void;
-  setMessages: Updater<ChatMessage[]>;
-  sendMessage: (
-    input: string,
-    opts?: SendMessageOptions,
-  ) => Promise<SendMessageResult>;
-  setThread: Dispatch<SetStateAction<Thread | null>>;
-  thread: Thread | null;
-  assistant: ThreadAssistant;
-  disabledTools: ToolsUsage;
-  builderState?: AssistantBuilderState;
-  setDisabledTools: Dispatch<SetStateAction<ToolsUsage>>;
-  getThreadTools: () => ToolsUsage;
-  onToolApprovalSubmitRef: MutableRefObject<
-    ((value: ToolApprovalValue) => void) | null
-  >;
-};
-
-const ChatContext = createContext<ChatContextValue>(
-  null as unknown as ChatContextValue,
-);
-
-const ChatMessagesContext = createContext<ChatMessage[]>([]);
-
-export function useChat() {
-  const context = use(ChatContext);
-
-  if (!context) {
-    throw new Error('useChat must be used within a ChatProvider');
-  }
-
-  return context;
-}
-
-export function useChatMessages() {
-  const context = use(ChatMessagesContext);
-
-  if (!context) {
-    throw new Error('useChatMessages must be used within a ChatProvider');
-  }
-
-  return context;
 }

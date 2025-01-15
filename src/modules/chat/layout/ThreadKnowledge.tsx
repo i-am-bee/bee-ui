@@ -23,7 +23,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { useId, useMemo } from 'react';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import classes from './ThreadKnowledge.module.scss';
 import { useAppContext } from '@/layout/providers/AppProvider';

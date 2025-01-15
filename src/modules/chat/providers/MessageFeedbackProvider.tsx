@@ -33,7 +33,7 @@ import {
   MESSAGE_FEEDBACK_FORM_DEFAULTS,
   useMessageFeedbackForm,
 } from '../message/feedback/useMessageFeedbackForm';
-import { useChat } from './ChatProvider';
+import { useChat } from './chat-context';
 
 export type MessageFeedbackContextValue = {
   onVoteClick: (vote: Vote) => void;

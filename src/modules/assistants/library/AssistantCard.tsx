@@ -52,7 +52,7 @@ export function AssistantCard({
       <CardsListItem
         className={classes.root}
         title={name ?? ''}
-        icon={<AssistantIcon assistant={assistant} size="lg" />}
+        icon={<AssistantIcon assistant={assistant} />}
         onClick={onClick}
         isDeletePending={isDeletePending}
         cta={cta ? { title: cta } : undefined}

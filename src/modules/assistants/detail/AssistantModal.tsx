@@ -19,22 +19,24 @@ import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Modal } from '@/components/Modal/Modal';
 import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { ModalProps } from '@/layout/providers/ModalProvider';
+import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
 import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
-import { ToolIcon } from '@/modules/tools/ToolCard';
+import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
+import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
+import { ToolDescription, ToolIcon } from '@/modules/tools/ToolCard';
 import { getAssistantToolReference } from '@/modules/tools/utils';
+import { noop } from '@/utils/helpers';
 import {
   Button,
+  FormLabel,
   ModalBody,
   ModalFooter,
   ModalHeader,
   SkeletonText,
 } from '@carbon/react';
-import { Edit } from '@carbon/react/icons';
-import clsx from 'clsx';
+import { Edit, Folder, Launch, TrashCan } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
-import pluralize from 'pluralize';
 import { useDeleteAssistant } from '../builder/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
@@ -53,8 +55,8 @@ export default function AssistantModal({
   const { project, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
-  const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
-    assistant: assistant!,
+  const { deleteAssistant } = useDeleteAssistant({
+    assistant,
     onSuccess: async () => {
       onDeleteSuccess?.();
     },
@@ -64,106 +66,99 @@ export default function AssistantModal({
     assistant.tool_resources?.file_search?.vector_store_ids?.at(0);
   const { data: vectorStore } = useVectorStore(vectorStoreId);
 
+  const { name, description, instructions, tools } = assistant;
+
   return (
     <SSRSafePortal>
-      <Modal
-        {...props}
-        size="md"
-        className={classes.modal}
-        rootClassName={classes.root}
-      >
+      <Modal {...props} className={classes.modal}>
         <ModalHeader />
-        <ModalBody>
-          <div
-            className={clsx(classes.content, {
-              [classes.isDeletePending]: isDeletePending,
-            })}
-          >
-            <div className={classes.head}>
-              <AssistantIcon assistant={assistant} size="lg" />
-              <h2>{assistant.name}</h2>
-              <p>{assistant.description}</p>
-            </div>
-            <dl className={classes.body}>
-              {assistant.instructions && (
-                <div>
-                  <dd>Role</dd>
-                  <dt>
-                    <LineClampText numberOfLines={4}>
-                      {assistant.instructions}
-                    </LineClampText>
-                  </dt>
-                </div>
-              )}
 
-              <div>
-                <dd>Tools</dd>
-                <dt>
+        <ModalBody>
+          <div className={classes.content}>
+            <AssistantIcon assistant={assistant} size="lg" />
+
+            <h2 className={classes.heading}>{name}</h2>
+
+            {description && (
+              <p className={classes.description}>{description}</p>
+            )}
+
+            {instructions && (
+              <>
+                <hr />
+
+                <div className={classes.group}>
+                  <FormLabel>Role</FormLabel>
+
+                  <LineClampText
+                    numberOfLines={4}
+                    className={classes.instructions}
+                  >
+                    {instructions}
+                  </LineClampText>
+                </div>
+              </>
+            )}
+
+            {tools.length > 0 && (
+              <>
+                <hr />
+
+                <div className={classes.group}>
+                  <FormLabel>Tools</FormLabel>
                   <ul className={classes.tools}>
-                    {assistant.tools.map((item, index) => {
+                    {tools.map((item) => {
                       const tool = getAssistantToolReference(item);
                       return <ToolListItem key={tool.id} tool={tool} />;
                     })}
                   </ul>
-                </dt>
-              </div>
-
-              {vectorStoreId && (
-                <div>
-                  <dd>Knowledge</dd>
-                  <dt className={classes.vectorStore}>
-                    {vectorStore ? (
-                      <>
-                        <strong>{vectorStore.name}</strong>
-                        <span>
-                          {pluralize(
-                            'Document',
-                            vectorStore.file_counts.total,
-                            true,
-                          )}
-                        </span>
-                      </>
-                    ) : (
-                      <SkeletonText lineCount={2} paragraph />
-                    )}
-                  </dt>
                 </div>
-              )}
-            </dl>
-          </div>
-        </ModalBody>
-        <ModalFooter className={classes.actionBar}>
-          <div>
-            {assistant && (
-              <Button
-                kind="danger--ghost"
-                onClick={deleteAssistant}
-                disabled={isProjectReadOnly}
-              >
-                Delete agent
-              </Button>
+              </>
+            )}
+
+            {vectorStoreId && (
+              <>
+                <hr />
+
+                <div className={classes.group}>
+                  <FormLabel>Knowledge base</FormLabel>
+                  <div className={classes.vectorStore}>
+                    {vectorStore ? (
+                      <p>
+                        <Folder />
+                        <span>{vectorStore.name}</span>
+                      </p>
+                    ) : (
+                      <SkeletonText />
+                    )}
+                  </div>
+                </div>
+              </>
             )}
           </div>
-          <div>
-            <Button
-              kind="ghost"
-              onClick={() => props.onRequestClose()}
-              className={classes.hideOnMobile}
-            >
-              Cancel
-            </Button>
-            <Button
-              kind="secondary"
-              onClick={() => {
-                router.push(`/${project.id}/builder/${assistant.id}`);
-                props.onRequestClose();
-              }}
-              renderIcon={Edit}
-              disabled={isProjectReadOnly}
-            >
-              Edit
-            </Button>
-          </div>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button
+            kind="danger--tertiary"
+            onClick={deleteAssistant}
+            disabled={isProjectReadOnly}
+            renderIcon={TrashCan}
+          >
+            Delete
+          </Button>
+
+          <Button
+            kind="secondary"
+            onClick={() => {
+              router.push(`/${project.id}/builder/${assistant.id}`);
+              props.onRequestClose();
+            }}
+            renderIcon={Edit}
+            disabled={isProjectReadOnly}
+          >
+            Edit
+          </Button>
         </ModalFooter>
       </Modal>
     </SSRSafePortal>
@@ -171,14 +166,55 @@ export default function AssistantModal({
 }
 
 function ToolListItem({ tool }: { tool: ToolReference }) {
-  const { toolName } = useToolInfo({
+  const { openModal } = useModal();
+
+  const {
+    toolName,
+    tool: toolData,
+    isLoading,
+  } = useToolInfo({
     toolReference: tool,
   });
 
+  const description =
+    toolData?.uiMetadata.description_short ??
+    toolData?.user_description ??
+    toolData?.description;
+
   return (
-    <li>
-      <ToolIcon tool={tool} />
-      {toolName}
+    <li className={classes.tool}>
+      <ToolIcon tool={tool} size="sm" className={classes.toolIcon} />
+
+      <div className={classes.toolBody}>
+        <button
+          className={classes.toolButton}
+          type="button"
+          onClick={
+            toolData
+              ? () =>
+                  openModal((props) =>
+                    tool.type === 'user' ? (
+                      <UserToolModal.View tool={toolData} {...props} />
+                    ) : (
+                      <PublicToolModal {...props} tool={toolData} />
+                    ),
+                  )
+              : noop
+          }
+        >
+          {toolName}
+        </button>
+
+        {(!toolData && !isLoading) || isLoading ? (
+          <SkeletonText />
+        ) : (
+          description && <ToolDescription description={description} />
+        )}
+      </div>
+
+      <span className={classes.toolButtonIcon}>
+        <Launch />
+      </span>
     </li>
   );
 }

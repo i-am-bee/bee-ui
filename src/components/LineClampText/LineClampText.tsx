@@ -131,7 +131,7 @@ export function LineClampText({
             aria-controls={id}
             aria-expanded={expanded}
           >
-            {expanded ? 'View less' : 'View all'}
+            {expanded ? 'View less' : 'View more'}
           </ExpandButton>
         </div>
       )}

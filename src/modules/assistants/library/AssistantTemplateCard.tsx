@@ -57,7 +57,7 @@ export function AssistantTemplateCard({
     <CardsListItem
       className={clsx(classes.root, classes.sizeSmall)}
       title={name ?? ''}
-      icon={<AssistantIcon assistant={template} size="lg" />}
+      icon={<AssistantIcon assistant={template} />}
       onClick={onClick}
       selected={selected}
       canHover

@@ -24,12 +24,14 @@ import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { NavbarHeading } from '@/layout/shell/Navbar';
-import { ChatProvider, useChat } from '@/modules/chat/providers/ChatProvider';
+import { useChat } from '@/modules/chat/providers/chat-context';
+import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import {
   ChatMessage,
   MessageMetadata,
   MessageWithFiles,
 } from '@/modules/chat/types';
+import { isBotMessage } from '@/modules/chat/utils';
 import { useLayoutActions } from '@/store/layout';
 import { isNotNull } from '@/utils/helpers';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
@@ -84,6 +86,14 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }
     },
     [project.id, queryClient, setCode, thread, threadsQueries],
+  );
+
+  const handleMessageContentUpdated = useCallback(
+    (message: string) => {
+      const pythonAppCode = extractCodeFromMessageContent(message);
+      if (pythonAppCode) setCode(pythonAppCode);
+    },
+    [setCode],
   );
 
   const handleBeforePostMessage = useCallback(
@@ -148,6 +158,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
       }}
       onMessageCompleted={handleMessageCompleted}
       onBeforePostMessage={handleBeforePostMessage}
+      onMessageDeltaEventResponse={handleMessageContentUpdated}
     >
       <AppBuilderContent />
     </ChatProvider>
@@ -160,7 +171,7 @@ function AppBuilderContent() {
   const router = useRouter();
   const { project, organization } = useAppContext();
   const { openModal } = useModal();
-  const { getMessages, sendMessage, thread } = useChat();
+  const { getMessages, sendMessage } = useChat();
   const { setArtifact, setMobilePreviewOpen } = useAppBuilderApi();
   const { code, artifact, mobilePreviewOpen, isSharedClone } = useAppBuilder();
   const { setLayout } = useLayoutActions();
@@ -183,6 +194,16 @@ function AppBuilderContent() {
   );
 
   const icon = artifact?.uiMetadata.icon;
+
+  const isCodePending = message?.pending;
+  useEffect(() => {
+    if (isCodePending) {
+      setSelectedTab(TabsKeys.SourceCode);
+      setMobilePreviewOpen(true);
+    } else {
+      setSelectedTab(TabsKeys.Preview);
+    }
+  }, [isCodePending, setMobilePreviewOpen]);
 
   useEffect(() => {
     const navbarProps = getAppBuilderNavbarProps(
@@ -349,8 +370,10 @@ function AppBuilderContent() {
           <TabPanels>
             <TabPanel key={TabsKeys.Preview}>
               <ArtifactSharedIframe
+                variant="builder"
                 sourceCode={code}
                 onFixError={handleFixError}
+                isPending={isCodePending}
               />
             </TabPanel>
             <TabPanel key={TabsKeys.SourceCode}>
@@ -371,7 +394,8 @@ enum TabsKeys {
 }
 
 export function getLastMessageWithCode(messages: ChatMessage[]) {
-  return messages.find((message) =>
+  const lastMessage = messages.findLast((message) =>
     Boolean(extractCodeFromMessageContent(message.content)),
   );
+  return isBotMessage(lastMessage) ? lastMessage : undefined;
 }

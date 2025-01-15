@@ -39,7 +39,7 @@ export function AttachmentImage({
     <span className={classes.root}>
       {isLoading ? (
         <>
-          Loading image <Spinner />
+          Loading image <Spinner size="sm" />
         </>
       ) : (
         <>

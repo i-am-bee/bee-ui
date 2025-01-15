@@ -24,7 +24,7 @@ import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { SourcesView } from '../layout/SourcesView';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import {
   ExpandedStepProvider,
   useExpandedStep,
@@ -34,11 +34,7 @@ import { runStepsQuery } from '../queries';
 import { BotChatMessage } from '../types';
 import { PlanView } from './PlanView';
 import classes from './PlanWithSources.module.scss';
-import {
-  getToolApproval,
-  getToolReferenceFromToolCall,
-  updatePlanWithRunStep,
-} from './utils';
+import { getToolApproval, updatePlanWithRunStep } from './utils';
 import { TraceData } from '../trace/types';
 import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { TraceInfoView } from '../trace/TraceInfoView';

@@ -17,59 +17,31 @@
 @use 'styles/common' as *;
 
 .root {
-  fill: currentColor;
   block-size: 1rem;
-  inline-size: 1rem;
-  vertical-align: text-bottom;
-  overflow: visible;
-  --jump-duration: 2s;
+  inline-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transform: translate(0, 0.2rem);
 
-  path {
-    transform: translateY(3px);
-    animation-name: eggbounce;
-    animation-duration: var(--jump-duration);
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-
-    &:nth-child(2) {
-      animation-delay: calc(var(--jump-duration) * 0.3333);
-    }
-    &:nth-child(3) {
-      animation-delay: calc(var(--jump-duration) * 0.6666);
+  &.size-sm {
+    inline-size: 1rem;
+    transform: translate(0, 0.1rem);
+    .content {
+      block-size: 2.8rem;
+      min-inline-size: 2.8rem;
+      transform: translate(0, 0.1rem);
     }
   }
-}
 
-/* if empty time slot in animation is desired after tv3, switch to 12.5% and 25% */
-@keyframes eggbounce {
-  0% {
-    transform: translateY(rem(3px));
-  }
-  16.6666% {
-    transform: translateY(-0.4rem);
-  }
-  33.3333% {
-    transform: translateY(rem(3px));
-  }
-  100% {
-    transform: translateY(rem(3px));
-  }
-}
-
-@keyframes eggtype {
-  0% {
-    transform: translateY(rem(4px));
-  }
-  25% {
-    transform: translateY(-0.1rem);
-  }
-  50% {
-    transform: translateY(rem(4px));
-  }
-  75% {
-    transform: translateY(-0.1rem);
-  }
-  100% {
-    transform: translateY(rem(4px));
+  .content {
+    display: flex;
+    block-size: 3.5rem;
+    min-inline-size: 3.5rem;
+    transform: translate(0, 0.2rem);
+    svg path {
+      fill: currentColor !important;
+    }
   }
 }

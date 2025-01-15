@@ -64,9 +64,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { readRunQuery } from '../queries';
 import { Thread } from '@/app/api/threads/types';
 import { getToolApprovalId } from '@/modules/tools/utils';
-import { RunController } from '../providers/ChatProvider';
 import { EntityWithDecodedMetadata } from '@/app/api/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { RunController } from '../providers/chat-context';
 
 type RunsCreateBodyDecoded = EntityWithDecodedMetadata<
   RunsCreateBody,
@@ -95,12 +95,14 @@ interface Props {
   >;
   setMessages: Updater<ChatMessage[]>;
   updateController: (data: Partial<RunController>) => void;
+  onMessageDeltaEventResponse?: (message: string) => void;
 }
 
 export function useChatStream({
   threadRef,
   controllerRef,
   onToolApprovalSubmitRef,
+  onMessageDeltaEventResponse,
   setMessages,
   updateController,
 }: Props) {
@@ -269,6 +271,8 @@ export function useChatStream({
             message.content += response.data?.delta.content
               .map(({ text: { value } }) => value)
               .join('');
+
+            onMessageDeltaEventResponse?.(message.content);
 
             if (message.plan) message.plan.pending = false;
           } else if (isMessageCompletedEventResponse(response)) {

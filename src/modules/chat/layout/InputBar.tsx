@@ -29,11 +29,6 @@ import { useForm } from 'react-hook-form';
 import { mergeRefs } from 'react-merge-refs';
 import { Attachment } from '../attachments/Attachment';
 import { AttachmentsList } from '../attachments/AttachmentsList';
-import {
-  SendMessageResult,
-  useChat,
-  useChatMessages,
-} from '../providers/ChatProvider';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import { FilesMenu } from './FilesMenu';
 import classes from './InputBar.module.scss';
@@ -41,6 +36,11 @@ import { PromptSuggestions } from './PromptSuggestions';
 import { ThreadSettings } from './ThreadSettings';
 import { UserChatMessage } from '../types';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import {
+  SendMessageResult,
+  useChat,
+  useChatMessages,
+} from '../providers/chat-context';
 
 interface Props {
   showSuggestions?: boolean;

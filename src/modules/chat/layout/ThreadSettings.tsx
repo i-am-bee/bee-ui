@@ -41,7 +41,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import { mergeRefs } from 'react-merge-refs';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import { useFilesUpload } from '../providers/FilesUploadProvider';
 import { ThreadKnowledge } from './ThreadKnowledge';
 import classes from './ThreadSettings.module.scss';
