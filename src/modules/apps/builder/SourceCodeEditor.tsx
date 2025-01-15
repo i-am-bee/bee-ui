@@ -19,7 +19,7 @@ import classes from './SourceCodeEditor.module.scss';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { Button } from '@carbon/react';
-import { useChat } from '@/modules/chat/providers/ChatProvider';
+import { useChat } from '@/modules/chat/providers/chat-context';
 
 interface Props {
   onSaveCode: () => void;

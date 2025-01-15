@@ -23,7 +23,6 @@ import { ChatMessage } from '../types';
 import { MarkdownContent } from './MarkdownContent';
 import classes from './MessageContent.module.scss';
 import { MessageLoading } from './MessageLoading';
-import { useChat } from '../providers/ChatProvider';
 import { Spinner } from '@/components/Spinner/Spinner';
 
 export function MessageContent({ message }: { message: ChatMessage }) {
@@ -86,7 +85,6 @@ export function MessageContent({ message }: { message: ChatMessage }) {
 }
 
 function PendingThought({ plan }: { plan?: AssistantPlan }) {
-  const { assistant } = useChat();
   const THROTTLE_WAIT = 2000;
   const [thought, setThought] = useState(null);
   const pendingThought = getLastCompletedStep(plan)?.thought;

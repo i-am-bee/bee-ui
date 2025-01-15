@@ -56,6 +56,7 @@ import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { getToolApproval, getToolReferenceFromToolCall } from './utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { Spinner } from '@/components/Spinner/Spinner';
+import { useChat } from '../providers/chat-context';
 
 interface Props {
   step: AssistantPlanStep;
