@@ -454,8 +454,6 @@ UserToolModal.View = function ViewUserToolModal({
 } & ModalProps) {
   const id = useId();
 
-  console.log({ tool });
-
   const type: ToolTypeKey = tool.open_api_schema ? 'api' : 'function';
 
   return (
