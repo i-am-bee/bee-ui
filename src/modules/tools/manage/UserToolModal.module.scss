@@ -134,6 +134,11 @@
     gap: $spacing-06;
     margin-block-end: $spacing-06;
   }
+  dt {
+    p {
+      @include type-style('body-compact-01');
+    }
+  }
 }
 
 @include breakpoint-up(md) {
@@ -156,15 +161,17 @@
   }
 }
 
-.apiSchema {
-  max-block-size: 20rem;
-  overflow-y: auto;
-  display: block;
-  border-radius: $block-radius;
-  &:focus-within {
-    outline: 2px solid $focus;
-  }
-  textarea:focus {
-    outline: none;
+.apiSchemaField {
+  > div {
+    max-block-size: 20rem;
+    overflow-y: auto;
+    display: block;
+    border-radius: $block-radius;
+    &:focus-within {
+      outline: 2px solid $focus;
+    }
+    textarea:focus {
+      outline: none;
+    }
   }
 }

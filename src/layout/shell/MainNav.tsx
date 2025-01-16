@@ -50,7 +50,7 @@ export function MainNav() {
               onMouseEnter={() => prefetchData()}
             >
               <span className={classes.label}>{label}</span>
-              {count && <span className={classes.count}>{count}</span>}
+              <span className={classes.count}>{count}</span>
             </Link>
           </li>
         ))}

@@ -50,6 +50,7 @@ import classes from './UserToolModal.module.scss';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { ToolDescription } from '../ToolCard';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -67,10 +68,11 @@ def ip_info(ip: str) -> dict:
   return response.json()`;
 
 const TOOL_TYPES = [
-  { key: 'code' as const, label: 'Code' },
-  { key: 'api-call' as const, label: 'API calling' },
+  { key: 'function' as const, label: 'Python function' },
+  { key: 'api' as const, label: 'API calling' },
 ];
 type ToolType = (typeof TOOL_TYPES)[number];
+type ToolTypeKey = ToolType['key'];
 
 const API_AUTH_METHODS = [
   { key: 'none' as const, label: 'None' },
@@ -117,7 +119,7 @@ export function UserToolModal({
     defaultValues: {
       type:
         TOOL_TYPES.find(({ key }) =>
-          tool?.open_api_schema ? key === 'api-call' : key === 'code',
+          tool?.open_api_schema ? key === 'api' : key === 'function',
         ) ?? TOOL_TYPES[0],
       name: tool?.name || '',
       sourceCode: tool?.source_code || '',
@@ -248,7 +250,7 @@ export function UserToolModal({
                 />
               </div>
 
-              {(tool || toolType.key === 'code') && (
+              {(tool || toolType.key === 'function') && (
                 <div className={classes.group}>
                   <TextInput
                     size="lg"
@@ -268,7 +270,7 @@ export function UserToolModal({
                 </div>
               )}
 
-              {toolType.key === 'api-call' ? (
+              {toolType.key === 'api' ? (
                 <>
                   {/* TODO: make available for update too, when the API is ready */}
                   {!tool && <ApiAuthenticationMethod />}
@@ -295,7 +297,7 @@ export function UserToolModal({
                             required
                             invalid={errors.api?.schema != null}
                             rows={16}
-                            className={classes.apiSchema}
+                            className={classes.apiSchemaField}
                           />
                         </>
                       )}
@@ -451,6 +453,11 @@ UserToolModal.View = function ViewUserToolModal({
   tool: Tool;
 } & ModalProps) {
   const id = useId();
+
+  console.log({ tool });
+
+  const type: ToolTypeKey = tool.open_api_schema ? 'api' : 'function';
+
   return (
     <Modal {...props} className={classes.modal}>
       <ModalHeader>
@@ -462,24 +469,29 @@ UserToolModal.View = function ViewUserToolModal({
             <dd>
               <FormLabel>Type</FormLabel>
             </dd>
-            <dt>Python function</dt>
+            <dt>{type === 'api' ? 'API calling' : 'Python function'}</dt>
           </div>
 
           <div>
             <dd>
               <FormLabel>Description</FormLabel>
             </dd>
-            <dt>{tool.description}</dt>
+            <dt>
+              <ToolDescription description={tool.description} />
+            </dt>
           </div>
         </dl>
 
         <EditableSyntaxHighlighter
           id={`${id}:code`}
-          labelText="Python code"
-          value={tool.source_code ?? ''}
+          labelText={type === 'api' ? 'OpenAPI spec' : 'Python code'}
+          value={
+            (type === 'api' ? tool.open_api_schema : tool.source_code) ?? ''
+          }
           required
           readOnly
           rows={16}
+          className={type === 'api' ? classes.apiSchemaField : undefined}
         />
       </ModalBody>
     </Modal>
@@ -490,7 +502,7 @@ function createSaveToolBody(
   { type, name, sourceCode, api }: FormValues,
   tool?: Tool,
 ): ToolsCreateBody {
-  return type.key === 'code'
+  return type.key === 'function'
     ? {
         name,
         source_code: sourceCode ?? '',
