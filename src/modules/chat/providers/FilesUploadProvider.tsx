@@ -17,9 +17,16 @@
 'use client';
 import { deleteFile } from '@/app/api/files';
 import { MessageAttachments } from '@/app/api/threads-messages/types';
-import { createVectorStore } from '@/app/api/vector-stores';
+import { Thread } from '@/app/api/threads/types';
 import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
 import { useHandleError } from '@/layout/hooks/useHandleError';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { isMimeTypeReadable } from '@/modules/files/utils';
+import { useCreateVectorStore } from '@/modules/knowledge/api/mutations/useCreateVectorStore';
+import {
+  useVectoreStoreFilesUpload,
+  VectoreStoreFileUpload,
+} from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { isNotNull, noop } from '@/utils/helpers';
 import { useMutation } from '@tanstack/react-query';
 import {
@@ -42,14 +49,6 @@ import {
   useDropzone,
 } from 'react-dropzone';
 import { v4 as uuid } from 'uuid';
-import {
-  useVectoreStoreFilesUpload,
-  VectoreStoreFileUpload,
-} from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import { Thread } from '@/app/api/threads/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
-import { isMimeTypeReadable } from '@/modules/files/utils';
 
 const FilesUploadContext = createContext<{
   files: VectoreStoreFileUpload[];
@@ -120,17 +119,11 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     setAttachments(attachments);
   }, [files]);
 
-  const { mutateAsync: mutateCreateVectorStore } = useMutation({
-    mutationFn: (body: VectorStoreCreateBody) =>
-      createVectorStore(organization.id, project.id, body),
+  const { mutateAsync: mutateCreateVectorStore } = useCreateVectorStore({
     onSuccess: (result) => {
-      if (result) setVectorStoreId(result.id);
-    },
-    retry: 3,
-    meta: {
-      errorTitle:
-        'Failed to create knowledge base, file search tool will not be available.',
-      includeErrorMessage: true,
+      if (result) {
+        setVectorStoreId(result.id);
+      }
     },
   });
 

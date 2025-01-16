@@ -22,6 +22,7 @@ import { useOnMount } from '@/hooks/useOnMount';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ChatHomeView } from '@/modules/chat/ChatHomeView';
+import { useChat } from '@/modules/chat/providers/chat-context';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
@@ -33,6 +34,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next-nprogress-bar';
 import { useId } from 'react';
 import { Controller } from 'react-hook-form';
+import { useDeleteAssistant } from '../api/mutations/useDeleteAssistant';
 import { BuilderTools } from '../tools/BuilderTools';
 import {
   AssistantFormValues,
@@ -44,8 +46,6 @@ import classes from './Builder.module.scss';
 import { InstructionsTextArea } from './InstructionsTextArea';
 import { KnowledgeSelector } from './KnowledgeSelector';
 import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
-import { useDeleteAssistant } from './useDeleteAssistant';
-import { useChat } from '@/modules/chat/providers/chat-context';
 
 interface Props {
   thread?: Thread;
@@ -60,12 +60,15 @@ export function Builder({ thread, initialMessages }: Props) {
       formState: { isSubmitting, dirtyFields },
     },
   } = useAssistantBuilder();
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { project, isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
   const id = useId();
   const router = useRouter();
 
-  const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
+  const {
+    mutateWithConfirmationAsync: deleteAssistant,
+    isPending: isDeletePending,
+  } = useDeleteAssistant({
     assistant: assistant!,
     onSuccess: () => {
       router.push(`/${project.id}`);

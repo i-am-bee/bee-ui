@@ -15,9 +15,9 @@
  */
 
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useVectorStoresQueries } from '@/modules/knowledge/api';
+import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
-import { useVectorStoresQueries } from '@/modules/knowledge/queries';
 import { toolsEqual } from '@/modules/tools/utils';
 import { SkeletonText, Toggle } from '@carbon/react';
 import { useInfiniteQuery } from '@tanstack/react-query';

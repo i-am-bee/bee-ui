@@ -22,7 +22,7 @@ import { TextWithCopyButton } from '@/components/TextWithCopyButton/TextWithCopy
 import { useOnMount } from '@/hooks/useOnMount';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
-import { useProjects } from '@/modules/projects/hooks/useProjects';
+import { useProjects } from '@/modules/projects/api/queries/useProjects';
 import { ProjectWithScope } from '@/modules/projects/types';
 import {
   Button,
@@ -38,9 +38,9 @@ import {
 import clsx from 'clsx';
 import { useCallback, useEffect, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { useCreateApiKey } from '../api/useCreateApiKey';
-import { useDeleteApiKey } from '../api/useDeleteApiKey';
-import { useRegenerateApiKey } from '../api/useRegenerateApiKey';
+import { useCreateApiKey } from '../api/mutations/useCreateApiKey';
+import { useDeleteApiKey } from '../api/mutations/useDeleteApiKey';
+import { useRegenerateApiKey } from '../api/mutations/useRegenerateApiKey';
 import classes from './ApiKeyModal.module.scss';
 
 interface FormValues {

@@ -27,7 +27,7 @@ import {
 } from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
+import { useOnboardingCompleted } from '@/modules/users/hooks/useOnboardingCompleted';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';
@@ -44,6 +44,7 @@ import {
   useRef,
 } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
+import { useSaveAssistant } from '../api/mutations/useSaveAssistant';
 import {
   AssistantIconColor,
   AssitantIconName,
@@ -54,7 +55,6 @@ import {
   decodeStarterQuestionsMetadata,
   encodeStarterQuestionsMetadata,
 } from '../utils';
-import { useSaveAssistant } from './useSaveAssistant';
 
 export type AssistantFormValues = {
   icon: {
@@ -121,9 +121,10 @@ export function AssistantBuilderProvider({
 
   const createdAssistantRef = useRef<Assistant | null>(null);
 
-  const { saveAssistantAsync } = useSaveAssistant({
-    onSuccess: (result: AssistantResult, isNew: boolean) => {
+  const { mutateAsync: saveAssistantAsync } = useSaveAssistant({
+    onSuccess: (result?: AssistantResult, isNew?: boolean) => {
       if (!result) return;
+
       const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
 
       selectAssistant(assistantFromResult);

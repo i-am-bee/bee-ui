@@ -15,12 +15,7 @@
  */
 
 'use client';
-import { deleteThread } from '@/app/api/threads';
-import {
-  Thread,
-  ThreadMetadata,
-  ThreadsListResponse,
-} from '@/app/api/threads/types';
+import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
@@ -36,29 +31,24 @@ import {
   TextInput,
 } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
-import {
-  InfiniteData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { produce } from 'immer';
 import { CODE_ENTER, CODE_ESCAPE } from 'keycode-js';
 import truncate from 'lodash/truncate';
 import { useRouter } from 'next-nprogress-bar';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useThreadApi } from '../hooks/useThreadApi';
-import { FileCount } from './FileCount';
-import { useThreadsQueries } from '../queries';
-import classes from './ThreadItem.module.scss';
+import { useThreadsQueries } from '../api';
+import { useDeleteThread } from '../api/mutations/useDeleteThread';
+import { useUpdateThread } from '../api/mutations/useUpdateThread';
 import {
   getThreadAssistantName,
   useGetThreadAssistant,
-} from './useGetThreadAssistant';
-import { useThreadFileCount } from './useThreadFileCount';
+} from '../hooks/useGetThreadAssistant';
+import { useThreadFileCount } from '../hooks/useThreadFileCount';
+import { FileCount } from './FileCount';
+import classes from './ThreadItem.module.scss';
 
 interface Props {
   thread: Thread;
@@ -73,9 +63,8 @@ export function ThreadItem({ thread }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const pathname = usePathname();
   const { openConfirmation } = useModal();
-  const queryClient = useQueryClient();
   const router = useRouter();
-  const { project, organization } = useAppContext();
+  const { project } = useAppContext();
   const id = useId();
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
@@ -110,41 +99,16 @@ export function ThreadItem({ thread }: Props) {
   });
 
   const { mutateAsync: mutateDeleteThread, isPending: isDeletePending } =
-    useMutation({
-      mutationFn: (id: string) => deleteThread(organization.id, project.id, id),
+    useDeleteThread({
+      thread,
       onMutate: () => {
         if (isActive) {
           router.push(getNewSessionUrl(project.id, assistant.data));
         }
       },
-      onSuccess: () => {
-        queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-          threadsQueries.list().queryKey,
-          produce((draft) => {
-            if (!draft?.pages) return null;
-            for (const page of draft.pages) {
-              const index = page.data.findIndex(
-                (item) => item.id === thread.id,
-              );
-              if (index >= 0) {
-                page.data.splice(index, 1);
-              }
-            }
-          }),
-        );
-      },
-      meta: {
-        invalidates: [threadsQueries.lists()],
-        errorToast: {
-          title: 'Failed to delete session',
-          includeErrorMessage: true,
-        },
-      },
     });
 
-  const {
-    updateMutation: { mutateAsync: mutateUpdateThread },
-  } = useThreadApi(thread);
+  const { mutateAsync: mutateUpdateThread } = useUpdateThread();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (values) => {
@@ -157,13 +121,16 @@ export function ThreadItem({ thread }: Props) {
       }
 
       await mutateUpdateThread({
-        metadata: encodeMetadata<ThreadMetadata>({
-          ...thread.uiMetadata,
-          title: values.title,
-        }),
+        id: thread.id,
+        body: {
+          metadata: encodeMetadata<ThreadMetadata>({
+            ...thread.uiMetadata,
+            title: values.title,
+          }),
+        },
       });
     },
-    [title, mutateUpdateThread, thread.uiMetadata, reset],
+    [title, mutateUpdateThread, thread, reset],
   );
 
   const heading =

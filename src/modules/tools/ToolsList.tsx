@@ -32,9 +32,9 @@ import { produce } from 'immer';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
-import { useTools } from './hooks/useTools';
+import { useToolsQueries } from './api';
+import { useTools } from './api/queries/useTools';
 import { UserToolModal } from './manage/UserToolModal';
-import { useToolsQueries } from './queries';
 import { ToolCard } from './ToolCard';
 
 interface Props {

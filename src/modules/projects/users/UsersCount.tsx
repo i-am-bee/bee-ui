@@ -16,7 +16,7 @@
 
 import { SkeletonText } from '@carbon/react';
 import pluralize from 'pluralize';
-import { useProjectUsersCount } from './useProjectUsersCount';
+import { useProjectUsersCount } from './api/queries/useProjectUsersCount';
 import classes from './UsersCount.module.scss';
 
 export function UsersCount({ projectId }: { projectId: string }) {

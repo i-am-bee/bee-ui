@@ -30,12 +30,12 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { AssistantsList } from '../assistants/library/AssistantsList';
-import { useAssistantsQueries } from '../assistants/queries';
 import { Assistant } from '../assistants/types';
 import { NewAgentModal } from '../onboarding/NewAgentModal';
 import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
-import { useAssistants } from './hooks/useAssistants';
+import { useAssistantsQueries } from './api';
+import { useAssistants } from './api/queries/useAssistants';
 
 export function AssistantsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();

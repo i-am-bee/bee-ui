@@ -32,15 +32,15 @@ import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
-import { useAssistants } from '../assistants/hooks/useAssistants';
+import { useAssistants } from '../assistants/api/queries/useAssistants';
 import { NewAgentModal } from '../onboarding/NewAgentModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import classes from './AppsHome.module.scss';
 import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
-import { useArtifacts } from './hooks/useArtifacts';
+import { useArtifactsQueries } from './api';
+import { useArtifacts } from './api/queries/useArtifacts';
 import { AppsList } from './library/AppsList';
 import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
-import { useArtifactsQueries } from './queries';
 import { Artifact } from './types';
 
 export function AppsHome() {

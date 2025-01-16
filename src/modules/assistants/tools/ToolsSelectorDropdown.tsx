@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import { useCallback, useMemo } from 'react';
-import { useListAllTools } from './useListAllTools';
 import { Tool, ToolReference } from '@/app/api/tools/types';
-import { useController } from 'react-hook-form';
-import {
-  AssistantFormValues,
-  useAssistantBuilder,
-} from '../builder/AssistantBuilderProvider';
-import { getToolReferenceFromTool } from '@/modules/tools/utils';
-import { ToolIcon } from '@/modules/tools/ToolCard';
-import uniq from 'lodash/uniq';
 import {
   DropdownSelector,
   DropdownSelectorGroup,
 } from '@/components/DropdownSelector/DropdownSelector';
+import { getStaticToolName } from '@/modules/tools/api/queries/useToolInfo';
+import { ToolIcon } from '@/modules/tools/ToolCard';
+import { getToolReferenceFromTool } from '@/modules/tools/utils';
 import { DropdownSkeleton } from '@carbon/react';
-import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
+import uniq from 'lodash/uniq';
+import { useCallback, useMemo } from 'react';
+import { useController } from 'react-hook-form';
+import { useListAllTools } from '../../tools/api/queries/useListAllTools';
+import {
+  AssistantFormValues,
+  useAssistantBuilder,
+} from '../builder/AssistantBuilderProvider';
 import { ToolNameWithTooltip } from './ToolNameWithTooltip';
 
 export function ToolsSelectorDropdown() {

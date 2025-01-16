@@ -41,8 +41,8 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useWatchPendingVectorStoreFiles } from '../hooks/useWatchPendingVectoreStoreFiles';
-import { useVectorStoresQueries } from '../queries';
+import { useVectorStoresQueries } from '../api';
+import { useWatchPendingVectorStoreFiles } from '../api/queries/useWatchPendingVectoreStoreFiles';
 
 export type VectoreStoreFileUpload = {
   id: string;

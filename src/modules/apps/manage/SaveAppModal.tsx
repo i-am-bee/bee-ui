@@ -22,6 +22,7 @@ import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
@@ -35,16 +36,15 @@ import {
   TextInput,
 } from '@carbon/react';
 import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { useSaveArtifact } from '../api/mutations/useSaveArtifact';
 import { AppIconName } from '../AppIcon';
 import { AppIconSelector } from '../builder/AppIconSelector';
-import { useSaveArtifact } from '../hooks/useSaveArtifact';
 import { Artifact, ArtifactMetadata } from '../types';
 import { extractAppMetadataFromStreamlitCode } from '../utils';
-import { useRouter } from 'next-nprogress-bar';
 import classes from './SaveAppModal.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export type AppFormValues = {
   name: string;

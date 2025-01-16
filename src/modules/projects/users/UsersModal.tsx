@@ -26,9 +26,9 @@ import {
 } from '@carbon/react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { AddUserForm } from './AddUserForm';
+import { useProjectUsersQueries } from './api';
+import { useProjectUsersCount } from './api/queries/useProjectUsersCount';
 import { ProjectUserRow } from './ProjectUserRow';
-import { useProjectUsersQueries } from './queries';
-import { useProjectUsersCount } from './useProjectUsersCount';
 import classes from './UsersModal.module.scss';
 
 export default function UsersModal(props: ModalProps) {

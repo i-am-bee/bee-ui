@@ -45,8 +45,8 @@ import {
   PreferencesLayout,
   PreferencesSection,
 } from '../preferences/PreferencesLayout';
-import { useApiKeys } from './api/useApiKeys';
-import { useRenameApiKey } from './api/useRenameApiKey';
+import { useRenameApiKey } from './api/mutations/useRenameApiKey';
+import { useApiKeys } from './api/queries/useApiKeys';
 import classes from './ApiKeysHome.module.scss';
 import { ApiKeyModal } from './manage/ApiKeyModal';
 

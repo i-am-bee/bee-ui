@@ -15,15 +15,15 @@
  */
 
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useRouter } from 'next-nprogress-bar';
 import { MouseEventHandler } from 'react';
+import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { AppIcon } from '../AppIcon';
-import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
 import classes from './AppCard.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   artifact: Artifact;
@@ -37,7 +37,10 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const router = useRouter();
   const { openModal } = useModal();
 
-  const { deleteArtifact, isPending: isDeletePending } = useDeleteArtifact({
+  const {
+    mutateWithConfirmationAsync: deleteArtifact,
+    isPending: isDeletePending,
+  } = useDeleteArtifact({
     artifact,
     onSuccess: async () => {
       onDeleteSuccess?.(artifact);

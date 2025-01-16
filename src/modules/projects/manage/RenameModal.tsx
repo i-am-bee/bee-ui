@@ -36,8 +36,8 @@ import { produce } from 'immer';
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { PROJECTS_QUERY_PARAMS } from '../ProjectSelector';
-import { useProjects } from '../hooks/useProjects';
-import { useProjectsQueries } from '../queries';
+import { useProjectsQueries } from '../api';
+import { useProjects } from '../api/queries/useProjects';
 
 interface Props extends ModalProps {
   project: Project;

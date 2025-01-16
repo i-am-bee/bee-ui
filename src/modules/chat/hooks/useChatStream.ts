@@ -59,11 +59,11 @@ import {
 } from '@ai-zen/node-fetch-event-source';
 import { useQueryClient } from '@tanstack/react-query';
 import { MutableRefObject, RefObject } from 'react';
+import { useThreadsQueries } from '../api';
 import {
   updatePlanWithRunStep,
   updatePlanWithRunStepDelta,
 } from '../assistant-plan/utils';
-import { useThreadsQueries } from '../queries';
 import { RunController } from '../providers/chat-context';
 import { ChatMessage, ToolApprovalValue } from '../types';
 import { isBotMessage } from '../utils';

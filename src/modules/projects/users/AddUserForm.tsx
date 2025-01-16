@@ -31,7 +31,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
-import { useOrganizationUsersQueries, useProjectUsersQueries } from './queries';
+import { useOrganizationUsersQueries, useProjectUsersQueries } from './api';
 
 export function AddUserForm() {
   const htmlId = useId();

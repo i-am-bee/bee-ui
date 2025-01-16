@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { ARTIFACTS_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
@@ -28,7 +26,7 @@ import {
 } from '@carbon/react';
 import { ContentDeliveryNetwork } from '@carbon/react/icons';
 import { useId, useState } from 'react';
-import { useSaveArtifact } from './hooks/useSaveArtifact';
+import { useSaveArtifact } from './api/mutations/useSaveArtifact';
 import classes from './ShareApp.module.scss';
 import { Artifact } from './types';
 

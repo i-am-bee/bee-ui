@@ -22,7 +22,7 @@ import { Button, SkeletonPlaceholder, Tag } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
 import { useMemo } from 'react';
-import { useProjects } from './hooks/useProjects';
+import { useProjects } from './api/queries/useProjects';
 import { CreateProjectModal } from './manage/CreateProjectModal';
 import classes from './ProjectSelector.module.scss';
 import { ProjectWithScope } from './types';

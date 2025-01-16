@@ -24,7 +24,7 @@ import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import classes from './ProjectUserRow.module.scss';
-import { useProjectUsersQueries } from './queries';
+import { useProjectUsersQueries } from './api';
 
 interface Props {
   user: ProjectUser;

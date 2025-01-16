@@ -32,7 +32,7 @@ import { useMutation } from '@tanstack/react-query';
 import { CODE_ENTER } from 'keycode-js';
 import { useId } from 'react';
 import { useForm } from 'react-hook-form';
-import { useVectorStoresQueries } from '../queries';
+import { useVectorStoresQueries } from '../api';
 
 interface Props extends ModalProps {
   vectorStore: VectorStore;

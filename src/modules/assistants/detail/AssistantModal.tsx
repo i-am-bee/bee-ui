@@ -20,8 +20,8 @@ import { Modal } from '@/components/Modal/Modal';
 import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
-import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
-import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
+import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { ToolDescription, ToolIcon } from '@/modules/tools/ToolCard';
@@ -37,7 +37,7 @@ import {
 } from '@carbon/react';
 import { Edit, Folder, Launch, TrashCan } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
-import { useDeleteAssistant } from '../builder/useDeleteAssistant';
+import { useDeleteAssistant } from '../api/mutations/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
 import classes from './AssistantModal.module.scss';
@@ -55,7 +55,7 @@ export default function AssistantModal({
   const { project, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
-  const { deleteAssistant } = useDeleteAssistant({
+  const { mutateWithConfirmationAsync: deleteAssistant } = useDeleteAssistant({
     assistant,
     onSuccess: async () => {
       onDeleteSuccess?.();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { listRuns, listRunSteps, readRun } from '.';
+import { listRuns, listRunSteps, readRun, updateRun } from '.';
 import { paths } from '../schema';
 import { MessageFeedback } from '../threads-messages/types';
 import { EntityWithDecodedMetadata } from '../types';
@@ -33,6 +33,10 @@ export type RunsListQuery = NonNullable<
 export type RunsListResponse = Awaited<ReturnType<typeof listRuns>>;
 
 export type ThreadRunResult = NonNullable<Awaited<ReturnType<typeof readRun>>>;
+
+export type ThreadRunUpdateResult = NonNullable<
+  Awaited<ReturnType<typeof updateRun>>
+>;
 
 export type RunMetadata = {
   feedback?: MessageFeedback;

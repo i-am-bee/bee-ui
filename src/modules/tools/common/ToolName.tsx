@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { SkeletonText } from '@carbon/react';
-import classes from './ToolName.module.scss';
 import { ToolReference } from '@/app/api/tools/types';
-import { useToolInfo } from '../hooks/useToolInfo';
+import { SkeletonText } from '@carbon/react';
+import { useToolInfo } from '../api/queries/useToolInfo';
+import classes from './ToolName.module.scss';
 
 interface Props {
   tool: ToolReference;

@@ -31,8 +31,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useProjects } from '../hooks/useProjects';
-import { useProjectsQueries } from '../queries';
+import { useProjectsQueries } from '../api';
+import { useProjects } from '../api/queries/useProjects';
 
 interface CreateProjectValues {
   name: string;

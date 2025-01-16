@@ -16,7 +16,6 @@
 'use client';
 import { ApiError } from '@/app/api/errors';
 import { createMessage } from '@/app/api/threads-messages';
-import { cancelRun } from '@/app/api/threads-runs';
 import {
   RunsListResponse,
   ThreadRun,
@@ -42,11 +41,7 @@ import {
   toolIncluded,
 } from '@/modules/tools/utils';
 import { isNotNull } from '@/utils/helpers';
-import {
-  FetchQueryOptions,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { FetchQueryOptions, useQueryClient } from '@tanstack/react-query';
 import truncate from 'lodash/truncate';
 import {
   PropsWithChildren,
@@ -57,12 +52,15 @@ import {
   useState,
 } from 'react';
 import { v4 as uuid } from 'uuid';
-import { useDeleteMessage } from '../api/useDeleteMessage';
-import { useThreadsQueries } from '../queries';
+import { useThreadsQueries } from '../api';
+import { useCanceRun } from '../api/mutations/useCancelRun';
+import { useCreateThread } from '../api/mutations/useCreateThread';
+import { useDeleteMessage } from '../api/mutations/useDeleteMessage';
+import { useUpdateThread } from '../api/mutations/useUpdateThread';
 import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
-import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
-import { useThreadApi } from '../hooks/useThreadApi';
+import { useGetThreadAssistant } from '../hooks/useGetThreadAssistant';
+import { useMessages } from '../hooks/useMessages';
 import {
   ChatMessage,
   MessageWithFiles,
@@ -84,12 +82,6 @@ import {
   SendMessageOptions,
 } from './chat-context';
 import { useFilesUpload } from './FilesUploadProvider';
-import { useMessages } from './useMessages';
-
-interface CancelRunParams {
-  threadId: string;
-  runId: string;
-}
 
 const RUN_CONTROLLER_DEFAULT: RunController = {
   abortController: null,
@@ -144,6 +136,9 @@ export function ChatProvider({
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const { mutateAsync: mutateDeleteMessage } = useDeleteMessage();
+  const { mutateAsync: mutateUpdateThread } = useUpdateThread();
+  const { mutateAsync: mutateCreateThread } = useCreateThread();
+  const { mutate: mutateCancel } = useCanceRun();
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {
@@ -166,16 +161,6 @@ export function ChatProvider({
       setController((controller) => ({ ...controller, ...data }));
     },
   });
-
-  const { mutate: mutateCancel } = useMutation({
-    mutationFn: ({ threadId, runId }: CancelRunParams) =>
-      cancelRun(organization.id, project.id, threadId, runId),
-  });
-
-  const {
-    updateMutation: { mutateAsync: mutateUpdateThread },
-    createMutation: { mutateAsync: mutateCreateThread },
-  } = useThreadApi(thread);
 
   useEffect(() => {
     if (threadAssistant?.data) selectAssistant(threadAssistant.data);
@@ -295,8 +280,11 @@ export function ChatProvider({
               : threadMetadata.title;
 
           const { thread: updatedThread } = await mutateUpdateThread({
-            tool_resources: toolResources,
-            metadata: encodeMetadata<ThreadMetadata>(threadMetadata),
+            id: thread.id,
+            body: {
+              tool_resources: toolResources,
+              metadata: encodeMetadata<ThreadMetadata>(threadMetadata),
+            },
           });
 
           if (updatedThread) {

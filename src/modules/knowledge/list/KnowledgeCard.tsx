@@ -25,8 +25,8 @@ import { Folder, TrashCan, WarningAlt } from '@carbon/react/icons';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import pluralize from 'pluralize';
+import { useVectorStoresQueries } from '../api';
 import { KnowledgeAppsInfo } from '../detail/KnowledgeAppsInfo';
-import { useVectorStoresQueries } from '../queries';
 import classes from './KnowledgeCard.module.scss';
 import { RenameModal } from './RenameModal';
 

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+import { Organization } from '@/app/api/organization/types';
+import { Project } from '@/app/api/projects/types';
 import { ToolReference, ToolsUsage } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
-import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
+import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
 import { getToolReferenceFromToolUsage } from '@/modules/tools/utils';
 import { SkeletonText } from '@carbon/react';
 import clsx from 'clsx';
@@ -32,8 +34,6 @@ import {
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { AssistantTemplate } from '../types';
 import classes from './AssistantCard.module.scss';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 
 interface Props {
   template: AssistantTemplate;

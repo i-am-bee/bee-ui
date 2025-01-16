@@ -33,7 +33,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useId } from 'react';
 import { useForm } from 'react-hook-form';
-import { useProjectsQueries } from '../queries';
+import { useProjectsQueries } from '../api';
 import classes from './ArchiveConfirmationModal.module.scss';
 
 interface Props extends ModalProps {

@@ -15,7 +15,7 @@
  */
 
 import { Spinner } from '@/components/Spinner/Spinner';
-import { useFilesQueries } from '@/modules/files/queries';
+import { useFilesQueries } from '@/modules/files/api';
 import { useQuery } from '@tanstack/react-query';
 import classes from './AttachmentImage.module.scss';
 

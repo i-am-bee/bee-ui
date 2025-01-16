@@ -22,7 +22,7 @@ import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Link } from 'mdast';
 import { AnchorHTMLAttributes, useState } from 'react';
-import { useLinkPreviewQueries } from '../../../link-preview/queries';
+import { useLinkPreviewQueries } from '../../../link-preview/api';
 import classes from './PreviewLink.module.scss';
 
 interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {

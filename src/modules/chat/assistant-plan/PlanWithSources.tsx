@@ -26,7 +26,7 @@ import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import { useThreadsQueries } from '../queries';
+import { useThreadsQueries } from '../api';
 import { SourcesView } from '../layout/SourcesView';
 import { useChat } from '../providers/chat-context';
 import {
@@ -34,10 +34,10 @@ import {
   useExpandedStep,
   useExpandedStepActions,
 } from '../providers/ExpandedStepProvider';
+import { useBuildTraceData } from '../trace/hooks/useBuildTraceData';
 import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { TraceData } from '../trace/types';
-import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { BotChatMessage } from '../types';
 import { PlanView } from './PlanView';
 import classes from './PlanWithSources.module.scss';

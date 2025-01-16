@@ -47,7 +47,7 @@ import {
   useForm,
   useFormContext,
 } from 'react-hook-form';
-import { useToolsQueries } from '../queries';
+import { useToolsQueries } from '../api';
 import { ToolDescription } from '../ToolCard';
 import classes from './UserToolModal.module.scss';
 

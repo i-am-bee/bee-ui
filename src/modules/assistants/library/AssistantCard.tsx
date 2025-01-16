@@ -18,7 +18,7 @@ import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
 import { MouseEventHandler, useState } from 'react';
-import { useDeleteAssistant } from '../builder/useDeleteAssistant';
+import { useDeleteAssistant } from '../api/mutations/useDeleteAssistant';
 import { AssistantModalRenderer } from '../detail/AssistantModalRenderer';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
@@ -38,7 +38,10 @@ export function AssistantCard({
   onDeleteSuccess,
 }: Props) {
   const { name, description } = assistant;
-  const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
+  const {
+    mutateWithConfirmationAsync: deleteAssistant,
+    isPending: isDeletePending,
+  } = useDeleteAssistant({
     assistant,
     onSuccess: async () => {
       onDeleteSuccess?.(assistant);

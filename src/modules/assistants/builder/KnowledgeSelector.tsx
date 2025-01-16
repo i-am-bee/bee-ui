@@ -24,11 +24,11 @@ import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useVectorStoresQueries } from '@/modules/knowledge/api';
+import { useVectorStores } from '@/modules/knowledge/api/queries/useVectorStores';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
-import { useVectorStores } from '@/modules/knowledge/hooks/useVectorStores';
-import { useVectorStoresQueries } from '@/modules/knowledge/queries';
-import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
+import { getStaticToolName } from '@/modules/tools/api/queries/useToolInfo';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import {
   InfiniteData,

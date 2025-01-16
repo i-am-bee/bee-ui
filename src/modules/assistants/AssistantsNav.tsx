@@ -35,10 +35,10 @@ import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import { PropsWithChildren, useState } from 'react';
 import { NewAgentModal } from '../onboarding/NewAgentModal';
+import { useAssistants } from './api/queries/useAssistants';
 import { ASSISTANTS_ORDER_DEFAULT } from './AssistantsHome';
 import classes from './AssistantsNav.module.scss';
 import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
-import { useAssistants } from './hooks/useAssistants';
 import { AssistantIcon } from './icons/AssistantIcon';
 import { Assistant } from './types';
 

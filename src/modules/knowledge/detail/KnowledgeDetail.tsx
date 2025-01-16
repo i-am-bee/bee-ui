@@ -36,13 +36,13 @@ import { IconButton } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
 import { produce } from 'immer';
 import { useRouter } from 'next-nprogress-bar';
-import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVectorStoreFiles';
-import { useVectorStore } from '../hooks/useVectorStore';
-import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
 import {
   VECTOR_STORES_DEFAULT_PAGE_SIZE,
   useVectorStoresQueries,
-} from '../queries';
+} from '../api';
+import { useVectorStore } from '../api/queries/useVectorStore';
+import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVectorStoreFiles';
+import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
 import { AddContentModal } from './AddContentModal';
 import { KnowledgeAppsInfo } from './KnowledgeAppsInfo';
 import classes from './KnowledgeDetail.module.scss';

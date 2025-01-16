@@ -29,7 +29,7 @@ import {
 import { Document, TrashCan, WarningAlt } from '@carbon/react/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useFilesQueries } from '../../files/queries';
+import { useFilesQueries } from '../../files/api';
 import classes from './KnowledgeFileCard.module.scss';
 
 interface Props {

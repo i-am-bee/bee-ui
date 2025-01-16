@@ -34,12 +34,12 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useId } from 'react';
 import { useForm } from 'react-hook-form';
+import { useVectorStoresQueries } from '../api';
 import { KnowledgeFilesUpload } from '../files/KnowledgeFilesUpload';
 import {
   useVectoreStoreFilesUpload,
   VectorStoreFilesUploadProvider,
 } from '../files/VectorStoreFilesUploadProvider';
-import { useVectorStoresQueries } from '../queries';
 import classes from './CreateKnowledgeModal.module.scss';
 
 export interface CreateKnowledgeValues {
