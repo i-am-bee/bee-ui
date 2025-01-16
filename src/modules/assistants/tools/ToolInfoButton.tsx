@@ -17,13 +17,14 @@
 import { ToolReference } from '@/app/api/tools/types';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import classes from './ToolInfoButton.module.scss';
-import { ArrowUpRight, Information } from '@carbon/react/icons';
+import { ArrowUpRight, Edit, Information } from '@carbon/react/icons';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { ToolDescription } from '@/modules/tools/ToolCard';
 
 interface Props {
   toolReference: ToolReference;
@@ -41,21 +42,25 @@ export function ToolInfoButton({ toolReference }: Props) {
       ? tool.description
       : (tool.uiMetadata.description_short ?? tool.user_description);
 
+  const isEditable = tool.type === 'user' && !isProjectReadOnly;
+
   return (
     <Tooltip
       asChild
       content={
         <div className={classes.tooltip}>
-          <span>{toolDescription}</span>
+          <span>
+            <ToolDescription description={toolDescription ?? ''} />
+          </span>
           <LinkButton
             as="span"
             className={classes.openDetailBtn}
-            icon={ArrowUpRight}
+            icon={isEditable ? Edit : ArrowUpRight}
             onClick={() =>
               openModal((props) => (
                 <>
                   {tool.type === 'user' ? (
-                    isProjectReadOnly ? (
+                    !isEditable ? (
                       <UserToolModal.View tool={tool} {...props} />
                     ) : (
                       <UserToolModal {...props} tool={tool} />
@@ -67,7 +72,7 @@ export function ToolInfoButton({ toolReference }: Props) {
               ))
             }
           >
-            View Details
+            {isEditable ? 'Edit tool' : 'View Details'}
           </LinkButton>
         </div>
       }

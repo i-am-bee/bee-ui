@@ -43,7 +43,7 @@ export function createApiClient<T extends Record<string, any>>(
   return createClient<T>({
     baseUrl: `${baseUrl}${path ?? ''}`,
     fetch: fetchRetry(fetch, {
-      retryOn: (_, __, response) => {
+      retryOn: (attempt, _, response) => {
         // Concurrency limits (due to external factors) are hit
         if (response?.status === StatusCodes.TOO_MANY_REQUESTS) {
           const resetDuration = response?.headers.get('ratelimit-reset');
@@ -58,10 +58,12 @@ export function createApiClient<T extends Record<string, any>>(
           StatusCodes.CONFLICT,
           StatusCodes.GATEWAY_TIMEOUT,
           StatusCodes.REQUEST_TIMEOUT,
-          StatusCodes.INTERNAL_SERVER_ERROR,
         ];
 
-        return Boolean(response && retryCodes.includes(response.status));
+        return (
+          Boolean(response && retryCodes.includes(response.status)) &&
+          attempt <= RETRY_ON_MAX_ATTEMPTS
+        );
       },
       retryDelay: function (attempt) {
         return Math.pow(2, attempt) * 1000;
@@ -71,3 +73,4 @@ export function createApiClient<T extends Record<string, any>>(
 }
 
 const RETRY_ON_RESET_THRESHOLD = 5; // seconds
+const RETRY_ON_MAX_ATTEMPTS = 3;

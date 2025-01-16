@@ -1,5 +1,16 @@
 # Changelog
 
+## <small>0.0.23 (2025-01-16)</small>
+
+* feat: for dummy JWT use username from the API (#184) ([3e2d9eb](https://github.com/i-am-bee/bee-ui/commit/3e2d9eb)), closes [#184](https://github.com/i-am-bee/bee-ui/issues/184) [i-am-bee/bee-api#56](https://github.com/i-am-bee/bee-api/issues/56)
+* feat: redesign assistant detail modal (#175) ([80fd5f1](https://github.com/i-am-bee/bee-ui/commit/80fd5f1)), closes [#175](https://github.com/i-am-bee/bee-ui/issues/175)
+* feat: unify sizing of artifact iframe with public site (#176) ([fa12654](https://github.com/i-am-bee/bee-ui/commit/fa12654)), closes [#176](https://github.com/i-am-bee/bee-ui/issues/176)
+* feat(app-builder): app loading updates  (#179) ([513211e](https://github.com/i-am-bee/bee-ui/commit/513211e)), closes [#179](https://github.com/i-am-bee/bee-ui/issues/179)
+* fix(chat): forced full reload on code update (#180) ([c931479](https://github.com/i-am-bee/bee-ui/commit/c931479)), closes [#180](https://github.com/i-am-bee/bee-ui/issues/180)
+* fix(vector-store): unable to add new files (#181) ([c2a7bc2](https://github.com/i-am-bee/bee-ui/commit/c2a7bc2)), closes [#181](https://github.com/i-am-bee/bee-ui/issues/181)
+* refactor: appContext to modals (#174) ([b81bbbd](https://github.com/i-am-bee/bee-ui/commit/b81bbbd)), closes [#174](https://github.com/i-am-bee/bee-ui/issues/174)
+* refactor(apps): protocol (#171) ([ed7727b](https://github.com/i-am-bee/bee-ui/commit/ed7727b)), closes [#171](https://github.com/i-am-bee/bee-ui/issues/171)
+
 ## <small>0.0.22 (2025-01-08)</small>
 
 * chore(feature-flags): make feature flags configurable at runtime (#172) ([5df12c3](https://github.com/i-am-bee/bee-ui/commit/5df12c3)), closes [#172](https://github.com/i-am-bee/bee-ui/issues/172)
