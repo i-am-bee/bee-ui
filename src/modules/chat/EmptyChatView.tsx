@@ -18,10 +18,10 @@
 import { Container } from '@/components/Container/Container';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
-import { APP_NAME } from '@/utils/constants';
 import clsx from 'clsx';
 import { memo } from 'react';
 import { AssistantIcon } from '../assistants/icons/AssistantIcon';
+import { getAssistantName } from '../assistants/utils';
 import classes from './EmptyChatView.module.scss';
 import { AssistantAvatar } from './layout/AssistantAvatar';
 import { Disclaimer } from './layout/Disclaimer';
@@ -43,8 +43,9 @@ export const EmptyChatView = memo(function EmptyChatView({
   const { assistant: chatAssistant, builderState } = useChat();
 
   const assistant = chatAssistant.data ?? appAssistant;
-  const assistantName =
-    (builderState ? builderState.name : assistant?.name) ?? APP_NAME;
+  const assistantName = builderState
+    ? builderState.name
+    : getAssistantName(assistant);
   const assistantDescription =
     (builderState ? builderState.description : assistant?.description) ??
     'How can I assist you?';

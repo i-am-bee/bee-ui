@@ -15,19 +15,19 @@
  */
 
 import { Modal } from '@/components/Modal/Modal';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { ASSISTANT_TEMPLATES } from '@/modules/assistants/templates';
+import { AssistantTemplate } from '@/modules/assistants/types';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
-import { ASSISTANT_TEMPLATES } from '../assistants/templates';
-import { AssistantTemplate } from '../assistants/types';
+import classes from './NewAgentModal.module.scss';
 import { OnboardingAssistantSelection } from './OnboardingAssistantSelection';
 import { OnboardingIntro } from './OnboardingIntro';
-import classes from './NewAgentModal.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends ModalProps {
   isOnboarding?: boolean;

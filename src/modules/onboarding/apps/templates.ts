@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AppTemplate } from '../types';
+import { AppTemplate } from '@/modules/apps/types';
 
 export const ARTIFACT_TEMPLATES: AppTemplate[] = [
   {

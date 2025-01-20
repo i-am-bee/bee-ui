@@ -53,6 +53,7 @@ import { Assistant, AssistantMetadata, AssistantTemplate } from '../types';
 import {
   decodeStarterQuestionsMetadata,
   encodeStarterQuestionsMetadata,
+  getAssistantName,
 } from '../utils';
 import { useSaveAssistant } from './useSaveAssistant';
 
@@ -315,8 +316,8 @@ function formValuesFromAssistant(
       name: assistant?.uiMetadata.icon,
       color: assistant?.uiMetadata.color ?? 'white',
     },
-    ownName: assistant?.name
-      ? `${assistant.name}${isDuplicate ? ' ( Copy )' : ''}`
+    ownName: assistant
+      ? `${getAssistantName(assistant)}${isDuplicate ? ' ( Copy )' : ''}`
       : 'New agent',
     description: assistant?.description ?? '',
     instructions: assistant?.instructions || '',

@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import classes from './AppTemplateCard.module.scss';
-import { AppIcon } from '../AppIcon';
+import { ReactNode } from 'react';
+import classes from './OnboardingCard.module.scss';
 
 interface Props {
-  selected?: boolean;
+  heading: string;
+  description: string;
+  image: ReactNode;
   onClick: () => void;
 }
 
-export function BlankAppCard({ onClick, selected }: Props) {
+export function OnboardingCard({
+  heading,
+  description,
+  image,
+  onClick,
+}: Props) {
   return (
-    <CardsListItem
-      title="Start from scratch"
-      icon={<AppIcon name="Grid" size="md" />}
-      onClick={onClick}
-      selected={selected}
-      className={classes.root}
-      canHover
-    >
-      <div className={classes.body}>
-        <p>Create an app from scratch</p>
-      </div>
-    </CardsListItem>
+    <article className={classes.root}>
+      <div className={classes.image}>{image}</div>
+      <h4 className={classes.heading}>
+        <button onClick={onClick} type="button" className={classes.button}>
+          {heading}
+        </button>
+      </h4>
+      <p className={classes.description}>{description}</p>
+    </article>
   );
 }
