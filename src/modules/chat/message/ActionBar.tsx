@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useId } from 'react';
 import { useRetry } from '../hooks/useRetry';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import { useMessageFeedback } from '../providers/MessageFeedbackProvider';
 import { ChatMessage } from '../types';
 import classes from './ActionBar.module.scss';

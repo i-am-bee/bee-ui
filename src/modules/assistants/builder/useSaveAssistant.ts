@@ -19,10 +19,9 @@ import {
   AssistantCreateBody,
   AssistantResult,
 } from '@/app/api/assistants/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { assistantsQuery } from '../library/queries';
-import { readAssistantQuery } from '../queries';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAssistantsQueries } from '../queries';
 
 interface Props {
   onSuccess?: (assistant: AssistantResult, isNew: boolean) => void;
@@ -31,6 +30,8 @@ interface Props {
 export function useSaveAssistant({ onSuccess }: Props) {
   const queryClient = useQueryClient();
   const { project, organization } = useAppContext();
+  const assistantsQueries = useAssistantsQueries();
+
   const {
     mutate: saveAssistant,
     mutateAsync: saveAssistantAsync,
@@ -42,18 +43,13 @@ export function useSaveAssistant({ onSuccess }: Props) {
         : createAssistant(organization.id, project.id, body);
     },
     onSuccess: (data, values) => {
-      queryClient.invalidateQueries({
-        queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
-      });
       if (data)
-        queryClient.invalidateQueries({
-          queryKey: readAssistantQuery(organization.id, project.id, data.id)
-            .queryKey,
-        });
+        queryClient.invalidateQueries(assistantsQueries.detail(data.id));
 
       data && onSuccess?.(data, !values.id);
     },
     meta: {
+      invalidates: [assistantsQueries.lists()],
       errorToast: {
         title: 'Failed to save the assistant',
         includeErrorMessage: true,

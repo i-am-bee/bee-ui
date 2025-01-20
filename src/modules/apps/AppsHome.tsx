@@ -33,7 +33,6 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { useAssistants } from '../assistants/hooks/useAssistants';
-import { assistantsQuery } from '../assistants/library/queries';
 import { NewAgentModal } from '../onboarding/NewAgentModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import classes from './AppsHome.module.scss';
@@ -41,7 +40,7 @@ import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
 import { useArtifacts } from './hooks/useArtifacts';
 import { AppsList } from './library/AppsList';
 import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
-import { listArtifactsQuery } from './queries';
+import { useArtifactsQueries } from './queries';
 import { Artifact } from './types';
 
 export function AppsHome() {
@@ -59,6 +58,7 @@ export function AppsHome() {
     !isProjectReadOnly && searchParams?.has(ONBOARDING_AGENTS_PARAM);
 
   const queryClient = useQueryClient();
+  const artifactsQueries = useArtifactsQueries();
 
   const params = {
     ...order,
@@ -82,16 +82,9 @@ export function AppsHome() {
   });
   const firstAssistant = assistantsData?.assistants.at(0);
 
-  const handleInvalidateData = () => {
-    // invalidate all queries on GET:/assistants
-    queryClient.invalidateQueries({
-      queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
-    });
-  };
-
   const handleDeleteArtifactSuccess = (artifact: Artifact) => {
     queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-      listArtifactsQuery(organization.id, project.id, params).queryKey,
+      artifactsQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -102,7 +95,6 @@ export function AppsHome() {
         }
       }),
     );
-    handleInvalidateData();
   };
 
   return (

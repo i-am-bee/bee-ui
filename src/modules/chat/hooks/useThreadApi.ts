@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
+import { createThread, deleteThread, updateThread } from '@/app/api/threads';
 import {
   Thread,
   ThreadCreateBody,
   ThreadsListResponse,
   ThreadUpdateBody,
 } from '@/app/api/threads/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   InfiniteData,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { createThread, deleteThread, updateThread } from '@/app/api/threads';
-import { threadQuery, threadsQuery } from '../history/queries';
 import { produce } from 'immer';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useThreadsQueries } from '../queries';
 
 export function useThreadApi(thread: Thread | null) {
   const queryClient = useQueryClient();
   const { project, organization } = useAppContext();
+  const threadsQueries = useThreadsQueries();
 
   const updateMutation = useMutation({
     mutationFn: async (body: ThreadUpdateBody) => {
@@ -50,7 +51,7 @@ export function useThreadApi(thread: Thread | null) {
     },
     onSuccess: ({ result }) => {
       queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-        threadsQuery(organization.id, project.id).queryKey,
+        threadsQueries.list().queryKey,
         produce((draft) => {
           if (!draft?.pages) return null;
           for (const page of draft.pages) {
@@ -63,16 +64,11 @@ export function useThreadApi(thread: Thread | null) {
         }),
       );
 
-      queryClient.invalidateQueries({
-        queryKey: threadsQuery(organization.id, project.id).queryKey,
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: threadQuery(organization.id, project.id, thread?.id ?? '')
-          .queryKey,
-      });
+      // TODO: The thread detail is not used anywhere on the client, so it's probably not necessary.
+      queryClient.invalidateQueries(threadsQueries.detail(thread?.id ?? ''));
     },
     meta: {
+      invalidates: [threadsQueries.lists()],
       errorToast: {
         title: 'Failed to update session',
         includeErrorMessage: true,

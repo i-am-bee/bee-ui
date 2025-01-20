@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
+import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
+import { isNotNull } from '@/utils/helpers';
 import { useQueries } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { readVectorStoreFileQuery } from '../queries';
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
-import { isNotNull } from '@/utils/helpers';
-import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
+import { useVectorStoresQueries } from '../queries';
 
 export const useWatchPendingVectorStoreFiles = (
-  organizationId: string,
-  projectId: string,
   vectorStoreId: string | null,
   data: VectorStoreFile[],
 ) => {
+  const vectorStoresQueries = useVectorStoresQueries();
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({
     durationStart: 1000,
     increaseStep: 200,
@@ -43,12 +42,7 @@ export const useWatchPendingVectorStoreFiles = (
           .filter((file) => file.status === 'in_progress')
           .map((file) => {
             return {
-              ...readVectorStoreFileQuery(
-                organizationId,
-                projectId,
-                vectorStoreId,
-                file.id,
-              ),
+              ...vectorStoresQueries.fileDetail(vectorStoreId, file.id),
               refetchInterval: getDuration,
             };
           })

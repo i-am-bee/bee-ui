@@ -16,8 +16,7 @@
 
 import { ToolsListQuery } from '@/app/api/tools/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { toolsQuery } from '../queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useToolsQueries } from '../queries';
 
 export function useTools({
   params,
@@ -26,10 +25,10 @@ export function useTools({
   params?: ToolsListQuery;
   enabled?: boolean;
 } = {}) {
-  const { project, organization, featureFlags } = useAppContext();
+  const toolsQueries = useToolsQueries();
 
   const query = useInfiniteQuery({
-    ...toolsQuery(organization.id, project.id, featureFlags.Knowledge, params),
+    ...toolsQueries.list(params),
     enabled,
   });
 

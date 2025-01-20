@@ -29,6 +29,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  // fixes letters being cut off below the baseline
+  padding-block-end: 0.1rem;
+  margin-block-end: -0.1rem;
 }
 
 @mixin scrollbar() {

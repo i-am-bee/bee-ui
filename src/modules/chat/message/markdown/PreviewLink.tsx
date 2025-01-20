@@ -22,7 +22,7 @@ import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Link } from 'mdast';
 import { AnchorHTMLAttributes, useState } from 'react';
-import { linkPreviewQuery } from '../../queries';
+import { useLinkPreviewQueries } from '../../../link-preview/queries';
 import classes from './PreviewLink.module.scss';
 
 interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -32,6 +32,9 @@ interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
 export function PreviewLink({ node, className, ...props }: Props) {
   const [enableFetch, setEnableFetch] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const linkPreviewQueries = useLinkPreviewQueries();
+
   const url = props.href || '';
 
   const onImageError = () => {
@@ -39,7 +42,7 @@ export function PreviewLink({ node, className, ...props }: Props) {
   };
 
   const { data, isLoading } = useQuery({
-    ...linkPreviewQuery(url),
+    ...linkPreviewQueries.detail(url),
     enabled: enableFetch,
   });
 
@@ -49,7 +52,7 @@ export function PreviewLink({ node, className, ...props }: Props) {
       content={
         isLoading ? (
           <>
-            Loading link preview <Spinner />
+            Loading link preview <Spinner size="sm" />
           </>
         ) : data && 'error' in data ? (
           data.error

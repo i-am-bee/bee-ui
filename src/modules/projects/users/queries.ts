@@ -16,83 +16,119 @@
 
 import { listUsers } from '@/app/api/organization-users';
 import { UsersListQuery } from '@/app/api/organization-users/types';
+import { Organization } from '@/app/api/organization/types';
 import { listProjectUsers, readProjectUser } from '@/app/api/projects-users';
 import { ProjectUsersListQuery } from '@/app/api/projects-users/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-const PAGE_SIZE = 10;
-
-export const readProjectUserQuery = (
-  organizationId: string,
-  projectId: string,
-  userId: string,
-) =>
-  queryOptions({
-    queryKey: ['project-user', organizationId, projectId, userId],
-    queryFn: () => readProjectUser(organizationId, projectId, userId),
-    staleTime: 60 * 60 * 1000,
-  });
-
-export const projectUsersQuery = (
-  organizationId: string,
-  projectId: string,
-  params?: ProjectUsersListQuery,
-) =>
-  infiniteQueryOptions({
-    queryKey: ['project-users', projectId, params],
-    queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listProjectUsers(organizationId, projectId, {
-        limit: PAGE_SIZE,
+export function getProjectUsersQueries({
+  organization,
+}: {
+  organization: Organization;
+}) {
+  const projectUsersQueries = {
+    all: () => ['project-users'] as const,
+    lists: () => [...projectUsersQueries.all(), 'list'] as const,
+    list: (id: string, params?: ProjectUsersListQuery) => {
+      const usedParams: ProjectUsersListQuery = {
+        limit: PROJECT_USERS_DEFAULT_PAGE_SIZE,
         order: 'asc',
         order_by: 'created_at',
         ...params,
-        after: pageParam,
-      }),
-    initialPageParam: undefined,
-    getNextPageParam(lastPage) {
-      return lastPage?.has_more && lastPage?.last_id
-        ? lastPage.last_id
-        : undefined;
-    },
-    select(data) {
-      const users = data.pages.flatMap((page) => page?.data).filter(isNotNull);
-      return {
-        users,
-        totalCount: data.pages.at(0)?.total_count,
       };
-    },
-    meta: {
-      errorToast: false,
-    },
-  });
 
-export const usersQuery = (organizationId: string, params?: UsersListQuery) =>
-  infiniteQueryOptions({
-    queryKey: ['organization-users', params],
-    queryFn: ({ pageParam }: { pageParam?: string }) =>
-      listUsers(organizationId, {
-        limit: PAGE_SIZE,
+      return infiniteQueryOptions({
+        queryKey: [...projectUsersQueries.lists(), id, usedParams],
+        queryFn: ({ pageParam }: { pageParam?: string }) =>
+          listProjectUsers(organization.id, id, {
+            ...usedParams,
+            after: pageParam,
+          }),
+        initialPageParam: undefined,
+        getNextPageParam(lastPage) {
+          return lastPage?.has_more && lastPage?.last_id
+            ? lastPage.last_id
+            : undefined;
+        },
+        select(data) {
+          const users = data.pages
+            .flatMap((page) => page?.data)
+            .filter(isNotNull);
+          return {
+            users,
+            totalCount: data.pages.at(0)?.total_count,
+          };
+        },
+        meta: {
+          errorToast: false,
+        },
+      });
+    },
+    details: () => [...projectUsersQueries.all(), 'detail'] as const,
+    detail: (projectId: string, userId: string) =>
+      queryOptions({
+        queryKey: [...projectUsersQueries.details(), projectId, userId],
+        queryFn: () => readProjectUser(organization.id, projectId, userId),
+        staleTime: 60 * 60 * 1000,
+      }),
+  };
+
+  return projectUsersQueries;
+}
+
+export function useProjectUsersQueries() {
+  const { organization } = useAppContext();
+
+  return getProjectUsersQueries({ organization });
+}
+
+export function useOrganizationUsersQueries() {
+  const { organization } = useAppContext();
+
+  const organizationUsersQueries = {
+    all: () => ['organization-users'] as const,
+    lists: () => [...organizationUsersQueries.all(), 'list'] as const,
+    list: (params?: UsersListQuery) => {
+      const usedParams: UsersListQuery = {
+        limit: PROJECT_USERS_DEFAULT_PAGE_SIZE,
         order: 'asc',
         order_by: 'created_at',
         ...params,
-        after: pageParam,
-      }),
-    staleTime: 5 * 60 * 1000,
-    initialPageParam: undefined,
-    getNextPageParam(lastPage) {
-      return lastPage?.has_more && lastPage?.last_id
-        ? lastPage.last_id
-        : undefined;
-    },
-    select(data) {
-      const users = data.pages.flatMap((page) => page?.data).filter(isNotNull);
-      return {
-        users,
-        totalCount: data.pages.at(0)?.total_count,
       };
+
+      return infiniteQueryOptions({
+        queryKey: [...organizationUsersQueries.lists(), usedParams],
+        queryFn: ({ pageParam }: { pageParam?: string }) =>
+          listUsers(organization.id, {
+            ...usedParams,
+            after: pageParam,
+          }),
+        staleTime: 5 * 60 * 1000,
+        initialPageParam: undefined,
+        getNextPageParam(lastPage) {
+          return lastPage?.has_more && lastPage?.last_id
+            ? lastPage.last_id
+            : undefined;
+        },
+        select(data) {
+          const users = data.pages
+            .flatMap((page) => page?.data)
+            .filter(isNotNull);
+          return {
+            users,
+            totalCount: data.pages.at(0)?.total_count,
+          };
+        },
+        meta: {
+          errorToast: false,
+        },
+      });
     },
-    meta: {
-      errorToast: false,
-    },
-  });
+  };
+
+  return organizationUsersQueries;
+}
+
+const PROJECT_USERS_DEFAULT_PAGE_SIZE = 10;

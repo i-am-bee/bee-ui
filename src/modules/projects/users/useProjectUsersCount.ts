@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-import { Project } from '@/app/api/projects/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { projectUsersQuery } from './queries';
-import { Organization } from '@/app/api/organization/types';
+import { useProjectUsersQueries } from './queries';
 
-export function useProjectUsersCount(
-  organization: Organization,
-  project: Project,
-) {
+export function useProjectUsersCount(id: string) {
+  const projectUsersQueries = useProjectUsersQueries();
   const { data, isLoading } = useInfiniteQuery(
-    projectUsersQuery(organization.id, project.id, { limit: 1 }),
+    projectUsersQueries.list(id, { limit: 1 }),
   );
 
   return { totalCount: data?.totalCount, isLoading };

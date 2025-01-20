@@ -15,14 +15,14 @@
  */
 
 import { MessageFeedback } from '@/app/api/threads-messages/types';
+import { updateRun } from '@/app/api/threads-runs';
+import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { readRunQuery } from '../../queries';
-import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
-import { updateRun } from '@/app/api/threads-runs';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useThreadsQueries } from '../../queries';
 
 export const MESSAGE_FEEDBACK_FORM_DEFAULTS = {
   comment: '',
@@ -37,6 +37,7 @@ interface Props {
 
 export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
   const { project, organization } = useAppContext();
+  const threadsQueries = useThreadsQueries();
 
   const form = useForm<MessageFeedback>({
     defaultValues: MESSAGE_FEEDBACK_FORM_DEFAULTS,
@@ -92,7 +93,7 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
 
       if (threadId && run) {
         queryClient.setQueryData(
-          readRunQuery(organization.id, project.id, threadId, run.id).queryKey,
+          threadsQueries.runDetail(threadId, run.id).queryKey,
           (run) =>
             run
               ? {

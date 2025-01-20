@@ -24,7 +24,10 @@ interface Props {
 export function AppDetail({ artifact }: Props) {
   return (
     <div className={classes.root}>
-      <ArtifactSharedIframe sourceCode={artifact.source_code || null} />
+      <ArtifactSharedIframe
+        variant="detail"
+        sourceCode={artifact.source_code || null}
+      />
     </div>
   );
 }

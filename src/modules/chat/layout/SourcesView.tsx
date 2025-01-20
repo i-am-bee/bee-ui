@@ -24,7 +24,7 @@ import { useQueries } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useEffect, useId, useState } from 'react';
-import { linkPreviewQuery } from '../queries';
+import { useLinkPreviewQueries } from '../../link-preview/queries';
 import classes from './SourcesView.module.scss';
 
 type Source = {
@@ -46,11 +46,13 @@ export function SourcesView({ sources = [], show, enableFetch }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [enableFetchAll, setEnableFetchAll] = useState(false);
 
+  const linkPreviewQueries = useLinkPreviewQueries();
+
   const isFiltered = ({ filtered }: Source) => filtered;
 
   const queries = useQueries({
     queries: sources.map(({ url }) => ({
-      ...linkPreviewQuery(url),
+      ...linkPreviewQueries.detail(url),
       enabled: enableFetchAll,
     })),
   });

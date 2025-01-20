@@ -21,35 +21,32 @@ import {
   ProjectUserRole,
 } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { Button, ComboBox } from '@carbon/react';
 import { Add, Checkmark } from '@carbon/react/icons';
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
-import { projectUsersQuery, readProjectUserQuery, usersQuery } from './queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useOrganizationUsersQueries, useProjectUsersQueries } from './queries';
 
 export function AddUserForm() {
   const htmlId = useId();
   const { project, organization } = useAppContext();
   const userId = useUserProfile((state) => state.id);
   const [search, setSearch] = useState('');
-  const queryClient = useQueryClient();
+  const projectUsersQueries = useProjectUsersQueries();
+  const organizationUsersQueries = useOrganizationUsersQueries();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { data } = useInfiniteQuery({
-    ...usersQuery(organization.id, { search }),
+    ...organizationUsersQueries.list({ search }),
     enabled: search.length > 2,
   });
+
   const users = useMemo(
     () => data?.users.filter((user) => user.id !== userId),
     [data?.users, userId],
@@ -61,9 +58,9 @@ export function AddUserForm() {
     onSuccess: () => {
       setSearch('');
       reset();
-      queryClient.invalidateQueries({
-        queryKey: projectUsersQuery(organization.id, project.id).queryKey,
-      });
+    },
+    meta: {
+      invalidates: [projectUsersQueries.lists()],
     },
   });
 
@@ -82,11 +79,7 @@ export function AddUserForm() {
   const selectedUser = watch('user');
 
   const { data: projectUser, isPending: isCheckingMemberStatus } = useQuery({
-    ...readProjectUserQuery(
-      organization.id,
-      project.id,
-      selectedUser?.id ?? '',
-    ),
+    ...projectUsersQueries.detail(project.id, selectedUser?.id ?? ''),
     retry: false,
     enabled: Boolean(selectedUser),
     meta: { errorToast: false },

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import { Organization } from '@/app/api/organization/types';
 import { archiveProject } from '@/app/api/projects';
 import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
+import { useUserProfile } from '@/store/user-profile';
 import {
   Button,
   InlineLoading,
@@ -27,14 +29,12 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useId } from 'react';
 import { useForm } from 'react-hook-form';
-import { projectsQuery } from '../queries';
+import { useProjectsQueries } from '../queries';
 import classes from './ArchiveConfirmationModal.module.scss';
-import { Organization } from '@/app/api/organization/types';
-import { useUserProfile } from '@/store/user-profile';
 
 interface Props extends ModalProps {
   project: Project;
@@ -47,18 +47,14 @@ export function ArchiveConfirmationModal({
   ...props
 }: Props) {
   const htmlId = useId();
-  const queryClient = useQueryClient();
   const { addToast } = useToast();
   const router = useRouter();
   const projectId = useUserProfile((state) => state.default_project);
+  const projectsQueries = useProjectsQueries();
 
   const { mutateAsync: mutateArchive } = useMutation({
     mutationFn: () => archiveProject(organization.id, project.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [projectsQuery(organization.id).queryKey.at(0)],
-      });
-
       addToast({
         kind: 'success',
         title: 'The workspace was archived.',
@@ -68,6 +64,7 @@ export function ArchiveConfirmationModal({
       props.onRequestClose();
     },
     meta: {
+      invalidates: [projectsQueries.lists()],
       errorToast: {
         title: 'Failed to archive the workspace',
         includeErrorMessage: true,

@@ -16,9 +16,10 @@
 
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import classes from './SourceCodeEditor.module.scss';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
 import { Button } from '@carbon/react';
+import { useChat } from '@/modules/chat/providers/chat-context';
 
 interface Props {
   onSaveCode: () => void;
@@ -28,21 +29,29 @@ export function SourceCodeEditor({ onSaveCode }: Props) {
   const id = useId();
   const { setCode: saveCode } = useAppBuilderApi();
   const { code: savedCode } = useAppBuilder();
+  const { status } = useChat();
   const [code, setCode] = useState(savedCode ?? '');
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (savedCode) setCode(savedCode);
-  }, [savedCode]);
+    if (savedCode) {
+      setCode(savedCode);
+
+      if (containerRef.current && status === 'fetching')
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [savedCode, status]);
 
   return (
     <div className={classes.root}>
-      <div className={classes.code}>
+      <div className={classes.code} ref={containerRef}>
         <EditableSyntaxHighlighter
           id={`${id}:code`}
           value={code ?? 'No code available'}
           onChange={setCode}
           required
           rows={16}
+          readOnly={status === 'fetching'}
         />
       </div>
       <div className={classes.buttons}>

@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteApiKey } from '@/app/api/api-keys';
-import { apiKeysQuery } from './queries';
-import { Organization } from '@/app/api/organization/types';
+import { ApiKey } from '@/app/api/api-keys/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation } from '@tanstack/react-query';
+import { useApiKeysQueries } from './queries';
 
-export function useDeleteApiKey({
-  onSuccess,
-  organization,
-}: {
-  onSuccess?: () => void;
-  organization: Organization;
-}) {
-  const queryClient = useQueryClient();
+export function useDeleteApiKey({ onSuccess }: { onSuccess?: () => void }) {
+  const { organization } = useAppContext();
+  const apiKeysQueries = useApiKeysQueries();
 
   const mutation = useMutation({
-    mutationFn: ({ id, projectId }: { id: string; projectId: string }) =>
-      deleteApiKey(organization.id, projectId, id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [apiKeysQuery(organization.id).queryKey.at(0)],
-      });
-
-      onSuccess?.();
-    },
+    mutationFn: ({ project, id }: ApiKey) =>
+      deleteApiKey(organization.id, project.id, id),
+    onSuccess,
     meta: {
+      invalidates: [apiKeysQueries.lists()],
       errorToast: {
         title: 'Failed to delete the api key',
         includeErrorMessage: true,

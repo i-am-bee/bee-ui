@@ -16,8 +16,7 @@
 
 import { VectorStoresListQuery } from '@/app/api/vector-stores/types';
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
-import { vectorStoresQuery } from '../queries';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useVectorStoresQueries } from '../queries';
 
 export function useVectorStores({
   params,
@@ -26,10 +25,10 @@ export function useVectorStores({
   params?: VectorStoresListQuery;
   placeholderData?: typeof keepPreviousData;
 } = {}) {
-  const { project, organization } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const query = useInfiniteQuery({
-    ...vectorStoresQuery(organization.id, project.id, params),
+    ...vectorStoresQueries.list(params),
     placeholderData,
   });
 

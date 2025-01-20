@@ -19,16 +19,16 @@ import {
   VectorStore,
   VectorStoresListQuery,
 } from '@/app/api/vector-stores/types';
+import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   InfiniteData,
   useQueries,
   useQueryClient,
 } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { readVectorStoreQuery, vectorStoresQuery } from '../queries';
 import { produce } from 'immer';
-import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useEffect } from 'react';
+import { useVectorStoresQueries } from '../queries';
 
 export const useUpdatePendingVectorStore = (
   data: VectorStore[],
@@ -36,6 +36,7 @@ export const useUpdatePendingVectorStore = (
 ) => {
   const queryClient = useQueryClient();
   const { project, organization } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({
     durationStart: 1000,
@@ -52,7 +53,7 @@ export const useUpdatePendingVectorStore = (
       .filter((store) => store.status === 'in_progress')
       .map((store) => {
         return {
-          ...readVectorStoreQuery(organization.id, project.id, store.id),
+          ...vectorStoresQueries.detail(store.id),
           refetchOnWindowFocus: true,
           refetchOnMount: false,
           refetchOnReconnect: false,
@@ -70,7 +71,7 @@ export const useUpdatePendingVectorStore = (
         isSomeUpdated = true;
 
         queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-          vectorStoresQuery(organization.id, project.id, params).queryKey,
+          vectorStoresQueries.list(params).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
@@ -88,11 +89,15 @@ export const useUpdatePendingVectorStore = (
     });
 
     if (isSomeUpdated) {
-      queryClient.invalidateQueries({
-        queryKey: [
-          vectorStoresQuery(organization.id, project.id, params).queryKey[0],
-        ],
-      });
+      queryClient.invalidateQueries({ queryKey: vectorStoresQueries.lists() });
     }
-  }, [data, params, organization.id, project.id, queries, queryClient]);
+  }, [
+    data,
+    params,
+    organization.id,
+    project.id,
+    queries,
+    queryClient,
+    vectorStoresQueries,
+  ]);
 };

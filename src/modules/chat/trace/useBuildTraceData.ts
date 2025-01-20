@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-import { useQuery } from '@tanstack/react-query';
-import {
-  listSpansQuery,
-  MAX_TRACE_RETRY_COUNT,
-  readTraceQuery,
-} from './queries';
-import { readRunTraceQuery } from '../queries';
 import { InterationType, TraceSpan } from '@/app/observe/api/types';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
+import { useThreadsQueries } from '../queries';
+import { MAX_TRACE_RETRY_COUNT, useTracesQueries } from './queries';
+import { GENERATE_EVENT_TOOL_START, TraceData } from './types';
 import {
-  getLastNewTokenSpan,
-  getGeneratedTokenCountSafe,
   getExecutionTime,
+  getGeneratedTokenCountSafe,
+  getLastNewTokenSpan,
   getRawPrompt,
 } from './utils';
-import { useEffect, useMemo, useState } from 'react';
-import { GENERATE_EVENT_TOOL_START, TraceData } from './types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   enabled: boolean;
@@ -43,16 +38,12 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
   traceError?: Error;
 } {
   const [hasFailed, setHasFailed] = useState(false);
-  const { project, organization } = useAppContext();
+  const tracesQueries = useTracesQueries();
+  const threadsQueries = useThreadsQueries();
   const computedEnabled = !hasFailed && Boolean(enabled && threadId && runId);
 
   const { data: runTraceData } = useQuery({
-    ...readRunTraceQuery(
-      organization.id,
-      project.id,
-      threadId ?? '',
-      runId ?? '',
-    ),
+    ...threadsQueries.runTrace(threadId ?? '', runId ?? ''),
     enabled: computedEnabled,
   });
 
@@ -61,7 +52,7 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
     error,
     failureCount,
   } = useQuery({
-    ...readTraceQuery(organization.id, project.id, runTraceData?.id ?? ''),
+    ...tracesQueries.detail(runTraceData?.id ?? ''),
     enabled: Boolean(runTraceData?.id && computedEnabled),
   });
 
@@ -70,7 +61,7 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
   }, [error, failureCount]);
 
   const { data: traceSpans } = useQuery({
-    ...listSpansQuery(organization.id, project.id, runTraceData?.id ?? ''),
+    ...tracesQueries.span(runTraceData?.id ?? ''),
     enabled: Boolean(!error && traceData?.result.id),
   });
 

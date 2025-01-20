@@ -17,7 +17,7 @@
 import { AssistantPlan } from '@/app/api/threads-runs/types';
 import { fadeProps } from '@/utils/fadeProps';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useId, useMemo } from 'react';
+import { useId } from 'react';
 import { useTraceData } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { PlanStep } from './PlanStep';
@@ -77,7 +77,7 @@ export function PlanView({ plan, show, allStepsDone }: Props) {
                   key={`${id}:trace`}
                   className={classes.trace}
                 >
-                  <Spinner />
+                  <Spinner size="sm" />
                 </motion.li>
               )}
             </AnimatePresence>

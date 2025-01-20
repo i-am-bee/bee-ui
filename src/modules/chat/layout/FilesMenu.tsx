@@ -22,7 +22,7 @@
 import { IconButton, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { Attachment } from '@carbon/react/icons';
 import { MouseEventHandler } from 'react';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 // import classes from './FilesMenu.module.scss';
 
 interface Props {

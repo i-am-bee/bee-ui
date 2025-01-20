@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMessage } from '@/app/api/threads-messages';
-import { messagesWithFilesQuery } from '../queries';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useThreadsQueries } from '../queries';
 
 export function useDeleteMessage() {
   const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
+  const threadsQueries = useThreadsQueries();
 
   const mutation = useMutation({
     mutationFn: ({ threadId, messageId }: DeleteMutationParams) =>
       deleteMessage(organization.id, project.id, threadId, messageId),
     onSuccess: (_, { threadId }) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          messagesWithFilesQuery(
-            organization.id,
-            project.id,
-            threadId,
-          ).queryKey.at(0),
-        ],
+        queryKey: threadsQueries.messagesLists(threadId),
       });
     },
   });

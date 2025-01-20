@@ -140,6 +140,7 @@ export function EditableSyntaxHighlighter({
   invalid,
   readOnly,
   showLineNumbers,
+  className,
   ...props
 }: Props) {
   const [lineNumberWidth, setLineNumberWidth] = useState<number>(0);
@@ -196,7 +197,7 @@ export function EditableSyntaxHighlighter({
   }, []);
 
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.root, className)}>
       {labelText && <FormLabel id={id}>{labelText}</FormLabel>}
 
       <div

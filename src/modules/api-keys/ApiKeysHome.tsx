@@ -15,8 +15,14 @@
  */
 
 'use client';
+import { EmptyDataInfo } from '@/components/CardsList/CardsList';
+import { DateTime } from '@/components/DateTime/DateTime';
 import { InlineEditableField } from '@/components/InlineEditableField/InlineEditableField';
+import { TablePagination } from '@/components/TablePagination/TablePagination';
+import { usePagination } from '@/components/TablePagination/usePagination';
+import { useDataResultState } from '@/hooks/useDataResultState';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useUserProfile } from '@/store/user-profile';
 import {
   Button,
   DataTable,
@@ -33,28 +39,19 @@ import {
   TableToolbarContent,
   TableToolbarSearch,
 } from '@carbon/react';
-import { useQuery } from '@tanstack/react-query';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useEffect, useId, useMemo } from 'react';
+import { useDebounceValue } from 'usehooks-ts';
 import {
   PreferencesLayout,
   PreferencesSection,
 } from '../preferences/PreferencesLayout';
-import { apiKeysQuery } from './api/queries';
+import { useApiKeys } from './api/useApiKeys';
 import { useRenameApiKey } from './api/useRenameApiKey';
-import { useDebounceValue } from 'usehooks-ts';
-import { DateTime } from '@/components/DateTime/DateTime';
-import { useDataResultState } from '@/hooks/useDataResultState';
-import { TablePagination } from '@/components/TablePagination/TablePagination';
 import classes from './ApiKeysHome.module.scss';
 import { ApiKeyModal } from './manage/ApiKeyModal';
-import { usePagination } from '@/components/TablePagination/usePagination';
-import { useUserProfile } from '@/store/user-profile';
-import { EmptyDataInfo } from '@/components/CardsList/CardsList';
 
 export function ApiKeysHome() {
   const id = useId();
-  const { project, organization } = useAppContext();
   const { openModal, openConfirmation } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
   const userId = useUserProfile((state) => state.id);
@@ -73,14 +70,9 @@ export function ApiKeysHome() {
     resetPagination();
   }, [resetPagination, search]);
 
-  const { data, isPending, isFetching } = useQuery(
-    apiKeysQuery(organization.id, {
-      search,
-      limit: PAGE_SIZE,
-      after,
-      before,
-    }),
-  );
+  const { data, isPending, isFetching } = useApiKeys({
+    params: { search, limit: PAGE_SIZE, after, before },
+  });
 
   const { isEmpty } = useDataResultState({
     totalCount: data?.total_count,
@@ -88,11 +80,11 @@ export function ApiKeysHome() {
     isFiltered: Boolean(search),
   });
 
-  const { mutate: mutateRename } = useRenameApiKey({});
+  const { mutate: mutateRename } = useRenameApiKey();
 
   const rows = useMemo(
     () =>
-      data?.data?.map((item, index) => {
+      data?.data?.map((item) => {
         const { id, name, secret, created_at, last_used_at, project, owner } =
           item;
         return {
@@ -102,12 +94,7 @@ export function ApiKeysHome() {
               defaultValue={name}
               required
               onConfirm={(value) =>
-                mutateRename({
-                  id,
-                  projectId: project.id,
-                  organizationId: organization.id,
-                  name: value,
-                })
+                mutateRename({ projectId: project.id, id, name: value })
               }
             />
           ),
@@ -132,11 +119,7 @@ export function ApiKeysHome() {
                     primaryButtonText: 'Regenerate',
                     onSubmit: () =>
                       openModal((props) => (
-                        <ApiKeyModal.Regenerate
-                          organization={organization}
-                          apiKey={item}
-                          {...props}
-                        />
+                        <ApiKeyModal.Regenerate apiKey={item} {...props} />
                       )),
                   })
                 }
@@ -146,11 +129,7 @@ export function ApiKeysHome() {
                 itemText="Delete"
                 onClick={() =>
                   openModal((props) => (
-                    <ApiKeyModal.Delete
-                      organization={organization}
-                      apiKey={item}
-                      {...props}
-                    />
+                    <ApiKeyModal.Delete apiKey={item} {...props} />
                   ))
                 }
               />
@@ -158,14 +137,7 @@ export function ApiKeysHome() {
           ),
         };
       }) ?? [],
-    [
-      data?.data,
-      mutateRename,
-      openConfirmation,
-      openModal,
-      userId,
-      organization,
-    ],
+    [data?.data, mutateRename, openConfirmation, openModal, userId],
   );
 
   return (
@@ -180,14 +152,7 @@ export function ApiKeysHome() {
           <EmptyDataInfo
             newButtonProps={{
               title: 'Create API key',
-              onClick: () =>
-                openModal((props) => (
-                  <ApiKeyModal
-                    {...props}
-                    organization={organization}
-                    project={project}
-                  />
-                )),
+              onClick: () => openModal((props) => <ApiKeyModal {...props} />),
             }}
             isEmpty={isEmpty}
             noItemsInfo="You haven't created any API keys yet."
@@ -216,10 +181,8 @@ export function ApiKeysHome() {
                         onClick={() =>
                           openModal((props) => (
                             <ApiKeyModal
-                              organization={organization}
-                              {...props}
-                              project={project}
                               onSuccess={() => resetPagination()}
+                              {...props}
                             />
                           ))
                         }

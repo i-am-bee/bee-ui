@@ -19,25 +19,37 @@ import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
+import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
 import {
   Button,
+  Dropdown,
   FormLabel,
   InlineLoading,
   InlineNotification,
   ModalBody,
   ModalFooter,
   ModalHeader,
+  PasswordInput,
+  RadioButton,
+  RadioButtonGroup,
   TextInput,
 } from '@carbon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useId } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { readToolQuery, toolsQuery } from '../queries';
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useController,
+  useForm,
+  useFormContext,
+} from 'react-hook-form';
+import { useToolsQueries } from '../queries';
+import { ToolDescription } from '../ToolCard';
 import classes from './UserToolModal.module.scss';
-import { useModalControl } from '@/layout/providers/ModalControlProvider';
-import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -54,9 +66,28 @@ def ip_info(ip: str) -> dict:
   response.raise_for_status()
   return response.json()`;
 
+const TOOL_TYPES = [
+  { key: 'function' as const, label: 'Python function' },
+  { key: 'api' as const, label: 'API calling' },
+];
+type ToolType = (typeof TOOL_TYPES)[number];
+type ToolTypeKey = ToolType['key'];
+
+const API_AUTH_METHODS = [
+  { key: 'none' as const, label: 'None' },
+  { key: 'api-key' as const, label: 'API key' },
+];
+type ApiAuthMethod = (typeof API_AUTH_METHODS)[number];
+
 interface FormValues {
+  type: ToolType;
   name?: string;
-  sourceCode: string;
+  sourceCode?: string;
+  api: {
+    schema?: string;
+    auth?: ApiAuthMethod['key'];
+    apiKey?: string;
+  };
 }
 
 interface Props extends ModalProps {
@@ -73,7 +104,7 @@ export function UserToolModal({
   onDeleteSuccess,
   ...props
 }: Props) {
-  const { project, organization, featureFlags } = useAppContext();
+  const { project, organization } = useAppContext();
   const { onRequestClose } = props;
   const { openConfirmation } = useModal();
   const id = useId();
@@ -82,19 +113,27 @@ export function UserToolModal({
   const editMode = tool != undefined;
 
   const queryClient = useQueryClient();
+  const toolsQueries = useToolsQueries();
 
+  const formReturn = useForm<FormValues>({
+    defaultValues: {
+      type:
+        TOOL_TYPES.find(({ key }) =>
+          tool?.open_api_schema ? key === 'api' : key === 'function',
+        ) ?? TOOL_TYPES[0],
+      name: tool?.name || '',
+      sourceCode: tool?.source_code || '',
+      api: { auth: 'none', schema: tool?.open_api_schema ?? '' },
+    },
+    mode: 'onChange',
+  });
   const {
     control,
     register,
     handleSubmit,
+    watch,
     formState: { errors, isValid, isSubmitting, isDirty },
-  } = useForm<FormValues>({
-    defaultValues: {
-      name: tool?.name || '',
-      sourceCode: tool?.source_code || '',
-    },
-    mode: 'onChange',
-  });
+  } = formReturn;
 
   useConfirmModalCloseOnDirty(isDirty, 'tool');
 
@@ -109,21 +148,8 @@ export function UserToolModal({
         : createTool(organization.id, project.id, body);
     },
     onSuccess: (tool, { id }) => {
-      queryClient.invalidateQueries({
-        queryKey: [
-          toolsQuery(
-            organization.id,
-            project.id,
-            featureFlags.Knowledge,
-          ).queryKey.at(0),
-        ],
-      });
-
       if (tool) {
-        queryClient.invalidateQueries({
-          queryKey: readToolQuery(organization.id, project.id, tool.id)
-            .queryKey,
-        });
+        queryClient.invalidateQueries(toolsQueries.detail(tool.id));
 
         if (!id) {
           onCreateSuccess?.(tool);
@@ -135,6 +161,7 @@ export function UserToolModal({
       onRequestClose();
     },
     meta: {
+      invalidates: [toolsQueries.lists()],
       errorToast: {
         title: id ? 'Failed to update tool' : 'Failed to create a new tool',
       },
@@ -147,18 +174,9 @@ export function UserToolModal({
       onSuccess: () => {
         tool && onDeleteSuccess?.(tool);
         onRequestClose();
-
-        queryClient.invalidateQueries({
-          queryKey: [
-            toolsQuery(
-              organization.id,
-              project.id,
-              featureFlags.Knowledge,
-            ).queryKey.at(0),
-          ],
-        });
       },
       meta: {
+        invalidates: [toolsQueries.lists()],
         errorToast: {
           title: 'Failed to delete tool',
           includeErrorMessage: true,
@@ -168,10 +186,15 @@ export function UserToolModal({
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
-      await mutateSaveTool({ id: tool?.id, body: createSaveToolBody(data) });
+      await mutateSaveTool({
+        id: tool?.id,
+        body: createSaveToolBody(data, tool),
+      });
     },
-    [mutateSaveTool, tool?.id],
+    [mutateSaveTool, tool],
   );
+
+  const toolType = watch('type');
 
   return (
     <Modal {...props} preventCloseOnClickOutside className={classes.modal}>
@@ -179,73 +202,138 @@ export function UserToolModal({
         <h2>{editMode ? 'Edit custom tool' : 'Create a custom tool'}</h2>
       </ModalHeader>
       <ModalBody>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <SettingsFormGroup>
-            <div className={classes.group}>
-              <TextInput
-                size="lg"
-                id={`${id}:name`}
-                labelText="Name of tool"
-                placeholder="Type tool name"
-                invalid={errors.name != null}
-                {...register('name', {
-                  required: true,
-                })}
-              />
-
-              <p className={classes.helperText}>
-                This is your tool’s display name, it can be a real name or
-                pseudonym.
-              </p>
-            </div>
-
-            <div className={classes.group}>
-              <div className={classes.groupHeader}>
-                <FormLabel id={`${id}:code`}>Python code</FormLabel>
-
-                {/* <Link href="/" className={classes.link}>
-                  <span>View documentation</span>
-                  <ArrowUpRight />
-                </Link> */}
+        <FormProvider {...formReturn}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <SettingsFormGroup>
+              <div className={classes.group}>
+                <Controller
+                  name="type"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange, value, name } }) => (
+                    <Dropdown
+                      label="Type"
+                      id={`${id}:${name}`}
+                      items={TOOL_TYPES}
+                      selectedItem={value}
+                      titleText="Type"
+                      // size="lg"
+                      onChange={({
+                        selectedItem,
+                      }: {
+                        selectedItem?: ToolType | null;
+                      }) => onChange(selectedItem ?? null)}
+                      itemToString={(item) => item?.label ?? ''}
+                    />
+                  )}
+                />
               </div>
 
-              <Controller
-                name="sourceCode"
-                control={control}
-                rules={{
-                  required: true,
-                }}
-                render={({ field }) => (
-                  <EditableSyntaxHighlighter
-                    id={`${id}:code`}
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder={EXAMPLE_SOURCE_CODE}
-                    required
-                    invalid={errors.sourceCode != null}
-                    rows={16}
-                    showLineNumbers
+              {(tool || toolType.key === 'function') && (
+                <div className={classes.group}>
+                  <TextInput
+                    size="lg"
+                    id={`${id}:name`}
+                    labelText="Name of tool"
+                    placeholder="Type tool name"
+                    invalid={errors.name != null}
+                    {...register('name', {
+                      required: true,
+                    })}
                   />
-                )}
-              />
 
-              <p className={classes.helperText}>
-                Do not share any authentication token in your Python function.
-                Exposing it can compromise any account.
-              </p>
-            </div>
+                  <p className={classes.helperText}>
+                    This is your tool’s display name, it can be a real name or
+                    pseudonym.
+                  </p>
+                </div>
+              )}
 
-            {isSaveError && (
-              <InlineNotification
-                className={classes.error}
-                kind="error"
-                title={saveError.message}
-                lowContrast
-                hideCloseButton
-              />
-            )}
-          </SettingsFormGroup>
-        </form>
+              {toolType.key === 'api' ? (
+                <>
+                  {/* TODO: make available for update too, when the API is ready */}
+                  {!tool && <ApiAuthenticationMethod />}
+
+                  <div className={classes.group}>
+                    <Controller
+                      name="api.schema"
+                      control={control}
+                      rules={{
+                        required: true,
+                      }}
+                      render={({ field }) => (
+                        <>
+                          <div className={classes.groupHeader}>
+                            <FormLabel id={`${id}:${field.name}`}>
+                              OpenAPI spec
+                            </FormLabel>
+                          </div>
+                          <EditableSyntaxHighlighter
+                            id={`${id}:${field.name}`}
+                            value={field.value ?? ''}
+                            onChange={field.onChange}
+                            placeholder="Enter your OpenAPI schema here"
+                            required
+                            invalid={errors.api?.schema != null}
+                            rows={16}
+                            className={classes.apiSchemaField}
+                            showLineNumbers
+                          />
+                        </>
+                      )}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className={classes.group}>
+                  <div className={classes.groupHeader}>
+                    <FormLabel id={`${id}:code`}>Python code</FormLabel>
+
+                    {/* <Link href="/" className={classes.link}>
+                      <span>View documentation</span>
+                      <ArrowUpRight />
+                    </Link> */}
+                  </div>
+
+                  <Controller
+                    name="sourceCode"
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field }) => (
+                      <EditableSyntaxHighlighter
+                        id={`${id}:code`}
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                        placeholder={EXAMPLE_SOURCE_CODE}
+                        required
+                        invalid={errors.sourceCode != null}
+                        rows={16}
+                        showLineNumbers
+                      />
+                    )}
+                  />
+
+                  <p className={classes.helperText}>
+                    Do not share any authentication token in your Python
+                    function. Exposing it can compromise any account.
+                  </p>
+                </div>
+              )}
+
+              {isSaveError && (
+                <InlineNotification
+                  className={classes.error}
+                  kind="error"
+                  title={saveError.message}
+                  lowContrast
+                  hideCloseButton
+                />
+              )}
+            </SettingsFormGroup>
+          </form>
+        </FormProvider>
       </ModalBody>
 
       <ModalFooter>
@@ -297,11 +385,46 @@ export function UserToolModal({
   );
 }
 
-function createSaveToolBody({ name, sourceCode }: FormValues): ToolsCreateBody {
-  return {
-    name,
-    source_code: sourceCode,
-  };
+function ApiAuthenticationMethod() {
+  const id = useId();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<FormValues>();
+  const {
+    field: { name, onChange, value },
+  } = useController<FormValues, 'api.auth'>({ name: 'api.auth' });
+
+  return (
+    <>
+      <div className={classes.group}>
+        <RadioButtonGroup
+          legendText="Authentication"
+          name={name}
+          onChange={onChange}
+          valueSelected={value}
+        >
+          {API_AUTH_METHODS.map(({ key, label }) => (
+            <RadioButton key={key} labelText={label} value={key} />
+          ))}
+        </RadioButtonGroup>
+      </div>
+      {value === 'api-key' && (
+        <div className={classes.group}>
+          <PasswordInput
+            size="lg"
+            id={`${id}:name`}
+            labelText=""
+            placeholder="Add your API key"
+            invalid={errors.name != null}
+            {...register('api.apiKey', {
+              required: true,
+            })}
+          />
+        </div>
+      )}
+    </>
+  );
 }
 
 UserToolModal.View = function ViewUserToolModal({
@@ -311,6 +434,9 @@ UserToolModal.View = function ViewUserToolModal({
   tool: Tool;
 } & ModalProps) {
   const id = useId();
+
+  const type: ToolTypeKey = tool.open_api_schema ? 'api' : 'function';
+
   return (
     <Modal {...props} className={classes.modal}>
       <ModalHeader>
@@ -322,26 +448,49 @@ UserToolModal.View = function ViewUserToolModal({
             <dd>
               <FormLabel>Type</FormLabel>
             </dd>
-            <dt>Python function</dt>
+            <dt>{type === 'api' ? 'API calling' : 'Python function'}</dt>
           </div>
 
           <div>
             <dd>
               <FormLabel>Description</FormLabel>
             </dd>
-            <dt>{tool.description}</dt>
+            <dt>
+              <ToolDescription description={tool.description} />
+            </dt>
           </div>
         </dl>
 
         <EditableSyntaxHighlighter
           id={`${id}:code`}
-          labelText="Python code"
-          value={tool.source_code ?? ''}
+          labelText={type === 'api' ? 'OpenAPI spec' : 'Python code'}
+          value={
+            (type === 'api' ? tool.open_api_schema : tool.source_code) ?? ''
+          }
           required
           readOnly
           rows={16}
+          className={type === 'api' ? classes.apiSchemaField : undefined}
+          showLineNumbers
         />
       </ModalBody>
     </Modal>
   );
 };
+
+function createSaveToolBody(
+  { type, name, sourceCode, api }: FormValues,
+  tool?: Tool,
+): ToolsCreateBody {
+  return type.key === 'function'
+    ? {
+        name,
+        source_code: sourceCode ?? '',
+      }
+    : {
+        ...(tool
+          ? { name }
+          : { api_key: api.auth === 'api-key' ? api.apiKey : undefined }),
+        open_api_schema: api.schema ?? '',
+      };
+}

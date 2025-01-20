@@ -55,6 +55,7 @@ const FilesUploadContext = createContext<{
   files: VectoreStoreFileUpload[];
   attachments: MessageAttachments | null;
   isPending: boolean;
+  hasFilesToUpload: boolean;
   dropzone?: DropzoneState;
   vectorStoreId: string | null;
   removeFile: (id: string) => void;
@@ -66,6 +67,7 @@ const FilesUploadContext = createContext<{
   files: [],
   attachments: null,
   isPending: false,
+  hasFilesToUpload: false,
   vectorStoreId: null,
   removeFile: noop,
   reset: noop,
@@ -87,6 +89,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     setFiles,
     onFileSubmit,
     isPending,
+    hasFilesToUpload,
     clearFiles,
     setVectorStoreId,
     vectorStoreId,
@@ -244,6 +247,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       files,
       attachments,
       isPending,
+      hasFilesToUpload,
       dropzone,
       vectorStoreId,
       removeFile,
@@ -256,6 +260,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     files,
     attachments,
     isPending,
+    hasFilesToUpload,
     dropzone,
     vectorStoreId,
     removeFile,

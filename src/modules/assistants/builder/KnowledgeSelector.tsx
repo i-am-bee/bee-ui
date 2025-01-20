@@ -27,10 +27,7 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
 import { useVectorStores } from '@/modules/knowledge/hooks/useVectorStores';
-import {
-  vectorStoresFilesQuery,
-  vectorStoresQuery,
-} from '@/modules/knowledge/queries';
+import { useVectorStoresQueries } from '@/modules/knowledge/queries';
 import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import {
@@ -48,7 +45,8 @@ import classes from './KnowledgeSelector.module.scss';
 
 export function KnowledgeSelector() {
   const { openModal } = useModal();
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { project, isProjectReadOnly } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
   const {
     field: { value, onChange },
   } = useController<AssistantFormValues, 'vectorStoreId'>({
@@ -94,28 +92,13 @@ export function KnowledgeSelector() {
     handleConnectKnowledge(response.id);
 
     queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQuery(organization.id, project.id, VECTOR_STORES_QUERY_PARAMS)
-        .queryKey,
+      vectorStoresQueries.list(VECTOR_STORES_QUERY_PARAMS).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         const pageFirst = draft?.pages.at(0);
         pageFirst && pageFirst.data.unshift(response);
       }),
     );
-
-    queryClient.invalidateQueries({
-      queryKey: [vectorStoresQuery(organization.id, project.id).queryKey.at(0)],
-    });
-  };
-
-  const handleInvalidateData = () => {
-    queryClient.invalidateQueries({
-      queryKey: vectorStoresQuery(
-        organization.id,
-        project.id,
-        VECTOR_STORES_QUERY_PARAMS,
-      ).queryKey,
-    });
   };
 
   const { data, isFetching } = useVectorStores({
@@ -123,9 +106,7 @@ export function KnowledgeSelector() {
   });
 
   const { data: dataFiles } = useInfiniteQuery({
-    ...vectorStoresFilesQuery(
-      organization.id,
-      project.id,
+    ...vectorStoresQueries.filesList(
       value ?? '',
       VECTOR_STORE_FILES_QUERY_PARAMS,
     ),
@@ -144,7 +125,6 @@ export function KnowledgeSelector() {
             openModal((props) => (
               <CreateKnowledgeModal
                 onCreateVectorStore={onCreateSuccess}
-                onSuccess={handleInvalidateData}
                 {...props}
               />
             )),

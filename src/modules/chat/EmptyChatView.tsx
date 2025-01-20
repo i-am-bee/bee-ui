@@ -27,8 +27,8 @@ import { AssistantAvatar } from './layout/AssistantAvatar';
 import { Disclaimer } from './layout/Disclaimer';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
-import { SendMessageResult, useChat } from './providers/ChatProvider';
 import { useFilesUpload } from './providers/FilesUploadProvider';
+import { SendMessageResult, useChat } from './providers/chat-context';
 
 interface Props {
   onMessageSent?: (result: SendMessageResult) => void;
@@ -61,12 +61,12 @@ export const EmptyChatView = memo(function EmptyChatView({
               initialLetter={builderState.name.at(0) ?? 'N'}
               color={builderState.icon?.color}
               iconName={builderState.icon?.name}
-              size="xxl"
+              size="2xl"
             />
           ) : assistant ? (
-            <AssistantAvatar assistant={assistant} size="xxl" />
+            <AssistantAvatar assistant={assistant} size="2xl" />
           ) : (
-            <AssistantIcon assistant={assistant} size="xxl" />
+            <AssistantIcon assistant={assistant} size="2xl" />
           )}
 
           <div className={classes.heading}>

@@ -48,7 +48,7 @@ export function KnowledgeAppsInfo({ vectorStore }: Props) {
     <div className={classes.root}>
       <div className={classes.apps}>
         {assistants.slice(0, APPS_COUNT_TO_SHOW_ICONS).map((item) => (
-          <AssistantIcon key={item.id} assistant={item} />
+          <AssistantIcon key={item.id} assistant={item} size="sm" />
         ))}
         {assistants.length > APPS_COUNT_TO_SHOW_ICONS && (
           <span className={classes.more}>

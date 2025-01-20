@@ -15,20 +15,20 @@
  */
 
 'use client';
+import { Thread } from '@/app/api/threads/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useEffect } from 'react';
 import { ConversationView } from './ConversationView';
 import { EmptyChatView } from './EmptyChatView';
-import { threadsQuery } from './history/queries';
+import { useThreadsQueries } from './queries';
 import {
   SendMessageResult,
   useChat,
   useChatMessages,
-} from './providers/ChatProvider';
-import { Thread } from '@/app/api/threads/types';
+} from './providers/chat-context';
 import { ChatMessage } from './types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export interface ChatState {
   thread: Thread;
@@ -40,7 +40,9 @@ export function ChatHomeView() {
     useChat();
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { project, organization } = useAppContext();
+  const { project } = useAppContext();
+  const threadsQueries = useThreadsQueries();
+
   const handleMessageSent = ({ thread }: SendMessageResult) => {
     if (thread) {
       // We could use normal nextjs router and navigate to /thread/[threadId] page
@@ -61,7 +63,7 @@ export function ChatHomeView() {
         `/${project.id}${builderState ? `/builder/${assistant.data?.id}` : ''}/thread/${thread.id}`,
       );
       queryClient.invalidateQueries({
-        queryKey: threadsQuery(organization.id, project.id).queryKey,
+        queryKey: threadsQueries.lists(),
       });
     }
   };

@@ -16,19 +16,21 @@
 
 import { ApiError } from '@/app/api/errors';
 import { Thread } from '@/app/api/threads/types';
-import { readAssistantQuery } from '@/modules/assistants/queries';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useAssistantsQueries } from '@/modules/assistants/queries';
 import { APP_NAME } from '@/utils/constants';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { runsQuery } from '../queries';
 import { ThreadAssistant } from '../types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useThreadsQueries } from '../queries';
 
 export function useGetThreadAssistant(
   thread?: Thread | null,
   initialAssistant?: ThreadAssistant,
 ) {
   const { project, organization } = useAppContext();
+  const assistantsQueries = useAssistantsQueries();
+  const threadsQueries = useThreadsQueries();
 
   const { assistantId: threadAssistantId, assistantName } =
     thread?.uiMetadata ?? {};
@@ -44,7 +46,7 @@ export function useGetThreadAssistant(
   }, [thread]);
 
   const { data: runs } = useQuery({
-    ...runsQuery(organization.id, project.id, thread?.id ?? '', {
+    ...threadsQueries.runsList(thread?.id ?? '', {
       limit: 1,
       order: 'desc',
       order_by: 'created_at',
@@ -58,7 +60,7 @@ export function useGetThreadAssistant(
     runs?.data.at(-1)?.assistant_id;
 
   const { data } = useQuery({
-    ...readAssistantQuery(organization.id, project.id, assistantId ?? ''),
+    ...assistantsQueries.detail(assistantId ?? ''),
     enabled: Boolean(assistantId && !assistant.isDeleted),
     retry: 0,
     meta: {

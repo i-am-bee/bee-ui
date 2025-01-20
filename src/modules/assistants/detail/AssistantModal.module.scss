@@ -15,86 +15,158 @@
  */
 
 @use 'styles/common' as *;
+@use '@carbon/styles/scss/utilities/button-reset';
 
-.head {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-02;
-  border-radius: $spacing-03;
-  padding: $spacing-05;
-  box-shadow: $box-shadow;
-  h2 {
-    @include type-style('heading-compact-01');
-    font-size: rem(18px);
+.modal {
+  &:global(.#{$prefix}--modal) {
+    :global(.#{$prefix}--modal-container) {
+      max-inline-size: rem(656px);
+    }
+
+    :global(.#{$prefix}--modal-header) {
+      padding-inline-end: rem(64px);
+      min-block-size: rem(48px);
+      margin-block-end: 0;
+    }
+
+    :global(.#{$prefix}--modal-content) {
+      padding-block-start: 0;
+      padding-block-end: $spacing-05;
+    }
+
+    :global(.#{$prefix}--modal-footer) {
+      justify-content: space-between;
+    }
   }
 }
 
-.body {
+.content {
+  hr {
+    border: solid $border-subtle-00;
+    border-width: 1px 0 0;
+    margin-block: $spacing-07;
+  }
+}
+
+.heading {
+  font-size: rem(24px);
+  font-weight: 600;
+  letter-spacing: rem(0.16px);
+  margin-block: $spacing-06 $spacing-05;
+}
+
+.description {
+  font-size: rem(18px);
+  line-height: (24 / 18);
+  letter-spacing: rem(0.16px);
+  color: $text-secondary;
+}
+
+.group {
   display: flex;
   flex-direction: column;
-  gap: $spacing-06;
-  margin-block-start: $spacing-06;
+  row-gap: $spacing-05;
+}
 
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-03;
-  }
-  dd {
-    @include type-style('body-01');
-    color: $text-secondary;
-  }
-  dt {
-    font-size: rem(14px);
+.instructions {
+  p {
+    @include type-style(body-01);
   }
 }
 
 .tools {
   display: grid;
-  gap: $spacing-04;
-  li {
-    display: flex;
-    align-items: center;
-    gap: $spacing-03;
+  row-gap: $spacing-03;
+}
+
+.tool {
+  position: relative;
+  border-radius: $spacing-03;
+  padding: $spacing-03;
+  display: flex;
+  column-gap: $spacing-03;
+  &:hover {
+    background-color: $background-hover;
   }
 }
 
-.actionBar {
-  display: grid;
-  grid-template-columns: 1fr max-content;
-  > div {
-    display: flex;
-    gap: $spacing-04;
-  }
-}
-
-.vectorStore {
+.toolBody {
   display: flex;
   flex-direction: column;
-
-  > span {
-    font-size: rem(12px);
+  row-gap: $spacing-03;
+  flex-grow: 1;
+  p {
+    @include type-style(body-01);
     color: $text-secondary;
   }
 
   :global(.#{$prefix}--skeleton__text) {
-    max-inline-size: 15rem;
-    &:last-child {
-      max-inline-size: 10rem;
-    }
+    margin-block: rem(2px);
   }
 }
 
-@include breakpoint-down(md) {
-  .actionBar {
-    :global(.#{$prefix}--btn).hideOnMobile {
-      display: none;
+.toolIcon {
+  flex-shrink: 0;
+}
+
+.toolButton {
+  @include button-reset.reset();
+  @include link-mask();
+  line-height: (20 / 14);
+  font-weight: 600;
+}
+
+.toolButtonIcon {
+  inline-size: rem(32px);
+  block-size: rem(32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: center;
+  opacity: 0;
+  .tool:hover & {
+    opacity: 1;
+  }
+}
+
+.vectorStore {
+  margin-block-start: -$spacing-03;
+  p {
+    @include type-style(body-01);
+    line-height: (18 / 14);
+    display: flex;
+    align-items: center;
+    column-gap: $spacing-03;
+    svg {
+      flex-shrink: 0;
     }
+    span {
+      @include truncate();
+    }
+  }
+  :global(.#{$prefix}--skeleton__text) {
+    max-inline-size: 15rem;
+    margin-block: rem(1px);
   }
 }
 
 @include breakpoint-up(md) {
-  .tools {
-    grid-template-columns: 1fr 1fr;
+  .modal {
+    &:global(.#{$prefix}--modal) {
+      :global(.#{$prefix}--modal-header) {
+        padding-inline-end: rem(72px);
+        min-block-size: rem(64px);
+      }
+
+      :global(.#{$prefix}--modal-content) {
+        padding-block-end: $spacing-06;
+      }
+
+      :global(.#{$prefix}--modal-close-button) {
+        inset-block-start: $spacing-03;
+        inset-inline-end: $spacing-03;
+      }
+    }
   }
 }

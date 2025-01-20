@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import { Document, TrashCan, WarningAlt } from '@carbon/react/icons';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
+import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import classes from './KnowledgeFileCard.module.scss';
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
-import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
-import { readFileQuery } from '../../files/queries';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InlineLoading,
   SkeletonPlaceholder,
   SkeletonText,
 } from '@carbon/react';
+import { Document, TrashCan, WarningAlt } from '@carbon/react/icons';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { Tooltip } from '@/components/Tooltip/Tooltip';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useFilesQueries } from '../../files/queries';
+import classes from './KnowledgeFileCard.module.scss';
 
 interface Props {
   vectorStore: VectorStore;
@@ -49,6 +49,7 @@ export function KnowledgeFileCard({
 }: Props) {
   const { openConfirmation } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
+  const filesQueries = useFilesQueries();
 
   const { mutateAsync: mutateDeleteFile, isPending: isDeletePending } =
     useMutation({
@@ -70,9 +71,7 @@ export function KnowledgeFileCard({
       },
     });
 
-  const { data, isLoading } = useQuery(
-    readFileQuery(organization.id, project.id, vectorStoreFile.id),
-  );
+  const { data, isLoading } = useQuery(filesQueries.detail(vectorStoreFile.id));
 
   if (!data && isLoading)
     return kind === 'card' ? (

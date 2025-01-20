@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-import { PublicToolsHome } from '@/modules/tools/ToolsHome';
+import { fetchLinkPreview } from '@/app/api/link-preview';
+import { queryOptions } from '@tanstack/react-query';
 
-export default function PublicToolsPage() {
-  return <PublicToolsHome/>;
+export function useLinkPreviewQueries() {
+  const linkPreviewQueries = {
+    all: () => ['link-preview'] as const,
+    detail: (url: string) =>
+      queryOptions({
+        queryKey: [...linkPreviewQueries.all(), url],
+        queryFn: () => fetchLinkPreview(url),
+      }),
+  };
+
+  return linkPreviewQueries;
 }

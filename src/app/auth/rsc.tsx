@@ -33,7 +33,10 @@ export const ensureSession = async () => {
   if (DUMMY_JWT_TOKEN) {
     const user = await readUser(DUMMY_JWT_TOKEN);
 
-    if (user)
+    if (user) {
+      const [firstName = 'Test', lastName = 'User'] =
+        user.name?.split(' ') ?? [];
+
       return {
         user,
         access_token: DUMMY_JWT_TOKEN,
@@ -46,10 +49,11 @@ export const ensureSession = async () => {
           metadata: decodeMetadata<UserMetadata>(user.metadata),
           name: user.name ?? '',
           email: user.email ?? '',
-          firstName: 'Test',
-          lastName: 'User',
+          firstName,
+          lastName,
         },
       } as Session;
+    }
   }
 
   const session = await getSession();

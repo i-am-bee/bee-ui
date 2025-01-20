@@ -17,7 +17,7 @@
 import { ToolToggle } from '@/modules/assistants/tools/ToolToggle';
 import { toolsEqual, toolIncluded } from '@/modules/tools/utils';
 import { Assistant } from '@/modules/assistants/types';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import { EmptyList } from './EmptyList';
 import classes from './ThreadTools.module.scss';
 import { useAppContext } from '@/layout/providers/AppProvider';

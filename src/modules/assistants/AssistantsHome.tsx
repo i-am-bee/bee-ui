@@ -30,12 +30,12 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { AssistantsList } from '../assistants/library/AssistantsList';
-import { assistantsQuery } from '../assistants/library/queries';
+import { useAssistantsQueries } from '../assistants/queries';
 import { Assistant } from '../assistants/types';
+import { NewAgentModal } from '../onboarding/NewAgentModal';
 import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import { useAssistants } from './hooks/useAssistants';
-import { NewAgentModal } from '../onboarding/NewAgentModal';
 
 export function AssistantsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -50,6 +50,7 @@ export function AssistantsHome() {
     !isProjectReadOnly && searchParams?.has(ONBOARDING_PARAM);
 
   const queryClient = useQueryClient();
+  const assistantsQueries = useAssistantsQueries();
 
   const params = {
     ...order,
@@ -67,16 +68,9 @@ export function AssistantsHome() {
     isFetchingNextPage,
   } = useAssistants({ params });
 
-  const handleInvalidateData = () => {
-    // invalidate all queries on GET:/assistants
-    queryClient.invalidateQueries({
-      queryKey: [assistantsQuery(organization.id, project.id).queryKey.at(0)],
-    });
-  };
-
   const handleDeleteAssistantSuccess = (assistant: Assistant) => {
     queryClient.setQueryData<InfiniteData<ListAssistantsResponse>>(
-      assistantsQuery(organization.id, project.id, params).queryKey,
+      assistantsQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
         for (const page of draft.pages) {
@@ -87,7 +81,6 @@ export function AssistantsHome() {
         }
       }),
     );
-    handleInvalidateData();
   };
 
   return (

@@ -16,11 +16,17 @@
 
 'use client';
 
+import { ApiError } from '@/app/api/errors';
 import { createFile } from '@/app/api/files';
 import { FileEntity } from '@/app/api/files/types';
+import { Thread } from '@/app/api/threads/types';
 import { createVectorStoreFile } from '@/app/api/vector-stores-files';
 import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
+import { useHandleError } from '@/layout/hooks/useHandleError';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { isNotNull, noop } from '@/utils/helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -36,13 +42,7 @@ import {
   useState,
 } from 'react';
 import { useWatchPendingVectorStoreFiles } from '../hooks/useWatchPendingVectoreStoreFiles';
-import { vectorStoresFilesQuery } from '../queries';
-import { Thread } from '@/app/api/threads/types';
-import { useHandleError } from '@/layout/hooks/useHandleError';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { ApiError } from '@/app/api/errors';
-import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useVectorStoresQueries } from '../queries';
 
 export type VectoreStoreFileUpload = {
   id: string;
@@ -56,6 +56,7 @@ export type VectoreStoreFileUpload = {
 const Context = createContext<{
   files: VectoreStoreFileUpload[];
   isPending: boolean;
+  hasFilesToUpload: boolean;
   vectorStoreId: string | null;
   removeFile: (id: string) => void;
   clearFiles: () => void;
@@ -65,6 +66,7 @@ const Context = createContext<{
 }>({
   files: [],
   isPending: false,
+  hasFilesToUpload: false,
   vectorStoreId: null,
   removeFile: noop,
   clearFiles: noop,
@@ -90,10 +92,9 @@ export const VectorStoreFilesUploadProvider = ({
   const { addToast } = useToast();
   const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const vectorStoreFiles = useWatchPendingVectorStoreFiles(
-    organization.id,
-    project.id,
     vectorStoreId,
     files.map(({ vectorStoreFile }) => vectorStoreFile).filter(isNotNull),
   );
@@ -120,13 +121,7 @@ export const VectorStoreFilesUploadProvider = ({
 
           if (vectorStoreId) {
             queryClient.invalidateQueries({
-              queryKey: [
-                vectorStoresFilesQuery(
-                  organization.id,
-                  project.id,
-                  vectorStoreId,
-                ).queryKey.at(0),
-              ],
+              queryKey: vectorStoresQueries.filesLists(vectorStoreId),
             });
           }
 
@@ -151,6 +146,7 @@ export const VectorStoreFilesUploadProvider = ({
     vectorStoreId,
     organization.id,
     project.id,
+    vectorStoresQueries,
   ]);
 
   const handleError = useHandleError();
@@ -262,7 +258,10 @@ export const VectorStoreFilesUploadProvider = ({
   const value = useMemo(() => {
     return {
       files,
-      isPending: files.some((file) => file.status !== 'complete'),
+      isPending: files.some(
+        (file) => file.status === 'uploading' || file.status === 'embedding',
+      ),
+      hasFilesToUpload: files.some((file) => file.status === 'new'),
       vectorStoreId,
       onFileSubmit: (inputFile: VectoreStoreFileUpload, thread?: Thread) => {
         if (inputFile.isReadable && !vectorStoreIdRef.current)

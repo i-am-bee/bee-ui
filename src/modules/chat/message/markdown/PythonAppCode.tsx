@@ -29,10 +29,10 @@ import { ExtraProps } from 'react-markdown';
 import { useRunContext } from '../../providers/RunProvider';
 import { MessageLoading } from '../MessageLoading';
 import classes from './PythonAppCode.module.scss';
+import random from 'lodash/random';
 
 export function PythonAppCode({
   node,
-  ...props
 }: HTMLAttributes<HTMLElement> & ExtraProps) {
   const { message } = useRunContext();
   const { artifact } = useAppBuilder();
@@ -46,6 +46,14 @@ export function PythonAppCode({
     ).name;
   }, [message]);
 
+  const loadingMessage = useMemo(
+    () => messages.at(random(0, messages.length)) ?? 'Loading the app',
+    [],
+  );
+
+  // hide, the error is displayed elsewhere
+  if (message?.error) return <></>;
+
   return (
     <div
       className={classes.root}
@@ -58,9 +66,7 @@ export function PythonAppCode({
       }}
     >
       {message?.pending ? (
-        <MessageLoading message="Loading the app" showSpinner />
-      ) : message?.error ? (
-        'There was an error loading the app'
+        <MessageLoading message={loadingMessage} showSpinner />
       ) : (
         <div className={classes.app}>
           <span className={classes.icon}>
@@ -77,3 +83,20 @@ export function PythonAppCode({
     </div>
   );
 }
+
+const messages = [
+  'Bee think, therefore bee am...',
+  'To bee, or not to bee...',
+  'Creating the buzz...',
+  'Letting it bee...',
+  'Please bee patient...',
+  'Bee right back...',
+  'Comb-piling your app...',
+  'Engaging the hive-mind...',
+  'Pollinating the processors...',
+  'Creating something sweet...',
+  'The nectar of progress is being extracted...',
+  "Honey, I'm working on it...",
+  'Stinging together the final details...',
+  "Bee-lieve me, it's worth the wait...",
+];

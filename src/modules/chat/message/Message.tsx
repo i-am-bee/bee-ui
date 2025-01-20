@@ -17,33 +17,32 @@
 import { BounceButton } from '@/components/BounceLink/BounceButton';
 import { Container } from '@/components/Container/Container';
 import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
+import { RunSetup } from '@/modules/assistants/builder/Builder';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { useUserProfile } from '@/store/user-profile';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
+import isEqual from 'lodash/isEqual';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useFocusWithin, useHover } from 'react-aria';
 import { useInView } from 'react-intersection-observer';
 import { mergeRefs } from 'react-merge-refs';
 import { PlanWithSources } from '../assistant-plan/PlanWithSources';
 import { AttachmentsList } from '../attachments/AttachmentsList';
+import { useThreadsQueries } from '../queries';
 import { getThreadAssistantName } from '../history/useGetThreadAssistant';
 import { useAssistantModal } from '../providers/AssistantModalProvider';
-import { useChat } from '../providers/ChatProvider';
+import { useChat } from '../providers/chat-context';
 import { MessageFeedbackProvider } from '../providers/MessageFeedbackProvider';
 import { RunProvider } from '../providers/RunProvider';
-import { readRunQuery } from '../queries';
 import { ChatMessage } from '../types';
+import { getRunSetup, isBotMessage } from '../utils';
 import { ActionBar } from './ActionBar';
 import { ErrorMessage } from './ErrorMessage';
-import classes from './Message.module.scss';
 import { AttachmentLink } from './markdown/AttachmentLink';
-import { getRunSetup, isBotMessage } from '../utils';
+import classes from './Message.module.scss';
 import { MessageContent } from './MessageContent';
-import { RunSetup } from '@/modules/assistants/builder/Builder';
 import { RunSetupDelta } from './RunSetupDelta';
-import isEqual from 'lodash/isEqual';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   message: ChatMessage;
@@ -62,7 +61,7 @@ export const Message = memo(function Message({
 }: Props) {
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
-  const { project, organization } = useAppContext();
+  const threadsQueries = useThreadsQueries();
   const { setMessages } = useChat();
   const { ref: inViewRef, inView } = useInView({
     rootMargin: '30% 0%',
@@ -70,12 +69,7 @@ export const Message = memo(function Message({
   });
 
   const { data: run } = useQuery({
-    ...readRunQuery(
-      organization.id,
-      project.id,
-      thread?.id ?? '',
-      message.run_id ?? '',
-    ),
+    ...threadsQueries.runDetail(thread?.id ?? '', message.run_id ?? ''),
     enabled: Boolean(inView && thread && message.run_id),
   });
 
@@ -224,14 +218,13 @@ function Sender({ message }: { message: ChatMessage }) {
             onClick={() => openAssistantModal(assistantData)}
             scale={0.875}
           >
-            <AssistantIcon assistant={assistantData} size="lg" />
+            <AssistantIcon assistant={assistantData} />
           </BounceButton>
         ) : (
           <AssistantIcon
             assistant={assistantData}
             iconName={assistant.data?.agent === 'streamlit' ? 'Bee' : undefined}
             color="black"
-            size="lg"
           />
         )}
 

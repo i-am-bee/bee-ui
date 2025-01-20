@@ -16,7 +16,12 @@
 
 import { Thread } from '@/app/api/threads/types';
 import { isNotNull } from '@/utils/helpers';
-import { BotChatMessage, ChatMessage, MessageWithFiles } from './types';
+import {
+  BotChatMessage,
+  ChatMessage,
+  MessageWithFiles,
+  UserChatMessage,
+} from './types';
 import { Assistant } from '../assistants/types';
 import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
 import { RunSetup } from '../assistants/builder/Builder';
@@ -51,6 +56,12 @@ export function isBotMessage(
   message: ChatMessage | undefined,
 ): message is BotChatMessage {
   return isNotNull(message) && message.role === 'assistant';
+}
+
+export function isUserMessage(
+  message: ChatMessage | undefined,
+): message is UserChatMessage {
+  return isNotNull(message) && message.role === 'user';
 }
 
 export function getRunResources(

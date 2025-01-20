@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+import { deleteTool } from '@/app/api/tools';
+import { Tool } from '@/app/api/tools/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation } from '@tanstack/react-query';
-import { Tool } from '@/app/api/tools/types';
-import { deleteTool } from '@/app/api/tools';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useToolsQueries } from '../queries';
 
 interface Props {
   tool: Tool;
@@ -28,11 +29,13 @@ interface Props {
 export function useDeleteTool({ tool, onSuccess }: Props) {
   const { openConfirmation } = useModal();
   const { project, organization } = useAppContext();
+  const toolsQueries = useToolsQueries();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (id: string) => deleteTool(organization.id, project.id, id),
     onSuccess,
     meta: {
+      invalidates: [toolsQueries.lists()],
       errorToast: {
         title: 'Failed to delete the tool',
         includeErrorMessage: true,

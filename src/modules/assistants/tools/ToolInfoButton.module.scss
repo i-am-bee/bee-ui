@@ -29,6 +29,10 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-04;
+  p {
+    @include type-style('body-compact-01');
+  }
+  a,
   .openDetailBtn {
     color: $link-inverse;
     &:hover {
