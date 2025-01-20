@@ -59,9 +59,10 @@
     grid-column: 1 /-1;
     border-radius: inherit;
     border: 0;
-    word-break: break-all;
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: auto;
     padding: $spacing-05;
+    white-space: pre;
   }
 
   > .textarea {
@@ -71,17 +72,39 @@
   code {
     display: block;
     inline-size: 100%;
-    white-space: pre-wrap !important;
+    white-space: pre !important;
   }
 
   :global(.linenumber) {
     min-inline-size: var(--line-number-width) !important;
+    white-space: nowrap;
+    text-align: start !important;
+    padding-inline-end: $spacing-07 !important;
+    position: sticky;
+    inset-inline-start: 0;
+    &::before {
+      content: '';
+      inline-size: 100%;
+      background-color: var(--highlight-background);
+      position: absolute;
+      inset-block: 0;
+      inset-inline: -$spacing-05;
+      z-index: -1;
+      border-inline-end: 1px solid $border-subtle-00;
+    }
   }
 
   &.invalid {
     > pre,
     > .textarea {
       padding-inline-end: $spacing-10 !important;
+    }
+  }
+
+  &:focus-within :global(.linenumber) {
+    &::before {
+      inline-size: calc(100% - 2px);
+      inset-inline-start: calc(2px - $spacing-05);
     }
   }
 }

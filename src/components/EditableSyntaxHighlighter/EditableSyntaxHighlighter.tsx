@@ -144,8 +144,22 @@ export function EditableSyntaxHighlighter({
 }: Props) {
   const [lineNumberWidth, setLineNumberWidth] = useState<number>(0);
   const preRef = useRef<HTMLPreElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const PreTag = (preProps: any) => <pre {...preProps} ref={preRef} />;
+
+  const syncScroll = () => {
+    requestAnimationFrame(() => {
+      const preElement = preRef.current;
+      const textAreaElement = textAreaRef.current;
+
+      if (preElement && textAreaElement) {
+        console.log(textAreaElement.scrollLeft);
+
+        preElement.scrollLeft = textAreaElement.scrollLeft;
+      }
+    });
+  };
 
   useEffect(() => {
     if (!preRef.current) {
@@ -160,6 +174,26 @@ export function EditableSyntaxHighlighter({
       lineNumberElement ? (lineNumberElement as HTMLElement).offsetWidth : 0,
     );
   }, [value]);
+
+  useEffect(() => {
+    const textAreaElement = textAreaRef.current;
+
+    console.log(textAreaElement);
+
+    if (textAreaElement) {
+      textAreaElement.addEventListener('scroll', syncScroll);
+      textAreaElement.addEventListener('input', syncScroll);
+      textAreaElement.addEventListener('paste', syncScroll);
+    }
+
+    return () => {
+      if (textAreaElement) {
+        textAreaElement.removeEventListener('scroll', syncScroll);
+        textAreaElement.removeEventListener('input', syncScroll);
+        textAreaElement.removeEventListener('paste', syncScroll);
+      }
+    };
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -176,7 +210,6 @@ export function EditableSyntaxHighlighter({
           language="python"
           style={style}
           showLineNumbers={showLineNumbers}
-          wrapLongLines
         >
           {value.at(-1) === '\n' ? `${value} ` : value}
         </SyntaxHighlighter>
@@ -184,6 +217,7 @@ export function EditableSyntaxHighlighter({
         {!readOnly && (
           <textarea
             {...props}
+            ref={textAreaRef}
             id={id}
             className={classes.textarea}
             value={value}
