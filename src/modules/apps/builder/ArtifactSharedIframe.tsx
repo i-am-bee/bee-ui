@@ -43,6 +43,7 @@ export function ArtifactSharedIframe({
 }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<State>(State.LOADING);
+  const appliedCodeRef = useRef<string | null>(null);
   const { appliedTheme: theme } = useTheme();
   const { project, organization } = useAppContext();
   const [iframeLoadCount, setIframeLoadCount] = useState<number>(0);
@@ -60,6 +61,8 @@ export function ArtifactSharedIframe({
 
   useEffect(() => {
     if (isPending) return;
+
+    appliedCodeRef.current = sourceCode;
 
     postMessage({
       type: PostMessageType.UPDATE_STATE,
@@ -166,7 +169,15 @@ export function ArtifactSharedIframe({
           <AppPlaceholder />
         </div>
       ) : (
-        (state === State.LOADING || isPending) && <Loading />
+        (state === State.LOADING || isPending) && (
+          <div
+            className={clsx(classes.loading, {
+              [classes.empty]: !appliedCodeRef.current,
+            })}
+          >
+            <Loading />
+          </div>
+        )
       )}
     </div>
   );
