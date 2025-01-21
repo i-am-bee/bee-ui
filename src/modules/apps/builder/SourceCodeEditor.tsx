@@ -15,11 +15,11 @@
  */
 
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
-import classes from './SourceCodeEditor.module.scss';
+import { useChat } from '@/modules/chat/providers/chat-context';
+import { Button } from '@carbon/react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useAppBuilder, useAppBuilderApi } from './AppBuilderProvider';
-import { Button } from '@carbon/react';
-import { useChat } from '@/modules/chat/providers/chat-context';
+import classes from './SourceCodeEditor.module.scss';
 
 interface Props {
   onSaveCode: () => void;
@@ -52,6 +52,7 @@ export function SourceCodeEditor({ onSaveCode }: Props) {
           required
           rows={16}
           readOnly={status === 'fetching'}
+          showLineNumbers
         />
       </div>
       <div className={classes.buttons}>
