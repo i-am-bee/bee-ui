@@ -25,7 +25,7 @@ import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
-import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   Dropdown,
@@ -108,7 +108,6 @@ export function UserToolModal({
   ...props
 }: Props) {
   const { onRequestClose } = props;
-  const { openConfirmation } = useModal();
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
 
@@ -137,7 +136,7 @@ export function UserToolModal({
   useConfirmModalCloseOnDirty(isDirty, 'tool');
 
   const {
-    mutateAsync: mutateSaveTool,
+    mutateAsync: saveTool,
     isError: isSaveError,
     error: saveError,
   } = useSaveTool({
@@ -155,7 +154,7 @@ export function UserToolModal({
   });
 
   const {
-    mutateWithConfirmationAsync: mutateDeleteTool,
+    mutateWithConfirmationAsync: deleteTool,
     isPending: isDeletePending,
   } = useDeleteTool({
     onSuccess: (tool) => {
@@ -167,12 +166,12 @@ export function UserToolModal({
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
-      await mutateSaveTool({
+      await saveTool({
         id: tool?.id,
         body: createSaveToolBody(data, tool),
       });
     },
-    [mutateSaveTool, tool],
+    [saveTool, tool],
   );
 
   const toolType = watch('type');
@@ -320,7 +319,7 @@ export function UserToolModal({
       <ModalFooter>
         <div className={classes.actions}>
           {editMode ? (
-            <Button kind="danger--ghost" onClick={() => mutateDeleteTool(tool)}>
+            <Button kind="danger--ghost" onClick={() => deleteTool(tool)}>
               {isDeletePending ? (
                 <InlineLoading description="Deleting..." />
               ) : (

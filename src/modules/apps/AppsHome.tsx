@@ -16,6 +16,7 @@
 
 'use client';
 import {
+  ArtifactDeleteResult,
   ArtifactsListQueryOrderBy,
   ListArtifactsResponse,
 } from '@/app/api/artifacts/types';
@@ -40,7 +41,6 @@ import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
 import { useArtifactsQueries } from './api';
 import { useArtifacts } from './api/queries/useArtifacts';
 import { AppsList } from './library/AppsList';
-import { Artifact } from './types';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -77,19 +77,21 @@ export function AppsHome() {
     enabled: !data?.artifacts.length,
   });
 
-  const handleDeleteArtifactSuccess = (artifact: Artifact) => {
-    queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-      artifactsQueries.list(params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        for (const page of draft.pages) {
-          const index = page.data.findIndex(({ id }) => id === artifact.id);
-          if (index >= 0) {
-            page.data.splice(index, 1);
+  const handleDeleteArtifactSuccess = (artifact?: ArtifactDeleteResult) => {
+    if (artifact) {
+      queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
+        artifactsQueries.list(params).queryKey,
+        produce((draft) => {
+          if (!draft?.pages) return null;
+          for (const page of draft.pages) {
+            const index = page.data.findIndex(({ id }) => id === artifact.id);
+            if (index >= 0) {
+              page.data.splice(index, 1);
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
+    }
   };
 
   return (

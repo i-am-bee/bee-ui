@@ -79,7 +79,7 @@ export function SaveAppModal({
   const isUpdating = !!artifactProp;
 
   const {
-    mutateAsync: mutateSave,
+    mutateAsync: saveArtifact,
     isError: isSaveError,
     error: saveError,
   } = useSaveArtifact({
@@ -124,7 +124,7 @@ export function SaveAppModal({
 
   const onSubmit: SubmitHandler<AppFormValues> = useCallback(
     async (data) => {
-      await mutateSave(
+      await saveArtifact(
         isUpdating
           ? {
               id: artifactProp.id,
@@ -146,7 +146,14 @@ export function SaveAppModal({
             },
       );
     },
-    [isUpdating, additionalMetadata, artifactProp, messageId, code, mutateSave],
+    [
+      isUpdating,
+      additionalMetadata,
+      artifactProp,
+      messageId,
+      code,
+      saveArtifact,
+    ],
   );
 
   return (

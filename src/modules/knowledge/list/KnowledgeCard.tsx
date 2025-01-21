@@ -47,7 +47,7 @@ export function KnowledgeCard({
   const router = useRouter();
 
   const {
-    mutateWithConfirmationAsync: mutateDeleteStore,
+    mutateWithConfirmationAsync: deleteStore,
     isPending: isDeletePending,
   } = useDeleteVectorStore({
     onSuccess: (vectorStore) => onDeleteSuccess(vectorStore),
@@ -82,7 +82,7 @@ export function KnowledgeCard({
               {
                 isDelete: true,
                 itemText: 'Delete',
-                onClick: () => mutateDeleteStore(vectorStore),
+                onClick: () => deleteStore(vectorStore),
               },
             ]
           : undefined

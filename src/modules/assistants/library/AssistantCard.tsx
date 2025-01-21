@@ -42,7 +42,6 @@ export function AssistantCard({
     mutateWithConfirmationAsync: deleteAssistant,
     isPending: isDeletePending,
   } = useDeleteAssistant({
-    assistant,
     onSuccess: async () => {
       onDeleteSuccess?.(assistant);
     },
@@ -68,7 +67,7 @@ export function AssistantCard({
             ? {
                 isDelete: true,
                 itemText: 'Delete',
-                onClick: () => deleteAssistant(),
+                onClick: () => deleteAssistant(assistant),
               }
             : null,
         ].filter(isNotNull)}

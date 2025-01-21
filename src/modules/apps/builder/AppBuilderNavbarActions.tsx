@@ -33,7 +33,6 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
   const { project } = useAppContext();
   const { openModal } = useModal();
   const { mutateWithConfirmationAsync: deleteArtifact } = useDeleteArtifact({
-    artifact,
     onSuccess: () => router.push(`/${project.id}/apps/`),
   });
 
@@ -73,7 +72,7 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
         <OverflowMenuItem
           isDelete
           itemText="Delete"
-          onClick={() => deleteArtifact()}
+          onClick={() => deleteArtifact(artifact)}
         />
       </OverflowMenu>
     </>

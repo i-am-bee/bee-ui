@@ -23,7 +23,7 @@ import { useApiKeysQueries } from '..';
 export function useRegenerateApiKey({
   onSuccess,
 }: {
-  onSuccess?: (apiKey?: ApiKey) => void;
+  onSuccess?: (data?: ApiKey) => void;
 }) {
   const { organization } = useAppContext();
   const apiKeysQueries = useApiKeysQueries();

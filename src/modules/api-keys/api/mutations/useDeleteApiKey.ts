@@ -15,12 +15,16 @@
  */
 
 import { deleteApiKey } from '@/app/api/api-keys';
-import { ApiKey } from '@/app/api/api-keys/types';
+import { ApiKey, ApiKeyDeleteResult } from '@/app/api/api-keys/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
-export function useDeleteApiKey({ onSuccess }: { onSuccess?: () => void }) {
+export function useDeleteApiKey({
+  onSuccess,
+}: {
+  onSuccess?: (data?: ApiKeyDeleteResult) => void;
+}) {
   const { organization } = useAppContext();
   const apiKeysQueries = useApiKeysQueries();
 

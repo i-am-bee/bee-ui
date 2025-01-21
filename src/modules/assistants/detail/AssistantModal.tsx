@@ -56,7 +56,6 @@ export default function AssistantModal({
   const router = useRouter();
 
   const { mutateWithConfirmationAsync: deleteAssistant } = useDeleteAssistant({
-    assistant,
     onSuccess: async () => {
       onDeleteSuccess?.();
     },
@@ -141,7 +140,7 @@ export default function AssistantModal({
         <ModalFooter>
           <Button
             kind="danger--tertiary"
-            onClick={deleteAssistant}
+            onClick={() => deleteAssistant(assistant)}
             disabled={isProjectReadOnly}
             renderIcon={TrashCan}
           >

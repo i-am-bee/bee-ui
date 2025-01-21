@@ -78,7 +78,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   const { getUserSetting } = useUserSetting();
   const debugMode = getUserSetting('chatDebugMode');
 
-  const { mutate: mutateUpdateThread } = useUpdateThread();
+  const { mutate: updateThread } = useUpdateThread();
 
   const stepTrace = useMemo(
     () => traceData?.steps.find(({ stepId }) => stepId === step.id),
@@ -114,7 +114,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
       thread.uiMetadata = metadata;
       const updatedThread = encodeEntityWithMetadata<Thread>(thread);
-      mutateUpdateThread({
+      updateThread({
         id: thread.id,
         body: { metadata: updatedThread.metadata },
       });

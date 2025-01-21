@@ -24,7 +24,7 @@ import { useApiKeysQueries } from '..';
 export function useCreateApiKey({
   onSuccess,
 }: {
-  onSuccess?: (apiKey?: ApiKey) => void;
+  onSuccess?: (data?: ApiKey) => void;
 }) {
   const { organization } = useAppContext();
   const apiKeyQueries = useApiKeysQueries();

@@ -23,11 +23,10 @@ import { Assistant } from '../../types';
 import { getAssistantName } from '../../utils';
 
 interface Props {
-  assistant: Assistant;
   onSuccess?: () => void;
 }
 
-export function useDeleteAssistant({ assistant, onSuccess }: Props) {
+export function useDeleteAssistant({ onSuccess }: Props) {
   const { openConfirmation } = useModal();
   const { project, organization } = useAppContext();
   const assistantsQueries = useAssistantsQueries();
@@ -45,7 +44,7 @@ export function useDeleteAssistant({ assistant, onSuccess }: Props) {
     },
   });
 
-  const mutateWithConfirmationAsync = () =>
+  const mutateWithConfirmationAsync = (assistant: Assistant) =>
     openConfirmation({
       title: `Delete ${getAssistantName(assistant)}?`,
       body: 'Are you sure you want to delete this app? Once an app is deleted, it can’t be undone.',

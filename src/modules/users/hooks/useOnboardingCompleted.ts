@@ -21,12 +21,12 @@ import { UserMetadata } from '@/store/user-profile/types';
 import { useUpdateUser } from '../api/mutations/useUpdateUser';
 
 export function useOnboardingCompleted(section: OnboardingSection | null) {
-  const { mutate: updateUserMutate } = useUpdateUser();
+  const { mutate: updateUser } = useUpdateUser();
   const userMetadata = useUserProfile((state) => state.metadata);
 
   useOnMount(() => {
     if (section && !userMetadata?.onboarding_section_completed_at?.[section])
-      updateUserMutate({
+      updateUser({
         metadata: encodeMetadata<UserMetadata>({
           ...userMetadata,
           onboarding_section_completed_at: {

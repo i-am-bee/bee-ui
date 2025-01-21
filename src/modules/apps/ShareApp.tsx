@@ -44,7 +44,7 @@ export function ShareApp({ artifact, onSuccess }: Props) {
   });
 
   const {
-    mutateAsync: mutateSave,
+    mutateAsync: saveArtifact,
     isError,
     error,
     isPending,
@@ -78,7 +78,7 @@ export function ShareApp({ artifact, onSuccess }: Props) {
             id={`${id}:toggle`}
             size="sm"
             onToggle={(checked) =>
-              mutateSave({
+              saveArtifact({
                 id: artifact.id,
                 body: {
                   shared: checked,

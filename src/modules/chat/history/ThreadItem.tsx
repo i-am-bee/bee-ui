@@ -20,7 +20,6 @@ import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useModal } from '@/layout/providers/ModalProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import {
   Button,
@@ -62,7 +61,6 @@ export function ThreadItem({ thread }: Props) {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const pathname = usePathname();
-  const { openConfirmation } = useModal();
   const router = useRouter();
   const { project } = useAppContext();
   const id = useId();
@@ -98,17 +96,18 @@ export function ThreadItem({ thread }: Props) {
     enabled: !title,
   });
 
-  const { mutateAsync: mutateDeleteThread, isPending: isDeletePending } =
-    useDeleteThread({
-      thread,
-      onMutate: () => {
-        if (isActive) {
-          router.push(getNewSessionUrl(project.id, assistant.data));
-        }
-      },
-    });
+  const {
+    mutateWithConfirmationAsync: deleteThread,
+    isPending: isDeletePending,
+  } = useDeleteThread({
+    onMutate: () => {
+      if (isActive) {
+        router.push(getNewSessionUrl(project.id, assistant.data));
+      }
+    },
+  });
 
-  const { mutateAsync: mutateUpdateThread } = useUpdateThread();
+  const { mutateAsync: updateThread } = useUpdateThread();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (values) => {
@@ -120,7 +119,7 @@ export function ThreadItem({ thread }: Props) {
         return;
       }
 
-      await mutateUpdateThread({
+      await updateThread({
         id: thread.id,
         body: {
           metadata: encodeMetadata<ThreadMetadata>({
@@ -130,7 +129,7 @@ export function ThreadItem({ thread }: Props) {
         },
       });
     },
-    [title, mutateUpdateThread, thread, reset],
+    [title, updateThread, thread, reset],
   );
 
   const heading =
@@ -199,15 +198,7 @@ export function ThreadItem({ thread }: Props) {
             <OverflowMenuItem
               isDelete
               itemText="Delete"
-              onClick={() =>
-                openConfirmation({
-                  title: `Delete session?`,
-                  body: `“${heading}” will be deleted`,
-                  primaryButtonText: 'Delete session',
-                  danger: true,
-                  onSubmit: () => mutateDeleteThread(thread.id),
-                })
-              }
+              onClick={() => deleteThread({ thread, heading })}
             />
           </OverflowMenu>
         </div>

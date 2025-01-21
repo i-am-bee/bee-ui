@@ -28,7 +28,6 @@ export function ChatNavbarActions({ assistant }: Props) {
   const router = useRouter();
   const { project } = useAppContext();
   const { mutateWithConfirmationAsync: deleteAssistant } = useDeleteAssistant({
-    assistant,
     onSuccess: () => router.push(`/${project.id}/`),
   });
 
@@ -41,7 +40,7 @@ export function ChatNavbarActions({ assistant }: Props) {
       <OverflowMenuItem
         isDelete
         itemText="Delete"
-        onClick={() => deleteAssistant()}
+        onClick={() => deleteAssistant(assistant)}
       />
     </OverflowMenu>
   );

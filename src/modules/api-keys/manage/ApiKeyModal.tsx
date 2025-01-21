@@ -79,20 +79,20 @@ export function ApiKeyModal({ onSuccess, ...props }: Props) {
     mode: 'onChange',
   });
 
-  const { mutateAsync: mutateCreate } = useCreateApiKey({
-    onSuccess: (result) => {
-      if (result) {
+  const { mutateAsync: createApiKey } = useCreateApiKey({
+    onSuccess: (data) => {
+      if (data) {
         onRequestClose();
-        openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
+        openModal((props) => <ApiKeyModal.View apiKey={data} {...props} />);
       }
     },
   });
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (values) => {
-      await mutateCreate(values);
+      await createApiKey(values);
     },
-    [mutateCreate],
+    [createApiKey],
   );
 
   return (
@@ -177,9 +177,9 @@ ApiKeyModal.Regenerate = function RegenerateModal({
   const { openModal } = useModal();
 
   const { mutate } = useRegenerateApiKey({
-    onSuccess: (result) => {
-      if (result) {
-        openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
+    onSuccess: (data) => {
+      if (data) {
+        openModal((props) => <ApiKeyModal.View apiKey={data} {...props} />);
       }
       props.onRequestClose();
     },
@@ -233,7 +233,7 @@ ApiKeyModal.Delete = function DeleteModal({
 }: {
   apiKey: ApiKey;
 } & ModalProps) {
-  const { mutate: mutateDelete, isPending } = useDeleteApiKey({
+  const { mutate: deleteApiKey, isPending } = useDeleteApiKey({
     onSuccess: () => props.onRequestClose(),
   });
 
@@ -259,7 +259,7 @@ ApiKeyModal.Delete = function DeleteModal({
           kind="danger"
           type="submit"
           disabled={isPending}
-          onClick={() => mutateDelete(apiKey)}
+          onClick={() => deleteApiKey(apiKey)}
         >
           {isPending ? <InlineLoading title="Deleting..." /> : 'Delete key'}
         </Button>

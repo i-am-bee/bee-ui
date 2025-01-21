@@ -136,10 +136,10 @@ export function ChatProvider({
   const threadsQueries = useThreadsQueries();
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
-  const { mutateAsync: mutateDeleteMessage } = useDeleteMessage();
-  const { mutateAsync: mutateUpdateThread } = useUpdateThread();
-  const { mutateAsync: mutateCreateThread } = useCreateThread();
-  const { mutate: mutateCancel } = useCanceRun();
+  const { mutateAsync: deleteMessage } = useDeleteMessage();
+  const { mutateAsync: updateThread } = useUpdateThread();
+  const { mutateAsync: createThread } = useCreateThread();
+  const { mutate: cancelRun } = useCanceRun();
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {
@@ -280,7 +280,7 @@ export function ChatProvider({
               ? truncate(message, { length: THREAD_TITLE_MAX_LENGTH })
               : threadMetadata.title;
 
-          const { thread: updatedThread } = await mutateUpdateThread({
+          const { thread: updatedThread } = await updateThread({
             id: thread.id,
             body: {
               tool_resources: toolResources,
@@ -298,7 +298,7 @@ export function ChatProvider({
         return thread;
       }
 
-      const { thread: createdThread } = await mutateCreateThread({
+      const { thread: createdThread } = await createThread({
         tool_resources: toolResources,
         metadata: encodeMetadata<ThreadMetadata>({
           assistantName: getAssistantName(assistant),
@@ -315,14 +315,7 @@ export function ChatProvider({
 
       return createdThread;
     },
-    [
-      assistant,
-      mutateCreateThread,
-      mutateUpdateThread,
-      setThread,
-      thread,
-      vectorStoreId,
-    ],
+    [assistant, createThread, updateThread, setThread, thread, vectorStoreId],
   );
 
   if (ensureThreadRef) ensureThreadRef.current = ensureThread;
@@ -333,11 +326,11 @@ export function ChatProvider({
   const handleCancelCurrentRun = useCallback(() => {
     threadRef.current &&
       controllerRef.current.runId &&
-      mutateCancel({
+      cancelRun({
         threadId: threadRef.current.id,
         runId: controllerRef.current.runId,
       });
-  }, [controllerRef, mutateCancel, threadRef]);
+  }, [controllerRef, cancelRun, threadRef]);
 
   const handleRunCompleted = useCallback(() => {
     const lastMessage = getMessages().at(-1);
@@ -519,7 +512,7 @@ export function ChatProvider({
           ) {
             messages.pop();
             if (thread && message.id) {
-              mutateDeleteMessage({
+              deleteMessage({
                 threadId: thread?.id,
                 messageId: message.id,
               });
@@ -529,7 +522,7 @@ export function ChatProvider({
             if (message?.role === 'user') {
               messages.pop();
               if (thread && message.id)
-                mutateDeleteMessage({
+                deleteMessage({
                   threadId: thread?.id,
                   messageId: message.id,
                 });
@@ -690,7 +683,7 @@ export function ChatProvider({
       setController,
       refetchMessages,
       setMessages,
-      mutateDeleteMessage,
+      deleteMessage,
       handleCancelCurrentRun,
       openModal,
       handleError,

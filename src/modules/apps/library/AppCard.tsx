@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -29,7 +30,7 @@ interface Props {
   artifact: Artifact;
   cta?: string;
   onClick?: MouseEventHandler;
-  onDeleteSuccess?: (artifact: Artifact) => void;
+  onDeleteSuccess?: (artifact?: ArtifactDeleteResult) => void;
 }
 
 export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
@@ -41,9 +42,8 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
     mutateWithConfirmationAsync: deleteArtifact,
     isPending: isDeletePending,
   } = useDeleteArtifact({
-    artifact,
-    onSuccess: async () => {
-      onDeleteSuccess?.(artifact);
+    onSuccess: (data) => {
+      onDeleteSuccess?.(data);
     },
   });
   const { project } = useAppContext();
@@ -78,7 +78,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
           {
             isDelete: true,
             itemText: 'Delete',
-            onClick: () => deleteArtifact(),
+            onClick: () => deleteArtifact(artifact),
           },
         ]}
       >

@@ -122,7 +122,7 @@ export function AssistantBuilderProvider({
 
   const createdAssistantRef = useRef<Assistant | null>(null);
 
-  const { mutateAsync: saveAssistantAsync } = useSaveAssistant({
+  const { mutateAsync: saveAssistant } = useSaveAssistant({
     onSuccess: (result?: AssistantResult, isNew?: boolean) => {
       if (!result) return;
 
@@ -235,7 +235,7 @@ export function AssistantBuilderProvider({
         );
       }
 
-      await saveAssistantAsync({
+      await saveAssistant({
         id: assistant?.id,
         body: {
           name: ownName,
@@ -253,7 +253,7 @@ export function AssistantBuilderProvider({
         },
       });
     },
-    [assistant, assistantTemplate, saveAssistantAsync],
+    [assistant, assistantTemplate, saveAssistant],
   );
 
   const handleError = useCallback(() => {

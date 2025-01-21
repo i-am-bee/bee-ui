@@ -15,6 +15,7 @@
  */
 
 import { deleteArtifact } from '@/app/api/artifacts';
+import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation } from '@tanstack/react-query';
@@ -22,11 +23,10 @@ import { useArtifactsQueries } from '..';
 import { Artifact } from '../../types';
 
 interface Props {
-  artifact?: Artifact;
-  onSuccess?: () => void;
+  onSuccess?: (data?: ArtifactDeleteResult) => void;
 }
 
-export function useDeleteArtifact({ artifact, onSuccess }: Props) {
+export function useDeleteArtifact({ onSuccess }: Props) {
   const { openConfirmation } = useModal();
   const { organization, project } = useAppContext();
   const artifactsQueries = useArtifactsQueries();
@@ -43,8 +43,7 @@ export function useDeleteArtifact({ artifact, onSuccess }: Props) {
     },
   });
 
-  const mutateWithConfirmationAsync = () =>
-    artifact &&
+  const mutateWithConfirmationAsync = (artifact: Artifact) =>
     openConfirmation({
       title: `Delete ${artifact.name}?`,
       body: 'Are you sure you want to delete this app? Once an app is deleted, it can’t be undone.',

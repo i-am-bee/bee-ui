@@ -39,7 +39,7 @@ interface Props {
 export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   const { name, description, user_description, type } = tool;
   const {
-    mutateWithConfirmationAsync: mutateDeleteTool,
+    mutateWithConfirmationAsync: deleteTool,
     isPending: isDeletePending,
   } = useDeleteTool({
     onSuccess: (tool) => onDeleteSuccess(tool),
@@ -93,7 +93,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
                 {
                   isDelete: true,
                   itemText: 'Delete',
-                  onClick: () => mutateDeleteTool(tool),
+                  onClick: () => deleteTool(tool),
                 },
               ].filter(isNotNull)
             : undefined

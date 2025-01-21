@@ -118,15 +118,15 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     setAttachments(attachments);
   }, [files]);
 
-  const { mutateAsync: mutateCreateVectorStore } = useCreateVectorStore({
+  const { mutateAsync: createVectorStore } = useCreateVectorStore({
     onSuccess: (result) => {
       if (result) {
         setVectorStoreId(result.id);
       }
     },
   });
-  const { mutateAsync: mutateDeleteFile } = useDeleteFile();
-  const { mutateAsync: mutateDeleteStoreFile } = useDeleteVectorStoreFile();
+  const { mutateAsync: deleteFile } = useDeleteFile();
+  const { mutateAsync: deleteVectorStoreFile } = useDeleteVectorStoreFile();
 
   const removeFile = useCallback(
     (id: string) => {
@@ -135,14 +135,14 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       if (fileId) {
         const vectorFileId = fileToRemove.vectorStoreFile?.id;
         if (vectorStoreId && vectorFileId)
-          mutateDeleteStoreFile({ vectorStoreId, id: vectorFileId });
+          deleteVectorStoreFile({ vectorStoreId, id: vectorFileId });
 
-        mutateDeleteFile(fileId);
+        deleteFile(fileId);
       }
 
       setFiles((files) => files.filter((file) => file.id !== id));
     },
-    [files, setFiles, vectorStoreId, mutateDeleteStoreFile, mutateDeleteFile],
+    [files, setFiles, vectorStoreId, deleteVectorStoreFile, deleteFile],
   );
 
   const onDropAccepted = useCallback(
@@ -161,7 +161,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       const isVectorStoreNeeded = newFiles.some((file) => file.isReadable);
       const thread = await ensureThreadRef.current();
       if (isVectorStoreNeeded && !vectorStoreId) {
-        await mutateCreateVectorStore({
+        await createVectorStore({
           depends_on: { thread: { id: thread.id } },
         });
       }
@@ -171,7 +171,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       });
     },
     [
-      mutateCreateVectorStore,
+      createVectorStore,
       onFileSubmit,
       setFiles,
       vectorStoreId,

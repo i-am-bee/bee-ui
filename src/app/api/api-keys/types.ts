@@ -25,6 +25,10 @@ export type ApiKey = NonNullable<
   paths['/v1/organization/projects/{project_id}/api_keys/{api_key_id}']['get']['responses']['200']['content']['application/json']
 >;
 
+export type ApiKeyDeleteResult = NonNullable<
+  paths['/v1/organization/projects/{project_id}/api_keys/{api_key_id}']['delete']['responses']['200']['content']['application/json']
+>;
+
 export type ApiKeysListQuery = NonNullable<
   paths['/v1/organization/api_keys']['get']['parameters']['query']
 >;

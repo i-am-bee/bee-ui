@@ -80,7 +80,7 @@ export function ApiKeysHome() {
     isFiltered: Boolean(search),
   });
 
-  const { mutate: mutateRename } = useRenameApiKey();
+  const { mutate: renameApiKey } = useRenameApiKey();
 
   const rows = useMemo(
     () =>
@@ -94,7 +94,7 @@ export function ApiKeysHome() {
               defaultValue={name}
               required
               onConfirm={(value) =>
-                mutateRename({ projectId: project.id, id, name: value })
+                renameApiKey({ projectId: project.id, id, name: value })
               }
             />
           ),
@@ -137,7 +137,7 @@ export function ApiKeysHome() {
           ),
         };
       }) ?? [],
-    [data?.data, mutateRename, openConfirmation, openModal, userId],
+    [data?.data, renameApiKey, openConfirmation, openModal, userId],
   );
 
   return (

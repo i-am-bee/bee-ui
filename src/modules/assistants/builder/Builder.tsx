@@ -69,7 +69,6 @@ export function Builder({ thread, initialMessages }: Props) {
     mutateWithConfirmationAsync: deleteAssistant,
     isPending: isDeletePending,
   } = useDeleteAssistant({
-    assistant: assistant!,
     onSuccess: () => {
       router.push(`/${project.id}`);
     },
@@ -147,7 +146,7 @@ export function Builder({ thread, initialMessages }: Props) {
             {assistant && (
               <Button
                 kind="danger--ghost"
-                onClick={deleteAssistant}
+                onClick={() => deleteAssistant(assistant)}
                 disabled={isProjectReadOnly || isDeletePending}
               >
                 {isDeletePending ? (

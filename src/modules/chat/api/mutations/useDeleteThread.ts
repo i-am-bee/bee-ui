@@ -17,6 +17,7 @@
 import { deleteThread } from '@/app/api/threads';
 import { Thread, ThreadsListResponse } from '@/app/api/threads/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InfiniteData,
   useMutation,
@@ -26,31 +27,33 @@ import { produce } from 'immer';
 import { useThreadsQueries } from '..';
 
 interface Props {
-  thread: Thread;
   onMutate?: () => void;
 }
 
-export function useDeleteThread({ thread, onMutate }: Props) {
+export function useDeleteThread({ onMutate }: Props = {}) {
   const queryClient = useQueryClient();
+  const { openConfirmation } = useModal();
   const threadsQueries = useThreadsQueries();
   const { project, organization } = useAppContext();
 
   const mutation = useMutation({
     mutationFn: (id: string) => deleteThread(organization.id, project.id, id),
     onMutate,
-    onSuccess: () => {
-      queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-        threadsQueries.list().queryKey,
-        produce((draft) => {
-          if (!draft?.pages) return null;
-          for (const page of draft.pages) {
-            const index = page.data.findIndex((item) => item.id === thread.id);
-            if (index >= 0) {
-              page.data.splice(index, 1);
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
+          threadsQueries.list().queryKey,
+          produce((draft) => {
+            if (!draft?.pages) return null;
+            for (const page of draft.pages) {
+              const index = page.data.findIndex((item) => item.id === data.id);
+              if (index >= 0) {
+                page.data.splice(index, 1);
+              }
             }
-          }
-        }),
-      );
+          }),
+        );
+      }
     },
     meta: {
       invalidates: [threadsQueries.lists()],
@@ -61,5 +64,23 @@ export function useDeleteThread({ thread, onMutate }: Props) {
     },
   });
 
-  return mutation;
+  const mutateWithConfirmationAsync = ({
+    thread,
+    heading,
+  }: {
+    thread: Thread;
+    heading: string;
+  }) =>
+    openConfirmation({
+      title: `Delete session?`,
+      body: `“${heading}” will be deleted`,
+      primaryButtonText: 'Delete session',
+      danger: true,
+      onSubmit: () => mutation.mutateAsync(thread.id),
+    });
+
+  return {
+    ...mutation,
+    mutateWithConfirmationAsync,
+  };
 }

@@ -15,7 +15,11 @@
  */
 
 import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
+import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import { VectorStore } from '@/app/api/vector-stores/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { TrashCan } from '@carbon/react/icons';
 import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 
@@ -25,6 +29,7 @@ interface Props {
 
 export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
   const { organization, project } = useAppContext();
+  const { openConfirmation } = useModal();
   const vectorStoresQueries = useVectorStoresQueries();
 
   const mutation = useMutation({
@@ -63,5 +68,32 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
     },
   });
 
-  return mutation;
+  const mutateWithConfirmationAsync = ({
+    vectorStore,
+    vectorStoreFile,
+    filename,
+  }: {
+    vectorStore: VectorStore;
+    vectorStoreFile: VectorStoreFile;
+    filename?: string;
+  }) =>
+    openConfirmation({
+      title: 'Delete document?',
+      // TODO: add apps info "Are you sure you would like to delete Lorem-Ipsum.pdf? It is currently used by 3 apps."
+      body: `Are you sure you would like to delete ${filename ? filename : 'this document'}?`,
+      primaryButtonText: 'Delete document',
+      danger: true,
+      icon: TrashCan,
+      size: 'md',
+      onSubmit: () =>
+        mutation.mutateAsync({
+          vectorStoreId: vectorStore.id,
+          id: vectorStoreFile.id,
+        }),
+    });
+
+  return {
+    ...mutation,
+    mutateWithConfirmationAsync,
+  };
 }

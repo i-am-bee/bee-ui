@@ -19,13 +19,12 @@ import { VectorStore } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InlineLoading,
   SkeletonPlaceholder,
   SkeletonText,
 } from '@carbon/react';
-import { Document, TrashCan, WarningAlt } from '@carbon/react/icons';
+import { Document, WarningAlt } from '@carbon/react/icons';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useFilesQueries } from '../../files/api';
@@ -47,16 +46,17 @@ export function KnowledgeFileCard({
   kind = 'card',
   onDeleteSuccess,
 }: Props) {
-  const { openConfirmation } = useModal();
   const { isProjectReadOnly } = useAppContext();
   const filesQueries = useFilesQueries();
 
-  const { mutateAsync: mutateDeleteFile, isPending: isDeletePending } =
-    useDeleteVectorStoreFile({
-      onSuccess: async () => {
-        onDeleteSuccess?.(vectorStoreFile);
-      },
-    });
+  const {
+    mutateWithConfirmationAsync: deleteVectorStoreFile,
+    isPending: isDeletePending,
+  } = useDeleteVectorStoreFile({
+    onSuccess: async () => {
+      onDeleteSuccess?.(vectorStoreFile);
+    },
+  });
 
   const { data, isLoading } = useQuery(filesQueries.detail(vectorStoreFile.id));
 
@@ -86,19 +86,10 @@ export function KnowledgeFileCard({
                 isDelete: true,
                 itemText: 'Delete',
                 onClick: () =>
-                  openConfirmation({
-                    title: 'Delete document?',
-                    // TODO: add apps info "Are you sure you would like to delete Lorem-Ipsum.pdf? It is currently used by 3 apps."
-                    body: `Are you sure you would like to delete ${data?.filename}?`,
-                    primaryButtonText: 'Delete document',
-                    danger: true,
-                    icon: TrashCan,
-                    size: 'md',
-                    onSubmit: () =>
-                      mutateDeleteFile({
-                        vectorStoreId: vectorStore.id,
-                        id: vectorStoreFile.id,
-                      }),
+                  deleteVectorStoreFile({
+                    vectorStore,
+                    vectorStoreFile,
+                    filename: data?.filename,
                   }),
               },
             ]
