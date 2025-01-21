@@ -15,7 +15,12 @@
  */
 
 import { createTool, deleteTool, updateTool } from '@/app/api/tools';
-import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
+import {
+  Tool,
+  ToolReference,
+  ToolResult,
+  ToolsCreateBody,
+} from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
@@ -27,6 +32,7 @@ import {
   Button,
   Dropdown,
   FormLabel,
+  IconButton,
   InlineLoading,
   InlineNotification,
   ModalBody,
@@ -38,7 +44,7 @@ import {
   TextInput,
 } from '@carbon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useId } from 'react';
+import { useCallback, useId, useLayoutEffect, useRef, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -50,6 +56,8 @@ import {
 import { useToolsQueries } from '../queries';
 import { ToolDescription } from '../ToolCard';
 import classes from './UserToolModal.module.scss';
+import clsx from 'clsx';
+import { Edit } from '@carbon/react/icons';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -123,7 +131,10 @@ export function UserToolModal({
         ) ?? TOOL_TYPES[0],
       name: tool?.name || '',
       sourceCode: tool?.source_code || '',
-      api: { auth: 'none', schema: tool?.open_api_schema ?? '' },
+      api: {
+        auth: tool?.api_key ? 'api-key' : 'none',
+        schema: tool?.open_api_schema ?? '',
+      },
     },
     mode: 'onChange',
   });
@@ -217,7 +228,6 @@ export function UserToolModal({
                       items={TOOL_TYPES}
                       selectedItem={value}
                       titleText="Type"
-                      // size="lg"
                       onChange={({
                         selectedItem,
                       }: {
@@ -229,30 +239,27 @@ export function UserToolModal({
                 />
               </div>
 
-              {(tool || toolType.key === 'function') && (
-                <div className={classes.group}>
-                  <TextInput
-                    size="lg"
-                    id={`${id}:name`}
-                    labelText="Name of tool"
-                    placeholder="Type tool name"
-                    invalid={errors.name != null}
-                    {...register('name', {
-                      required: true,
-                    })}
-                  />
+              <div className={classes.group}>
+                <TextInput
+                  size="lg"
+                  id={`${id}:name`}
+                  labelText="Name of tool"
+                  placeholder="Type tool name"
+                  invalid={errors.name != null}
+                  {...register('name', {
+                    required: Boolean(tool || toolType.key === 'function'),
+                  })}
+                />
 
-                  <p className={classes.helperText}>
-                    This is your tool’s display name, it can be a real name or
-                    pseudonym.
-                  </p>
-                </div>
-              )}
+                <p className={classes.helperText}>
+                  This is your tool’s display name, it can be a real name or
+                  pseudonym.
+                </p>
+              </div>
 
               {toolType.key === 'api' ? (
                 <>
-                  {/* TODO: make available for update too, when the API is ready */}
-                  {!tool && <ApiAuthenticationMethod />}
+                  <ApiAuthenticationMethod tool={tool} />
 
                   <div className={classes.group}>
                     <Controller
@@ -383,15 +390,25 @@ export function UserToolModal({
   );
 }
 
-function ApiAuthenticationMethod() {
+function ApiAuthenticationMethod({ tool }: { tool: Tool }) {
+  const [editApiKey, setEditApiKey] = useState(false);
   const id = useId();
   const {
     register,
+    setFocus,
     formState: { errors },
   } = useFormContext<FormValues>();
   const {
     field: { name, onChange, value },
   } = useController<FormValues, 'api.auth'>({ name: 'api.auth' });
+
+  const showApiKeyPreview = tool?.api_key && !editApiKey;
+
+  useLayoutEffect(() => {
+    if (value === 'api-key' && !showApiKeyPreview) {
+      setFocus('api.apiKey');
+    }
+  }, [setFocus, showApiKeyPreview, value]);
 
   return (
     <>
@@ -409,16 +426,38 @@ function ApiAuthenticationMethod() {
       </div>
       {value === 'api-key' && (
         <div className={classes.group}>
-          <PasswordInput
-            size="lg"
-            id={`${id}:name`}
-            labelText=""
-            placeholder="Add your API key"
-            invalid={errors.name != null}
-            {...register('api.apiKey', {
-              required: true,
-            })}
-          />
+          {showApiKeyPreview ? (
+            <div className={classes.apiKeyPreview}>
+              <TextInput
+                labelText=""
+                readOnly
+                value={tool?.api_key ?? ''}
+                id={`${id}:apiKey-saved`}
+              />
+              <IconButton
+                label="Edit API key"
+                kind="ghost"
+                size="md"
+                autoAlign
+                onClick={() => setEditApiKey(true)}
+              >
+                <Edit />
+              </IconButton>
+            </div>
+          ) : (
+            <PasswordInput
+              size="lg"
+              id={`${id}:apiKey`}
+              labelText=""
+              placeholder="Add your API key"
+              hidePasswordLabel="Hide API key"
+              showPasswordLabel="Show API key"
+              invalid={errors.api?.apiKey != null}
+              {...register('api.apiKey', {
+                required: true,
+              })}
+            />
+          )}
         </div>
       )}
     </>
@@ -485,9 +524,8 @@ function createSaveToolBody(
         source_code: sourceCode ?? '',
       }
     : {
-        ...(tool
-          ? { name }
-          : { api_key: api.auth === 'api-key' ? api.apiKey : undefined }),
+        name,
+        api_key: api.auth === 'api-key' ? api.apiKey : undefined,
         open_api_schema: api.schema ?? '',
       };
 }

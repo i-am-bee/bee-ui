@@ -166,10 +166,11 @@ $modalOtherContentApproxSize: rem(460px);
 
 .apiSchemaField {
   > div {
-    min-block-size: 16rem;
+    min-block-size: 18rem;
     max-block-size: calc($modalBlockSize - $modalOtherContentApproxSize);
     overflow-y: auto;
     border-radius: $block-radius;
+    grid-auto-rows: max-content;
 
     @include breakpoint-down(md) {
       max-block-size: 24rem;
@@ -183,5 +184,18 @@ $modalOtherContentApproxSize: rem(460px);
         outline: none;
       }
     }
+  }
+}
+
+.apiKeyPreview {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  :global(.#{$prefix}--form-item) {
+    grid-column: 1/3;
+    grid-row: 1/-1;
+  }
+  :global(.#{$prefix}--popover-container) {
+    grid-column: 2/-1;
+    grid-row: 1/-1;
   }
 }
