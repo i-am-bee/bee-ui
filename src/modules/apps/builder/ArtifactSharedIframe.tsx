@@ -169,7 +169,7 @@ export function ArtifactSharedIframe({
           <AppPlaceholder />
         </div>
       ) : (
-        (state === State.LOADING || isPending || true) && (
+        (state === State.LOADING || isPending) && (
           <div
             className={clsx(classes.loading, {
               [classes.empty]: !appliedCodeRef.current,
