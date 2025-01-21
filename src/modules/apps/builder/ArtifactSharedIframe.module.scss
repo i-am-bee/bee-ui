@@ -16,6 +16,8 @@
 
 @use 'styles/common' as *;
 
+$loading-size: rem(170px);
+
 .root {
   position: relative;
   background-color: $layer-02;
@@ -24,9 +26,42 @@
   justify-content: center;
   align-items: center;
   z-index: 1;
+}
+.loading {
+  position: absolute;
+  inset: 0;
+  &.empty {
+    background-color: $layer-02;
+  }
 
   :global(.#{$prefix}--loading-overlay) {
     position: absolute;
+
+    :global(.#{$prefix}--loading) {
+      block-size: $loading-size;
+      inline-size: $loading-size;
+
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        block-size: $loading-size;
+        inline-size: $loading-size;
+        border-radius: 50%;
+        border: 19px solid $background-active;
+      }
+
+      svg {
+        circle {
+          stroke-width: 11;
+          stroke-dasharray: 150, 260;
+          stroke-dashoffset: 40;
+          r: 44;
+        }
+      }
+    }
   }
 }
 .app {

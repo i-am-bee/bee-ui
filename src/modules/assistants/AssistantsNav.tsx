@@ -34,13 +34,14 @@ import { Add } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import { PropsWithChildren, useState } from 'react';
-import { NewAgentModal } from '../onboarding/NewAgentModal';
+import { NewAgentModal } from '../onboarding/assistants/NewAgentModal';
 import { useAssistants } from './api/queries/useAssistants';
 import { ASSISTANTS_ORDER_DEFAULT } from './AssistantsHome';
 import classes from './AssistantsNav.module.scss';
 import { AssistantModalRenderer } from './detail/AssistantModalRenderer';
 import { AssistantIcon } from './icons/AssistantIcon';
 import { Assistant } from './types';
+import { getAssistantName } from './utils';
 
 interface Props {
   enableFetch?: boolean;
@@ -83,7 +84,7 @@ export function AssistantsNav({ enableFetch, className }: Props) {
         <ul>
           {data?.assistants.map((assistant) => (
             <AgentLink key={assistant.id} assistant={assistant}>
-              {assistant.name}
+              {getAssistantName(assistant)}
             </AgentLink>
           ))}
 

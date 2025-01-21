@@ -35,6 +35,7 @@ import {
 import { useModal } from '@/layout/providers/ModalProvider';
 import { FILE_SEARCH_TOOL_DEFINITION } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { GET_USER_LOCATION_FUNCTION_TOOL } from '@/modules/assistants/tools/functionTools';
+import { getAssistantName } from '@/modules/assistants/utils';
 import {
   getToolUsageId,
   isExternalTool,
@@ -300,7 +301,7 @@ export function ChatProvider({
       const { thread: createdThread } = await mutateCreateThread({
         tool_resources: toolResources,
         metadata: encodeMetadata<ThreadMetadata>({
-          assistantName: assistant?.name ?? '',
+          assistantName: getAssistantName(assistant),
           assistantId: assistant?.id ?? '',
           title: truncate(message, { length: THREAD_TITLE_MAX_LENGTH }),
         }),
@@ -315,8 +316,7 @@ export function ChatProvider({
       return createdThread;
     },
     [
-      assistant?.id,
-      assistant?.name,
+      assistant,
       mutateCreateThread,
       mutateUpdateThread,
       setThread,

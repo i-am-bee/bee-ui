@@ -20,6 +20,7 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
 import { Assistant } from '../../types';
+import { getAssistantName } from '../../utils';
 
 interface Props {
   assistant: Assistant;
@@ -46,7 +47,7 @@ export function useDeleteAssistant({ assistant, onSuccess }: Props) {
 
   const mutateWithConfirmationAsync = () =>
     openConfirmation({
-      title: `Delete ${assistant.name}?`,
+      title: `Delete ${getAssistantName(assistant)}?`,
       body: 'Are you sure you want to delete this app? Once an app is deleted, it can’t be undone.',
       primaryButtonText: 'Delete agent',
       danger: true,

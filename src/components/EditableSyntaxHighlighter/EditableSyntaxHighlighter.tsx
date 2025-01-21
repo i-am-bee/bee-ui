@@ -17,10 +17,18 @@
 import { FormLabel } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { CSSProperties, ReactNode, TextareaHTMLAttributes } from 'react';
+import {
+  CSSProperties,
+  ReactNode,
+  TextareaHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import python from 'react-syntax-highlighter/dist/cjs/languages/hljs/python';
 import defaultStyle from 'react-syntax-highlighter/dist/cjs/styles/hljs/default-style';
+import { useResizeObserver } from 'usehooks-ts';
 import classes from './EditableSyntaxHighlighter.module.scss';
 
 const style: { [key: string]: CSSProperties } = {
@@ -122,7 +130,7 @@ interface Props
   onChange?: (value: string) => void;
   invalid?: boolean;
   readOnly?: boolean;
-  // showLineNumbers?: boolean;
+  showLineNumbers?: boolean;
 }
 
 export function EditableSyntaxHighlighter({
@@ -132,20 +140,84 @@ export function EditableSyntaxHighlighter({
   onChange,
   invalid,
   readOnly,
+  showLineNumbers,
   className,
-  // showLineNumbers,
   ...props
 }: Props) {
+  const [lineNumberWidth, setLineNumberWidth] = useState<number>(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const preRef = useRef<HTMLPreElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const PreTag = (preProps: any) => <pre {...preProps} ref={preRef} />;
+
+  const syncScroll = () => {
+    requestAnimationFrame(() => {
+      const preElement = preRef.current;
+      const textAreaElement = textAreaRef.current;
+
+      if (preElement && textAreaElement) {
+        preElement.scrollLeft = textAreaElement.scrollLeft;
+      }
+    });
+  };
+
+  const checkLineNumberWidth = () => {
+    if (!preRef.current) {
+      return;
+    }
+
+    const lineNumberElement = [
+      ...preRef.current.querySelectorAll('.linenumber'),
+    ].at(-1);
+
+    setLineNumberWidth(
+      lineNumberElement ? (lineNumberElement as HTMLElement).offsetWidth : 0,
+    );
+  };
+
+  useEffect(() => {
+    const textAreaElement = textAreaRef.current;
+
+    if (textAreaElement) {
+      textAreaElement.addEventListener('scroll', syncScroll);
+      textAreaElement.addEventListener('input', syncScroll);
+      textAreaElement.addEventListener('paste', syncScroll);
+    }
+
+    return () => {
+      if (textAreaElement) {
+        textAreaElement.removeEventListener('scroll', syncScroll);
+        textAreaElement.removeEventListener('input', syncScroll);
+        textAreaElement.removeEventListener('paste', syncScroll);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    checkLineNumberWidth();
+  }, [value]);
+
+  useResizeObserver({
+    ref: rootRef,
+    onResize: checkLineNumberWidth,
+  });
+
   return (
-    <div className={clsx(classes.root, className)}>
+    <div className={clsx(classes.root, className)} ref={rootRef}>
       {labelText && <FormLabel id={id}>{labelText}</FormLabel>}
 
-      <div className={clsx(classes.wrapper, { [classes.invalid]: invalid })}>
+      <div
+        className={clsx(classes.wrapper, { [classes.invalid]: invalid })}
+        style={
+          { [`--line-number-width`]: `${lineNumberWidth}px` } as CSSProperties
+        }
+      >
         <SyntaxHighlighter
+          PreTag={PreTag}
           language="python"
           style={style}
-          // TODO: resolve text wrapping
-          // showLineNumbers={showLineNumbers}
+          showLineNumbers={showLineNumbers}
         >
           {value.at(-1) === '\n' ? `${value} ` : value}
         </SyntaxHighlighter>
@@ -153,6 +225,7 @@ export function EditableSyntaxHighlighter({
         {!readOnly && (
           <textarea
             {...props}
+            ref={textAreaRef}
             id={id}
             className={classes.textarea}
             value={value}

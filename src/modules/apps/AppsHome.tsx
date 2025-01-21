@@ -23,7 +23,7 @@ import { AdminView } from '@/components/AdminView/AdminView';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { ONBOARDING_AGENTS_PARAM, ONBOARDING_PARAM } from '@/utils/constants';
+import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
@@ -32,15 +32,14 @@ import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
-import { useAssistants } from '../assistants/api/queries/useAssistants';
-import { NewAgentModal } from '../onboarding/NewAgentModal';
+import { useFirstAssistant } from '../assistants/api/queries/useFirstAssistant';
+import { GeneralOnboardingModal } from '../onboarding/general/GeneralOnboardingModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import classes from './AppsHome.module.scss';
 import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
 import { useArtifactsQueries } from './api';
 import { useArtifacts } from './api/queries/useArtifacts';
 import { AppsList } from './library/AppsList';
-import { AppsOnboardingModal } from './onboarding/AppsOnboardingModal';
 import { Artifact } from './types';
 
 export function AppsHome() {
@@ -54,8 +53,6 @@ export function AppsHome() {
   const searchParams = useSearchParams();
   const showOnboarding =
     !isProjectReadOnly && searchParams?.has(ONBOARDING_PARAM);
-  const showAgentsOnboarding =
-    !isProjectReadOnly && searchParams?.has(ONBOARDING_AGENTS_PARAM);
 
   const queryClient = useQueryClient();
   const artifactsQueries = useArtifactsQueries();
@@ -76,11 +73,9 @@ export function AppsHome() {
     isFetchingNextPage,
   } = useArtifacts({ params });
 
-  const { data: assistantsData } = useAssistants({
-    params: { limit: 1 },
+  const firstAssistant = useFirstAssistant({
     enabled: !data?.artifacts.length,
   });
-  const firstAssistant = assistantsData?.assistants.at(0);
 
   const handleDeleteArtifactSuccess = (artifact: Artifact) => {
     queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
@@ -160,11 +155,7 @@ export function AppsHome() {
       </AdminView>
 
       {showOnboarding && (
-        <AppsOnboardingModal onRequestClose={noop} onAfterClose={noop} isOpen />
-      )}
-      {showAgentsOnboarding && (
-        <NewAgentModal
-          isOnboarding
+        <GeneralOnboardingModal
           onRequestClose={noop}
           onAfterClose={noop}
           isOpen

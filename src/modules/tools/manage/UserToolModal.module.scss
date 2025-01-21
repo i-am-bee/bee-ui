@@ -161,17 +161,27 @@
   }
 }
 
+$modalBlockSize: 84vh;
+$modalOtherContentApproxSize: rem(460px);
+
 .apiSchemaField {
   > div {
-    max-block-size: 20rem;
+    min-block-size: 16rem;
+    max-block-size: calc($modalBlockSize - $modalOtherContentApproxSize);
     overflow-y: auto;
-    display: block;
     border-radius: $block-radius;
+
+    @include breakpoint-down(md) {
+      max-block-size: 24rem;
+    }
+
     &:focus-within {
       outline: 2px solid $focus;
     }
-    textarea:focus {
-      outline: none;
+    textarea {
+      &:focus {
+        outline: none;
+      }
     }
   }
 }

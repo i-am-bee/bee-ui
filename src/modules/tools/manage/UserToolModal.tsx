@@ -258,6 +258,7 @@ export function UserToolModal({
                             invalid={errors.api?.schema != null}
                             rows={16}
                             className={classes.apiSchemaField}
+                            showLineNumbers
                           />
                         </>
                       )}
@@ -290,6 +291,7 @@ export function UserToolModal({
                         required
                         invalid={errors.sourceCode != null}
                         rows={16}
+                        showLineNumbers
                       />
                     )}
                   />
@@ -439,6 +441,7 @@ UserToolModal.View = function ViewUserToolModal({
           readOnly
           rows={16}
           className={type === 'api' ? classes.apiSchemaField : undefined}
+          showLineNumbers
         />
       </ModalBody>
     </Modal>

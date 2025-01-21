@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { Button } from '@carbon/react';
+import { ArrowRight } from '@carbon/react/icons';
 import { Dispatch, SetStateAction } from 'react';
-import classes from './AppsOnboardingTemplateSelection.module.scss';
-import { AppTemplate } from '../types';
-import { AppTemplateCard } from './AppTemplateCard';
-import { BlankAppCard } from './BlankAppCard';
+import { AssistantTemplateCard } from '../../assistants/library/AssistantTemplateCard';
+import { AssistantTemplate } from '../../assistants/types';
+import classes from './OnboardingAssistantSelection.module.scss';
+import { StartFromScratchCard } from './StartFromScratchCard';
 
 interface Props {
-  templates?: AppTemplate[];
-  selected: AppTemplate | null;
-  onSelect: Dispatch<SetStateAction<AppTemplate | null>>;
+  templates?: AssistantTemplate[];
+  selected: AssistantTemplate | null;
+  onSelect: Dispatch<SetStateAction<AssistantTemplate | null>>;
 }
-export function AppsOnboardingTemplateSelection({
+export function OnboardingAssistantSelection({
   templates,
   selected,
   onSelect,
 }: Props) {
+  const { project, organization } = useAppContext();
+
   return (
     <div>
-      <h2 className={classes.heading}>App builder</h2>
-
       <div className={classes.grid}>
-        <BlankAppCard
+        <StartFromScratchCard
           selected={selected === null}
           onClick={() => onSelect(null)}
         />
@@ -47,7 +50,9 @@ export function AppsOnboardingTemplateSelection({
 
           <div className={classes.grid}>
             {templates.map((template) => (
-              <AppTemplateCard
+              <AssistantTemplateCard
+                organization={organization}
+                project={project}
                 key={template.key}
                 template={template}
                 selected={template.key === selected?.key}
@@ -60,3 +65,26 @@ export function AppsOnboardingTemplateSelection({
     </div>
   );
 }
+
+OnboardingAssistantSelection.Footer =
+  function OnboardingAssistantSelectionFooter({
+    onBackClick,
+    onNextClick,
+  }: {
+    onBackClick?: () => void;
+    onNextClick: () => void;
+  }) {
+    return (
+      <>
+        {onBackClick && (
+          <Button kind="ghost" onClick={onBackClick}>
+            Back
+          </Button>
+        )}
+
+        <Button kind="secondary" renderIcon={ArrowRight} onClick={onNextClick}>
+          Start building
+        </Button>
+      </>
+    );
+  };

@@ -1,5 +1,5 @@
 /**
- * Copyright 2025 IBM Corp.
+ * Copyright 2024 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { ApiKeysListQuery } from '@/app/api/api-keys/types';
-import { useQuery } from '@tanstack/react-query';
-import { useApiKeysQueries } from '..';
+import { useAssistants } from './useAssistants';
 
-export function useApiKeys({ params }: { params?: ApiKeysListQuery } = {}) {
-  const apiKeysQueries = useApiKeysQueries();
+export function useFirstAssistant({ enabled }: { enabled?: boolean } = {}) {
+  const { data } = useAssistants({
+    params: { limit: 1 },
+    enabled,
+  });
 
-  const query = useQuery(apiKeysQueries.list(params));
-
-  return query;
+  return data?.assistants.at(0);
 }
