@@ -155,8 +155,6 @@ export function EditableSyntaxHighlighter({
       const textAreaElement = textAreaRef.current;
 
       if (preElement && textAreaElement) {
-        console.log(textAreaElement.scrollLeft);
-
         preElement.scrollLeft = textAreaElement.scrollLeft;
       }
     });
@@ -178,8 +176,6 @@ export function EditableSyntaxHighlighter({
 
   useEffect(() => {
     const textAreaElement = textAreaRef.current;
-
-    console.log(textAreaElement);
 
     if (textAreaElement) {
       textAreaElement.addEventListener('scroll', syncScroll);
