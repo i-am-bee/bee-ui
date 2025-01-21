@@ -193,6 +193,7 @@ export const VectorStoreFilesUploadProvider = ({
       }
     },
     meta: {
+      invalidates: [vectorStoresQueries.lists()],
       errorToast: false,
     },
   });

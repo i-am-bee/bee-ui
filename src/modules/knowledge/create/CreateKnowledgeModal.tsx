@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-import { createVectorStore } from '@/app/api/vector-stores';
-import {
-  VectorStore,
-  VectorStoreCreateBody,
-} from '@/app/api/vector-stores/types';
+import { VectorStore } from '@/app/api/vector-stores/types';
 import { Modal } from '@/components/Modal/Modal';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import {
@@ -31,10 +26,9 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { useMutation } from '@tanstack/react-query';
 import { useEffect, useId } from 'react';
 import { useForm } from 'react-hook-form';
-import { useVectorStoresQueries } from '../api';
+import { useCreateVectorStore } from '../api/mutations/useCreateVectorStore';
 import { KnowledgeFilesUpload } from '../files/KnowledgeFilesUpload';
 import {
   useVectoreStoreFilesUpload,
@@ -85,28 +79,17 @@ function CreateKnowledgeModalContent({
   onSuccess,
 }: ContentProps) {
   const { addToast } = useToast();
-  const { organization, project } = useAppContext();
-  const vectorStoresQueries = useVectorStoresQueries();
   const { files, setFiles, onFileSubmit, setVectorStoreId } =
     useVectoreStoreFilesUpload();
 
   const htmlId = useId();
 
-  const { mutateAsync } = useMutation({
-    mutationFn: (body: VectorStoreCreateBody) =>
-      createVectorStore(organization.id, project.id, body),
-    onSuccess: (response) => {
-      if (response) {
-        setVectorStoreId(response.id);
-        onCreateVectorStore(response);
+  const { mutateAsync } = useCreateVectorStore({
+    onSuccess: (result) => {
+      if (result) {
+        setVectorStoreId(result.id);
+        onCreateVectorStore(result);
       }
-    },
-    meta: {
-      invalidates: [vectorStoresQueries.lists()],
-      errorToast: {
-        title: 'Failed to create the knowledge base',
-        includeErrorMessage: true,
-      },
     },
   });
 

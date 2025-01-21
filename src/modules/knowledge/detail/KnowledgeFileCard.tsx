@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
 import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
@@ -27,9 +26,10 @@ import {
   SkeletonText,
 } from '@carbon/react';
 import { Document, TrashCan, WarningAlt } from '@carbon/react/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useFilesQueries } from '../../files/api';
+import { useDeleteVectorStoreFile } from '../api/mutations/useDeleteVectorStoreFile';
 import classes from './KnowledgeFileCard.module.scss';
 
 interface Props {
@@ -48,26 +48,13 @@ export function KnowledgeFileCard({
   onDeleteSuccess,
 }: Props) {
   const { openConfirmation } = useModal();
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { isProjectReadOnly } = useAppContext();
   const filesQueries = useFilesQueries();
 
   const { mutateAsync: mutateDeleteFile, isPending: isDeletePending } =
-    useMutation({
-      mutationFn: () =>
-        deleteVectorStoreFile(
-          organization.id,
-          project.id,
-          vectorStore.id,
-          vectorStoreFile.id,
-        ),
+    useDeleteVectorStoreFile({
       onSuccess: async () => {
         onDeleteSuccess?.(vectorStoreFile);
-      },
-      meta: {
-        errorToast: {
-          title: 'Failed to delete the file',
-          includeErrorMessage: true,
-        },
       },
     });
 
@@ -107,7 +94,11 @@ export function KnowledgeFileCard({
                     danger: true,
                     icon: TrashCan,
                     size: 'md',
-                    onSubmit: mutateDeleteFile,
+                    onSubmit: () =>
+                      mutateDeleteFile({
+                        vectorStoreId: vectorStore.id,
+                        id: vectorStoreFile.id,
+                      }),
                   }),
               },
             ]

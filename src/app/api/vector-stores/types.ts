@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createVectorStore, listVectorStores } from '.';
+import { createVectorStore, deleteVectorStore, listVectorStores } from '.';
 import { paths } from '../schema';
 import { FetchParamsOrderBy } from '../utils';
 
@@ -24,6 +24,10 @@ export type VectorStoreCreateBody = NonNullable<
 
 export type VectorStoreCreateResponse = NonNullable<
   Awaited<ReturnType<typeof createVectorStore>>
+>;
+
+export type VectorStoreDeleteResponse = NonNullable<
+  Awaited<ReturnType<typeof deleteVectorStore>>
 >;
 
 export type ListVectorStoresResponse = Awaited<

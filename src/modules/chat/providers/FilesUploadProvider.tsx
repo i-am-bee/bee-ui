@@ -15,20 +15,19 @@
  */
 
 'use client';
-import { deleteFile } from '@/app/api/files';
 import { MessageAttachments } from '@/app/api/threads-messages/types';
 import { Thread } from '@/app/api/threads/types';
-import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
 import { useHandleError } from '@/layout/hooks/useHandleError';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useDeleteFile } from '@/modules/files/api/mutations/useDeleteFile';
 import { isMimeTypeReadable } from '@/modules/files/utils';
 import { useCreateVectorStore } from '@/modules/knowledge/api/mutations/useCreateVectorStore';
+import { useDeleteVectorStoreFile } from '@/modules/knowledge/api/mutations/useDeleteVectorStoreFile';
 import {
   useVectoreStoreFilesUpload,
   VectoreStoreFileUpload,
 } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { isNotNull, noop } from '@/utils/helpers';
-import { useMutation } from '@tanstack/react-query';
 import {
   createContext,
   Dispatch,
@@ -82,7 +81,7 @@ const ERROR_MESSAGES = {
 };
 
 export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
-  const { project, organization, assistant, featureFlags } = useAppContext();
+  const { assistant, featureFlags } = useAppContext();
   const {
     files,
     setFiles,
@@ -126,20 +125,8 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       }
     },
   });
-
-  const { mutateAsync: mutateDeleteFile } = useMutation({
-    mutationFn: (id: string) => deleteFile(organization.id, project.id, id),
-  });
-
-  const { mutateAsync: mutateDeleteStoreFile } = useMutation({
-    mutationFn: ({
-      vectorStoreId,
-      id,
-    }: {
-      vectorStoreId: string;
-      id: string;
-    }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
-  });
+  const { mutateAsync: mutateDeleteFile } = useDeleteFile();
+  const { mutateAsync: mutateDeleteStoreFile } = useDeleteVectorStoreFile();
 
   const removeFile = useCallback(
     (id: string) => {

@@ -39,7 +39,7 @@ export function useVectorStoresQueries() {
       };
 
       return infiniteQueryOptions({
-        queryKey: [...vectorStoresQueries.all(), usedParams],
+        queryKey: [...vectorStoresQueries.lists(), usedParams],
         queryFn: ({ pageParam }: { pageParam?: string }) =>
           listVectorStores(organization.id, project.id, {
             ...usedParams,

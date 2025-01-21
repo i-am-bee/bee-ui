@@ -66,6 +66,7 @@ export async function deleteVectorStoreFile(
     },
   );
   assertSuccessResponse(res);
+  return res.data;
 }
 
 export async function readVectorStoreFile(

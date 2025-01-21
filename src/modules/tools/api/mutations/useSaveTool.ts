@@ -14,42 +14,38 @@
  * limitations under the License.
  */
 
-import { createAssistant, updateAssistant } from '@/app/api/assistants';
-import {
-  AssistantCreateBody,
-  AssistantResult,
-} from '@/app/api/assistants/types';
+import { createTool, updateTool } from '@/app/api/tools';
+import { ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAssistantsQueries } from '..';
+import { useToolsQueries } from '..';
 
 interface Props {
-  onSuccess?: (assistant?: AssistantResult, isNew?: boolean) => void;
+  onSuccess?: (tool?: ToolResult, isNew?: boolean) => void;
 }
 
-export function useSaveAssistant({ onSuccess }: Props) {
+export function useSaveTool({ onSuccess }: Props = {}) {
   const queryClient = useQueryClient();
-  const assistantsQueries = useAssistantsQueries();
+  const toolsQueries = useToolsQueries();
   const { project, organization } = useAppContext();
 
   const mutation = useMutation({
-    mutationFn: ({ id, body }: { id?: string; body: AssistantCreateBody }) => {
+    mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
       return id
-        ? updateAssistant(organization.id, project.id, id, body)
-        : createAssistant(organization.id, project.id, body);
+        ? updateTool(organization.id, project.id, id, body)
+        : createTool(organization.id, project.id, body);
     },
     onSuccess: (data, variables) => {
       if (data) {
-        queryClient.invalidateQueries(assistantsQueries.detail(data.id));
+        queryClient.invalidateQueries(toolsQueries.detail(data.id));
       }
 
       onSuccess?.(data, !variables.id);
     },
     meta: {
-      invalidates: [assistantsQueries.lists()],
+      invalidates: [toolsQueries.lists()],
       errorToast: {
-        title: 'Failed to save the assistant',
-        includeErrorMessage: true,
+        title: 'Failed to save the tool',
       },
     },
   });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Tool, ToolReference } from '@/app/api/tools/types';
+import { Tool, ToolDeleteResult, ToolReference } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -32,15 +32,17 @@ import { getToolReferenceFromTool } from './utils';
 
 interface Props {
   tool: Tool;
-  onDeleteSuccess: (tool: Tool) => void;
+  onDeleteSuccess: (tool?: ToolDeleteResult) => void;
   onSaveSuccess?: () => void;
 }
 
 export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   const { name, description, user_description, type } = tool;
-  const { deleteTool, isPending: isDeletePending } = useDeleteTool({
-    tool,
-    onSuccess: () => onDeleteSuccess(tool),
+  const {
+    mutateWithConfirmationAsync: mutateDeleteTool,
+    isPending: isDeletePending,
+  } = useDeleteTool({
+    onSuccess: (tool) => onDeleteSuccess(tool),
   });
   const { isProjectReadOnly } = useAppContext();
   const { openModal } = useModal();
@@ -91,7 +93,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
                 {
                   isDelete: true,
                   itemText: 'Delete',
-                  onClick: () => deleteTool(),
+                  onClick: () => mutateDeleteTool(tool),
                 },
               ].filter(isNotNull)
             : undefined

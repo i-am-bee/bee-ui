@@ -19,6 +19,7 @@ import {
   ListVectorStoresResponse,
   VectorStore,
   VectorStoreCreateResponse,
+  VectorStoreDeleteResponse,
   VectorStoresListQueryOrderBy,
 } from '@/app/api/vector-stores/types';
 import { CardsList } from '@/components/CardsList/CardsList';
@@ -102,12 +103,14 @@ export function KnowledgeView() {
     });
   };
 
-  const onDeleteSuccess = (store: VectorStore) => {
-    onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
-      if (!page) return;
-      const index = page.data.findIndex((item) => item.id === store.id);
-      index >= 0 && page.data.splice(index, 1);
-    });
+  const onDeleteSuccess = (store?: VectorStoreDeleteResponse) => {
+    if (store) {
+      onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
+        if (!page) return;
+        const index = page.data.findIndex((item) => item.id === store.id);
+        index >= 0 && page.data.splice(index, 1);
+      });
+    }
   };
 
   const isLoading = isPending || isFetchingNextPage;

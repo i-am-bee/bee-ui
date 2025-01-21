@@ -15,23 +15,22 @@
  */
 
 import { deleteTool } from '@/app/api/tools';
-import { Tool } from '@/app/api/tools/types';
+import { Tool, ToolDeleteResult } from '@/app/api/tools/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
 
 interface Props {
-  tool: Tool;
-  onSuccess?: () => void;
+  onSuccess?: (tool?: ToolDeleteResult) => void;
 }
 
-export function useDeleteTool({ tool, onSuccess }: Props) {
+export function useDeleteTool({ onSuccess }: Props) {
   const { openConfirmation } = useModal();
   const { project, organization } = useAppContext();
   const toolsQueries = useToolsQueries();
 
-  const { mutateAsync, isPending } = useMutation({
+  const mutation = useMutation({
     mutationFn: (id: string) => deleteTool(organization.id, project.id, id),
     onSuccess,
     meta: {
@@ -43,14 +42,17 @@ export function useDeleteTool({ tool, onSuccess }: Props) {
     },
   });
 
-  const deleteWithConfirmation = () =>
+  const mutateWithConfirmationAsync = (tool: Tool) =>
     openConfirmation({
       title: `Delete ${tool.name}?`,
       body: 'Are you sure you want to delete this tool? Once the tool is deleted, it can’t be undone.',
       primaryButtonText: 'Delete tool',
       danger: true,
-      onSubmit: () => mutateAsync(tool.id),
+      onSubmit: () => mutation.mutateAsync(tool.id),
     });
 
-  return { deleteTool: deleteWithConfirmation, isPending };
+  return {
+    ...mutation,
+    mutateWithConfirmationAsync,
+  };
 }

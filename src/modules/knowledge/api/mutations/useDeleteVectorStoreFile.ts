@@ -14,31 +14,50 @@
  * limitations under the License.
  */
 
-import { createVectorStore } from '@/app/api/vector-stores';
-import {
-  VectorStoreCreateBody,
-  VectorStoreCreateResponse,
-} from '@/app/api/vector-stores/types';
+import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 
 interface Props {
-  onSuccess?: (result?: VectorStoreCreateResponse) => void;
+  onSuccess?: () => void;
 }
 
-export function useCreateVectorStore({ onSuccess }: Props = {}) {
-  const { project, organization } = useAppContext();
+export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
+  const { organization, project } = useAppContext();
   const vectorStoresQueries = useVectorStoresQueries();
 
   const mutation = useMutation({
-    mutationFn: (body: VectorStoreCreateBody) =>
-      createVectorStore(organization.id, project.id, body),
-    onSuccess,
+    mutationFn: async ({
+      vectorStoreId,
+      id,
+    }: {
+      vectorStoreId: string;
+      id: string;
+    }) => {
+      const result = await deleteVectorStoreFile(
+        organization.id,
+        project.id,
+        vectorStoreId,
+        id,
+      );
+
+      return {
+        result,
+        vectorStoreId,
+      };
+    },
+    onSuccess: ({ result, vectorStoreId }) => {
+      if (result) {
+        vectorStoresQueries.detail(vectorStoreId);
+      }
+
+      onSuccess?.();
+    },
     meta: {
       invalidates: [vectorStoresQueries.lists()],
       errorToast: {
-        title: 'Failed to create the knowledge base',
+        title: 'Failed to delete the file',
         includeErrorMessage: true,
       },
     },

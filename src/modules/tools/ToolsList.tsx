@@ -17,7 +17,7 @@
 'use client';
 import { ToolType } from '@/app/api/threads-runs/types';
 import {
-  Tool,
+  ToolDeleteResult,
   ToolResult,
   ToolsListQuery,
   ToolsListResponse,
@@ -94,19 +94,21 @@ export function ToolsList({ type }: Props) {
     );
   };
 
-  const handleDeleteSuccess = (tool: Tool) => {
-    queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-      toolsQueries.list(params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        for (const page of draft.pages) {
-          const index = page.data.findIndex(({ id }) => id === tool.id);
-          if (index >= 0) {
-            page.data.splice(index, 1);
+  const handleDeleteSuccess = (tool?: ToolDeleteResult) => {
+    if (tool) {
+      queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
+        toolsQueries.list(params).queryKey,
+        produce((draft) => {
+          if (!draft?.pages) return null;
+          for (const page of draft.pages) {
+            const index = page.data.findIndex(({ id }) => id === tool.id);
+            if (index >= 0) {
+              page.data.splice(index, 1);
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
+    }
   };
 
   return (
