@@ -71,7 +71,8 @@
 
   code {
     display: block;
-    inline-size: 100%;
+    min-inline-size: 100%;
+    inline-size: max-content;
     white-space: pre !important;
   }
 

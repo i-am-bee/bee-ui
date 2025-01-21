@@ -28,6 +28,7 @@ import {
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import python from 'react-syntax-highlighter/dist/cjs/languages/hljs/python';
 import defaultStyle from 'react-syntax-highlighter/dist/cjs/styles/hljs/default-style';
+import { useResizeObserver } from 'usehooks-ts';
 import classes from './EditableSyntaxHighlighter.module.scss';
 
 const style: { [key: string]: CSSProperties } = {
@@ -144,6 +145,7 @@ export function EditableSyntaxHighlighter({
   ...props
 }: Props) {
   const [lineNumberWidth, setLineNumberWidth] = useState<number>(0);
+  const rootRef = useRef<HTMLDivElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -160,7 +162,7 @@ export function EditableSyntaxHighlighter({
     });
   };
 
-  useEffect(() => {
+  const checkLineNumberWidth = () => {
     if (!preRef.current) {
       return;
     }
@@ -172,7 +174,7 @@ export function EditableSyntaxHighlighter({
     setLineNumberWidth(
       lineNumberElement ? (lineNumberElement as HTMLElement).offsetWidth : 0,
     );
-  }, [value]);
+  };
 
   useEffect(() => {
     const textAreaElement = textAreaRef.current;
@@ -192,8 +194,17 @@ export function EditableSyntaxHighlighter({
     };
   }, []);
 
+  useEffect(() => {
+    checkLineNumberWidth();
+  }, [value]);
+
+  useResizeObserver({
+    ref: rootRef,
+    onResize: checkLineNumberWidth,
+  });
+
   return (
-    <div className={clsx(classes.root, className)}>
+    <div className={clsx(classes.root, className)} ref={rootRef}>
       {labelText && <FormLabel id={id}>{labelText}</FormLabel>}
 
       <div
