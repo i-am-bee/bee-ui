@@ -390,7 +390,7 @@ export function UserToolModal({
   );
 }
 
-function ApiAuthenticationMethod({ tool }: { tool: Tool }) {
+function ApiAuthenticationMethod({ tool }: { tool?: Tool }) {
   const [editApiKey, setEditApiKey] = useState(false);
   const id = useId();
   const {
