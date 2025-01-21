@@ -15,21 +15,21 @@
  */
 
 import { Modal } from '@/components/Modal/Modal';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { AppTemplate } from '@/modules/apps/types';
+import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { ModalBody, ModalFooter } from '@carbon/react';
 import clsx from 'clsx';
 import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
-import classes from './AppsOnboardingModal.module.scss';
-import { OnboardingModalFooter } from './OnboardingFooter';
 import { AppsOnboardingIntro } from './AppsOnboardingIntro';
-import { AppTemplate } from '../types';
+import classes from './AppsOnboardingModal.module.scss';
 import { AppsOnboardingTemplateSelection } from './AppsOnboardingTemplateSelection';
+import { OnboardingModalFooter } from './OnboardingFooter';
 import { ARTIFACT_TEMPLATES } from './templates';
-import { ONBOARDING_PARAM } from '@/utils/constants';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends ModalProps {}
 

@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { APP_NAME } from '@/utils/constants';
 import { simpleHashInRange } from '@/utils/helpers';
 import has from 'lodash/has';
+import { ThreadAssistant } from '../chat/types';
 import { StarterQuestion } from './builder/AssistantBuilderProvider';
 import {
   ASSISTANT_ICONS,
@@ -87,7 +89,29 @@ export function getAssistantIconName(
 }
 
 export function isAssistant(
-  assistant: Assistant | AssistantTemplate,
+  assistant: Assistant | AssistantTemplate | ThreadAssistant,
 ): assistant is Assistant {
   return 'id' in assistant;
+}
+
+export function isThreadAssistant(
+  assistant: Assistant | AssistantTemplate | ThreadAssistant,
+): assistant is ThreadAssistant {
+  return 'data' in assistant;
+}
+
+export function getAssistantName(
+  assistant: Assistant | AssistantTemplate | ThreadAssistant | null,
+): string {
+  if (!assistant) {
+    return APP_NAME;
+  }
+
+  return (
+    (isAssistant(assistant)
+      ? assistant.name || assistant.id
+      : isThreadAssistant(assistant) && assistant.data
+        ? getAssistantName(assistant.data)
+        : assistant.name) ?? APP_NAME
+  );
 }

@@ -15,34 +15,27 @@
  */
 
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { MouseEventHandler } from 'react';
+import { AppIcon } from '@/modules/apps/AppIcon';
 import classes from './AppTemplateCard.module.scss';
-import { AppTemplate } from '../types';
-import { AppIcon } from '../AppIcon';
 
 interface Props {
-  template: AppTemplate;
   selected?: boolean;
-  onClick?: MouseEventHandler;
+  onClick: () => void;
 }
 
-export function AppTemplateCard({ template, selected, onClick }: Props) {
-  const { name, description } = template;
-
+export function BlankAppCard({ onClick, selected }: Props) {
   return (
     <CardsListItem
-      className={classes.root}
-      title={name ?? ''}
-      icon={<AppIcon name={template.uiMetadata.icon} size="md" />}
+      title="Start from scratch"
+      icon={<AppIcon name="Grid" size="md" />}
       onClick={onClick}
       selected={selected}
+      className={classes.root}
       canHover
     >
-      {description && (
-        <div className={classes.body}>
-          <p>{description}</p>
-        </div>
-      )}
+      <div className={classes.body}>
+        <p>Create an app from scratch</p>
+      </div>
     </CardsListItem>
   );
 }

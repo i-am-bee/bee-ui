@@ -16,6 +16,7 @@
 
 'use client';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
+import { ARTIFACT_TEMPLATES } from '@/modules/onboarding/apps/templates';
 import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -27,7 +28,6 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { ARTIFACT_TEMPLATES } from '../onboarding/templates';
 import { Artifact } from '../types';
 
 interface Props {

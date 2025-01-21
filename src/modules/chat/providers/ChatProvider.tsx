@@ -36,6 +36,7 @@ import {
 import { useModal } from '@/layout/providers/ModalProvider';
 import { FILE_SEARCH_TOOL_DEFINITION } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { GET_USER_LOCATION_FUNCTION_TOOL } from '@/modules/assistants/tools/functionTools';
+import { getAssistantName } from '@/modules/assistants/utils';
 import {
   getToolUsageId,
   isExternalTool,
@@ -58,11 +59,11 @@ import {
 } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useDeleteMessage } from '../api/useDeleteMessage';
-import { useThreadsQueries } from '../queries';
 import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
 import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
 import { useThreadApi } from '../hooks/useThreadApi';
+import { useThreadsQueries } from '../queries';
 import {
   ChatMessage,
   MessageWithFiles,
@@ -312,7 +313,7 @@ export function ChatProvider({
       const { thread: createdThread } = await mutateCreateThread({
         tool_resources: toolResources,
         metadata: encodeMetadata<ThreadMetadata>({
-          assistantName: assistant?.name ?? '',
+          assistantName: getAssistantName(assistant),
           assistantId: assistant?.id ?? '',
           title: truncate(message, { length: THREAD_TITLE_MAX_LENGTH }),
         }),
@@ -327,8 +328,7 @@ export function ChatProvider({
       return createdThread;
     },
     [
-      assistant?.id,
-      assistant?.name,
+      assistant,
       mutateCreateThread,
       mutateUpdateThread,
       setThread,

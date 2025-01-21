@@ -18,11 +18,11 @@ import { ApiError } from '@/app/api/errors';
 import { Thread } from '@/app/api/threads/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useAssistantsQueries } from '@/modules/assistants/queries';
-import { APP_NAME } from '@/utils/constants';
+import { getAssistantName } from '@/modules/assistants/utils';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { ThreadAssistant } from '../types';
 import { useThreadsQueries } from '../queries';
+import { ThreadAssistant } from '../types';
 
 export function useGetThreadAssistant(
   thread?: Thread | null,
@@ -81,6 +81,6 @@ export function useGetThreadAssistant(
 }
 
 export function getThreadAssistantName(assistant: ThreadAssistant) {
-  const name = assistant.data?.name ?? assistant.name;
-  return name ? `${name}${assistant.isDeleted ? ' (deleted)' : ''}` : APP_NAME;
+  const name = getAssistantName(assistant);
+  return `${name}${assistant.isDeleted ? ' (deleted)' : ''}`;
 }

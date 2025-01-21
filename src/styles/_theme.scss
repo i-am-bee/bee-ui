@@ -117,6 +117,7 @@ themes.$white: map.merge(
     files-dropzone-background: rgba($white, 0.95),
     modal-background: rgba($cool-gray-60, 0.5),
     sidebar-overlay: rgba($cool-gray-70, 0.6),
+    card-background-hover: rgba($cool-gray-10, 0.5),
   )
 );
 
@@ -195,6 +196,7 @@ themes.$g90: map.merge(
     files-dropzone-background: rgba($cool-gray-90, 0.95),
     modal-background: rgba($cool-gray-100, 0.75),
     sidebar-overlay: rgba($cool-gray-30, 0.6),
+    card-background-hover: rgba($cool-gray-80, 0.5),
   )
 );
 
@@ -232,6 +234,7 @@ $skip-to-content-background: var(--cds-skip-to-content-background);
 $files-dropzone-background: var(--cds-files-dropzone-background);
 $modal-background: var(--cds-modal-background);
 $sidebar-overlay: var(--cds-sidebar-overlay);
+$card-background-hover: var(--cds-card-background-hover);
 
 $box-shadow: 0px 2px 8px 0px $box-shadow-color;
 $drop-shadow: 0px 2px 8px $box-shadow-color;

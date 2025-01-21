@@ -18,11 +18,10 @@ import {
   MessageAttachments,
   MessageResult,
 } from '@/app/api/threads-messages/types';
-import { Assistant } from '../assistants/types';
 import { AssistantPlan, ThreadRun } from '@/app/api/threads-runs/types';
-import { VectoreStoreFileUpload } from '../knowledge/files/VectorStoreFilesUploadProvider';
 import { EntityWithDecodedMetadata } from '@/app/api/types';
-import { Thread } from '@/app/api/threads/types';
+import { Assistant } from '../assistants/types';
+import { VectoreStoreFileUpload } from '../knowledge/files/VectorStoreFilesUploadProvider';
 
 export interface ThreadAssistant {
   name?: string;

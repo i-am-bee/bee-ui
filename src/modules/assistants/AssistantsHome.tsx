@@ -32,7 +32,7 @@ import { useDebounceValue } from 'usehooks-ts';
 import { AssistantsList } from '../assistants/library/AssistantsList';
 import { useAssistantsQueries } from '../assistants/queries';
 import { Assistant } from '../assistants/types';
-import { NewAgentModal } from '../onboarding/NewAgentModal';
+import { GeneralOnboardingModal } from '../onboarding/general/GeneralOnboardingModal';
 import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import { useAssistants } from './hooks/useAssistants';
@@ -126,8 +126,7 @@ export function AssistantsHome() {
       </ProjectHome>
 
       {showOnboarding && (
-        <NewAgentModal
-          isOnboarding
+        <GeneralOnboardingModal
           onRequestClose={noop}
           onAfterClose={noop}
           isOpen

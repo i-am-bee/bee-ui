@@ -17,7 +17,6 @@
 import { DOCUMENTATION_URL } from '@/utils/constants';
 import { Button } from '@carbon/react';
 import { ArrowRight, Launch } from '@carbon/react/icons';
-import Illustration from './illustration.svg';
 import classes from './OnboardingIntro.module.scss';
 
 export function OnboardingIntro() {

@@ -17,9 +17,11 @@
 import { Container } from '@/components/Container/Container';
 import { Link } from '@/components/Link/Link';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { AppIcon } from '@/modules/apps/AppIcon';
 import { AppBuilderNavbarActions } from '@/modules/apps/builder/AppBuilderNavbarActions';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
+import { getAssistantName } from '@/modules/assistants/utils';
 import { ChatNavbarActions } from '@/modules/chat/ChatNavbarActions';
 import { ProjectSelector } from '@/modules/projects/ProjectSelector';
 import { useLayout } from '@/store/layout';
@@ -33,7 +35,6 @@ import classes from './Navbar.module.scss';
 import { SidebarProps } from './Sidebar';
 import { SidebarButton } from './SidebarButton';
 import { SkipNav } from './SkipNav';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   sidebarId: SidebarProps['id'];
@@ -78,7 +79,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
         return navbarProps.assistant
           ? [
               {
-                title: navbarProps.assistant.name ?? '',
+                title: getAssistantName(navbarProps.assistant),
                 icon: (
                   <AssistantIcon
                     assistant={navbarProps.assistant ?? null}
