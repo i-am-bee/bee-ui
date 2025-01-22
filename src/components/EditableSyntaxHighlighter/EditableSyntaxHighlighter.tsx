@@ -222,18 +222,17 @@ export function EditableSyntaxHighlighter({
           {value.at(-1) === '\n' ? `${value} ` : value}
         </SyntaxHighlighter>
 
-        {!readOnly && (
-          <textarea
-            {...props}
-            ref={textAreaRef}
-            id={id}
-            className={classes.textarea}
-            value={value}
-            onChange={(event) => onChange?.(event.target.value)}
-            spellCheck="false"
-            aria-invalid={invalid || undefined}
-          />
-        )}
+        <textarea
+          {...props}
+          ref={textAreaRef}
+          id={id}
+          className={classes.textarea}
+          value={value}
+          onChange={(event) => onChange?.(event.target.value)}
+          spellCheck="false"
+          readOnly={readOnly}
+          aria-invalid={invalid || undefined}
+        />
 
         {invalid && <WarningFilled className={classes.invalidIcon} />}
       </div>
