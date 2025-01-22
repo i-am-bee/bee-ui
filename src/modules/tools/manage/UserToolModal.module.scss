@@ -166,10 +166,11 @@ $modalOtherContentApproxSize: rem(460px);
 
 .apiSchemaField {
   > div {
-    min-block-size: 16rem;
+    min-block-size: 18rem;
     max-block-size: calc($modalBlockSize - $modalOtherContentApproxSize);
     overflow-y: auto;
     border-radius: $block-radius;
+    grid-auto-rows: max-content;
 
     @include breakpoint-down(md) {
       max-block-size: 24rem;
