@@ -30,6 +30,7 @@ import { Document, TrashCan, WarningAlt } from '@carbon/react/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useFilesQueries } from '../../files/queries';
+import { useVectorStoresQueries } from '../queries';
 import classes from './KnowledgeFileCard.module.scss';
 
 interface Props {
@@ -50,6 +51,7 @@ export function KnowledgeFileCard({
   const { openConfirmation } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
   const filesQueries = useFilesQueries();
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const { mutateAsync: mutateDeleteFile, isPending: isDeletePending } =
     useMutation({
@@ -64,6 +66,7 @@ export function KnowledgeFileCard({
         onDeleteSuccess?.(vectorStoreFile);
       },
       meta: {
+        invalidates: [vectorStoresQueries.lists()],
         errorToast: {
           title: 'Failed to delete the file',
           includeErrorMessage: true,

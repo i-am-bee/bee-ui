@@ -17,9 +17,18 @@
 'use client';
 import { deleteFile } from '@/app/api/files';
 import { MessageAttachments } from '@/app/api/threads-messages/types';
+import { Thread } from '@/app/api/threads/types';
 import { createVectorStore } from '@/app/api/vector-stores';
 import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
+import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
 import { useHandleError } from '@/layout/hooks/useHandleError';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { isMimeTypeReadable } from '@/modules/files/utils';
+import {
+  useVectoreStoreFilesUpload,
+  VectoreStoreFileUpload,
+} from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
+import { useVectorStoresQueries } from '@/modules/knowledge/queries';
 import { isNotNull, noop } from '@/utils/helpers';
 import { useMutation } from '@tanstack/react-query';
 import {
@@ -42,14 +51,6 @@ import {
   useDropzone,
 } from 'react-dropzone';
 import { v4 as uuid } from 'uuid';
-import {
-  useVectoreStoreFilesUpload,
-  VectoreStoreFileUpload,
-} from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import { Thread } from '@/app/api/threads/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
-import { isMimeTypeReadable } from '@/modules/files/utils';
 
 const FilesUploadContext = createContext<{
   files: VectoreStoreFileUpload[];
@@ -101,6 +102,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
   const ensureThreadRef = useRef<() => Promise<Thread>>(() => {
     throw Error('Thread retrieval function not defined');
   });
+  const vectorStoresQueries = useVectorStoresQueries();
 
   useEffect(() => {
     const attachments: MessageAttachments = files
@@ -146,6 +148,9 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       vectorStoreId: string;
       id: string;
     }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
+    meta: {
+      invalidates: [vectorStoresQueries.lists()],
+    },
   });
 
   const removeFile = useCallback(
