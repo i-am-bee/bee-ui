@@ -25,19 +25,19 @@ export function useDeleteMessage() {
   const threadsQueries = useThreadsQueries();
 
   const mutation = useMutation({
-    mutationFn: ({ threadId, messageId }: DeleteMutationParams) =>
-      deleteMessage(organization.id, project.id, threadId, messageId),
-    onSuccess: (_, { threadId }) => {
+    mutationFn: ({
+      threadId,
+      messageId,
+    }: {
+      threadId: string;
+      messageId: string;
+    }) => deleteMessage(organization.id, project.id, threadId, messageId),
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: threadsQueries.messagesLists(threadId),
+        queryKey: threadsQueries.messagesLists(variables.threadId),
       });
     },
   });
 
   return mutation;
-}
-
-interface DeleteMutationParams {
-  threadId: string;
-  messageId: string;
 }

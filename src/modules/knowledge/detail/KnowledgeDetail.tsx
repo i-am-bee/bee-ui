@@ -27,6 +27,7 @@ import {
 import {
   ListVectorStoreFilesResponse,
   VectorStoreFile,
+  VectorStoreFilesDeleteResponse,
 } from '@/app/api/vector-stores-files/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
@@ -85,22 +86,24 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
 
   useUpdatePendingVectorStoreFiles(vectorStore, data?.files ?? [], params);
 
-  const onDeleteSuccess = (file: VectorStoreFile) => {
-    queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
-      vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        for (const page of draft.pages) {
-          if (!page) continue;
-          const index = page?.data.findIndex((item) => item.id === file.id);
-          if (index >= 0) {
-            page.data.splice(index, 1);
+  const onDeleteSuccess = (file?: VectorStoreFilesDeleteResponse) => {
+    if (file) {
+      queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
+        vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
+        produce((draft) => {
+          if (!draft?.pages) return null;
+          for (const page of draft.pages) {
+            if (!page) continue;
+            const index = page?.data.findIndex((item) => item.id === file.id);
+            if (index >= 0) {
+              page.data.splice(index, 1);
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
 
-    queryClient.invalidateQueries(vectorStoresQueries.detail(vectorStore.id));
+      queryClient.invalidateQueries(vectorStoresQueries.detail(vectorStore.id));
+    }
   };
 
   const onCreateSuccess = (vectorStoreFile?: VectorStoreFile) => {

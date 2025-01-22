@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import {
   useAppApiContext,
@@ -29,7 +30,7 @@ interface Props {
   assistants?: NonNullable<Assistant>[];
   isLoading: boolean;
   pageSize?: number;
-  onDeleteSuccess: (assistant: Assistant) => void;
+  onDeleteSuccess: (assistant?: AssistantDeleteResult) => void;
 }
 
 export function AssistantsList({

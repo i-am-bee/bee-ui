@@ -26,10 +26,9 @@ export function useCreateThread() {
   const mutation = useMutation({
     mutationFn: async (body: ThreadCreateBody) => {
       const result = await createThread(organization.id, project.id, body);
-      return {
-        result,
-        thread: result && decodeEntityWithMetadata<Thread>(result),
-      };
+      const thread = result && decodeEntityWithMetadata<Thread>(result);
+
+      return thread;
     },
     meta: {
       errorToast: {

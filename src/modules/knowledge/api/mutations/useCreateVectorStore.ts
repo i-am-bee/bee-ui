@@ -24,7 +24,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 
 interface Props {
-  onSuccess?: (result?: VectorStoreCreateResponse) => void;
+  onSuccess?: (data?: VectorStoreCreateResponse) => void;
 }
 
 export function useCreateVectorStore({ onSuccess }: Props = {}) {

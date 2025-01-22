@@ -97,7 +97,7 @@ export function ThreadItem({ thread }: Props) {
   });
 
   const {
-    mutateWithConfirmationAsync: deleteThread,
+    mutateAsyncWithConfirmation: deleteThread,
     isPending: isDeletePending,
   } = useDeleteThread({
     onMutate: () => {

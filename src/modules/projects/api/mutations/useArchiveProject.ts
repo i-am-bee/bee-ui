@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-import { updateUser } from '@/app/api/users';
-import { UserUpdateBody } from '@/app/api/users/types';
-import { decodeMetadata } from '@/app/api/utils';
-import { UserMetadata } from '@/store/user-profile/types';
+import { archiveProject } from '@/app/api/projects';
+import { Project } from '@/app/api/projects/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
+import { useProjectsQueries } from '..';
 
-export function useUpdateUser() {
-  const { data: session, update: updateSession } = useSession();
+interface Props {
+  onSuccess?: (data?: Project) => void;
+}
+
+export function useArchiveProject({ onSuccess }: Props = {}) {
+  const { organization } = useAppContext();
+  const projectsQueries = useProjectsQueries();
 
   const mutation = useMutation({
-    mutationFn: (body?: UserUpdateBody) => updateUser(body),
-    onSuccess: (data) => {
-      updateSession({
-        ...session,
-        userProfile: {
-          ...session?.userProfile,
-          metadata: decodeMetadata<UserMetadata>(data?.metadata),
-        },
-      });
-    },
+    mutationFn: (id: string) => archiveProject(organization.id, id),
+    onSuccess,
     meta: {
-      errorToast: false,
+      invalidates: [projectsQueries.lists()],
+      errorToast: {
+        title: 'Failed to archive the workspace',
+        includeErrorMessage: true,
+      },
     },
   });
 

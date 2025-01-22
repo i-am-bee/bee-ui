@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { ARTIFACTS_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import {
@@ -49,11 +48,11 @@ export function ShareApp({ artifact, onSuccess }: Props) {
     error,
     isPending,
   } = useSaveArtifact({
-    onSuccess: (result) => {
-      const artifact = decodeEntityWithMetadata<Artifact>(result);
-
-      setShareUrl(artifact.share_url);
-      onSuccess?.(artifact);
+    onSuccess: (artifact) => {
+      if (artifact) {
+        setShareUrl(artifact.share_url);
+        onSuccess?.(artifact);
+      }
     },
   });
 

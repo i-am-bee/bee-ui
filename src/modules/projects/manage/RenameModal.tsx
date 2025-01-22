@@ -15,8 +15,7 @@
  */
 
 import { Organization } from '@/app/api/organization/types';
-import { updateProject } from '@/app/api/projects';
-import { Project, ProjectsListResponse } from '@/app/api/projects/types';
+import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
@@ -27,16 +26,9 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import {
-  InfiniteData,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { produce } from 'immer';
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { PROJECTS_QUERY_PARAMS } from '../ProjectSelector';
-import { useProjectsQueries } from '../api';
+import { useUpdateProject } from '../api/mutations/useUpdateProject';
 import { useProjects } from '../api/queries/useProjects';
 
 interface Props extends ModalProps {
@@ -48,37 +40,11 @@ interface Props extends ModalProps {
 export function RenameModal({ project, organization, ...props }: Props) {
   const htmlId = useId();
   const { id, name } = project;
-  const queryClient = useQueryClient();
-
-  const projectsQueries = useProjectsQueries();
   const { data: projects } = useProjects();
 
-  const { mutateAsync } = useMutation({
-    mutationFn: (newName: string) =>
-      updateProject(organization.id, id, { name: newName }),
-    onSuccess: (result, newName) => {
-      if (result) {
-        queryClient.setQueryData<InfiniteData<ProjectsListResponse>>(
-          projectsQueries.list(PROJECTS_QUERY_PARAMS).queryKey,
-          produce((draft) => {
-            if (!draft?.pages) return null;
-            for (const page of draft.pages) {
-              page.data = page.data.map((item) =>
-                item.id === id ? { ...item, name: newName } : item,
-              );
-            }
-          }),
-        );
-      }
-      queryClient.invalidateQueries(projectsQueries.detail(id));
+  const { mutateAsync: updateProject } = useUpdateProject({
+    onSuccess: () => {
       props.onRequestClose();
-    },
-    meta: {
-      invalidates: [projectsQueries.lists()],
-      errorToast: {
-        title: 'Failed to rename the workspace',
-        includeErrorMessage: true,
-      },
     },
   });
 
@@ -98,7 +64,6 @@ export function RenameModal({ project, organization, ...props }: Props) {
   );
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { isSubmitting },
@@ -108,7 +73,7 @@ export function RenameModal({ project, organization, ...props }: Props) {
   });
 
   const onSubmit = async ({ name }: FormValues) => {
-    await mutateAsync(name);
+    await updateProject({ id, body: { name } });
   };
 
   return (

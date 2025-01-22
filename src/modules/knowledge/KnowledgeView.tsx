@@ -17,7 +17,6 @@
 'use client';
 import {
   ListVectorStoresResponse,
-  VectorStore,
   VectorStoreCreateResponse,
   VectorStoreDeleteResponse,
   VectorStoresListQueryOrderBy,
@@ -95,19 +94,21 @@ export function KnowledgeView() {
     );
   };
 
-  const onUpdateSuccess = (store: VectorStore) => {
-    onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
-      if (!page) return;
-      const index = page.data.findIndex((item) => item.id === store.id);
-      index >= 0 && page?.data.splice(index, 1, store);
-    });
-  };
-
-  const onDeleteSuccess = (store?: VectorStoreDeleteResponse) => {
-    if (store) {
+  const onUpdateSuccess = (vectorStore?: VectorStoreCreateResponse) => {
+    if (vectorStore) {
       onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
         if (!page) return;
-        const index = page.data.findIndex((item) => item.id === store.id);
+        const index = page.data.findIndex((item) => item.id === vectorStore.id);
+        index >= 0 && page?.data.splice(index, 1, vectorStore);
+      });
+    }
+  };
+
+  const onDeleteSuccess = (vectorStore?: VectorStoreDeleteResponse) => {
+    if (vectorStore) {
+      onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
+        if (!page) return;
+        const index = page.data.findIndex((item) => item.id === vectorStore.id);
         index >= 0 && page.data.splice(index, 1);
       });
     }

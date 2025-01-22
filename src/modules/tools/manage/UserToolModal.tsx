@@ -142,11 +142,7 @@ export function UserToolModal({
   } = useSaveTool({
     onSuccess: (tool, isNew) => {
       if (tool) {
-        if (isNew) {
-          onCreateSuccess?.(tool);
-        } else {
-          onSaveSuccess?.(tool);
-        }
+        isNew ? onCreateSuccess?.(tool) : onSaveSuccess?.(tool);
       }
 
       onRequestClose();
@@ -154,7 +150,7 @@ export function UserToolModal({
   });
 
   const {
-    mutateWithConfirmationAsync: deleteTool,
+    mutateAsyncWithConfirmation: deleteTool,
     isPending: isDeletePending,
   } = useDeleteTool({
     onSuccess: (tool) => {

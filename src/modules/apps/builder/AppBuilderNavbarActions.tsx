@@ -32,7 +32,7 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
   const router = useRouter();
   const { project } = useAppContext();
   const { openModal } = useModal();
-  const { mutateWithConfirmationAsync: deleteArtifact } = useDeleteArtifact({
+  const { mutateAsyncWithConfirmation: deleteArtifact } = useDeleteArtifact({
     onSuccess: () => router.push(`/${project.id}/apps/`),
   });
 

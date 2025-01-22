@@ -15,13 +15,14 @@
  */
 
 import { fetchProject } from '@/app/api/rsc';
-import { featureFlags, MAIN_ELEMENT_ID } from '@/utils/constants';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
+import { MAIN_ELEMENT_ID } from '@/utils/constants';
+import { parseFeatureFlags } from '@/utils/parseFeatureFlags';
 import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
-import { AppHeader } from './AppHeader';
-import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { ModalProvider } from '../providers/ModalProvider';
+import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
 
 interface Props {
@@ -36,13 +37,13 @@ export async function AppShell({
 
   const project = await fetchProject(organizationId, projectId);
 
-  if (!project) notFound();
+  if (!project || project.status === 'archived') notFound();
 
   return (
     <AppProvider
       project={project}
       organization={{ id: organizationId }}
-      featureFlags={featureFlags}
+      featureFlags={parseFeatureFlags(process.env.FEATURE_FLAGS)}
     >
       <ModalProvider>
         <div className={classes.root}>

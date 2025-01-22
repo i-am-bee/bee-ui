@@ -66,7 +66,7 @@ export function Builder({ thread, initialMessages }: Props) {
   const router = useRouter();
 
   const {
-    mutateWithConfirmationAsync: deleteAssistant,
+    mutateAsyncWithConfirmation: deleteAssistant,
     isPending: isDeletePending,
   } = useDeleteAssistant({
     onSuccess: () => {

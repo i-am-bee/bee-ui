@@ -22,14 +22,9 @@ export function useCanceRun() {
   const { project, organization } = useAppContext();
 
   const mutation = useMutation({
-    mutationFn: ({ threadId, runId }: CancelRunParams) =>
+    mutationFn: ({ threadId, runId }: { threadId: string; runId: string }) =>
       cancelRun(organization.id, project.id, threadId, runId),
   });
 
   return mutation;
-}
-
-interface CancelRunParams {
-  threadId: string;
-  runId: string;
 }

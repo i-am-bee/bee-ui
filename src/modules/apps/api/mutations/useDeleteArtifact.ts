@@ -26,7 +26,7 @@ interface Props {
   onSuccess?: (data?: ArtifactDeleteResult) => void;
 }
 
-export function useDeleteArtifact({ onSuccess }: Props) {
+export function useDeleteArtifact({ onSuccess }: Props = {}) {
   const { openConfirmation } = useModal();
   const { organization, project } = useAppContext();
   const artifactsQueries = useArtifactsQueries();
@@ -43,7 +43,7 @@ export function useDeleteArtifact({ onSuccess }: Props) {
     },
   });
 
-  const mutateWithConfirmationAsync = (artifact: Artifact) =>
+  const mutateAsyncWithConfirmation = (artifact: Artifact) =>
     openConfirmation({
       title: `Delete ${artifact.name}?`,
       body: 'Are you sure you want to delete this app? Once an app is deleted, it can’t be undone.',
@@ -54,6 +54,6 @@ export function useDeleteArtifact({ onSuccess }: Props) {
 
   return {
     ...mutation,
-    mutateWithConfirmationAsync,
+    mutateAsyncWithConfirmation,
   };
 }

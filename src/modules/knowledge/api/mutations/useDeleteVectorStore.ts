@@ -47,7 +47,7 @@ export function useDeleteVectorStore({ onSuccess }: Props = {}) {
     },
   });
 
-  const mutateWithConfirmationAsync = (vectorStore: VectorStore) =>
+  const mutateAsyncWithConfirmation = (vectorStore: VectorStore) =>
     openConfirmation({
       title: 'Delete knowledge base?',
       // TODO: add apps info "This knowledge base contains 12 documents and 3 websites, which are used by 2 apps. Are you sure you want to delete it?"
@@ -61,6 +61,6 @@ export function useDeleteVectorStore({ onSuccess }: Props = {}) {
 
   return {
     ...mutation,
-    mutateWithConfirmationAsync,
+    mutateAsyncWithConfirmation,
   };
 }

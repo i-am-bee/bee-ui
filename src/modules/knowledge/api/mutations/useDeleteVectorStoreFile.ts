@@ -15,7 +15,10 @@
  */
 
 import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import {
+  VectorStoreFile,
+  VectorStoreFilesDeleteResponse,
+} from '@/app/api/vector-stores-files/types';
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -24,7 +27,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 
 interface Props {
-  onSuccess?: () => void;
+  onSuccess?: (data?: VectorStoreFilesDeleteResponse) => void;
 }
 
 export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
@@ -39,25 +42,13 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
     }: {
       vectorStoreId: string;
       id: string;
-    }) => {
-      const result = await deleteVectorStoreFile(
-        organization.id,
-        project.id,
-        vectorStoreId,
-        id,
-      );
-
-      return {
-        result,
-        vectorStoreId,
-      };
-    },
-    onSuccess: ({ result, vectorStoreId }) => {
-      if (result) {
-        vectorStoresQueries.detail(vectorStoreId);
+    }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
+    onSuccess: (data, variables) => {
+      if (data) {
+        vectorStoresQueries.detail(variables.vectorStoreId);
       }
 
-      onSuccess?.();
+      onSuccess?.(data);
     },
     meta: {
       invalidates: [vectorStoresQueries.lists()],
@@ -68,7 +59,7 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
     },
   });
 
-  const mutateWithConfirmationAsync = ({
+  const mutateAsyncWithConfirmation = ({
     vectorStore,
     vectorStoreFile,
     filename,
@@ -94,6 +85,6 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
 
   return {
     ...mutation,
-    mutateWithConfirmationAsync,
+    mutateAsyncWithConfirmation,
   };
 }

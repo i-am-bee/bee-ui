@@ -15,11 +15,11 @@
  */
 
 'use client';
-import { AssistantModel, AssistantResult } from '@/app/api/assistants/types';
+import { AssistantModel } from '@/app/api/assistants/types';
 import { SystemToolId } from '@/app/api/threads-runs/types';
 import { ToolReference } from '@/app/api/tools/types';
 import { AssistantTools } from '@/app/api/types';
-import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { encodeMetadata } from '@/app/api/utils';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import {
   useAppApiContext,
@@ -123,22 +123,20 @@ export function AssistantBuilderProvider({
   const createdAssistantRef = useRef<Assistant | null>(null);
 
   const { mutateAsync: saveAssistant } = useSaveAssistant({
-    onSuccess: (result?: AssistantResult, isNew?: boolean) => {
-      if (!result) return;
+    onSuccess: (assistant, isNew) => {
+      if (!assistant) return;
 
-      const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
-
-      selectAssistant(assistantFromResult);
+      selectAssistant(assistant);
 
       if (isMdDown) {
-        router.push(`/${project.id}/chat/${result.id}`);
+        router.push(`/${project.id}/chat/${assistant.id}`);
       } else {
         if (isNew) {
-          createdAssistantRef.current = assistantFromResult;
+          createdAssistantRef.current = assistant;
           window.history.pushState(
             {},
             '',
-            `/${project.id}/builder/${assistantFromResult.id}`,
+            `/${project.id}/builder/${assistant.id}`,
           );
         }
       }

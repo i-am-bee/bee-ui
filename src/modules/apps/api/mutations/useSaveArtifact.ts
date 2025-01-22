@@ -17,30 +17,31 @@
 import { createArtifact, updateArtifact } from '@/app/api/artifacts';
 import {
   ArtifactCreateBody,
-  ArtifactResult,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useArtifactsQueries } from '..';
+import { Artifact } from '../../types';
 
 type Props = {
-  onSuccess?: (artifact: ArtifactResult) => void;
+  onSuccess?: (data?: Artifact) => void;
 };
 
-export function useSaveArtifact({ onSuccess }: Props) {
+export function useSaveArtifact({ onSuccess }: Props = {}) {
   const { project, organization } = useAppContext();
   const queryClient = useQueryClient();
   const artifactsQueries = useArtifactsQueries();
 
   const mutation = useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       id,
       body,
     }:
       | { id: string; body: ArtifactUpdateBody }
-      | { id?: undefined; body: ArtifactCreateBody }) =>
-      id
+      | { id?: undefined; body: ArtifactCreateBody }) => {
+      const result = await (id
         ? updateArtifact(
             organization.id,
             project.id,
@@ -51,13 +52,17 @@ export function useSaveArtifact({ onSuccess }: Props) {
             organization.id,
             project.id,
             body as ArtifactCreateBody,
-          ),
-    onSuccess: (artifact) => {
-      if (artifact) {
-        queryClient.invalidateQueries(artifactsQueries.detail(artifact.id));
+          ));
+      const artifact = result && decodeEntityWithMetadata<Artifact>(result);
 
-        onSuccess?.(artifact);
+      return artifact;
+    },
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.invalidateQueries(artifactsQueries.detail(data.id));
       }
+
+      onSuccess?.(data);
     },
     meta: {
       invalidates: [artifactsQueries.lists()],

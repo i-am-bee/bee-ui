@@ -27,7 +27,7 @@ interface Props {
 export function ChatNavbarActions({ assistant }: Props) {
   const router = useRouter();
   const { project } = useAppContext();
-  const { mutateWithConfirmationAsync: deleteAssistant } = useDeleteAssistant({
+  const { mutateAsyncWithConfirmation: deleteAssistant } = useDeleteAssistant({
     onSuccess: () => router.push(`/${project.id}/`),
   });
 

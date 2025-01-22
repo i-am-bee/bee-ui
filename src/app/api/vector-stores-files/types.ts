@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { createVectorStoreFile, listVectorStoreFiles } from '.';
+import {
+  createVectorStoreFile,
+  deleteVectorStoreFile,
+  listVectorStoreFiles,
+} from '.';
 import { paths } from '../schema';
 
 export type VectorStoreFileCreateBody = NonNullable<
@@ -31,6 +35,10 @@ export type VectorStoreFilesListQueryOrder = NonNullable<
 
 export type VectorStoreFilesCreateResponse = Awaited<
   ReturnType<typeof createVectorStoreFile>
+>;
+
+export type VectorStoreFilesDeleteResponse = Awaited<
+  ReturnType<typeof deleteVectorStoreFile>
 >;
 
 export type ListVectorStoreFilesResponse = Awaited<

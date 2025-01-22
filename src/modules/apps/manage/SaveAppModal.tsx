@@ -18,7 +18,7 @@ import {
   ArtifactCreateBody,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
-import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { encodeMetadata } from '@/app/api/utils';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
@@ -83,22 +83,23 @@ export function SaveAppModal({
     isError: isSaveError,
     error: saveError,
   } = useSaveArtifact({
-    onSuccess: (result) => {
-      const artifact = decodeEntityWithMetadata<Artifact>(result);
-
-      if (isConfirmation) {
-        router.push(`/${project.id}/apps`);
-      } else {
-        if (!isUpdating) {
-          window.history.pushState(
-            null,
-            '',
-            `/${project.id}/apps/builder/a/${artifact.id}`,
-          );
+    onSuccess: (artifact) => {
+      if (artifact) {
+        if (isConfirmation) {
+          router.push(`/${project.id}/apps`);
+        } else {
+          if (!isUpdating) {
+            window.history.pushState(
+              null,
+              '',
+              `/${project.id}/apps/builder/a/${artifact.id}`,
+            );
+          }
         }
+
+        onSaveSuccess?.(artifact);
       }
 
-      onSaveSuccess?.(artifact);
       onRequestClose();
     },
   });

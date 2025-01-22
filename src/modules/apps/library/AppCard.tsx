@@ -39,12 +39,10 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const { openModal } = useModal();
 
   const {
-    mutateWithConfirmationAsync: deleteArtifact,
+    mutateAsyncWithConfirmation: deleteArtifact,
     isPending: isDeletePending,
   } = useDeleteArtifact({
-    onSuccess: (data) => {
-      onDeleteSuccess?.(data);
-    },
+    onSuccess: onDeleteSuccess,
   });
   const { project } = useAppContext();
 

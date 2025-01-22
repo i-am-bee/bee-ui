@@ -15,24 +15,14 @@
  */
 
 import { updateRun } from '@/app/api/threads-runs';
-import {
-  RunUpdateBody,
-  ThreadRun,
-  ThreadRunUpdateResult,
-} from '@/app/api/threads-runs/types';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
+import { RunUpdateBody, ThreadRun } from '@/app/api/threads-runs/types';
+import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
 
 type Props = {
-  onSuccess?: ({
-    result,
-    thread,
-  }: {
-    result?: ThreadRunUpdateResult;
-    thread?: ThreadRun;
-  }) => void;
+  onSuccess?: (data?: ThreadRun) => void;
 };
 
 export function useUpdateRun({ onSuccess }: Props = {}) {
@@ -57,29 +47,25 @@ export function useUpdateRun({ onSuccess }: Props = {}) {
         runId,
         body,
       );
+      const run = result && decodeEntityWithMetadata<ThreadRun>(result);
 
-      return {
-        result,
-        thread: result && decodeEntityWithMetadata<ThreadRun>(result),
-      };
+      return run;
     },
     onSuccess: (data) => {
-      const { result } = data;
-
-      if (result) {
+      if (data) {
         queryClient.setQueryData(
-          threadsQueries.runDetail(result.thread_id, result.id).queryKey,
+          threadsQueries.runDetail(data.thread_id, data.id).queryKey,
           (run) =>
             run
               ? {
                   ...run,
-                  metadata: result?.metadata ?? {},
+                  metadata: encodeMetadata(data.uiMetadata),
                 }
               : undefined,
         );
 
         queryClient.invalidateQueries({
-          queryKey: threadsQueries.runDetail(result.thread_id, result.id),
+          queryKey: threadsQueries.runDetail(data.thread_id, data.id),
         });
       }
 

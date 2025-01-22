@@ -20,11 +20,11 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
-export function useDeleteApiKey({
-  onSuccess,
-}: {
+interface Props {
   onSuccess?: (data?: ApiKeyDeleteResult) => void;
-}) {
+}
+
+export function useDeleteApiKey({ onSuccess }: Props = {}) {
   const { organization } = useAppContext();
   const apiKeysQueries = useApiKeysQueries();
 

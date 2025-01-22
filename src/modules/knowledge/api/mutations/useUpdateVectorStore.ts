@@ -14,38 +14,39 @@
  * limitations under the License.
  */
 
-import { createTool, updateTool } from '@/app/api/tools';
-import { ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
+import { updateVectorStore } from '@/app/api/vector-stores';
+import {
+  VectorStoreCreateBody,
+  VectorStoreCreateResponse,
+} from '@/app/api/vector-stores/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToolsQueries } from '..';
+import { useVectorStoresQueries } from '..';
 
 interface Props {
-  onSuccess?: (data?: ToolResult, isNew?: boolean) => void;
+  onSuccess?: (data?: VectorStoreCreateResponse) => void;
 }
 
-export function useSaveTool({ onSuccess }: Props = {}) {
-  const queryClient = useQueryClient();
-  const toolsQueries = useToolsQueries();
+export function useUpdateVectorStore({ onSuccess }: Props = {}) {
   const { project, organization } = useAppContext();
+  const vectorStoresQueries = useVectorStoresQueries();
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
-      return id
-        ? updateTool(organization.id, project.id, id, body)
-        : createTool(organization.id, project.id, body);
-    },
-    onSuccess: (data, variables) => {
+    mutationFn: ({ id, body }: { id: string; body: VectorStoreCreateBody }) =>
+      updateVectorStore(organization.id, project.id, id, body),
+    onSuccess: (data) => {
       if (data) {
-        queryClient.invalidateQueries(toolsQueries.detail(data.id));
+        queryClient.invalidateQueries(vectorStoresQueries.detail(data.id));
       }
 
-      onSuccess?.(data, !variables.id);
+      onSuccess?.(data);
     },
     meta: {
-      invalidates: [toolsQueries.lists()],
+      invalidates: [vectorStoresQueries.lists()],
       errorToast: {
-        title: 'Failed to save the tool',
+        title: 'Failed to rename the knowledge base',
+        includeErrorMessage: true,
       },
     },
   });

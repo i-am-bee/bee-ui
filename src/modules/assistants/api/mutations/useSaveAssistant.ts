@@ -15,28 +15,36 @@
  */
 
 import { createAssistant, updateAssistant } from '@/app/api/assistants';
-import {
-  AssistantCreateBody,
-  AssistantResult,
-} from '@/app/api/assistants/types';
+import { AssistantCreateBody } from '@/app/api/assistants/types';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
+import { Assistant } from '../../types';
 
 interface Props {
-  onSuccess?: (assistant?: AssistantResult, isNew?: boolean) => void;
+  onSuccess?: (data?: Assistant, isNew?: boolean) => void;
 }
 
-export function useSaveAssistant({ onSuccess }: Props) {
+export function useSaveAssistant({ onSuccess }: Props = {}) {
   const queryClient = useQueryClient();
   const assistantsQueries = useAssistantsQueries();
   const { project, organization } = useAppContext();
 
   const mutation = useMutation({
-    mutationFn: ({ id, body }: { id?: string; body: AssistantCreateBody }) => {
-      return id
+    mutationFn: async ({
+      id,
+      body,
+    }: {
+      id?: string;
+      body: AssistantCreateBody;
+    }) => {
+      const result = await (id
         ? updateAssistant(organization.id, project.id, id, body)
-        : createAssistant(organization.id, project.id, body);
+        : createAssistant(organization.id, project.id, body));
+      const assistant = result && decodeEntityWithMetadata<Assistant>(result);
+
+      return assistant;
     },
     onSuccess: (data, variables) => {
       if (data) {

@@ -119,9 +119,9 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
   }, [files]);
 
   const { mutateAsync: createVectorStore } = useCreateVectorStore({
-    onSuccess: (result) => {
-      if (result) {
-        setVectorStoreId(result.id);
+    onSuccess: (vectorStore) => {
+      if (vectorStore) {
+        setVectorStoreId(vectorStore.id);
       }
     },
   });

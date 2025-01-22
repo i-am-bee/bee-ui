@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { listProjects } from '.';
+import { listProjects, updateProject } from '.';
 import { paths } from '../schema';
 
 export type Project =
@@ -23,6 +23,10 @@ export type Project =
 export type ProjectCreateBody = NonNullable<
   paths['/v1/organization/projects']['post']['requestBody']
 >['content']['application/json'];
+
+export type ProjectUpdateResponse = NonNullable<
+  Awaited<ReturnType<typeof updateProject>>
+>;
 
 export type ProjectsListQuery = NonNullable<
   paths['/v1/organization/projects']['get']['parameters']['query']

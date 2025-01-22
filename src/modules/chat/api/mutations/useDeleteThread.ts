@@ -64,7 +64,7 @@ export function useDeleteThread({ onMutate }: Props = {}) {
     },
   });
 
-  const mutateWithConfirmationAsync = ({
+  const mutateAsyncWithConfirmation = ({
     thread,
     heading,
   }: {
@@ -81,6 +81,6 @@ export function useDeleteThread({ onMutate }: Props = {}) {
 
   return {
     ...mutation,
-    mutateWithConfirmationAsync,
+    mutateAsyncWithConfirmation,
   };
 }

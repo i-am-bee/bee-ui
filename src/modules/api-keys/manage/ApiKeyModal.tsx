@@ -80,10 +80,10 @@ export function ApiKeyModal({ onSuccess, ...props }: Props) {
   });
 
   const { mutateAsync: createApiKey } = useCreateApiKey({
-    onSuccess: (data) => {
-      if (data) {
+    onSuccess: (apiKey) => {
+      if (apiKey) {
         onRequestClose();
-        openModal((props) => <ApiKeyModal.View apiKey={data} {...props} />);
+        openModal((props) => <ApiKeyModal.View apiKey={apiKey} {...props} />);
       }
     },
   });
@@ -176,16 +176,16 @@ ApiKeyModal.Regenerate = function RegenerateModal({
 } & ModalProps) {
   const { openModal } = useModal();
 
-  const { mutate } = useRegenerateApiKey({
-    onSuccess: (data) => {
-      if (data) {
-        openModal((props) => <ApiKeyModal.View apiKey={data} {...props} />);
+  const { mutate: regenerateApiKey } = useRegenerateApiKey({
+    onSuccess: (apiKey) => {
+      if (apiKey) {
+        openModal((props) => <ApiKeyModal.View apiKey={apiKey} {...props} />);
       }
       props.onRequestClose();
     },
   });
 
-  useOnMount(() => mutate(apiKey));
+  useOnMount(() => regenerateApiKey(apiKey));
 
   return (
     <Modal {...props} size="sm">

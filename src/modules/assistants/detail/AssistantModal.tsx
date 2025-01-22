@@ -55,10 +55,8 @@ export default function AssistantModal({
   const { project, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
-  const { mutateWithConfirmationAsync: deleteAssistant } = useDeleteAssistant({
-    onSuccess: async () => {
-      onDeleteSuccess?.();
-    },
+  const { mutateAsyncWithConfirmation: deleteAssistant } = useDeleteAssistant({
+    onSuccess: onDeleteSuccess,
   });
 
   const vectorStoreId =

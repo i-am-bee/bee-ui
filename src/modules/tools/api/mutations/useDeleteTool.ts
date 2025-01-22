@@ -22,7 +22,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
 
 interface Props {
-  onSuccess?: (tool?: ToolDeleteResult) => void;
+  onSuccess?: (data?: ToolDeleteResult) => void;
 }
 
 export function useDeleteTool({ onSuccess }: Props) {
@@ -42,7 +42,7 @@ export function useDeleteTool({ onSuccess }: Props) {
     },
   });
 
-  const mutateWithConfirmationAsync = (tool: Tool) =>
+  const mutateAsyncWithConfirmation = (tool: Tool) =>
     openConfirmation({
       title: `Delete ${tool.name}?`,
       body: 'Are you sure you want to delete this tool? Once the tool is deleted, it can’t be undone.',
@@ -53,6 +53,6 @@ export function useDeleteTool({ onSuccess }: Props) {
 
   return {
     ...mutation,
-    mutateWithConfirmationAsync,
+    mutateAsyncWithConfirmation,
   };
 }

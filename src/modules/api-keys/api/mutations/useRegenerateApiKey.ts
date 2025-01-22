@@ -20,19 +20,20 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
-export function useRegenerateApiKey({
-  onSuccess,
-}: {
+interface Props {
   onSuccess?: (data?: ApiKey) => void;
-}) {
+}
+
+export function useRegenerateApiKey({ onSuccess }: Props = {}) {
   const { organization } = useAppContext();
   const apiKeysQueries = useApiKeysQueries();
 
   const mutation = useMutation({
     mutationFn: async ({ id, name, project }: ApiKey) => {
-      const result = await createApiKey(organization.id, project.id, { name });
+      const apiKey = await createApiKey(organization.id, project.id, { name });
       await deleteApiKey(organization.id, project.id, id);
-      return result;
+
+      return apiKey;
     },
     onSuccess,
     meta: {

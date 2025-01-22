@@ -21,11 +21,11 @@ import { ProjectWithScope } from '@/modules/projects/types';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
-export function useCreateApiKey({
-  onSuccess,
-}: {
+interface Props {
   onSuccess?: (data?: ApiKey) => void;
-}) {
+}
+
+export function useCreateApiKey({ onSuccess }: Props = {}) {
   const { organization } = useAppContext();
   const apiKeyQueries = useApiKeysQueries();
 

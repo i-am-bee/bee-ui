@@ -16,6 +16,7 @@
 
 import {
   VectorStore,
+  VectorStoreCreateResponse,
   VectorStoreDeleteResponse,
 } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
@@ -33,7 +34,7 @@ import { RenameModal } from './RenameModal';
 
 interface Props {
   vectorStore: VectorStore;
-  onUpdateSuccess: (vectorStore: VectorStore) => void;
+  onUpdateSuccess: (vectorStore?: VectorStoreCreateResponse) => void;
   onDeleteSuccess: (vectorStore?: VectorStoreDeleteResponse) => void;
 }
 
@@ -47,10 +48,10 @@ export function KnowledgeCard({
   const router = useRouter();
 
   const {
-    mutateWithConfirmationAsync: deleteStore,
+    mutateAsyncWithConfirmation: deleteStore,
     isPending: isDeletePending,
   } = useDeleteVectorStore({
-    onSuccess: (vectorStore) => onDeleteSuccess(vectorStore),
+    onSuccess: onDeleteSuccess,
   });
 
   return (

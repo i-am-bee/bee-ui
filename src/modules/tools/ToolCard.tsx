@@ -39,10 +39,10 @@ interface Props {
 export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   const { name, description, user_description, type } = tool;
   const {
-    mutateWithConfirmationAsync: deleteTool,
+    mutateAsyncWithConfirmation: deleteTool,
     isPending: isDeletePending,
   } = useDeleteTool({
-    onSuccess: (tool) => onDeleteSuccess(tool),
+    onSuccess: onDeleteSuccess,
   });
   const { isProjectReadOnly } = useAppContext();
   const { openModal } = useModal();

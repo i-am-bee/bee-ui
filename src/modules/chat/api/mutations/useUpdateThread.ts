@@ -20,7 +20,10 @@ import {
   ThreadsListResponse,
   ThreadUpdateBody,
 } from '@/app/api/threads/types';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
+import {
+  decodeEntityWithMetadata,
+  encodeEntityWithMetadata,
+} from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   InfiniteData,
@@ -44,33 +47,27 @@ export function useUpdateThread() {
       body: ThreadUpdateBody;
     }) => {
       const result = await updateThread(organization.id, project.id, id, body);
+      const thread = result && decodeEntityWithMetadata<Thread>(result);
 
-      return {
-        result,
-        thread: result && decodeEntityWithMetadata<Thread>(result),
-      };
+      return thread;
     },
     onSuccess: (data) => {
-      const { result } = data;
-
-      if (result) {
+      if (data) {
         queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
           threadsQueries.list().queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
-              const index = page.data.findIndex(
-                (item) => item.id === result.id,
-              );
-              if (index >= 0 && result) {
-                page?.data.splice(index, 1, result);
+              const index = page.data.findIndex((item) => item.id === data.id);
+              if (index >= 0 && data) {
+                page?.data.splice(index, 1, encodeEntityWithMetadata(data));
               }
             }
           }),
         );
 
         // TODO: The thread detail is not used anywhere on the client, so it's probably not necessary.
-        queryClient.invalidateQueries(threadsQueries.detail(result.id));
+        queryClient.invalidateQueries(threadsQueries.detail(data.id));
       }
     },
     meta: {

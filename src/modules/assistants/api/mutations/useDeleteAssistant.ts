@@ -15,6 +15,7 @@
  */
 
 import { deleteAssistant } from '@/app/api/assistants';
+import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useMutation } from '@tanstack/react-query';
@@ -23,10 +24,10 @@ import { Assistant } from '../../types';
 import { getAssistantName } from '../../utils';
 
 interface Props {
-  onSuccess?: () => void;
+  onSuccess?: (data?: AssistantDeleteResult) => void;
 }
 
-export function useDeleteAssistant({ onSuccess }: Props) {
+export function useDeleteAssistant({ onSuccess }: Props = {}) {
   const { openConfirmation } = useModal();
   const { project, organization } = useAppContext();
   const assistantsQueries = useAssistantsQueries();
@@ -44,7 +45,7 @@ export function useDeleteAssistant({ onSuccess }: Props) {
     },
   });
 
-  const mutateWithConfirmationAsync = (assistant: Assistant) =>
+  const mutateAsyncWithConfirmation = (assistant: Assistant) =>
     openConfirmation({
       title: `Delete ${getAssistantName(assistant)}?`,
       body: 'Are you sure you want to delete this app? Once an app is deleted, it can’t be undone.',
@@ -55,6 +56,6 @@ export function useDeleteAssistant({ onSuccess }: Props) {
 
   return {
     ...mutation,
-    mutateWithConfirmationAsync,
+    mutateAsyncWithConfirmation,
   };
 }

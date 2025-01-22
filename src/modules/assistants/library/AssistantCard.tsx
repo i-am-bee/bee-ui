@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
@@ -28,7 +29,7 @@ interface Props {
   assistant: Assistant;
   cta?: string;
   onClick?: MouseEventHandler;
-  onDeleteSuccess?: (assistant: Assistant) => void;
+  onDeleteSuccess?: (assistant?: AssistantDeleteResult) => void;
 }
 
 export function AssistantCard({
@@ -39,12 +40,10 @@ export function AssistantCard({
 }: Props) {
   const { name, description } = assistant;
   const {
-    mutateWithConfirmationAsync: deleteAssistant,
+    mutateAsyncWithConfirmation: deleteAssistant,
     isPending: isDeletePending,
   } = useDeleteAssistant({
-    onSuccess: async () => {
-      onDeleteSuccess?.(assistant);
-    },
+    onSuccess: onDeleteSuccess,
   });
   const { isProjectReadOnly } = useAppContext();
   const [builderModalOpened, setBuilderModalOpened] = useState<boolean>(false);

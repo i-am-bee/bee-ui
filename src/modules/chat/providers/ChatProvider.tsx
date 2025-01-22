@@ -280,7 +280,7 @@ export function ChatProvider({
               ? truncate(message, { length: THREAD_TITLE_MAX_LENGTH })
               : threadMetadata.title;
 
-          const { thread: updatedThread } = await updateThread({
+          const updatedThread = await updateThread({
             id: thread.id,
             body: {
               tool_resources: toolResources,
@@ -298,7 +298,7 @@ export function ChatProvider({
         return thread;
       }
 
-      const { thread: createdThread } = await createThread({
+      const createdThread = await createThread({
         tool_resources: toolResources,
         metadata: encodeMetadata<ThreadMetadata>({
           assistantName: getAssistantName(assistant),

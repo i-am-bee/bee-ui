@@ -85,10 +85,10 @@ function CreateKnowledgeModalContent({
   const htmlId = useId();
 
   const { mutateAsync } = useCreateVectorStore({
-    onSuccess: (result) => {
-      if (result) {
-        setVectorStoreId(result.id);
-        onCreateVectorStore(result);
+    onSuccess: (vectorStore) => {
+      if (vectorStore) {
+        setVectorStoreId(vectorStore.id);
+        onCreateVectorStore(vectorStore);
       }
     },
   });

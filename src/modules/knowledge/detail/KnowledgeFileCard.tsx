@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import {
+  VectorStoreFile,
+  VectorStoreFilesDeleteResponse,
+} from '@/app/api/vector-stores-files/types';
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
@@ -34,7 +37,7 @@ import classes from './KnowledgeFileCard.module.scss';
 interface Props {
   vectorStore: VectorStore;
   vectorStoreFile: VectorStoreFile;
-  onDeleteSuccess?: (file: VectorStoreFile) => void;
+  onDeleteSuccess?: (file?: VectorStoreFilesDeleteResponse) => void;
   readOnly?: boolean;
   kind?: 'card' | 'list';
 }
@@ -50,12 +53,10 @@ export function KnowledgeFileCard({
   const filesQueries = useFilesQueries();
 
   const {
-    mutateWithConfirmationAsync: deleteVectorStoreFile,
+    mutateAsyncWithConfirmation: deleteVectorStoreFile,
     isPending: isDeletePending,
   } = useDeleteVectorStoreFile({
-    onSuccess: async () => {
-      onDeleteSuccess?.(vectorStoreFile);
-    },
+    onSuccess: onDeleteSuccess,
   });
 
   const { data, isLoading } = useQuery(filesQueries.detail(vectorStoreFile.id));

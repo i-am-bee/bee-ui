@@ -39,8 +39,8 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
   });
 
   const { mutateAsync } = useUpdateRun({
-    onSuccess: ({ thread }) => {
-      const feedback = thread?.uiMetadata.feedback;
+    onSuccess: (run) => {
+      const feedback = run?.uiMetadata.feedback;
 
       form.reset(
         {
@@ -72,7 +72,7 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
         throw new Error('Missing required "threadId" or "run" parameter.');
       }
 
-      const { thread } = await mutateAsync({
+      const updatedRun = await mutateAsync({
         threadId,
         runId: run.id,
         body: {
@@ -83,9 +83,7 @@ export function useMessageFeedbackForm({ threadId, run, onSuccess }: Props) {
         },
       });
 
-      const feedback = thread?.uiMetadata.feedback;
-
-      console.log(feedback);
+      const feedback = updatedRun?.uiMetadata.feedback;
 
       onSuccess?.(feedback);
 
