@@ -14,51 +14,26 @@
  * limitations under the License.
  */
 
-import { deleteProjectUser, updateProjectUser } from '@/app/api/projects-users';
-import { ProjectUser, ProjectUserRole } from '@/app/api/projects-users/types';
+import { ProjectUser } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { SkeletonPlaceholder, SkeletonText } from '@carbon/react';
-import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import classes from './ProjectUserRow.module.scss';
-import { useProjectUsersQueries } from './api';
+import { useDeleteProjectUser } from './api/mutations/useDeleteProjectUser';
+import { useUpdateProjectUser } from './api/mutations/useUpdateProjectUser';
 
 interface Props {
   user: ProjectUser;
 }
 
 export function ProjectUserRow({ user }: Props) {
-  const { project, organization } = useAppContext();
   const userId = useUserProfile((state) => state.id);
-  const projectUsersQueries = useProjectUsersQueries();
 
-  const { mutateAsync: mutateDelete, isPending: isDeletePending } = useMutation(
-    {
-      mutationFn: () => deleteProjectUser(organization.id, project.id, user.id),
-      meta: {
-        invalidates: [projectUsersQueries.lists()],
-        errorToast: {
-          title: 'Failed to remove the user',
-          includeErrorMessage: true,
-        },
-      },
-    },
-  );
-
-  const { mutateAsync: mutateUpdate } = useMutation({
-    mutationFn: (role: ProjectUserRole) =>
-      updateProjectUser(organization.id, project.id, user.id, role),
-    meta: {
-      invalidates: [projectUsersQueries.lists()],
-      errorToast: {
-        title: 'Failed to remove the user',
-        includeErrorMessage: true,
-      },
-    },
-  });
+  const { mutateAsync: deleteProjectUser, isPending: isDeletePending } =
+    useDeleteProjectUser();
+  const { mutateAsync: updateProjectUser } = useUpdateProjectUser();
 
   return (
     <fieldset
@@ -72,9 +47,9 @@ export function ProjectUserRow({ user }: Props) {
       </span>
       <ProjectRoleDropdown
         role={user.role}
-        onChange={(role) => mutateUpdate(role)}
+        onChange={(role) => updateProjectUser({ id: user.id, body: { role } })}
         onDelete={() => {
-          mutateDelete();
+          deleteProjectUser(user.id);
           const activeElement = document.activeElement;
           if (activeElement instanceof HTMLElement) activeElement.blur();
         }}

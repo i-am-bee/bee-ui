@@ -14,15 +14,26 @@
  * limitations under the License.
  */
 
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { deleteProjectUser } from '@/app/api/projects-users';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { useMutation } from '@tanstack/react-query';
 import { useProjectUsersQueries } from '..';
 
-export function useProjectUsersCount(id: string) {
+export function useDeleteProjectUser() {
+  const { organization, project } = useAppContext();
   const projectUsersQueries = useProjectUsersQueries();
 
-  const { data, isLoading } = useInfiniteQuery(
-    projectUsersQueries.list(id, { limit: 1 }),
-  );
+  const mutation = useMutation({
+    mutationFn: (id: string) =>
+      deleteProjectUser(organization.id, project.id, id),
+    meta: {
+      invalidates: [projectUsersQueries.lists()],
+      errorToast: {
+        title: 'Failed to remove the user',
+        includeErrorMessage: true,
+      },
+    },
+  });
 
-  return { totalCount: data?.totalCount, isLoading };
+  return mutation;
 }

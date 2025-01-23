@@ -31,3 +31,11 @@ export type ProjectUserRole = ProjectUser['role'];
 export type ProjectUserCreateBody = NonNullable<
   paths['/v1/organization/projects/{project_id}/users']['post']['requestBody']['content']['application/json']
 >;
+
+export type ProjectUserCreateResponse = NonNullable<
+  paths['/v1/organization/projects/{project_id}/users']['post']['responses']['200']['content']['application/json']
+>;
+
+export type ProjectUserUpdateBody = NonNullable<
+  paths['/v1/organization/projects/{project_id}/users/{user_id}']['post']['requestBody']
+>['content']['application/json'];

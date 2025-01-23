@@ -15,27 +15,24 @@
  */
 
 import { OrganizationUser } from '@/app/api/organization-users/types';
-import { createProjectUser } from '@/app/api/projects-users';
-import {
-  ProjectUserCreateBody,
-  ProjectUserRole,
-} from '@/app/api/projects-users/types';
+import { ProjectUserRole } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { Button, ComboBox } from '@carbon/react';
 import { Add, Checkmark } from '@carbon/react/icons';
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import { useOrganizationUsersQueries, useProjectUsersQueries } from './api';
+import { useCreateProjectUser } from './api/mutations/useCreateProjectUser';
 
 export function AddUserForm() {
   const htmlId = useId();
-  const { project, organization } = useAppContext();
+  const { project } = useAppContext();
   const userId = useUserProfile((state) => state.id);
   const [search, setSearch] = useState('');
   const projectUsersQueries = useProjectUsersQueries();
@@ -52,15 +49,10 @@ export function AddUserForm() {
     [data?.users, userId],
   );
 
-  const { mutateAsync } = useMutation({
-    mutationFn: (body: ProjectUserCreateBody) =>
-      createProjectUser(organization.id, project.id, body),
+  const { mutateAsync: createProjectUser } = useCreateProjectUser({
     onSuccess: () => {
       setSearch('');
       reset();
-    },
-    meta: {
-      invalidates: [projectUsersQueries.lists()],
     },
   });
 
@@ -151,7 +143,7 @@ export function AddUserForm() {
         }
         onClick={handleSubmit(async ({ user, role }) => {
           if (user) {
-            await mutateAsync({ role, user_id: user.id });
+            await createProjectUser({ role, user_id: user.id });
           }
         })}
         renderIcon={!isMember ? Add : Checkmark}
