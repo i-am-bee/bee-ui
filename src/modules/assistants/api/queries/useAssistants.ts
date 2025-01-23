@@ -18,10 +18,12 @@ import { AssistantsListQuery } from '@/app/api/assistants/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
 
-export function useAssistants({
-  params,
-  enabled = true,
-}: { params?: AssistantsListQuery; enabled?: boolean } = {}) {
+interface Props {
+  params?: AssistantsListQuery;
+  enabled?: boolean;
+}
+
+export function useAssistants({ params, enabled = true }: Props = {}) {
   const assistantsQueries = useAssistantsQueries();
 
   const query = useInfiniteQuery({

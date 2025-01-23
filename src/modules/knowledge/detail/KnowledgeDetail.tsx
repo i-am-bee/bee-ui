@@ -65,7 +65,8 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
     // search, TODO: api not ready
   };
 
-  const { data: vectorStoreFetched } = useVectorStore(vectorStoreProps.id, {
+  const { data: vectorStoreFetched } = useVectorStore({
+    id: vectorStoreProps.id,
     initialData: vectorStoreProps,
   });
 

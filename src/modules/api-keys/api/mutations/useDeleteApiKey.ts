@@ -16,7 +16,7 @@
 
 import { deleteApiKey } from '@/app/api/api-keys';
 import { ApiKey, ApiKeyDeleteResult } from '@/app/api/api-keys/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
@@ -25,7 +25,7 @@ interface Props {
 }
 
 export function useDeleteApiKey({ onSuccess }: Props = {}) {
-  const { organization } = useAppContext();
+  const { organization } = useWorkspace();
   const apiKeysQueries = useApiKeysQueries();
 
   const mutation = useMutation({

@@ -16,7 +16,7 @@
 
 import { ToolReference } from '@/app/api/tools/types';
 import { SkeletonText } from '@carbon/react';
-import { useToolInfo } from '../api/queries/useToolInfo';
+import { useToolInfo } from '../hooks/useToolInfo';
 import classes from './ToolName.module.scss';
 
 interface Props {

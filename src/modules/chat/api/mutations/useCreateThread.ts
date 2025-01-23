@@ -17,11 +17,11 @@
 import { createThread } from '@/app/api/threads';
 import { Thread, ThreadCreateBody } from '@/app/api/threads/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 
 export function useCreateThread() {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
 
   const mutation = useMutation({
     mutationFn: async (body: ThreadCreateBody) => {

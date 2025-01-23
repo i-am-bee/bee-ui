@@ -27,7 +27,7 @@ import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useUserSetting } from '@/layout/hooks/useUserSetting';
-import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { fadeProps } from '@/utils/fadeProps';
 import { isNotNull } from '@/utils/helpers';
 import { Button } from '@carbon/react';

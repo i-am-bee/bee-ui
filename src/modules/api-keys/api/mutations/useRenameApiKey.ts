@@ -15,12 +15,12 @@
  */
 
 import { updateApiKey } from '@/app/api/api-keys';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
 export function useRenameApiKey() {
-  const { organization } = useAppContext();
+  const { organization } = useWorkspace();
   const apiKeysQueries = useApiKeysQueries();
 
   const mutation = useMutation({

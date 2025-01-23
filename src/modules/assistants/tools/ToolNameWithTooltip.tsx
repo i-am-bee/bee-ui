@@ -15,7 +15,7 @@
  */
 
 import { ToolReference } from '@/app/api/tools/types';
-import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { ToolInfoButton } from './ToolInfoButton';
 import classes from './ToolNameWithTooltip.module.scss';
 

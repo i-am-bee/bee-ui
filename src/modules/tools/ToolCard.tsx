@@ -24,7 +24,7 @@ import clsx from 'clsx';
 import Markdown, { Components } from 'react-markdown';
 import { ToolTypeTag } from '../assistants/tools/ToolTypeTag';
 import { useDeleteTool } from './api/mutations/useDeleteTool';
-import { useToolInfo } from './api/queries/useToolInfo';
+import { useToolInfo } from './hooks/useToolInfo';
 import { PublicToolModal } from './manage/PublicToolModal';
 import { UserToolModal } from './manage/UserToolModal';
 import classes from './ToolCard.module.scss';

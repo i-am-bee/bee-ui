@@ -20,7 +20,7 @@ import {
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useArtifactsQueries } from '..';
 import { Artifact } from '../../types';
@@ -30,7 +30,7 @@ type Props = {
 };
 
 export function useSaveArtifact({ onSuccess }: Props = {}) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const queryClient = useQueryClient();
   const artifactsQueries = useArtifactsQueries();
 

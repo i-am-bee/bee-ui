@@ -16,21 +16,15 @@
 
 import { listAssistants, readAssistant } from '@/app/api/assistants';
 import { AssistantsListQuery } from '@/app/api/assistants/types';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { Assistant } from '../types';
 
-export function getAssistantsQueries({
-  organization,
-  project,
-}: {
-  organization: Organization;
-  project: Project;
-}) {
+export function useAssistantsQueries() {
+  const { organization, project } = useWorkspace();
+
   const assistantsQueries = {
     all: () => [project.id, 'assistants'] as const,
     lists: () => [...assistantsQueries.all(), 'list'] as const,
@@ -81,12 +75,6 @@ export function getAssistantsQueries({
   };
 
   return assistantsQueries;
-}
-
-export function useAssistantsQueries() {
-  const { organization, project } = useAppContext();
-
-  return getAssistantsQueries({ organization, project });
 }
 
 export const ASSISTANTS_DEFAULT_PAGE_SIZE = 6;

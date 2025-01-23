@@ -16,18 +16,15 @@
 
 import { listUsers } from '@/app/api/organization-users';
 import { UsersListQuery } from '@/app/api/organization-users/types';
-import { Organization } from '@/app/api/organization/types';
 import { listProjectUsers, readProjectUser } from '@/app/api/projects-users';
 import { ProjectUsersListQuery } from '@/app/api/projects-users/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-export function getProjectUsersQueries({
-  organization,
-}: {
-  organization: Organization;
-}) {
+export function useProjectUsersQueries() {
+  const { organization } = useWorkspace();
+
   const projectUsersQueries = {
     all: () => ['project-users'] as const,
     lists: () => [...projectUsersQueries.all(), 'list'] as const,
@@ -78,14 +75,8 @@ export function getProjectUsersQueries({
   return projectUsersQueries;
 }
 
-export function useProjectUsersQueries() {
-  const { organization } = useAppContext();
-
-  return getProjectUsersQueries({ organization });
-}
-
 export function useOrganizationUsersQueries() {
-  const { organization } = useAppContext();
+  const { organization } = useWorkspace();
 
   const organizationUsersQueries = {
     all: () => ['organization-users'] as const,

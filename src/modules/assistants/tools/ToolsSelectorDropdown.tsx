@@ -19,7 +19,7 @@ import {
   DropdownSelector,
   DropdownSelectorGroup,
 } from '@/components/DropdownSelector/DropdownSelector';
-import { getStaticToolName } from '@/modules/tools/api/queries/useToolInfo';
+import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 import { ToolIcon } from '@/modules/tools/ToolCard';
 import { getToolReferenceFromTool } from '@/modules/tools/utils';
 import { DropdownSkeleton } from '@carbon/react';

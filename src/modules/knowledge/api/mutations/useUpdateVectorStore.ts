@@ -19,7 +19,7 @@ import {
   VectorStoreCreateBody,
   VectorStoreCreateResponse,
 } from '@/app/api/vector-stores/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 
@@ -28,7 +28,7 @@ interface Props {
 }
 
 export function useUpdateVectorStore({ onSuccess }: Props = {}) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const vectorStoresQueries = useVectorStoresQueries();
   const queryClient = useQueryClient();
 

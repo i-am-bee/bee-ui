@@ -21,12 +21,12 @@ import {
 } from '@/app/api/vector-stores-files';
 import { VectorStoreFilesListQuery } from '@/app/api/vector-stores-files/types';
 import { VectorStoresListQuery } from '@/app/api/vector-stores/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export function useVectorStoresQueries() {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
 
   const vectorStoresQueries = {
     all: () => [project.id, 'vector-stores'] as const,

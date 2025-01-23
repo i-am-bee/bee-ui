@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-import { VectorStore } from '@/app/api/vector-stores/types';
-import { useQuery } from '@tanstack/react-query';
-import { useVectorStoresQueries } from '..';
+import { AssistantResult } from '@/app/api/assistants/types';
+import { QueryMetadata } from '@/layout/providers/QueryProvider';
+import { QueryOptions, useQuery } from '@tanstack/react-query';
+import { useAssistantsQueries } from '..';
 
 interface Props {
   id: string | undefined;
+  meta?: QueryMetadata;
+  initialData?: AssistantResult;
   enabled?: boolean;
-  initialData?: VectorStore;
+  retry?: QueryOptions['retry'];
+  throwOnError?: (error: Error) => boolean;
 }
 
-export function useVectorStore({ id, enabled = true, ...props }: Props) {
-  const vectorStoresQueries = useVectorStoresQueries();
+export function useAssistant({ id, enabled = true, ...props }: Props) {
+  const assistantsQueries = useAssistantsQueries();
 
   const query = useQuery({
-    ...vectorStoresQueries.detail(id!),
+    ...assistantsQueries.detail(id!),
     enabled: Boolean(id) && enabled,
     ...props,
   });

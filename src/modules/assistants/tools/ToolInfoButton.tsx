@@ -19,7 +19,7 @@ import { LinkButton } from '@/components/LinkButton/LinkButton';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { ToolDescription } from '@/modules/tools/ToolCard';

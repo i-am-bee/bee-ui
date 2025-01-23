@@ -16,7 +16,7 @@
 
 import { createTool, updateTool } from '@/app/api/tools';
 import { ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
 
@@ -27,7 +27,7 @@ interface Props {
 export function useSaveTool({ onSuccess }: Props = {}) {
   const queryClient = useQueryClient();
   const toolsQueries = useToolsQueries();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
 
   const mutation = useMutation({
     mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {

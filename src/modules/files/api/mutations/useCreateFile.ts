@@ -16,7 +16,7 @@
 
 import { createFile } from '@/app/api/files';
 import { FileCreateResponse } from '@/app/api/files/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { useMutation } from '@tanstack/react-query';
 
@@ -35,7 +35,7 @@ interface FileCreateVariables {
 }
 
 export function useCreateFile({ onMutate, onSuccess, onError }: Props = {}) {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
 
   const mutation = useMutation({
     mutationFn: async ({ inputFile, threadId }: FileCreateVariables) =>

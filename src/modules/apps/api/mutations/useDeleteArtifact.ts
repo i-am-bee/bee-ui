@@ -16,8 +16,8 @@
 
 import { deleteArtifact } from '@/app/api/artifacts';
 import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useArtifactsQueries } from '..';
 import { Artifact } from '../../types';
@@ -28,7 +28,7 @@ interface Props {
 
 export function useDeleteArtifact({ onSuccess }: Props = {}) {
   const { openConfirmation } = useModal();
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
   const artifactsQueries = useArtifactsQueries();
 
   const mutation = useMutation({

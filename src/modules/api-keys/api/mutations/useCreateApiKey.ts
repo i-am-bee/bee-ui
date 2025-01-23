@@ -16,7 +16,7 @@
 
 import { createApiKey } from '@/app/api/api-keys';
 import { ApiKey, ApiKeysCreateBody } from '@/app/api/api-keys/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { ProjectWithScope } from '@/modules/projects/types';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
@@ -26,7 +26,7 @@ interface Props {
 }
 
 export function useCreateApiKey({ onSuccess }: Props = {}) {
-  const { organization } = useAppContext();
+  const { organization } = useWorkspace();
   const apiKeyQueries = useApiKeysQueries();
 
   const mutation = useMutation({

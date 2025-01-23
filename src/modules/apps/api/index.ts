@@ -17,13 +17,13 @@
 import { listArtifacts, readArtifact } from '@/app/api/artifacts';
 import { ArtifactsListQuery } from '@/app/api/artifacts/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { Artifact } from '../types';
 
 export function useArtifactsQueries() {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
 
   const artifactsQueries = {
     all: () => [project.id, 'artifacts'] as const,

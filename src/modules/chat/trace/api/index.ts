@@ -15,11 +15,11 @@
  */
 
 import { listSpans, readTrace } from '@/app/observe/api';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { queryOptions } from '@tanstack/react-query';
 
 export function useTracesQueries() {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
 
   const tracesQueries = {
     all: () => ['traces'] as const,

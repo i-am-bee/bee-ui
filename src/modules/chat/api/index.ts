@@ -33,12 +33,12 @@ import {
 } from '@/app/api/threads-runs/types';
 import { Thread, ThreadsListQuery } from '@/app/api/threads/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export function useThreadsQueries() {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
 
   const threadsQueries = {
     all: () => [project.id, 'threads'] as const,

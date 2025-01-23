@@ -16,8 +16,8 @@
 
 import { deleteAssistant } from '@/app/api/assistants';
 import { AssistantDeleteResult } from '@/app/api/assistants/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
 import { Assistant } from '../../types';
@@ -29,7 +29,7 @@ interface Props {
 
 export function useDeleteAssistant({ onSuccess }: Props = {}) {
   const { openConfirmation } = useModal();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const assistantsQueries = useAssistantsQueries();
 
   const mutation = useMutation({

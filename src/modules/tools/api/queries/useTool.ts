@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-import { cancelRun } from '@/app/api/threads-runs';
-import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import { useMutation } from '@tanstack/react-query';
+import { ToolResult } from '@/app/api/tools/types';
+import { useQuery } from '@tanstack/react-query';
+import { useToolsQueries } from '..';
 
-export function useCanceRun() {
-  const { project, organization } = useWorkspace();
+interface Props {
+  id: string;
+  enabled?: boolean;
+  initialData?: ToolResult;
+}
 
-  const mutation = useMutation({
-    mutationFn: ({ threadId, runId }: { threadId: string; runId: string }) =>
-      cancelRun(organization.id, project.id, threadId, runId),
+export function useTool({ id, ...props }: Props) {
+  const toolsQueries = useToolsQueries();
+
+  const query = useQuery({
+    ...toolsQueries.detail(id),
+    ...props,
   });
 
-  return mutation;
+  return query;
 }

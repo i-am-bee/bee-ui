@@ -19,8 +19,8 @@ import {
   VectorStore,
   VectorStoreDeleteResponse,
 } from '@/app/api/vector-stores/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { TrashCan } from '@carbon/react/icons';
 import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
@@ -30,7 +30,7 @@ interface Props {
 }
 
 export function useDeleteVectorStore({ onSuccess }: Props = {}) {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const { openConfirmation } = useModal();
   const vectorStoresQueries = useVectorStoresQueries();
 

@@ -15,11 +15,11 @@
  */
 
 import { deleteFile } from '@/app/api/files';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 
 export function useDeleteFile() {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
 
   const mutation = useMutation({
     mutationFn: (id: string) => deleteFile(organization.id, project.id, id),

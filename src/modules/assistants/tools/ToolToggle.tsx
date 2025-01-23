@@ -17,8 +17,8 @@
 import { ToolReference } from '@/app/api/tools/types';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { ToolDescription } from '@/modules/tools/ToolCard';
-import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
 import { getToolReferenceId } from '@/modules/tools/utils';
 import { SkeletonIcon, SkeletonText, Toggle, ToggleProps } from '@carbon/react';
 import { MouseEventHandler, useId } from 'react';

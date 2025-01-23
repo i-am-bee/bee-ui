@@ -24,7 +24,7 @@ import {
   decodeEntityWithMetadata,
   encodeEntityWithMetadata,
 } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import {
   InfiniteData,
   useMutation,
@@ -35,7 +35,7 @@ import { useThreadsQueries } from '..';
 
 export function useUpdateThread() {
   const queryClient = useQueryClient();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const threadsQueries = useThreadsQueries();
 
   const mutation = useMutation({

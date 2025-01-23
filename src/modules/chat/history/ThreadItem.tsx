@@ -30,7 +30,6 @@ import {
   TextInput,
 } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { CODE_ENTER, CODE_ESCAPE } from 'keycode-js';
 import truncate from 'lodash/truncate';
@@ -38,9 +37,9 @@ import { useRouter } from 'next-nprogress-bar';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useThreadsQueries } from '../api';
 import { useDeleteThread } from '../api/mutations/useDeleteThread';
 import { useUpdateThread } from '../api/mutations/useUpdateThread';
+import { useListMessages } from '../api/queries/useListMessages';
 import {
   getThreadAssistantName,
   useGetThreadAssistant,
@@ -67,7 +66,6 @@ export function ThreadItem({ thread }: Props) {
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
   const fileCount = useThreadFileCount(thread);
-  const threadsQueries = useThreadsQueries();
 
   const isMdDown = useBreakpoint('mdDown');
 
@@ -91,8 +89,9 @@ export function ThreadItem({ thread }: Props) {
   });
 
   // Fallback for when the message is not saved in thread metadata
-  const { data, isLoading, error, refetch } = useQuery({
-    ...threadsQueries.messagesList(thread.id, { limit: 1 }),
+  const { data, isLoading, error, refetch } = useListMessages({
+    threadId: thread.id,
+    params: { limit: 1 },
     enabled: !title,
   });
 

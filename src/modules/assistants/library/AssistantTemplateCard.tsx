@@ -19,7 +19,7 @@ import { Project } from '@/app/api/projects/types';
 import { ToolReference, ToolsUsage } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
-import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { getToolReferenceFromToolUsage } from '@/modules/tools/utils';
 import { SkeletonText } from '@carbon/react';
 import clsx from 'clsx';
@@ -152,7 +152,7 @@ function ToolName({
 }
 
 function KnowledgeInfo({ vectorStoreId }: { vectorStoreId: string }) {
-  const { data, isLoading } = useVectorStore(vectorStoreId);
+  const { data, isLoading } = useVectorStore({ id: vectorStoreId });
 
   return isLoading ? (
     <SkeletonText className={classes.info} />

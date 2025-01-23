@@ -16,9 +16,15 @@
 
 import { useAssistants } from './useAssistants';
 
-export function useFirstAssistant({ enabled }: { enabled?: boolean } = {}) {
+interface Props {
+  enabled?: boolean;
+}
+
+export function useFirstAssistant({ enabled = true }: Props = {}) {
   const { data } = useAssistants({
-    params: { limit: 1 },
+    params: {
+      limit: 1,
+    },
     enabled,
   });
 

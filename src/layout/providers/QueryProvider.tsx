@@ -28,7 +28,7 @@ import {
 import { PropsWithChildren } from 'react';
 import { useHandleError } from '../hooks/useHandleError';
 
-interface QueryMetadata extends Record<string, unknown> {
+export interface QueryMetadata extends Record<string, unknown> {
   errorToast?: false | { title?: string; includeErrorMessage?: boolean };
 }
 

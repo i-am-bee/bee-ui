@@ -15,11 +15,11 @@
  */
 
 import { readFile, readFileContent } from '@/app/api/files';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { queryOptions } from '@tanstack/react-query';
 
 export function useFilesQueries() {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
 
   const filesQueries = {
     all: () => [project.id, 'files'] as const,

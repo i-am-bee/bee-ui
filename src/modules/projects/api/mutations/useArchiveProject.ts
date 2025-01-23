@@ -16,7 +16,7 @@
 
 import { archiveProject } from '@/app/api/projects';
 import { Project } from '@/app/api/projects/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useProjectsQueries } from '..';
 
@@ -25,7 +25,7 @@ interface Props {
 }
 
 export function useArchiveProject({ onSuccess }: Props = {}) {
-  const { organization } = useAppContext();
+  const { organization } = useWorkspace();
   const projectsQueries = useProjectsQueries();
 
   const mutation = useMutation({

@@ -23,7 +23,7 @@ export function KnowledgeBaseName({
 }: {
   vectoreStoreId: string;
 }) {
-  const { data, isLoading } = useVectorStore(vectoreStoreId);
+  const { data, isLoading } = useVectorStore({ id: vectoreStoreId });
 
   if (isLoading) return <KnowledgeBaseName.Skeleton />;
 

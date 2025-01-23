@@ -20,7 +20,7 @@ import {
   ProjectsListResponse,
   ProjectUpdateResponse,
 } from '@/app/api/projects/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import {
   InfiniteData,
   useMutation,
@@ -35,7 +35,7 @@ interface Props {
 }
 
 export function useUpdateProject({ onSuccess }: Props = {}) {
-  const { organization } = useAppContext();
+  const { organization } = useWorkspace();
   const projectsQueries = useProjectsQueries();
   const queryClient = useQueryClient();
 

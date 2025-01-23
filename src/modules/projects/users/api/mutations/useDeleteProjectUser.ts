@@ -15,12 +15,12 @@
  */
 
 import { deleteProjectUser } from '@/app/api/projects-users';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useProjectUsersQueries } from '..';
 
 export function useDeleteProjectUser() {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
   const projectUsersQueries = useProjectUsersQueries();
 
   const mutation = useMutation({

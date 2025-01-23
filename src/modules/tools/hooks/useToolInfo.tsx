@@ -28,28 +28,26 @@ import {
   SearchLocate,
   Tools,
 } from '@carbon/react/icons';
-import { useQuery } from '@tanstack/react-query';
 import capitalize from 'lodash/capitalize';
 import { ComponentType, useMemo } from 'react';
-import { useToolsQueries } from '..';
-import { ToolName } from '../../common/ToolName';
-import Arxiv from '../../icons/arxiv.svg';
-import DuckDuckGo from '../../icons/duckduckgo.svg';
-import Google from '../../icons/google.svg';
-import Wikipedia from '../../icons/wikipedia.svg';
-import { useTools } from './useTools';
+import { useTool } from '../api/queries/useTool';
+import { useTools } from '../api/queries/useTools';
+import { ToolName } from '../common/ToolName';
+import Arxiv from '../icons/arxiv.svg';
+import DuckDuckGo from '../icons/duckduckgo.svg';
+import Google from '../icons/google.svg';
+import Wikipedia from '../icons/wikipedia.svg';
 
 export function useToolInfo({
   toolReference,
 }: {
   toolReference: ToolReference;
 }) {
-  const toolsQueries = useToolsQueries();
-
   const { tool: toolProp, id, type } = toolReference;
   const isQueryable = type === 'user' || type === 'system';
-  const { data, isLoading, error } = useQuery({
-    ...toolsQueries.detail(id),
+
+  const { data, isLoading, error } = useTool({
+    id,
     enabled: isQueryable,
     initialData: toolProp
       ? encodeEntityWithMetadata<Tool>(toolProp)

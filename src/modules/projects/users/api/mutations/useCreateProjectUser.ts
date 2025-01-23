@@ -19,7 +19,7 @@ import {
   ProjectUserCreateBody,
   ProjectUserCreateResponse,
 } from '@/app/api/projects-users/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useProjectUsersQueries } from '..';
 
@@ -28,7 +28,7 @@ interface Props {
 }
 
 export function useCreateProjectUser({ onSuccess }: Props = {}) {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
   const projectUsersQueries = useProjectUsersQueries();
 
   const mutation = useMutation({

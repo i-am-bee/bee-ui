@@ -16,8 +16,8 @@
 
 import { deleteThread } from '@/app/api/threads';
 import { Thread, ThreadsListResponse } from '@/app/api/threads/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import {
   InfiniteData,
   useMutation,
@@ -34,7 +34,7 @@ export function useDeleteThread({ onMutate }: Props = {}) {
   const queryClient = useQueryClient();
   const { openConfirmation } = useModal();
   const threadsQueries = useThreadsQueries();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
 
   const mutation = useMutation({
     mutationFn: (id: string) => deleteThread(organization.id, project.id, id),

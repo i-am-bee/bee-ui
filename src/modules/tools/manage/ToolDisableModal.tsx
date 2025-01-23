@@ -18,7 +18,7 @@ import { Tool } from '@/app/api/tools/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { Button, ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
-import { getStaticToolName } from '../api/queries/useToolInfo';
+import { getStaticToolName } from '../hooks/useToolInfo';
 import { getToolReferenceFromTool } from '../utils';
 import classes from './ToolDisableModal.module.scss';
 

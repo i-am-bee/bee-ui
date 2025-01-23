@@ -15,12 +15,12 @@
  */
 
 import { deleteMessage } from '@/app/api/threads-messages';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
 
 export function useDeleteMessage() {
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const queryClient = useQueryClient();
   const threadsQueries = useThreadsQueries();
 

@@ -22,6 +22,7 @@ import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
 import { ModalProvider } from '../providers/ModalProvider';
+import { WorkspaceProvider } from '../providers/WorkspaceProvider';
 import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
 
@@ -34,26 +35,24 @@ export async function AppShell({
   children,
 }: PropsWithChildren<Props>) {
   const organizationId = await ensureDefaultOrganizationId();
-
+  const organization = { id: organizationId };
   const project = await fetchProject(organizationId, projectId);
 
   if (!project || project.status === 'archived') notFound();
 
   return (
-    <AppProvider
-      project={project}
-      organization={{ id: organizationId }}
-      featureFlags={parseFeatureFlags(process.env.FEATURE_FLAGS)}
-    >
-      <ModalProvider>
-        <div className={classes.root}>
-          <AppHeader />
+    <WorkspaceProvider organization={organization} project={project}>
+      <AppProvider featureFlags={parseFeatureFlags(process.env.FEATURE_FLAGS)}>
+        <ModalProvider>
+          <div className={classes.root}>
+            <AppHeader />
 
-          <main id={MAIN_ELEMENT_ID} className={classes.content}>
-            {children}
-          </main>
-        </div>
-      </ModalProvider>
-    </AppProvider>
+            <main id={MAIN_ELEMENT_ID} className={classes.content}>
+              {children}
+            </main>
+          </div>
+        </ModalProvider>
+      </AppProvider>
+    </WorkspaceProvider>
   );
 }

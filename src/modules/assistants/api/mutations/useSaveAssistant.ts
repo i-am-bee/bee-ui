@@ -17,7 +17,7 @@
 import { createAssistant, updateAssistant } from '@/app/api/assistants';
 import { AssistantCreateBody } from '@/app/api/assistants/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
 import { Assistant } from '../../types';
@@ -29,7 +29,7 @@ interface Props {
 export function useSaveAssistant({ onSuccess }: Props = {}) {
   const queryClient = useQueryClient();
   const assistantsQueries = useAssistantsQueries();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
 
   const mutation = useMutation({
     mutationFn: async ({

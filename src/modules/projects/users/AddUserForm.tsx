@@ -21,7 +21,7 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { Button, ComboBox } from '@carbon/react';
 import { Add, Checkmark } from '@carbon/react/icons';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -29,6 +29,7 @@ import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
 import { useOrganizationUsersQueries, useProjectUsersQueries } from './api';
 import { useCreateProjectUser } from './api/mutations/useCreateProjectUser';
+import { useProjectUser } from './api/queries/useProjectUser';
 
 export function AddUserForm() {
   const htmlId = useId();
@@ -70,12 +71,14 @@ export function AddUserForm() {
 
   const selectedUser = watch('user');
 
-  const { data: projectUser, isPending: isCheckingMemberStatus } = useQuery({
-    ...projectUsersQueries.detail(project.id, selectedUser?.id ?? ''),
-    retry: false,
-    enabled: Boolean(selectedUser),
-    meta: { errorToast: false },
-  });
+  const { data: projectUser, isPending: isCheckingMemberStatus } =
+    useProjectUser({
+      id: selectedUser?.id,
+      retry: false,
+      meta: {
+        errorToast: false,
+      },
+    });
 
   const isMember = Boolean(projectUser);
 

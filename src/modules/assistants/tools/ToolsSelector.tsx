@@ -16,7 +16,7 @@
 
 import { ToolReference } from '@/app/api/tools/types';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
-import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { fadeProps } from '@/utils/fadeProps';
 import { usePrefix } from '@carbon/react';
 import { Close } from '@carbon/react/icons';

@@ -20,8 +20,8 @@ import {
   VectorStoreFilesDeleteResponse,
 } from '@/app/api/vector-stores-files/types';
 import { VectorStore } from '@/app/api/vector-stores/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { TrashCan } from '@carbon/react/icons';
 import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
@@ -31,7 +31,7 @@ interface Props {
 }
 
 export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
   const { openConfirmation } = useModal();
   const vectorStoresQueries = useVectorStoresQueries();
 

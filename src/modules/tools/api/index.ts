@@ -18,10 +18,12 @@ import { listTools, readTool } from '@/app/api/tools';
 import { Tool, ToolsListQuery } from '@/app/api/tools/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
 export function useToolsQueries() {
-  const { organization, project, featureFlags } = useAppContext();
+  const { organization, project } = useWorkspace();
+  const { featureFlags } = useAppContext();
 
   const toolsQueries = {
     all: () => [project.id, 'tools'] as const,

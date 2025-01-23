@@ -16,8 +16,8 @@
 
 import { deleteTool } from '@/app/api/tools';
 import { Tool, ToolDeleteResult } from '@/app/api/tools/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
 
@@ -27,7 +27,7 @@ interface Props {
 
 export function useDeleteTool({ onSuccess }: Props) {
   const { openConfirmation } = useModal();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const toolsQueries = useToolsQueries();
 
   const mutation = useMutation({

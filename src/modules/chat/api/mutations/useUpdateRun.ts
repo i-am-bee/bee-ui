@@ -17,7 +17,7 @@
 import { updateRun } from '@/app/api/threads-runs';
 import { RunUpdateBody, ThreadRun } from '@/app/api/threads-runs/types';
 import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
 
@@ -27,7 +27,7 @@ type Props = {
 
 export function useUpdateRun({ onSuccess }: Props = {}) {
   const queryClient = useQueryClient();
-  const { project, organization } = useAppContext();
+  const { project, organization } = useWorkspace();
   const threadsQueries = useThreadsQueries();
 
   const mutation = useMutation({

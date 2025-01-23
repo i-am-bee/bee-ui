@@ -16,11 +16,11 @@
 
 import { listApiKeys } from '@/app/api/api-keys';
 import { ApiKeysListQuery } from '@/app/api/api-keys/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { queryOptions } from '@tanstack/react-query';
 
 export function useApiKeysQueries() {
-  const { organization } = useAppContext();
+  const { organization } = useWorkspace();
 
   const apiKeysQueries = {
     all: () => ['api-keys'] as const,

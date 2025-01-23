@@ -21,7 +21,7 @@ import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
 import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
-import { useToolInfo } from '@/modules/tools/api/queries/useToolInfo';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { ToolDescription, ToolIcon } from '@/modules/tools/ToolCard';
@@ -61,7 +61,7 @@ export default function AssistantModal({
 
   const vectorStoreId =
     assistant.tool_resources?.file_search?.vector_store_ids?.at(0);
-  const { data: vectorStore } = useVectorStore(vectorStoreId);
+  const { data: vectorStore } = useVectorStore({ id: vectorStoreId });
 
   const { name, description, instructions, tools } = assistant;
 

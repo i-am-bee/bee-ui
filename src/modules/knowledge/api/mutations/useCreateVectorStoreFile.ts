@@ -16,7 +16,7 @@
 
 import { createVectorStoreFile } from '@/app/api/vector-stores-files';
 import { VectorStoreFilesCreateResponse } from '@/app/api/vector-stores-files/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 import { VectoreStoreFileUpload } from '../../files/VectorStoreFilesUploadProvider';
@@ -35,7 +35,7 @@ interface VectorStoreFileCreateVariables {
 }
 
 export function useCreateVectorStoreFile({ onSuccess, onError }: Props = {}) {
-  const { organization, project } = useAppContext();
+  const { organization, project } = useWorkspace();
   const vectorStoresQueries = useVectorStoresQueries();
 
   const mutation = useMutation({

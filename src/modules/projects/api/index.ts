@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-import { Organization } from '@/app/api/organization/types';
 import { listProjects, readProject } from '@/app/api/projects';
 import { ProjectsListQuery } from '@/app/api/projects/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 
-export const getProjectsQueries = ({
-  organization,
-}: {
-  organization: Organization;
-}) => {
+export function useProjectsQueries() {
+  const { organization } = useWorkspace();
+
   const projectsQueries = {
     all: () => ['projects'] as const,
     lists: () => [...projectsQueries.all(), 'list'] as const,
@@ -76,12 +73,6 @@ export const getProjectsQueries = ({
   };
 
   return projectsQueries;
-};
-
-export function useProjectsQueries() {
-  const { organization } = useAppContext();
-
-  return getProjectsQueries({ organization });
 }
 
 const PROJECTS_DEFAULT_PAGE_SIZE = 10;

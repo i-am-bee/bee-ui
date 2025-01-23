@@ -16,20 +16,16 @@
 
 import { ApiError } from '@/app/api/errors';
 import { Thread } from '@/app/api/threads/types';
-import { useAssistantsQueries } from '@/modules/assistants/api';
+import { useAssistant } from '@/modules/assistants/api/queries/useAssistant';
 import { getAssistantName } from '@/modules/assistants/utils';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { useThreadsQueries } from '../api';
+import { useListRuns } from '../api/queries/useListRuns';
 import { ThreadAssistant } from '../types';
 
 export function useGetThreadAssistant(
   thread?: Thread | null,
   initialAssistant?: ThreadAssistant,
 ) {
-  const assistantsQueries = useAssistantsQueries();
-  const threadsQueries = useThreadsQueries();
-
   const { assistantId: threadAssistantId, assistantName } =
     thread?.uiMetadata ?? {};
   const [assistant, setAssistant] = useState<ThreadAssistant>(
@@ -43,13 +39,14 @@ export function useGetThreadAssistant(
     if (thread === null) setAssistant({ data: null });
   }, [thread]);
 
-  const { data: runs } = useQuery({
-    ...threadsQueries.runsList(thread?.id ?? '', {
+  const { data: runs } = useListRuns({
+    threadId: thread?.id,
+    params: {
       limit: 1,
       order: 'desc',
       order_by: 'created_at',
-    }),
-    enabled: Boolean(thread && !threadAssistantId),
+    },
+    enabled: !threadAssistantId,
   });
 
   const assistantId =
@@ -57,15 +54,15 @@ export function useGetThreadAssistant(
     threadAssistantId ??
     runs?.data.at(-1)?.assistant_id;
 
-  const { data } = useQuery({
-    ...assistantsQueries.detail(assistantId ?? ''),
-    enabled: Boolean(assistantId && !assistant.isDeleted),
-    retry: 0,
+  const { data } = useAssistant({
+    id: assistantId,
+    enabled: !assistant.isDeleted,
+    retry: false,
     meta: {
       errorToast: false,
     },
-    throwOnError: (e) => {
-      if (e instanceof ApiError && e.code === 'not_found') {
+    throwOnError: (error) => {
+      if (error instanceof ApiError && error.code === 'not_found') {
         if (!assistant.isDeleted)
           setAssistant((assistant) => ({ ...assistant, isDeleted: true }));
         return false;

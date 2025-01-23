@@ -19,13 +19,12 @@ import { Organization } from '@/app/api/organization/types';
 import { ProjectUser } from '@/app/api/projects-users/types';
 import { Project } from '@/app/api/projects/types';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
-import { getAssistantsQueries } from '@/modules/assistants/api';
+import { useAssistant } from '@/modules/assistants/api/queries/useAssistant';
 import { Assistant } from '@/modules/assistants/types';
-import { getProjectsQueries } from '@/modules/projects/api';
-import { getProjectUsersQueries } from '@/modules/projects/users/api';
+import { useProject } from '@/modules/projects/api/queries/useProject';
+import { useProjectUser } from '@/modules/projects/users/api/queries/useProjectUser';
 import { useUserProfile } from '@/store/user-profile';
 import { FeatureName } from '@/utils/parseFeatureFlags';
-import { useQuery } from '@tanstack/react-query';
 import {
   createContext,
   MutableRefObject,
@@ -35,6 +34,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useWorkspace } from './WorkspaceProvider';
 
 export interface AppContextValue {
   assistant: Assistant | null;
@@ -62,41 +62,31 @@ const AppApiContext = createContext<AppApiContextValue>(
 
 interface Props {
   featureFlags: Record<FeatureName, boolean>;
-  project: Project;
-  organization: Organization;
 }
 
 export function AppProvider({
   featureFlags,
-  project: initialProject,
-  organization,
   children,
 }: PropsWithChildren<Props>) {
+  const { organization, project: initialProject } = useWorkspace();
   const [project, setProject] = useState<Project>(initialProject);
   const [assistant, setAssistant] = useState<Assistant | null>(null);
   const onPageLeaveRef = useRef(() => null);
   const userId = useUserProfile((state) => state.id);
-  const projectsQueries = getProjectsQueries({ organization });
-  const assistantsQueries = getAssistantsQueries({ organization, project });
-  const projectUsersQueries = getProjectUsersQueries({ organization });
 
-  const { data: projectData } = useQuery({
-    ...projectsQueries.detail(project.id),
+  const { data: projectData } = useProject({
+    id: project.id,
     initialData: project,
   });
 
-  const { data: assistantData } = useQuery({
-    ...assistantsQueries.detail(assistant?.id ?? ''),
-    enabled: Boolean(assistant),
+  const { data: assistantData } = useAssistant({
+    id: assistant?.id,
     initialData: assistant
       ? encodeEntityWithMetadata<Assistant>(assistant)
       : undefined,
   });
 
-  const { data: projectUser } = useQuery({
-    ...projectUsersQueries.detail(project.id, userId),
-    enabled: Boolean(userId),
-  });
+  const { data: projectUser } = useProjectUser({ id: userId });
 
   const apiValue = useMemo(
     () => ({
