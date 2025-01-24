@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-import { useAssistants } from './useAssistants';
-
-export function useFirstAssistant({ enabled }: { enabled?: boolean } = {}) {
-  const { data, isPending } = useAssistants({
-    params: { limit: 1 },
-    enabled,
-  });
-
-  return {
-    assistant: data?.assistants.at(0),
-    isPending,
-  };
+export enum CounterType {
+  BUILD_AN_APP = 'onboardingClick:buildApp',
+  CHAT_WITH_AGENT = 'onboardingClick:chat',
+  CREATE_AN_AGENT = 'onboardingClick:createAgent',
 }

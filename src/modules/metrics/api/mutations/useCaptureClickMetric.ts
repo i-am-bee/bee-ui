@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-import { useAssistants } from './useAssistants';
+import { captureClickMetric } from '@/app/api/metrics';
+import { CounterType } from '@/app/api/metrics/types';
+import { useMutation } from '@tanstack/react-query';
 
-export function useFirstAssistant({ enabled }: { enabled?: boolean } = {}) {
-  const { data, isPending } = useAssistants({
-    params: { limit: 1 },
-    enabled,
+export function useCaptureClickMetric() {
+  const mutation = useMutation({
+    mutationFn: (body: { type: CounterType }) => captureClickMetric(body),
+    meta: {
+      errorToast: false,
+    },
   });
 
-  return {
-    assistant: data?.assistants.at(0),
-    isPending,
-  };
+  return mutation;
 }

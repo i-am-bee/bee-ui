@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { useAssistants } from './useAssistants';
+import { CounterType } from './types';
 
-export function useFirstAssistant({ enabled }: { enabled?: boolean } = {}) {
-  const { data, isPending } = useAssistants({
-    params: { limit: 1 },
-    enabled,
+export async function captureClickMetric(body: { type: CounterType }) {
+  const res = await fetch('/api/metrics', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(body),
   });
 
-  return {
-    assistant: data?.assistants.at(0),
-    isPending,
-  };
+  return await res.json();
 }
