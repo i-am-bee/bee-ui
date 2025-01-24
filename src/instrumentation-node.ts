@@ -27,7 +27,6 @@ const metricExporter = new OTLPMetricExporter({
 
 const metricReader = new metrics.PeriodicExportingMetricReader({
   exporter: metricExporter,
-  exportIntervalMillis: 1000,
 });
 
 const sdk = new NodeSDK({
