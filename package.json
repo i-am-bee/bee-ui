@@ -30,7 +30,6 @@
     "@dhmk/zustand-lens": "^5.0.0",
     "@floating-ui/react": "^0.26.22",
     "@hookform/resolvers": "^3.9.0",
-    "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/api-logs": "^0.53.0",
     "@opentelemetry/exporter-jaeger": "^1.26.0",
     "@opentelemetry/exporter-metrics-otlp-http": "^0.57.1",
