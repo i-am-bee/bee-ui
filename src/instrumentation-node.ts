@@ -35,7 +35,7 @@ const sdk = new NodeSDK({
     [ATTR_SERVICE_NAME]: SERVICE_NAME,
   }),
   instrumentations: [new HttpInstrumentation()],
-  metricReader: metricReader,
+  metricReader,
 });
 
 sdk.start();
