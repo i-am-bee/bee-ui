@@ -15,10 +15,11 @@
  */
 
 import { InterationType, TraceSpan } from '@/app/observe/api/types';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
-import { useThreadsQueries } from '../../api';
-import { MAX_TRACE_RETRY_COUNT, useTracesQueries } from '../api';
+import { useRunTrace } from '../../api/queries/useRunTrace';
+import { MAX_TRACE_RETRY_COUNT } from '../api';
+import { useListSpans } from '../api/queries/useListSpans';
+import { useTrace } from '../api/queries/useTrace';
 import { GENERATE_EVENT_TOOL_START, TraceData } from '../types';
 import {
   getExecutionTime,
@@ -33,35 +34,31 @@ interface Props {
   runId?: string;
 }
 
-export function useBuildTraceData({ enabled, threadId, runId }: Props): {
+export function useBuildTraceData({
+  enabled: enabledProp,
+  threadId,
+  runId,
+}: Props): {
   traceData: TraceData | null;
   traceError?: Error;
 } {
   const [hasFailed, setHasFailed] = useState(false);
-  const tracesQueries = useTracesQueries();
-  const threadsQueries = useThreadsQueries();
-  const computedEnabled = !hasFailed && Boolean(enabled && threadId && runId);
+  const enabled = !hasFailed && enabledProp;
 
-  const { data: runTraceData } = useQuery({
-    ...threadsQueries.runTrace(threadId ?? '', runId ?? ''),
-    enabled: computedEnabled,
-  });
+  const { data: runTraceData } = useRunTrace({ threadId, runId, enabled });
 
   const {
     data: traceData,
     error,
     failureCount,
-  } = useQuery({
-    ...tracesQueries.detail(runTraceData?.id ?? ''),
-    enabled: Boolean(runTraceData?.id && computedEnabled),
-  });
+  } = useTrace({ id: runTraceData?.id, enabled });
 
   useEffect(() => {
     if (error && failureCount > MAX_TRACE_RETRY_COUNT) setHasFailed(true);
   }, [error, failureCount]);
 
-  const { data: traceSpans } = useQuery({
-    ...tracesQueries.span(runTraceData?.id ?? ''),
+  const { data: traceSpans } = useListSpans({
+    traceId: runTraceData?.id,
     enabled: Boolean(!error && traceData?.result.id),
   });
 
@@ -111,7 +108,7 @@ export function useBuildTraceData({ enabled, threadId, runId }: Props): {
   if (error && failureCount > MAX_TRACE_RETRY_COUNT)
     return { traceError: error, traceData: null };
 
-  if (!enabled || !data) return { traceData: null };
+  if (!enabledProp || !data) return { traceData: null };
 
   const { tokenCount, executionTime, rawPrompt } = data;
   return {

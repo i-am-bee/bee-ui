@@ -22,15 +22,14 @@ import { VectorStore } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useFile } from '@/modules/files/api/queries/useFile';
 import {
   InlineLoading,
   SkeletonPlaceholder,
   SkeletonText,
 } from '@carbon/react';
 import { Document, WarningAlt } from '@carbon/react/icons';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useFilesQueries } from '../../files/api';
 import { useDeleteVectorStoreFile } from '../api/mutations/useDeleteVectorStoreFile';
 import classes from './KnowledgeFileCard.module.scss';
 
@@ -50,7 +49,6 @@ export function KnowledgeFileCard({
   onDeleteSuccess,
 }: Props) {
   const { isProjectReadOnly } = useAppContext();
-  const filesQueries = useFilesQueries();
 
   const {
     mutateAsyncWithConfirmation: deleteVectorStoreFile,
@@ -59,7 +57,7 @@ export function KnowledgeFileCard({
     onSuccess: onDeleteSuccess,
   });
 
-  const { data, isLoading } = useQuery(filesQueries.detail(vectorStoreFile.id));
+  const { data, isLoading } = useFile({ id: vectorStoreFile.id });
 
   if (!data && isLoading)
     return kind === 'card' ? (

@@ -15,8 +15,7 @@
  */
 
 import { Spinner } from '@/components/Spinner/Spinner';
-import { useFilesQueries } from '@/modules/files/api';
-import { useQuery } from '@tanstack/react-query';
+import { useFileContent } from '@/modules/files/api/queries/useFileContent';
 import classes from './AttachmentImage.module.scss';
 
 export function AttachmentImage({
@@ -28,8 +27,7 @@ export function AttachmentImage({
   alt: string;
   title?: string;
 }) {
-  const filesQueries = useFilesQueries();
-  const { data: content, isLoading } = useQuery(filesQueries.content(fileId));
+  const { data: content, isLoading } = useFileContent({ id: fileId });
 
   return (
     <span className={classes.root}>
