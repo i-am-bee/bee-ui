@@ -1,5 +1,18 @@
 # Changelog
 
+## <small>0.0.24 (2025-01-22)</small>
+
+* fix: build, tool api schema scroll (#191) ([baa2d19](https://github.com/i-am-bee/bee-ui/commit/baa2d19)), closes [#191](https://github.com/i-am-bee/bee-ui/issues/191)
+* fix: vector store files invalidations (#192) ([357af33](https://github.com/i-am-bee/bee-ui/commit/357af33)), closes [#192](https://github.com/i-am-bee/bee-ui/issues/192)
+* fix(app-builder): horizontal scroll after code update ([47acd2a](https://github.com/i-am-bee/bee-ui/commit/47acd2a))
+* fix(tools): api calling detail modal (#185) ([fc3c8f4](https://github.com/i-am-bee/bee-ui/commit/fc3c8f4)), closes [#185](https://github.com/i-am-bee/bee-ui/issues/185)
+* fix(tools): api schema field style (#189) ([593f112](https://github.com/i-am-bee/bee-ui/commit/593f112)), closes [#189](https://github.com/i-am-bee/bee-ui/issues/189)
+* feat: onboarding redesign, assistant name fallback (#187) ([eed9b42](https://github.com/i-am-bee/bee-ui/commit/eed9b42)), closes [#187](https://github.com/i-am-bee/bee-ui/issues/187)
+* feat(app-builder): app loading update  (#188) ([02fd490](https://github.com/i-am-bee/bee-ui/commit/02fd490)), closes [#188](https://github.com/i-am-bee/bee-ui/issues/188)
+* feat(code-textarea): add line numbers (#178) ([83f03f2](https://github.com/i-am-bee/bee-ui/commit/83f03f2)), closes [#178](https://github.com/i-am-bee/bee-ui/issues/178)
+* feat(tools): add api calling, fetch retryOn fix (#182) ([5a1b1a0](https://github.com/i-am-bee/bee-ui/commit/5a1b1a0)), closes [#182](https://github.com/i-am-bee/bee-ui/issues/182)
+* refactor: queries usage and add semi-auto mutation invalidation ([bc251fc](https://github.com/i-am-bee/bee-ui/commit/bc251fc))
+
 ## <small>0.0.23 (2025-01-16)</small>
 
 * feat: for dummy JWT use username from the API (#184) ([3e2d9eb](https://github.com/i-am-bee/bee-ui/commit/3e2d9eb)), closes [#184](https://github.com/i-am-bee/bee-ui/issues/184) [i-am-bee/bee-api#56](https://github.com/i-am-bee/bee-api/issues/56)

@@ -99,7 +99,7 @@ export function encodeMetadata<T extends EntityMetadata>(
 }
 
 export function decodeMetadata<T extends EntityMetadata>(
-  metadata?: ApiMetadata,
+  metadata?: ApiMetadata | null,
 ): T {
   const decoded: EntityMetadata = {};
 

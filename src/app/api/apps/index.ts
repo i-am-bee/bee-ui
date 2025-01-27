@@ -16,7 +16,7 @@
 
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { ChatCompletionCreateBody } from './types';
+import { ChatCompletionCreateBody, ChatCompletionResponse } from './types';
 
 export async function createChatCompletion(
   organizationId: string,
@@ -28,7 +28,7 @@ export async function createChatCompletion(
     headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
-  return res.data;
+  return res.data as ChatCompletionResponse;
 }
 
 export async function modulesToPackages(

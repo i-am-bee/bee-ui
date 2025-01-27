@@ -45,7 +45,7 @@ export type ApiMetadata = {
 };
 
 export type EntityResultWithMetadata<T> = Omit<T, 'uiMetadata'> & {
-  metadata?: ApiMetadata;
+  metadata?: ApiMetadata | null;
 };
 
 export type EntityWithEncodedMetadata<T> = Omit<T, 'uiMetadata'> & {
