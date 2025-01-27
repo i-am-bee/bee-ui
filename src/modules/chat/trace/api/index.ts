@@ -17,32 +17,36 @@
 import { listSpans, readTrace } from '@/app/observe/api';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export function useTracesQueries() {
   const { organization, project } = useWorkspace();
 
-  const tracesQueries = {
-    all: () => ['traces'] as const,
-    details: () => [...tracesQueries.all(), 'detail'] as const,
-    detail: (id: string) =>
-      queryOptions({
-        queryKey: [...tracesQueries.details(), id],
-        queryFn: () => readTrace(organization.id, project.id, id),
-        meta: {
-          errorToast: false,
-        },
-        retry: MAX_TRACE_RETRY_COUNT,
-      }),
-    spans: () => [...tracesQueries.all(), 'span'] as const,
-    span: (id: string) =>
-      queryOptions({
-        queryKey: [...tracesQueries.spans(), id],
-        queryFn: () => listSpans(organization.id, project.id, id),
-        meta: {
-          errorToast: false,
-        },
-      }),
-  };
+  const tracesQueries = useMemo(
+    () => ({
+      all: () => ['traces'] as const,
+      details: () => [...tracesQueries.all(), 'detail'] as const,
+      detail: (id: string) =>
+        queryOptions({
+          queryKey: [...tracesQueries.details(), id],
+          queryFn: () => readTrace(organization.id, project.id, id),
+          meta: {
+            errorToast: false,
+          },
+          retry: MAX_TRACE_RETRY_COUNT,
+        }),
+      spans: () => [...tracesQueries.all(), 'span'] as const,
+      span: (id: string) =>
+        queryOptions({
+          queryKey: [...tracesQueries.spans(), id],
+          queryFn: () => listSpans(organization.id, project.id, id),
+          meta: {
+            errorToast: false,
+          },
+        }),
+    }),
+    [organization.id, project.id],
+  );
 
   return tracesQueries;
 }

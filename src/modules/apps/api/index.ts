@@ -20,59 +20,63 @@ import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { Artifact } from '../types';
 
 export function useArtifactsQueries() {
   const { organization, project } = useWorkspace();
 
-  const artifactsQueries = {
-    all: () => [project.id, 'artifacts'] as const,
-    lists: () => [...artifactsQueries.all(), 'list'] as const,
-    list: (params?: ArtifactsListQuery) => {
-      const usedParams: ArtifactsListQuery = {
-        limit: ARTIFACTS_DEFAULT_PAGE_SIZE,
-        ...params,
-      };
+  const artifactsQueries = useMemo(
+    () => ({
+      all: () => [project.id, 'artifacts'] as const,
+      lists: () => [...artifactsQueries.all(), 'list'] as const,
+      list: (params?: ArtifactsListQuery) => {
+        const usedParams: ArtifactsListQuery = {
+          limit: ARTIFACTS_DEFAULT_PAGE_SIZE,
+          ...params,
+        };
 
-      return infiniteQueryOptions({
-        queryKey: [...artifactsQueries.lists(), usedParams],
-        queryFn: ({ pageParam }: { pageParam?: string }) =>
-          listArtifacts(organization.id, project.id, {
-            ...usedParams,
-            after: pageParam,
-          }),
-        initialPageParam: undefined,
-        getNextPageParam(lastPage) {
-          return lastPage?.has_more && lastPage?.last_id
-            ? lastPage.last_id
-            : undefined;
-        },
-        select(data) {
-          const artifacts = data.pages
-            .flatMap((page) => page?.data)
-            .filter(isNotNull)
-            .map((item) => decodeEntityWithMetadata<Artifact>(item));
+        return infiniteQueryOptions({
+          queryKey: [...artifactsQueries.lists(), usedParams],
+          queryFn: ({ pageParam }: { pageParam?: string }) =>
+            listArtifacts(organization.id, project.id, {
+              ...usedParams,
+              after: pageParam,
+            }),
+          initialPageParam: undefined,
+          getNextPageParam(lastPage) {
+            return lastPage?.has_more && lastPage?.last_id
+              ? lastPage.last_id
+              : undefined;
+          },
+          select(data) {
+            const artifacts = data.pages
+              .flatMap((page) => page?.data)
+              .filter(isNotNull)
+              .map((item) => decodeEntityWithMetadata<Artifact>(item));
 
-          return {
-            artifacts,
-            totalCount: data.pages.at(0)?.total_count,
-          };
-        },
-        meta: {
-          errorToast: false,
-        },
-      });
-    },
-    details: () => [...artifactsQueries.all(), 'detail'] as const,
-    detail: (id: string) =>
-      queryOptions({
-        queryKey: [...artifactsQueries.details(), id],
-        queryFn: () => readArtifact(organization.id, project.id, id),
-        select: (data) =>
-          data ? decodeEntityWithMetadata<Artifact>(data) : null,
-        staleTime: 10 * 60 * 1000,
-      }),
-  };
+            return {
+              artifacts,
+              totalCount: data.pages.at(0)?.total_count,
+            };
+          },
+          meta: {
+            errorToast: false,
+          },
+        });
+      },
+      details: () => [...artifactsQueries.all(), 'detail'] as const,
+      detail: (id: string) =>
+        queryOptions({
+          queryKey: [...artifactsQueries.details(), id],
+          queryFn: () => readArtifact(organization.id, project.id, id),
+          select: (data) =>
+            data ? decodeEntityWithMetadata<Artifact>(data) : null,
+          staleTime: 10 * 60 * 1000,
+        }),
+    }),
+    [organization.id, project.id],
+  );
 
   return artifactsQueries;
 }

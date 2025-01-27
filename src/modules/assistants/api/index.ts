@@ -20,59 +20,63 @@ import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { Assistant } from '../types';
 
 export function useAssistantsQueries() {
   const { organization, project } = useWorkspace();
 
-  const assistantsQueries = {
-    all: () => [project.id, 'assistants'] as const,
-    lists: () => [...assistantsQueries.all(), 'list'] as const,
-    list: (params?: AssistantsListQuery) => {
-      const usedParams: AssistantsListQuery = {
-        limit: ASSISTANTS_DEFAULT_PAGE_SIZE,
-        agent: 'bee',
-        ...params,
-      };
+  const assistantsQueries = useMemo(
+    () => ({
+      all: () => [project.id, 'assistants'] as const,
+      lists: () => [...assistantsQueries.all(), 'list'] as const,
+      list: (params?: AssistantsListQuery) => {
+        const usedParams: AssistantsListQuery = {
+          limit: ASSISTANTS_DEFAULT_PAGE_SIZE,
+          agent: 'bee',
+          ...params,
+        };
 
-      return infiniteQueryOptions({
-        queryKey: [...assistantsQueries.lists(), usedParams],
-        queryFn: ({ pageParam }: { pageParam?: string }) =>
-          listAssistants(organization.id, project.id, {
-            ...usedParams,
-            after: pageParam,
-          }),
-        initialPageParam: undefined,
-        getNextPageParam(lastPage) {
-          return lastPage?.has_more && lastPage?.last_id
-            ? lastPage.last_id
-            : undefined;
-        },
-        select(data) {
-          const assistants = data.pages
-            .flatMap((page) => page?.data)
-            .filter(isNotNull)
-            .map((item) => decodeEntityWithMetadata<Assistant>(item));
-          return {
-            assistants,
-            totalCount: data.pages.at(0)?.total_count,
-          };
-        },
-        meta: {
-          errorToast: false,
-        },
-      });
-    },
-    details: () => [...assistantsQueries.all(), 'detail'] as const,
-    detail: (id: string) =>
-      queryOptions({
-        queryKey: [...assistantsQueries.details(), id],
-        queryFn: () => readAssistant(organization.id, project.id, id),
-        select: (data) =>
-          data ? decodeEntityWithMetadata<Assistant>(data) : null,
-        staleTime: 10 * 60 * 1000,
-      }),
-  };
+        return infiniteQueryOptions({
+          queryKey: [...assistantsQueries.lists(), usedParams],
+          queryFn: ({ pageParam }: { pageParam?: string }) =>
+            listAssistants(organization.id, project.id, {
+              ...usedParams,
+              after: pageParam,
+            }),
+          initialPageParam: undefined,
+          getNextPageParam(lastPage) {
+            return lastPage?.has_more && lastPage?.last_id
+              ? lastPage.last_id
+              : undefined;
+          },
+          select(data) {
+            const assistants = data.pages
+              .flatMap((page) => page?.data)
+              .filter(isNotNull)
+              .map((item) => decodeEntityWithMetadata<Assistant>(item));
+            return {
+              assistants,
+              totalCount: data.pages.at(0)?.total_count,
+            };
+          },
+          meta: {
+            errorToast: false,
+          },
+        });
+      },
+      details: () => [...assistantsQueries.all(), 'detail'] as const,
+      detail: (id: string) =>
+        queryOptions({
+          queryKey: [...assistantsQueries.details(), id],
+          queryFn: () => readAssistant(organization.id, project.id, id),
+          select: (data) =>
+            data ? decodeEntityWithMetadata<Assistant>(data) : null,
+          staleTime: 10 * 60 * 1000,
+        }),
+    }),
+    [organization.id, project.id],
+  );
 
   return assistantsQueries;
 }

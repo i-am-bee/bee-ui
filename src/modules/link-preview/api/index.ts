@@ -16,16 +16,20 @@
 
 import { fetchLinkPreview } from '@/app/api/link-preview';
 import { queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export function useLinkPreviewQueries() {
-  const linkPreviewQueries = {
-    all: () => ['link-preview'] as const,
-    detail: (url: string) =>
-      queryOptions({
-        queryKey: [...linkPreviewQueries.all(), url],
-        queryFn: () => fetchLinkPreview(url),
-      }),
-  };
+  const linkPreviewQueries = useMemo(
+    () => ({
+      all: () => ['link-preview'] as const,
+      detail: (url: string) =>
+        queryOptions({
+          queryKey: [...linkPreviewQueries.all(), url],
+          queryFn: () => fetchLinkPreview(url),
+        }),
+    }),
+    [],
+  );
 
   return linkPreviewQueries;
 }

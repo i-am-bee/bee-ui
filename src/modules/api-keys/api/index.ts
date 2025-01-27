@@ -18,32 +18,36 @@ import { listApiKeys } from '@/app/api/api-keys';
 import { ApiKeysListQuery } from '@/app/api/api-keys/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export function useApiKeysQueries() {
   const { organization } = useWorkspace();
 
-  const apiKeysQueries = {
-    all: () => ['api-keys'] as const,
-    lists: () => [...apiKeysQueries.all(), 'list'] as const,
-    list: (params?: ApiKeysListQuery) => {
-      const usedParams: ApiKeysListQuery = {
-        order: 'desc',
-        order_by: 'created_at',
-        ...params,
-      };
+  const apiKeysQueries = useMemo(
+    () => ({
+      all: () => ['api-keys'] as const,
+      lists: () => [...apiKeysQueries.all(), 'list'] as const,
+      list: (params?: ApiKeysListQuery) => {
+        const usedParams: ApiKeysListQuery = {
+          order: 'desc',
+          order_by: 'created_at',
+          ...params,
+        };
 
-      return queryOptions({
-        queryKey: [...apiKeysQueries.lists(), usedParams],
-        queryFn: () => listApiKeys(organization.id, usedParams),
-        meta: {
-          errorToast: {
-            title: 'Failed to load api keys',
-            includeErrorMessage: true,
+        return queryOptions({
+          queryKey: [...apiKeysQueries.lists(), usedParams],
+          queryFn: () => listApiKeys(organization.id, usedParams),
+          meta: {
+            errorToast: {
+              title: 'Failed to load api keys',
+              includeErrorMessage: true,
+            },
           },
-        },
-      });
-    },
-  };
+        });
+      },
+    }),
+    [organization.id],
+  );
 
   return apiKeysQueries;
 }

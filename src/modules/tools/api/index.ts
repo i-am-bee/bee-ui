@@ -20,61 +20,65 @@ import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export function useToolsQueries() {
   const { organization, project } = useWorkspace();
   const { featureFlags } = useAppContext();
 
-  const toolsQueries = {
-    all: () => [project.id, 'tools'] as const,
-    lists: () => [...toolsQueries.all(), 'list'] as const,
-    list: (params?: ToolsListQuery) => {
-      const usedParams: ToolsListQuery = {
-        limit: TOOLS_DEFAULT_PAGE_SIZE,
-        order: 'asc',
-        order_by: 'type',
-        type: ['code_interpreter', 'system', 'file_search', 'user'],
-        ...params,
-      };
+  const toolsQueries = useMemo(
+    () => ({
+      all: () => [project.id, 'tools'] as const,
+      lists: () => [...toolsQueries.all(), 'list'] as const,
+      list: (params?: ToolsListQuery) => {
+        const usedParams: ToolsListQuery = {
+          limit: TOOLS_DEFAULT_PAGE_SIZE,
+          order: 'asc',
+          order_by: 'type',
+          type: ['code_interpreter', 'system', 'file_search', 'user'],
+          ...params,
+        };
 
-      return infiniteQueryOptions({
-        queryKey: [...toolsQueries.lists(), usedParams],
-        queryFn: ({ pageParam }: { pageParam?: string }) =>
-          listTools(organization.id, project.id, {
-            ...usedParams,
-            after: pageParam,
-          }),
-        initialPageParam: undefined,
-        getNextPageParam(lastPage) {
-          return lastPage?.has_more && lastPage?.last_id
-            ? lastPage.last_id
-            : undefined;
-        },
-        select(data) {
-          return {
-            totalCount: data.pages.at(0)?.total_count,
-            tools: data.pages
-              .flatMap((result) => result?.data ?? [])
-              .filter(
-                (tool) => featureFlags.Knowledge || tool.id !== 'file_search',
-              )
-              .map(decodeEntityWithMetadata<Tool>),
-          };
-        },
-        meta: {
-          errorToast: false,
-        },
-      });
-    },
-    details: () => [...toolsQueries.all(), 'detail'] as const,
-    detail: (id: string) =>
-      queryOptions({
-        queryKey: [...toolsQueries.details(), id],
-        queryFn: () => readTool(organization.id, project.id, id),
-        staleTime: 60 * 60 * 1_000,
-        select: (data) => data && decodeEntityWithMetadata<Tool>(data),
-      }),
-  };
+        return infiniteQueryOptions({
+          queryKey: [...toolsQueries.lists(), usedParams],
+          queryFn: ({ pageParam }: { pageParam?: string }) =>
+            listTools(organization.id, project.id, {
+              ...usedParams,
+              after: pageParam,
+            }),
+          initialPageParam: undefined,
+          getNextPageParam(lastPage) {
+            return lastPage?.has_more && lastPage?.last_id
+              ? lastPage.last_id
+              : undefined;
+          },
+          select(data) {
+            return {
+              totalCount: data.pages.at(0)?.total_count,
+              tools: data.pages
+                .flatMap((result) => result?.data ?? [])
+                .filter(
+                  (tool) => featureFlags.Knowledge || tool.id !== 'file_search',
+                )
+                .map(decodeEntityWithMetadata<Tool>),
+            };
+          },
+          meta: {
+            errorToast: false,
+          },
+        });
+      },
+      details: () => [...toolsQueries.all(), 'detail'] as const,
+      detail: (id: string) =>
+        queryOptions({
+          queryKey: [...toolsQueries.details(), id],
+          queryFn: () => readTool(organization.id, project.id, id),
+          staleTime: 60 * 60 * 1_000,
+          select: (data) => data && decodeEntityWithMetadata<Tool>(data),
+        }),
+    }),
+    [organization.id, project.id, featureFlags.Knowledge],
+  );
 
   return toolsQueries;
 }

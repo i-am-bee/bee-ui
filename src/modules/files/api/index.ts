@@ -17,25 +17,29 @@
 import { readFile, readFileContent } from '@/app/api/files';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export function useFilesQueries() {
   const { organization, project } = useWorkspace();
 
-  const filesQueries = {
-    all: () => [project.id, 'files'] as const,
-    details: () => [...filesQueries.all(), 'detail'] as const,
-    detail: (id: string) =>
-      queryOptions({
-        queryKey: [...filesQueries.details(), id],
-        queryFn: () => readFile(organization.id, project.id, id),
-        staleTime: 60 * 60 * 1000,
-      }),
-    content: (id: string) =>
-      queryOptions({
-        queryKey: [...filesQueries.detail(id).queryKey, 'content'],
-        queryFn: () => readFileContent(organization.id, project.id, id),
-      }),
-  };
+  const filesQueries = useMemo(
+    () => ({
+      all: () => [project.id, 'files'] as const,
+      details: () => [...filesQueries.all(), 'detail'] as const,
+      detail: (id: string) =>
+        queryOptions({
+          queryKey: [...filesQueries.details(), id],
+          queryFn: () => readFile(organization.id, project.id, id),
+          staleTime: 60 * 60 * 1000,
+        }),
+      content: (id: string) =>
+        queryOptions({
+          queryKey: [...filesQueries.detail(id).queryKey, 'content'],
+          queryFn: () => readFileContent(organization.id, project.id, id),
+        }),
+    }),
+    [organization.id, project.id],
+  );
 
   return filesQueries;
 }

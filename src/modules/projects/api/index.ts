@@ -19,58 +19,62 @@ import { ProjectsListQuery } from '@/app/api/projects/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export function useProjectsQueries() {
   const { organization } = useWorkspace();
 
-  const projectsQueries = {
-    all: () => ['projects'] as const,
-    lists: () => [...projectsQueries.all(), 'list'] as const,
-    list: (params?: ProjectsListQuery) => {
-      const usedParams: ProjectsListQuery = {
-        limit: PROJECTS_DEFAULT_PAGE_SIZE,
-        order: 'asc',
-        order_by: 'created_at',
-        ...params,
-      };
+  const projectsQueries = useMemo(
+    () => ({
+      all: () => ['projects'] as const,
+      lists: () => [...projectsQueries.all(), 'list'] as const,
+      list: (params?: ProjectsListQuery) => {
+        const usedParams: ProjectsListQuery = {
+          limit: PROJECTS_DEFAULT_PAGE_SIZE,
+          order: 'asc',
+          order_by: 'created_at',
+          ...params,
+        };
 
-      return infiniteQueryOptions({
-        queryKey: [...projectsQueries.lists(), usedParams],
-        queryFn: ({ pageParam }: { pageParam?: string }) =>
-          listProjects(organization.id, {
-            ...usedParams,
-            after: pageParam,
-          }),
-        initialPageParam: undefined,
-        getNextPageParam(lastPage) {
-          return lastPage?.has_more && lastPage?.last_id
-            ? lastPage.last_id
-            : undefined;
-        },
-        select(data) {
-          const projects = data.pages
-            .flatMap((page) => page?.data)
-            .filter(isNotNull);
+        return infiniteQueryOptions({
+          queryKey: [...projectsQueries.lists(), usedParams],
+          queryFn: ({ pageParam }: { pageParam?: string }) =>
+            listProjects(organization.id, {
+              ...usedParams,
+              after: pageParam,
+            }),
+          initialPageParam: undefined,
+          getNextPageParam(lastPage) {
+            return lastPage?.has_more && lastPage?.last_id
+              ? lastPage.last_id
+              : undefined;
+          },
+          select(data) {
+            const projects = data.pages
+              .flatMap((page) => page?.data)
+              .filter(isNotNull);
 
-          return {
-            projects,
-            totalCount: data.pages.at(0)?.total_count,
-          };
-        },
-        staleTime: 10 * 60 * 1000,
-        meta: {
-          errorToast: false,
-        },
-      });
-    },
-    details: () => [...projectsQueries.all(), 'detail'] as const,
-    detail: (id: string) =>
-      queryOptions({
-        queryKey: [...projectsQueries.details(), id],
-        queryFn: () => readProject(organization.id, id),
-        staleTime: 10 * 60 * 1000,
-      }),
-  };
+            return {
+              projects,
+              totalCount: data.pages.at(0)?.total_count,
+            };
+          },
+          staleTime: 10 * 60 * 1000,
+          meta: {
+            errorToast: false,
+          },
+        });
+      },
+      details: () => [...projectsQueries.all(), 'detail'] as const,
+      detail: (id: string) =>
+        queryOptions({
+          queryKey: [...projectsQueries.details(), id],
+          queryFn: () => readProject(organization.id, id),
+          staleTime: 10 * 60 * 1000,
+        }),
+    }),
+    [organization.id],
+  );
 
   return projectsQueries;
 }
