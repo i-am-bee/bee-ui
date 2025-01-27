@@ -24,7 +24,7 @@ import {
 import { Button } from '@carbon/react';
 import { Send, StopOutlineFilled, WarningFilled } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { memo, useCallback, useRef, useState } from 'react';
+import { memo, MouseEvent, useCallback, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mergeRefs } from 'react-merge-refs';
 import { Attachment } from '../attachments/Attachment';
@@ -118,6 +118,7 @@ export const InputBar = memo(function InputBar({
   });
 
   const isSubmitDisabled =
+    isPending ||
     isFilesPending ||
     hasFilesToUpload ||
     !inputValue ||
@@ -228,7 +229,10 @@ export const InputBar = memo(function InputBar({
                   hasIconOnly
                   iconDescription="Cancel"
                   disabled={status === 'waiting' || status === 'aborting'}
-                  onClick={() => cancel()}
+                  onClick={(e: MouseEvent) => {
+                    cancel();
+                    e.preventDefault();
+                  }}
                 />
               )}
             </div>

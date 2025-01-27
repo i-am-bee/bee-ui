@@ -15,19 +15,26 @@
  */
 
 import { createTool, updateTool } from '@/app/api/tools';
-import { ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
+import {
+  ToolResult,
+  ToolsCreateBody,
+  ToolsListResponse,
+} from '@/app/api/tools/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
+import { useUpdateCacheAfterMutation } from '@/hooks/useUpdateCacheAfterMutation';
 
 interface Props {
   onSuccess?: (data?: ToolResult, isNew?: boolean) => void;
 }
 
 export function useSaveTool({ onSuccess }: Props = {}) {
-  const queryClient = useQueryClient();
   const toolsQueries = useToolsQueries();
   const { project, organization } = useWorkspace();
+  const { onItemUpdate } = useUpdateCacheAfterMutation<ToolsListResponse>({
+    listQueryKey: toolsQueries.lists(),
+  });
 
   const mutation = useMutation({
     mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
@@ -37,7 +44,10 @@ export function useSaveTool({ onSuccess }: Props = {}) {
     },
     onSuccess: (data, variables) => {
       if (data) {
-        queryClient.invalidateQueries(toolsQueries.detail(data.id));
+        onItemUpdate({
+          data,
+          detailQueryKey: toolsQueries.detail(data.id).queryKey,
+        });
       }
 
       onSuccess?.(data, !variables.id);

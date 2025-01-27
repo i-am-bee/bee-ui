@@ -31,7 +31,6 @@ import {
   Dropdown,
   FormLabel,
   InlineLoading,
-  InlineNotification,
   ModalBody,
   ModalFooter,
   ModalHeader,
@@ -40,7 +39,7 @@ import {
   RadioButtonGroup,
   TextInput,
 } from '@carbon/react';
-import { useCallback, useId } from 'react';
+import { useCallback, useId, useLayoutEffect, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -53,6 +52,7 @@ import { useDeleteTool } from '../api/mutations/useDeleteTool';
 import { useSaveTool } from '../api/mutations/useSaveTool';
 import { ToolDescription } from '../ToolCard';
 import classes from './UserToolModal.module.scss';
+import { Edit } from '@carbon/react/icons';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -297,16 +297,6 @@ export function UserToolModal({
                   </p>
                 </div>
               )}
-
-              {isSaveError && (
-                <InlineNotification
-                  className={classes.error}
-                  kind="error"
-                  title={saveError.message}
-                  lowContrast
-                  hideCloseButton
-                />
-              )}
             </SettingsFormGroup>
           </form>
         </FormProvider>
@@ -447,15 +437,16 @@ function createSaveToolBody(
   { type, name, sourceCode, api }: FormValues,
   tool?: Tool,
 ): ToolsCreateBody {
+  console.log(api);
+
   return type.key === 'function'
     ? {
         name,
         source_code: sourceCode ?? '',
       }
     : {
-        ...(tool
-          ? { name }
-          : { api_key: api.auth === 'api-key' ? api.apiKey : undefined }),
+        name,
+        api_key: api.auth === 'api-key' ? api.apiKey : '',
         open_api_schema: api.schema ?? '',
       };
 }
