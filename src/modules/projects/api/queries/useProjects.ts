@@ -15,56 +15,17 @@
  */
 
 import { ProjectsListQuery } from '@/app/api/projects/types';
-import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
-import { useUserProfile } from '@/store/user-profile';
-import { useInfiniteQuery, useQueries } from '@tanstack/react-query';
-import { useEffect, useMemo } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useProjectsQueries } from '..';
-import { ProjectWithScope } from '../../types';
-import { useProjectUsersQueries } from '../../users/api';
 
-export function useProjects({ withRole }: { withRole?: boolean } = {}) {
-  const userId = useUserProfile((state) => state.id);
-  const projectsQueries = useProjectsQueries();
-  const projectUsersQueries = useProjectUsersQueries();
-
-  const query = useInfiniteQuery(projectsQueries.list(PROJECTS_QUERY_PARAMS));
-
-  const queries = useQueries({
-    queries:
-      withRole && query.data && userId
-        ? query.data.projects.map((project) => {
-            return {
-              ...projectUsersQueries.detail(project.id, userId),
-            };
-          })
-        : [],
-  });
-
-  const projects = useMemo(
-    (): ProjectWithScope[] | undefined =>
-      queries.length
-        ? query.data?.projects.map((project, index) => {
-            const projectUser = queries.at(index)?.data;
-            return projectUser
-              ? { ...project, readOnly: projectUser.role === 'reader' }
-              : project;
-          })
-        : query.data?.projects,
-    [queries, query.data?.projects],
-  );
-
-  useEffect(() => {
-    if (query.hasNextPage && !query.isFetching) {
-      query.fetchNextPage();
-    }
-  }, [query]);
-
-  return { projects, ...query };
+interface Props {
+  params?: ProjectsListQuery;
 }
 
-export const PROJECTS_QUERY_PARAMS: ProjectsListQuery = {
-  limit: MAX_API_FETCH_LIMIT,
-  order_by: 'created_at',
-  order: 'asc',
-};
+export function useProjects({ params }: Props = {}) {
+  const projectsQueries = useProjectsQueries();
+
+  const query = useInfiniteQuery(projectsQueries.list(params));
+
+  return query;
+}

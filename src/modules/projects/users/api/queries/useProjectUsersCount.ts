@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useProjectUsersQueries } from '..';
+import { useListProjectUsers } from './useListProjectUsers';
 
-export function useProjectUsersCount(id: string) {
-  const projectUsersQueries = useProjectUsersQueries();
+interface Props {
+  id: string;
+}
 
-  const { data, isLoading } = useInfiniteQuery(
-    projectUsersQueries.list(id, { limit: 1 }),
-  );
+export function useProjectUsersCount({ id }: Props) {
+  const { data, isLoading } = useListProjectUsers({ id, params: { limit: 1 } });
 
   return { totalCount: data?.totalCount, isLoading };
 }

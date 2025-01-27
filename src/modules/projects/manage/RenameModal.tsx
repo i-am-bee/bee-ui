@@ -29,7 +29,7 @@ import {
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useUpdateProject } from '../api/mutations/useUpdateProject';
-import { useProjects } from '../api/queries/useProjects';
+import { useListAllProjects } from '../api/queries/useListAllProjects';
 
 interface Props extends ModalProps {
   project: Project;
@@ -40,7 +40,7 @@ interface Props extends ModalProps {
 export function RenameModal({ project, organization, ...props }: Props) {
   const htmlId = useId();
   const { id, name } = project;
-  const { data: projects } = useProjects();
+  const { data: projects } = useListAllProjects();
 
   const { mutateAsync: updateProject } = useUpdateProject({
     onSuccess: () => {

@@ -22,7 +22,7 @@ import { TextWithCopyButton } from '@/components/TextWithCopyButton/TextWithCopy
 import { useOnMount } from '@/hooks/useOnMount';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
-import { useProjects } from '@/modules/projects/api/queries/useProjects';
+import { useListAllProjects } from '@/modules/projects/api/queries/useListAllProjects';
 import { ProjectWithScope } from '@/modules/projects/types';
 import {
   Button,
@@ -36,7 +36,7 @@ import {
   TextInput,
 } from '@carbon/react';
 import clsx from 'clsx';
-import { useCallback, useEffect, useId } from 'react';
+import { useCallback, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useCreateApiKey } from '../api/mutations/useCreateApiKey';
 import { useDeleteApiKey } from '../api/mutations/useDeleteApiKey';
@@ -59,12 +59,7 @@ export function ApiKeyModal({ onSuccess, ...props }: Props) {
 
   const { project } = useAppContext();
 
-  const { projects, isLoading, isFetching, hasNextPage, fetchNextPage } =
-    useProjects({ withRole: true });
-
-  useEffect(() => {
-    if (!isFetching && hasNextPage) fetchNextPage();
-  }, [fetchNextPage, hasNextPage, isFetching]);
+  const { projects, isLoading } = useListAllProjects({ withRole: true });
 
   const {
     control,

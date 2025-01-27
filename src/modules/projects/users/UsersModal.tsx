@@ -24,9 +24,8 @@ import {
   ModalHeader,
   usePrefix,
 } from '@carbon/react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { AddUserForm } from './AddUserForm';
-import { useProjectUsersQueries } from './api';
+import { useListProjectUsers } from './api/queries/useListProjectUsers';
 import { useProjectUsersCount } from './api/queries/useProjectUsersCount';
 import { ProjectUserRow } from './ProjectUserRow';
 import classes from './UsersModal.module.scss';
@@ -34,8 +33,7 @@ import classes from './UsersModal.module.scss';
 export default function UsersModal(props: ModalProps) {
   const { project, role } = useAppContext();
   const prefix = usePrefix();
-  const { totalCount } = useProjectUsersCount(project.id);
-  const projectUsersQueries = useProjectUsersQueries();
+  const { totalCount } = useProjectUsersCount({ id: project.id });
 
   const {
     data,
@@ -45,7 +43,7 @@ export default function UsersModal(props: ModalProps) {
     refetch,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery(projectUsersQueries.list(project.id));
+  } = useListProjectUsers({ id: project.id });
 
   const { ref: fetchMoreAnchorRef } = useFetchNextPageInView({
     onFetchNextPage: fetchNextPage,

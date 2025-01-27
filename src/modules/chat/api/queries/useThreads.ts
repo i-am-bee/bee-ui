@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import { ToolsListQuery } from '@/app/api/tools/types';
+import { ThreadsListQuery } from '@/app/api/threads/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useToolsQueries } from '..';
+import { useThreadsQueries } from '..';
 
 interface Props {
-  params?: ToolsListQuery;
+  params?: ThreadsListQuery;
   enabled?: boolean;
 }
 
-export function useTools({ params, enabled = true }: Props = {}) {
-  const toolsQueries = useToolsQueries();
+export function useThreads({ params, enabled = true }: Props = {}) {
+  const threadsQueries = useThreadsQueries();
 
   const query = useInfiniteQuery({
-    ...toolsQueries.list(params),
+    ...threadsQueries.list(params),
     enabled,
   });
 

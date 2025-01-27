@@ -28,7 +28,7 @@ import {
 } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { useProjectsQueries } from '..';
-import { PROJECTS_QUERY_PARAMS } from '../queries/useProjects';
+import { PROJECTS_QUERY_PARAMS } from '../queries/useListAllProjects';
 
 interface Props {
   onSuccess?: (data?: ProjectUpdateResponse) => void;

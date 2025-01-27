@@ -20,7 +20,6 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InfiniteData,
   keepPreviousData,
-  useInfiniteQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 // import { useDebounceValue } from 'usehooks-ts';
@@ -42,6 +41,7 @@ import {
   useVectorStoresQueries,
 } from '../api';
 import { useVectorStore } from '../api/queries/useVectorStore';
+import { useVectorStoreFiles } from '../api/queries/useVectorStoreFiles';
 import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVectorStoreFiles';
 import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
 import { AddContentModal } from './AddContentModal';
@@ -80,8 +80,9 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
     isPending,
     isFetchingNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
-    ...vectorStoresQueries.filesList(vectorStore.id, params),
+  } = useVectorStoreFiles({
+    storeId: vectorStore.id,
+    params,
     placeholderData: keepPreviousData,
   });
 

@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-import { ToolsListQuery } from '@/app/api/tools/types';
+import { ProjectUsersListQuery } from '@/app/api/projects-users/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useToolsQueries } from '..';
+import { useProjectUsersQueries } from '..';
 
 interface Props {
-  params?: ToolsListQuery;
-  enabled?: boolean;
+  id: string;
+  params?: ProjectUsersListQuery;
 }
 
-export function useTools({ params, enabled = true }: Props = {}) {
-  const toolsQueries = useToolsQueries();
+export function useListProjectUsers({ id, params }: Props) {
+  const projectUsersQueries = useProjectUsersQueries();
 
-  const query = useInfiniteQuery({
-    ...toolsQueries.list(params),
-    enabled,
-  });
+  const query = useInfiniteQuery(projectUsersQueries.list(id, params));
 
   return query;
 }

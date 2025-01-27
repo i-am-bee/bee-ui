@@ -18,18 +18,17 @@ import { VectorStoresListQuery } from '@/app/api/vector-stores/types';
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 
-export function useVectorStores({
-  params,
-  placeholderData,
-}: {
+interface Props {
   params?: VectorStoresListQuery;
   placeholderData?: typeof keepPreviousData;
-} = {}) {
+}
+
+export function useVectorStores({ params, ...props }: Props = {}) {
   const vectorStoresQueries = useVectorStoresQueries();
 
   const query = useInfiniteQuery({
     ...vectorStoresQueries.list(params),
-    placeholderData,
+    ...props,
   });
 
   return query;

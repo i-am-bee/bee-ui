@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-import { ToolsListQuery } from '@/app/api/tools/types';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useToolsQueries } from '..';
+import { VectorStoreFilesListQuery } from '@/app/api/vector-stores-files/types';
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
+import { useVectorStoresQueries } from '..';
 
 interface Props {
-  params?: ToolsListQuery;
+  storeId: string | undefined;
+  params?: VectorStoreFilesListQuery;
   enabled?: boolean;
+  placeholderData?: typeof keepPreviousData;
 }
 
-export function useTools({ params, enabled = true }: Props = {}) {
-  const toolsQueries = useToolsQueries();
+export function useVectorStoreFiles({
+  storeId,
+  params,
+  enabled,
+  ...props
+}: Props) {
+  const vectorStoresQueries = useVectorStoresQueries();
 
   const query = useInfiniteQuery({
-    ...toolsQueries.list(params),
-    enabled,
+    ...vectorStoresQueries.filesList(storeId!, params),
+    enabled: Boolean(storeId) && enabled,
+    ...props,
   });
 
   return query;

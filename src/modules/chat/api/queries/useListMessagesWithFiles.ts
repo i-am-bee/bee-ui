@@ -29,7 +29,7 @@ interface Props {
 export function useListMessagesWithFiles({
   threadId,
   params,
-  initialData,
+  ...props
 }: Props) {
   const threadsQueries = useThreadsQueries();
 
@@ -42,8 +42,8 @@ export function useListMessagesWithFiles({
             decodeMetadata<MessageMetadata>(metadata).type ?? '',
           ),
       ),
-    initialData,
     enabled: Boolean(threadId),
+    ...props,
   });
 
   return query;

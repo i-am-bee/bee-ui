@@ -29,7 +29,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useCreateProject } from '../api/mutations/useCreateProject';
-import { useProjects } from '../api/queries/useProjects';
+import { useListAllProjects } from '../api/queries/useListAllProjects';
 
 interface CreateProjectValues {
   name: string;
@@ -46,7 +46,7 @@ export function CreateProjectModal({
   const htmlId = useId();
   const router = useRouter();
 
-  const { data: projects } = useProjects();
+  const { data: projects } = useListAllProjects();
 
   const projectNames = useMemo(
     () => projects?.projects.map(({ name }) => name),

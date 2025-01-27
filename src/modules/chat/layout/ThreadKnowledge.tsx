@@ -16,10 +16,10 @@
 
 import { useVectorStoresQueries } from '@/modules/knowledge/api';
 import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
+import { useVectorStoreFiles } from '@/modules/knowledge/api/queries/useVectorStoreFiles';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { toolsEqual } from '@/modules/tools/utils';
 import { SkeletonText, Toggle } from '@carbon/react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { useId, useMemo } from 'react';
@@ -78,12 +78,11 @@ export function ThreadKnowledge({
   const {
     data: threadKnowledgeFilesData,
     isLoading: isThreadKnowledgeFilesLoading,
-  } = useInfiniteQuery({
+  } = useVectorStoreFiles({
     // We support only one vector store per thread
-    ...vectorStoresQueries.filesList(threadVectorStores.at(0)!, {
-      limit: VECTOR_STORES_FILES_LIMIT,
-    }),
-    enabled: enableFetch && threadVectorStores.length > 0,
+    storeId: threadVectorStores.at(0),
+    params: { limit: VECTOR_STORES_FILES_LIMIT },
+    enabled: enableFetch,
   });
 
   const threadKnowledgeFiles = useMemo(

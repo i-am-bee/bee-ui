@@ -17,31 +17,26 @@
 import { OrganizationUser } from '@/app/api/organization-users/types';
 import { ProjectUserRole } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useUserProfile } from '@/store/user-profile';
 import { Button, ComboBox } from '@carbon/react';
 import { Add, Checkmark } from '@carbon/react/icons';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import debounce from 'lodash/debounce';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import classes from './AddUserForm.module.scss';
 import { ProjectRoleDropdown } from './ProjectRoleDropdown';
-import { useOrganizationUsersQueries, useProjectUsersQueries } from './api';
 import { useCreateProjectUser } from './api/mutations/useCreateProjectUser';
+import { useOrganizationUsers } from './api/queries/useOrganizationUsers';
 import { useProjectUser } from './api/queries/useProjectUser';
 
 export function AddUserForm() {
   const htmlId = useId();
-  const { project } = useAppContext();
   const userId = useUserProfile((state) => state.id);
   const [search, setSearch] = useState('');
-  const projectUsersQueries = useProjectUsersQueries();
-  const organizationUsersQueries = useOrganizationUsersQueries();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const { data } = useInfiniteQuery({
-    ...organizationUsersQueries.list({ search }),
+  const { data } = useOrganizationUsers({
+    params: { search },
     enabled: search.length > 2,
   });
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Project, ProjectsListQuery } from '@/app/api/projects/types';
+import { Project } from '@/app/api/projects/types';
 import { Dropdown } from '@/components/Dropdown/Dropdown';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -22,7 +22,7 @@ import { Button, SkeletonPlaceholder, Tag } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
 import { useMemo } from 'react';
-import { useProjects } from './api/queries/useProjects';
+import { useListAllProjects } from './api/queries/useListAllProjects';
 import { CreateProjectModal } from './manage/CreateProjectModal';
 import classes from './ProjectSelector.module.scss';
 import { ProjectWithScope } from './types';
@@ -36,7 +36,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
   const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
-  const { projects, data, isFetching } = useProjects({ withRole: true });
+  const { projects, isFetching } = useListAllProjects({ withRole: true });
 
   const selectedItem = useMemo(
     () => projects?.find(({ id }) => id === project.id),
@@ -99,7 +99,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
         </>
       )}
 
-      {!data && isFetching && (
+      {!projects && isFetching && (
         <SkeletonPlaceholder className={classes.skeleton} />
       )}
     </div>
@@ -107,12 +107,6 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
 }
 
 type Option = Project | 'new';
-
-export const PROJECTS_QUERY_PARAMS: ProjectsListQuery = {
-  limit: 100,
-  order_by: 'created_at',
-  order: 'asc',
-};
 
 function ViewOnlyTag() {
   return (

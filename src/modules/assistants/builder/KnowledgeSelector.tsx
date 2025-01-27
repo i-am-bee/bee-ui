@@ -25,16 +25,13 @@ import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useVectorStoresQueries } from '@/modules/knowledge/api';
+import { useVectorStoreFiles } from '@/modules/knowledge/api/queries/useVectorStoreFiles';
 import { useVectorStores } from '@/modules/knowledge/api/queries/useVectorStores';
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
 import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import pluralize from 'pluralize';
 import { useState } from 'react';
@@ -105,12 +102,9 @@ export function KnowledgeSelector() {
     params: VECTOR_STORES_QUERY_PARAMS,
   });
 
-  const { data: dataFiles } = useInfiniteQuery({
-    ...vectorStoresQueries.filesList(
-      value ?? '',
-      VECTOR_STORE_FILES_QUERY_PARAMS,
-    ),
-    enabled: Boolean(value),
+  const { data: dataFiles } = useVectorStoreFiles({
+    storeId: value,
+    params: VECTOR_STORE_FILES_QUERY_PARAMS,
   });
 
   const vectorStore = data?.stores.find((item) => item.id === value);
