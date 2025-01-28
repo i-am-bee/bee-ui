@@ -39,24 +39,19 @@ interface Props extends ModalProps {
   vectorStore: VectorStore;
   project: Project;
   organization: Organization;
-  onSuccess: (vectorStore?: VectorStoreCreateResponse) => void;
 }
 
 export function RenameModal({
   vectorStore,
   project,
   organization,
-  onSuccess,
   ...props
 }: Props) {
   const htmlId = useId();
   const { id, name } = vectorStore;
 
   const { mutateAsync: updateVectorStore } = useUpdateVectorStore({
-    onSuccess: (vectorStore) => {
-      onSuccess(vectorStore);
-      props.onRequestClose();
-    },
+    onSuccess: () => props.onRequestClose(),
   });
 
   const {

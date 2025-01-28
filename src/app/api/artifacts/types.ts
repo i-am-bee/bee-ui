@@ -17,7 +17,7 @@
 import { paths } from '../schema';
 import { FetchParamsOrderBy } from '../utils';
 
-export type ListArtifactsResponse =
+export type ArtifactsListResponse =
   paths['/v1/artifacts']['get']['responses']['200']['content']['application/json'];
 
 export type ArtifactResult =

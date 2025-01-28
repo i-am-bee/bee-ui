@@ -20,58 +20,62 @@ import {
   ThreadsListResponse,
   ThreadUpdateBody,
 } from '@/app/api/threads/types';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
+import { useMutation } from '@tanstack/react-query';
+import { useThreadsQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import {
   decodeEntityWithMetadata,
   encodeEntityWithMetadata,
 } from '@/app/api/utils';
-import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import {
-  InfiniteData,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { produce } from 'immer';
-import { useThreadsQueries } from '..';
 
-export function useUpdateThread() {
-  const queryClient = useQueryClient();
+interface Props {
+  optimistic?: boolean;
+}
+
+export function useUpdateThread({ optimistic }: Props = {}) {
   const { project, organization } = useWorkspace();
   const threadsQueries = useThreadsQueries();
+  const { onItemUpdate } = useUpdateDataOnMutation<ThreadsListResponse>();
 
   const mutation = useMutation({
     mutationFn: async ({
-      id,
+      thread: { id },
       body,
     }: {
-      id: string;
+      thread: Thread;
       body: ThreadUpdateBody;
     }) => {
       const result = await updateThread(organization.id, project.id, id, body);
+
       const thread = result && decodeEntityWithMetadata<Thread>(result);
 
       return thread;
     },
+    onMutate: ({ thread, body: { tool_resources, metadata, ...body } }) => {
+      if (optimistic) {
+        onItemUpdate({
+          data: {
+            ...thread,
+            ...body,
+            metadata: metadata || {},
+            ...(tool_resources ? tool_resources : undefined),
+          },
+          listQueryKey: threadsQueries.lists(),
+          invalidateQueries: false,
+        });
+      }
+    },
     onSuccess: (data) => {
       if (data) {
-        queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-          threadsQueries.list().queryKey,
-          produce((draft) => {
-            if (!draft?.pages) return null;
-            for (const page of draft.pages) {
-              const index = page.data.findIndex((item) => item.id === data.id);
-              if (index >= 0 && data) {
-                page?.data.splice(index, 1, encodeEntityWithMetadata(data));
-              }
-            }
-          }),
-        );
-
-        // TODO: The thread detail is not used anywhere on the client, so it's probably not necessary.
-        queryClient.invalidateQueries(threadsQueries.detail(data.id));
+        onItemUpdate({
+          data: encodeEntityWithMetadata<Thread>(data),
+          listQueryKey: threadsQueries.lists(),
+          detailQueryKey: threadsQueries.detail(data.id).queryKey,
+        });
       }
     },
     meta: {
-      invalidates: [threadsQueries.lists()],
       errorToast: {
         title: 'Failed to update session',
         includeErrorMessage: true,

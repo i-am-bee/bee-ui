@@ -17,13 +17,15 @@
 import { createArtifact, updateArtifact } from '@/app/api/artifacts';
 import {
   ArtifactCreateBody,
+  ArtifactsListResponse,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useArtifactsQueries } from '..';
 import { Artifact } from '../../types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 type Props = {
   onSuccess?: (data?: Artifact) => void;
@@ -31,8 +33,8 @@ type Props = {
 
 export function useSaveArtifact({ onSuccess }: Props = {}) {
   const { project, organization } = useWorkspace();
-  const queryClient = useQueryClient();
   const artifactsQueries = useArtifactsQueries();
+  const { onItemUpdate } = useUpdateDataOnMutation<ArtifactsListResponse>();
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -53,19 +55,25 @@ export function useSaveArtifact({ onSuccess }: Props = {}) {
             project.id,
             body as ArtifactCreateBody,
           ));
-      const artifact = result && decodeEntityWithMetadata<Artifact>(result);
 
-      return artifact;
+      return result;
     },
     onSuccess: (data) => {
       if (data) {
-        queryClient.invalidateQueries(artifactsQueries.detail(data.id));
+        onItemUpdate({
+          data: {
+            ...data,
+            metadata: data.metadata ?? null,
+          },
+          listQueryKey: artifactsQueries.lists(),
+          detailQueryKey: artifactsQueries.detail(data.id).queryKey,
+        });
       }
 
-      onSuccess?.(data);
+      const artifact = data && decodeEntityWithMetadata<Artifact>(data);
+      onSuccess?.(artifact);
     },
     meta: {
-      invalidates: [artifactsQueries.lists()],
       errorToast: {
         title: 'Failed to save the app',
       },

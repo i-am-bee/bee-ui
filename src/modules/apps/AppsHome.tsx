@@ -15,19 +15,13 @@
  */
 
 'use client';
-import {
-  ArtifactDeleteResult,
-  ArtifactsListQueryOrderBy,
-  ListArtifactsResponse,
-} from '@/app/api/artifacts/types';
+import { ArtifactsListQueryOrderBy } from '@/app/api/artifacts/types';
 import { AdminView } from '@/components/AdminView/AdminView';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
-import { produce } from 'immer';
 import Lottie from 'lottie-react';
 import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
@@ -38,7 +32,6 @@ import { GeneralOnboardingModal } from '../onboarding/general/GeneralOnboardingM
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import classes from './AppsHome.module.scss';
 import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
-import { useArtifactsQueries } from './api';
 import { useArtifacts } from './api/queries/useArtifacts';
 import { AppsList } from './library/AppsList';
 
@@ -53,9 +46,6 @@ export function AppsHome() {
   const searchParams = useSearchParams();
   const showOnboarding =
     !isProjectReadOnly && searchParams?.has(ONBOARDING_PARAM);
-
-  const queryClient = useQueryClient();
-  const artifactsQueries = useArtifactsQueries();
 
   const params = {
     ...order,
@@ -76,23 +66,6 @@ export function AppsHome() {
   const firstAssistant = useFirstAssistant({
     enabled: !data?.artifacts.length,
   });
-
-  const handleDeleteArtifactSuccess = (artifact?: ArtifactDeleteResult) => {
-    if (artifact) {
-      queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-        artifactsQueries.list(params).queryKey,
-        produce((draft) => {
-          if (!draft?.pages) return null;
-          for (const page of draft.pages) {
-            const index = page.data.findIndex(({ id }) => id === artifact.id);
-            if (index >= 0) {
-              page.data.splice(index, 1);
-            }
-          }
-        }),
-      );
-    }
-  };
 
   return (
     <>
@@ -151,7 +124,6 @@ export function AppsHome() {
           <AppsList
             artifacts={data?.artifacts}
             isLoading={isPending || isFetchingNextPage}
-            onDeleteSuccess={handleDeleteArtifactSuccess}
           />
         </CardsList>
       </AdminView>

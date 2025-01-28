@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  Tool,
-  ToolDeleteResult,
-  ToolResult,
-  ToolsCreateBody,
-} from '@/app/api/tools/types';
+import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
@@ -39,7 +34,7 @@ import {
   RadioButtonGroup,
   TextInput,
 } from '@carbon/react';
-import { useCallback, useId, useLayoutEffect, useState } from 'react';
+import { useCallback, useId } from 'react';
 import {
   Controller,
   FormProvider,
@@ -52,7 +47,6 @@ import { useDeleteTool } from '../api/mutations/useDeleteTool';
 import { useSaveTool } from '../api/mutations/useSaveTool';
 import { ToolDescription } from '../ToolCard';
 import classes from './UserToolModal.module.scss';
-import { Edit } from '@carbon/react/icons';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -96,17 +90,9 @@ interface FormValues {
 interface Props extends ModalProps {
   tool?: Tool;
   onCreateSuccess?: (tool: ToolResult) => void;
-  onSaveSuccess?: (tool: ToolResult) => void;
-  onDeleteSuccess?: (tool?: ToolDeleteResult) => void;
 }
 
-export function UserToolModal({
-  tool,
-  onCreateSuccess,
-  onSaveSuccess,
-  onDeleteSuccess,
-  ...props
-}: Props) {
+export function UserToolModal({ tool, onCreateSuccess, ...props }: Props) {
   const { onRequestClose } = props;
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
@@ -135,14 +121,10 @@ export function UserToolModal({
 
   useConfirmModalCloseOnDirty(isDirty, 'tool');
 
-  const {
-    mutateAsync: saveTool,
-    isError: isSaveError,
-    error: saveError,
-  } = useSaveTool({
+  const { mutateAsync: saveTool } = useSaveTool({
     onSuccess: (tool, isNew) => {
-      if (tool) {
-        isNew ? onCreateSuccess?.(tool) : onSaveSuccess?.(tool);
+      if (tool && isNew) {
+        onCreateSuccess?.(tool);
       }
 
       onRequestClose();
@@ -153,18 +135,14 @@ export function UserToolModal({
     mutateAsyncWithConfirmation: deleteTool,
     isPending: isDeletePending,
   } = useDeleteTool({
-    onSuccess: (tool) => {
-      onDeleteSuccess?.(tool);
-
-      onRequestClose();
-    },
+    onSuccess: () => onRequestClose(),
   });
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
       await saveTool({
         id: tool?.id,
-        body: createSaveToolBody(data, tool),
+        body: createSaveToolBody(data),
       });
     },
     [saveTool, tool],
@@ -433,12 +411,12 @@ UserToolModal.View = function ViewUserToolModal({
   );
 };
 
-function createSaveToolBody(
-  { type, name, sourceCode, api }: FormValues,
-  tool?: Tool,
-): ToolsCreateBody {
-  console.log(api);
-
+function createSaveToolBody({
+  type,
+  name,
+  sourceCode,
+  api,
+}: FormValues): ToolsCreateBody {
   return type.key === 'function'
     ? {
         name,

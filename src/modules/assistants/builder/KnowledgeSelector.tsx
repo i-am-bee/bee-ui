@@ -16,7 +16,7 @@
 
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import {
-  ListVectorStoresResponse,
+  VectorStoresListResponse,
   VectorStore,
   VectorStoreCreateResponse,
 } from '@/app/api/vector-stores/types';
@@ -88,7 +88,7 @@ export function KnowledgeSelector() {
 
     handleConnectKnowledge(response.id);
 
-    queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
+    queryClient.setQueryData<InfiniteData<VectorStoresListResponse>>(
       vectorStoresQueries.list(VECTOR_STORES_QUERY_PARAMS).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;

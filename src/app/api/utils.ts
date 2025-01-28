@@ -25,10 +25,12 @@ import {
 import {
   ApiErrorResponse,
   ApiMetadata,
+  DataItemWithId,
   EntityMetadata,
   EntityResultWithMetadata,
   EntityWithEncodedMetadata,
 } from './types';
+import has from 'lodash/has';
 
 export async function maybeGetJsonBody(response: Response): Promise<unknown> {
   const body = await response.text();

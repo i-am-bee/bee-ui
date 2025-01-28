@@ -42,8 +42,7 @@ interface Props {
 }
 
 export function ToolsList({ type }: Props) {
-  const { project, organization, isProjectReadOnly, featureFlags } =
-    useAppContext();
+  const { organization, isProjectReadOnly, featureFlags } = useAppContext();
   const [order, setOrder] = useState<ToosListQueryOrderBy>(TOOLS_ORDER_DEFAULT);
   const { openModal } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
@@ -94,23 +93,6 @@ export function ToolsList({ type }: Props) {
     );
   };
 
-  const handleDeleteSuccess = (tool?: ToolDeleteResult) => {
-    if (tool) {
-      queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
-        toolsQueries.list(params).queryKey,
-        produce((draft) => {
-          if (!draft?.pages) return null;
-          for (const page of draft.pages) {
-            const index = page.data.findIndex(({ id }) => id === tool.id);
-            if (index >= 0) {
-              page.data.splice(index, 1);
-            }
-          }
-        }),
-      );
-    }
-  };
-
   return (
     <CardsList<ToosListQueryOrderBy>
       heading={isUserOrAllTools ? 'Tools' : undefined}
@@ -136,7 +118,7 @@ export function ToolsList({ type }: Props) {
                 openModal((props) => (
                   <UserToolModal
                     {...props}
-                    onSaveSuccess={handleCreateSuccess}
+                    onCreateSuccess={handleCreateSuccess}
                   />
                 )),
               disabled: isProjectReadOnly,
@@ -150,13 +132,7 @@ export function ToolsList({ type }: Props) {
           : undefined
       }
     >
-      {data?.tools?.map((tool) => (
-        <ToolCard
-          key={tool.id}
-          tool={tool}
-          onDeleteSuccess={handleDeleteSuccess}
-        />
-      ))}
+      {data?.tools?.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
 
       {(isPending || isFetchingNextPage) &&
         Array.from({ length: TOOLS_PAGE_SIZE }, (_, i) => (

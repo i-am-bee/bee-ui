@@ -16,7 +16,7 @@
 
 'use client';
 import {
-  ListVectorStoresResponse,
+  VectorStoresListResponse,
   VectorStoreCreateResponse,
   VectorStoreDeleteResponse,
   VectorStoresListQueryOrderBy,
@@ -71,7 +71,8 @@ export function KnowledgeView() {
   useUpdatePendingVectorStore(data?.stores ?? [], params);
 
   const onCreateSuccess = (response: VectorStoreCreateResponse) => {
-    queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
+    // TODO: Should we even do this? The new item might not be in scope for current params
+    queryClient.setQueryData<InfiniteData<VectorStoresListResponse>>(
       vectorStoresQueries.list(params).queryKey,
       produce((draft) => {
         if (!draft?.pages) return null;
@@ -80,38 +81,6 @@ export function KnowledgeView() {
         pageFirst && pageFirst.data.unshift(response);
       }),
     );
-  };
-
-  const onUpdateQueryData = (updater: ListVectorStoresDataUpdater) => {
-    queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
-      vectorStoresQueries.list(params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        for (const page of draft.pages) {
-          page && updater(page);
-        }
-      }),
-    );
-  };
-
-  const onUpdateSuccess = (vectorStore?: VectorStoreCreateResponse) => {
-    if (vectorStore) {
-      onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
-        if (!page) return;
-        const index = page.data.findIndex((item) => item.id === vectorStore.id);
-        index >= 0 && page?.data.splice(index, 1, vectorStore);
-      });
-    }
-  };
-
-  const onDeleteSuccess = (vectorStore?: VectorStoreDeleteResponse) => {
-    if (vectorStore) {
-      onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
-        if (!page) return;
-        const index = page.data.findIndex((item) => item.id === vectorStore.id);
-        index >= 0 && page.data.splice(index, 1);
-      });
-    }
   };
 
   const isLoading = isPending || isFetchingNextPage;
@@ -153,12 +122,7 @@ export function KnowledgeView() {
         }}
       >
         {data?.stores.map((item) => (
-          <KnowledgeCard
-            key={item.id}
-            vectorStore={item}
-            onUpdateSuccess={onUpdateSuccess}
-            onDeleteSuccess={onDeleteSuccess}
-          />
+          <KnowledgeCard key={item.id} vectorStore={item} />
         ))}
 
         {isLoading
@@ -172,7 +136,7 @@ export function KnowledgeView() {
 }
 
 type ListVectorStoresDataUpdater = (
-  page: WritableDraft<ListVectorStoresResponse>,
+  page: WritableDraft<VectorStoresListResponse>,
 ) => void;
 
 export const VECTOR_STORES_ORDER_DEFAULT = {

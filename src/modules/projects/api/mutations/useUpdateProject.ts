@@ -16,19 +16,15 @@
 
 import { updateProject } from '@/app/api/projects';
 import {
+  Project,
   ProjectCreateBody,
   ProjectsListResponse,
   ProjectUpdateResponse,
 } from '@/app/api/projects/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import {
-  InfiniteData,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { produce } from 'immer';
+import { useMutation } from '@tanstack/react-query';
 import { useProjectsQueries } from '..';
-import { PROJECTS_QUERY_PARAMS } from '../queries/useListAllProjects';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: ProjectUpdateResponse) => void;
@@ -37,32 +33,28 @@ interface Props {
 export function useUpdateProject({ onSuccess }: Props = {}) {
   const { organization } = useWorkspace();
   const projectsQueries = useProjectsQueries();
-  const queryClient = useQueryClient();
+  const { onItemUpdate } = useUpdateDataOnMutation<ProjectsListResponse>();
 
   const mutation = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: ProjectCreateBody }) =>
-      updateProject(organization.id, id, body),
-    onSuccess: (data, variables) => {
+    mutationFn: ({
+      project,
+      body,
+    }: {
+      project: Project;
+      body: ProjectCreateBody;
+    }) => updateProject(organization.id, project.id, body),
+    onSuccess: (data, { project }) => {
       if (data) {
-        queryClient.setQueryData<InfiniteData<ProjectsListResponse>>(
-          projectsQueries.list(PROJECTS_QUERY_PARAMS).queryKey,
-          produce((draft) => {
-            if (!draft?.pages) return null;
-            for (const page of draft.pages) {
-              page.data = page.data.map((item) =>
-                item.id === variables.id ? { ...item, ...data } : item,
-              );
-            }
-          }),
-        );
-
-        queryClient.invalidateQueries(projectsQueries.detail(variables.id));
+        onItemUpdate({
+          data: { ...project, ...data },
+          listQueryKey: projectsQueries.lists(),
+          detailQueryKey: projectsQueries.detail(project.id).queryKey,
+        });
       }
 
       onSuccess?.(data);
     },
     meta: {
-      invalidates: [projectsQueries.lists()],
       errorToast: {
         title: 'Failed to rename the workspace',
         includeErrorMessage: true,

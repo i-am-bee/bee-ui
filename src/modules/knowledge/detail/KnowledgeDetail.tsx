@@ -24,7 +24,7 @@ import {
 } from '@tanstack/react-query';
 // import { useDebounceValue } from 'usehooks-ts';
 import {
-  ListVectorStoreFilesResponse,
+  VectorStoreFilesListResponse,
   VectorStoreFile,
   VectorStoreFilesDeleteResponse,
 } from '@/app/api/vector-stores-files/types';
@@ -88,29 +88,9 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
 
   useUpdatePendingVectorStoreFiles(vectorStore, data?.files ?? [], params);
 
-  const onDeleteSuccess = (file?: VectorStoreFilesDeleteResponse) => {
-    if (file) {
-      queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
-        vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
-        produce((draft) => {
-          if (!draft?.pages) return null;
-          for (const page of draft.pages) {
-            if (!page) continue;
-            const index = page?.data.findIndex((item) => item.id === file.id);
-            if (index >= 0) {
-              page.data.splice(index, 1);
-            }
-          }
-        }),
-      );
-
-      queryClient.invalidateQueries(vectorStoresQueries.detail(vectorStore.id));
-    }
-  };
-
   const onCreateSuccess = (vectorStoreFile?: VectorStoreFile) => {
     if (vectorStoreFile)
-      queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
+      queryClient.setQueryData<InfiniteData<VectorStoreFilesListResponse>>(
         vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
         produce((draft) => {
           if (
@@ -187,7 +167,6 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
               key={item.id}
               vectorStore={vectorStore}
               vectorStoreFile={item}
-              onDeleteSuccess={onDeleteSuccess}
             />
           ))}
 

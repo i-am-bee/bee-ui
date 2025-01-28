@@ -18,10 +18,15 @@ import { updateApiKey } from '@/app/api/api-keys';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
+import { ApiKeysListResponse } from '@/app/api/api-keys/types';
 
 export function useRenameApiKey() {
   const { organization } = useWorkspace();
   const apiKeysQueries = useApiKeysQueries();
+  const { onItemUpdate } = useUpdateDataOnMutation<ApiKeysListResponse>({
+    isListInfiniteQuery: false,
+  });
 
   const mutation = useMutation({
     mutationFn: ({
@@ -33,8 +38,15 @@ export function useRenameApiKey() {
       id: string;
       name: string;
     }) => updateApiKey(organization.id, projectId, id, { name }),
+    onSuccess: (data) => {
+      if (data) {
+        onItemUpdate({
+          data,
+          listQueryKey: apiKeysQueries.lists(),
+        });
+      }
+    },
     meta: {
-      invalidates: [apiKeysQueries.lists()],
       errorToast: {
         title: 'Failed to rename the api key',
         includeErrorMessage: true,

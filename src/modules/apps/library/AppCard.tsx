@@ -30,10 +30,9 @@ interface Props {
   artifact: Artifact;
   cta?: string;
   onClick?: MouseEventHandler;
-  onDeleteSuccess?: (artifact?: ArtifactDeleteResult) => void;
 }
 
-export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
+export function AppCard({ artifact, cta, onClick }: Props) {
   const { name, description } = artifact;
   const router = useRouter();
   const { openModal } = useModal();
@@ -41,9 +40,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const {
     mutateAsyncWithConfirmation: deleteArtifact,
     isPending: isDeletePending,
-  } = useDeleteArtifact({
-    onSuccess: onDeleteSuccess,
-  });
+  } = useDeleteArtifact();
   const { project } = useAppContext();
 
   return (

@@ -73,7 +73,7 @@ export function RenameModal({ project, organization, ...props }: Props) {
   });
 
   const onSubmit = async ({ name }: FormValues) => {
-    await updateProject({ id, body: { name } });
+    await updateProject({ project, body: { name } });
   };
 
   return (

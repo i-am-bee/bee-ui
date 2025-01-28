@@ -19,9 +19,11 @@ import { Thread, ThreadCreateBody } from '@/app/api/threads/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
+import { useThreadsQueries } from '..';
 
 export function useCreateThread() {
   const { project, organization } = useWorkspace();
+  const threadsQueries = useThreadsQueries();
 
   const mutation = useMutation({
     mutationFn: async (body: ThreadCreateBody) => {
@@ -31,6 +33,7 @@ export function useCreateThread() {
       return thread;
     },
     meta: {
+      invalidates: [threadsQueries.lists()],
       errorToast: {
         title: 'Failed to create session',
         includeErrorMessage: true,

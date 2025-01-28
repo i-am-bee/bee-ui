@@ -41,8 +41,8 @@ export type VectorStoreFilesDeleteResponse = Awaited<
   ReturnType<typeof deleteVectorStoreFile>
 >;
 
-export type ListVectorStoreFilesResponse = Awaited<
-  ReturnType<typeof listVectorStoreFiles>
+export type VectorStoreFilesListResponse = NonNullable<
+  Awaited<ReturnType<typeof listVectorStoreFiles>>
 >;
 
 export type VectorStoreFile =

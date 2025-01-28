@@ -15,10 +15,15 @@
  */
 
 import { deleteApiKey } from '@/app/api/api-keys';
-import { ApiKey, ApiKeyDeleteResult } from '@/app/api/api-keys/types';
+import {
+  ApiKey,
+  ApiKeyDeleteResult,
+  ApiKeysListResponse,
+} from '@/app/api/api-keys/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: ApiKeyDeleteResult) => void;
@@ -27,11 +32,17 @@ interface Props {
 export function useDeleteApiKey({ onSuccess }: Props = {}) {
   const { organization } = useWorkspace();
   const apiKeysQueries = useApiKeysQueries();
+  const { onItemDelete } = useUpdateDataOnMutation<ApiKeysListResponse>({
+    isListInfiniteQuery: false,
+  });
 
   const mutation = useMutation({
     mutationFn: ({ project, id }: ApiKey) =>
       deleteApiKey(organization.id, project.id, id),
-    onSuccess,
+    onSuccess: (data, { id }) => {
+      onItemDelete({ id, listQueryKey: apiKeysQueries.lists() });
+      onSuccess?.();
+    },
     meta: {
       invalidates: [apiKeysQueries.lists()],
       errorToast: {

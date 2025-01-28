@@ -30,7 +30,9 @@ export type RunsListQuery = NonNullable<
   paths['/v1/threads/{thread_id}/runs']['get']['parameters']['query']
 >;
 
-export type RunsListResponse = Awaited<ReturnType<typeof listRuns>>;
+export type RunsListResponse = NonNullable<
+  Awaited<ReturnType<typeof listRuns>>
+>;
 
 export type ThreadRunResult = NonNullable<Awaited<ReturnType<typeof readRun>>>;
 

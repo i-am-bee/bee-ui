@@ -30,14 +30,12 @@ interface Props {
   assistants?: NonNullable<Assistant>[];
   isLoading: boolean;
   pageSize?: number;
-  onDeleteSuccess: (assistant?: AssistantDeleteResult) => void;
 }
 
 export function AssistantsList({
   assistants,
   isLoading,
   pageSize = ASSISTANTS_DEFAULT_PAGE_SIZE,
-  onDeleteSuccess,
 }: Props) {
   const { selectAssistant } = useAppApiContext();
   const { project } = useAppContext();
@@ -50,7 +48,6 @@ export function AssistantsList({
           key={assistant.id}
           assistant={assistant}
           cta="Start chat"
-          onDeleteSuccess={onDeleteSuccess}
           onClick={() => {
             selectAssistant(assistant);
             router.push(getNewSessionUrl(project.id, assistant));

@@ -15,7 +15,7 @@
  */
 
 import {
-  ListVectorStoresResponse,
+  VectorStoresListResponse,
   VectorStore,
   VectorStoresListQuery,
 } from '@/app/api/vector-stores/types';
@@ -70,7 +70,7 @@ export const useUpdatePendingVectorStore = (
       if (vectoreStore && vectoreStore.status !== vectoreStoreOld?.status) {
         isSomeUpdated = true;
 
-        queryClient.setQueryData<InfiniteData<ListVectorStoresResponse>>(
+        queryClient.setQueryData<InfiniteData<VectorStoresListResponse>>(
           vectorStoresQueries.list(params).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;

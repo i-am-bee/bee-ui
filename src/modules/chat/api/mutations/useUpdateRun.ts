@@ -15,20 +15,28 @@
  */
 
 import { updateRun } from '@/app/api/threads-runs';
-import { RunUpdateBody, ThreadRun } from '@/app/api/threads-runs/types';
-import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import {
+  RunsListResponse,
+  RunUpdateBody,
+  ThreadRun,
+} from '@/app/api/threads-runs/types';
+import {
+  decodeEntityWithMetadata,
+  encodeEntityWithMetadata,
+} from '@/app/api/utils';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 type Props = {
   onSuccess?: (data?: ThreadRun) => void;
 };
 
 export function useUpdateRun({ onSuccess }: Props = {}) {
-  const queryClient = useQueryClient();
   const { project, organization } = useWorkspace();
   const threadsQueries = useThreadsQueries();
+  const { onItemUpdate } = useUpdateDataOnMutation<RunsListResponse>();
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -47,29 +55,23 @@ export function useUpdateRun({ onSuccess }: Props = {}) {
         runId,
         body,
       );
+
       const run = result && decodeEntityWithMetadata<ThreadRun>(result);
 
       return run;
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       if (data) {
-        queryClient.setQueryData(
-          threadsQueries.runDetail(data.thread_id, data.id).queryKey,
-          (run) =>
-            run
-              ? {
-                  ...run,
-                  metadata: encodeMetadata(data.uiMetadata),
-                }
-              : undefined,
-        );
-
-        queryClient.invalidateQueries({
-          queryKey: threadsQueries.runDetail(data.thread_id, data.id),
+        onItemUpdate({
+          data: encodeEntityWithMetadata<ThreadRun>(data),
+          listQueryKey: threadsQueries.runsLists(variables.threadId),
+          detailQueryKey: threadsQueries.runDetail(variables.threadId, data.id)
+            .queryKey,
         });
       }
 
-      onSuccess?.(data);
+      const run = data && decodeEntityWithMetadata<ThreadRun>(data);
+      onSuccess?.(run);
     },
   });
 

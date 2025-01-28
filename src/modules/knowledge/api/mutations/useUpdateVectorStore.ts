@@ -18,10 +18,12 @@ import { updateVectorStore } from '@/app/api/vector-stores';
 import {
   VectorStoreCreateBody,
   VectorStoreCreateResponse,
+  VectorStoresListResponse,
 } from '@/app/api/vector-stores/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: VectorStoreCreateResponse) => void;
@@ -30,20 +32,23 @@ interface Props {
 export function useUpdateVectorStore({ onSuccess }: Props = {}) {
   const { project, organization } = useWorkspace();
   const vectorStoresQueries = useVectorStoresQueries();
-  const queryClient = useQueryClient();
+  const { onItemUpdate } = useUpdateDataOnMutation<VectorStoresListResponse>();
 
   const mutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: VectorStoreCreateBody }) =>
       updateVectorStore(organization.id, project.id, id, body),
     onSuccess: (data) => {
       if (data) {
-        queryClient.invalidateQueries(vectorStoresQueries.detail(data.id));
+        onItemUpdate({
+          data,
+          listQueryKey: vectorStoresQueries.lists(),
+          detailQueryKey: vectorStoresQueries.detail(data.id).queryKey,
+        });
       }
 
       onSuccess?.(data);
     },
     meta: {
-      invalidates: [vectorStoresQueries.lists()],
       errorToast: {
         title: 'Failed to rename the knowledge base',
         includeErrorMessage: true,

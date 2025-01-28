@@ -15,13 +15,17 @@
  */
 
 import { deleteAssistant } from '@/app/api/assistants';
-import { AssistantDeleteResult } from '@/app/api/assistants/types';
+import {
+  AssistantDeleteResult,
+  AssistantsListResponse,
+} from '@/app/api/assistants/types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
 import { Assistant } from '../../types';
 import { getAssistantName } from '../../utils';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: AssistantDeleteResult) => void;
@@ -31,13 +35,16 @@ export function useDeleteAssistant({ onSuccess }: Props = {}) {
   const { openConfirmation } = useModal();
   const { project, organization } = useWorkspace();
   const assistantsQueries = useAssistantsQueries();
+  const { onItemDelete } = useUpdateDataOnMutation<AssistantsListResponse>();
 
   const mutation = useMutation({
     mutationFn: (id: string) =>
       deleteAssistant(organization.id, project.id, id),
-    onSuccess,
+    onSuccess: (data, id) => {
+      onItemDelete({ id, listQueryKey: assistantsQueries.lists() });
+      onSuccess?.();
+    },
     meta: {
-      invalidates: [assistantsQueries.lists()],
       errorToast: {
         title: 'Failed to delete the app',
         includeErrorMessage: true,

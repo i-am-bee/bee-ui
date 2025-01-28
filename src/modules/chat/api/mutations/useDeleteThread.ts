@@ -18,45 +18,27 @@ import { deleteThread } from '@/app/api/threads';
 import { Thread, ThreadsListResponse } from '@/app/api/threads/types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import {
-  InfiniteData,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { produce } from 'immer';
+import { useMutation } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onMutate?: () => void;
 }
 
 export function useDeleteThread({ onMutate }: Props = {}) {
-  const queryClient = useQueryClient();
   const { openConfirmation } = useModal();
   const threadsQueries = useThreadsQueries();
   const { project, organization } = useWorkspace();
+  const { onItemDelete } = useUpdateDataOnMutation<ThreadsListResponse>();
 
   const mutation = useMutation({
     mutationFn: (id: string) => deleteThread(organization.id, project.id, id),
     onMutate,
-    onSuccess: (data) => {
-      if (data) {
-        queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-          threadsQueries.list().queryKey,
-          produce((draft) => {
-            if (!draft?.pages) return null;
-            for (const page of draft.pages) {
-              const index = page.data.findIndex((item) => item.id === data.id);
-              if (index >= 0) {
-                page.data.splice(index, 1);
-              }
-            }
-          }),
-        );
-      }
+    onSuccess: (data, id) => {
+      if (data) onItemDelete({ id, listQueryKey: threadsQueries.lists() });
     },
     meta: {
-      invalidates: [threadsQueries.lists()],
       errorToast: {
         title: 'Failed to delete session',
         includeErrorMessage: true,

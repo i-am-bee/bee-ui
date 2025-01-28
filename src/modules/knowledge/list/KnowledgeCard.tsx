@@ -34,15 +34,9 @@ import { RenameModal } from './RenameModal';
 
 interface Props {
   vectorStore: VectorStore;
-  onUpdateSuccess: (vectorStore?: VectorStoreCreateResponse) => void;
-  onDeleteSuccess: (vectorStore?: VectorStoreDeleteResponse) => void;
 }
 
-export function KnowledgeCard({
-  vectorStore,
-  onUpdateSuccess,
-  onDeleteSuccess,
-}: Props) {
+export function KnowledgeCard({ vectorStore }: Props) {
   const { openModal } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
   const router = useRouter();
@@ -50,9 +44,7 @@ export function KnowledgeCard({
   const {
     mutateAsyncWithConfirmation: deleteStore,
     isPending: isDeletePending,
-  } = useDeleteVectorStore({
-    onSuccess: onDeleteSuccess,
-  });
+  } = useDeleteVectorStore();
 
   return (
     <CardsListItem
@@ -75,7 +67,6 @@ export function KnowledgeCard({
                       organization={organization}
                       project={project}
                       vectorStore={vectorStore}
-                      onSuccess={onUpdateSuccess}
                       {...props}
                     />
                   )),

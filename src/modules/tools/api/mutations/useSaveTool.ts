@@ -21,9 +21,9 @@ import {
   ToolsListResponse,
 } from '@/app/api/tools/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
-import { useUpdateCacheAfterMutation } from '@/hooks/useUpdateCacheAfterMutation';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
+import { useMutation } from '@tanstack/react-query';
 
 interface Props {
   onSuccess?: (data?: ToolResult, isNew?: boolean) => void;
@@ -32,9 +32,7 @@ interface Props {
 export function useSaveTool({ onSuccess }: Props = {}) {
   const toolsQueries = useToolsQueries();
   const { project, organization } = useWorkspace();
-  const { onItemUpdate } = useUpdateCacheAfterMutation<ToolsListResponse>({
-    listQueryKey: toolsQueries.lists(),
-  });
+  const { onItemUpdate } = useUpdateDataOnMutation<ToolsListResponse>();
 
   const mutation = useMutation({
     mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
@@ -46,6 +44,7 @@ export function useSaveTool({ onSuccess }: Props = {}) {
       if (data) {
         onItemUpdate({
           data,
+          listQueryKey: toolsQueries.lists(),
           detailQueryKey: toolsQueries.detail(data.id).queryKey,
         });
       }
@@ -53,7 +52,6 @@ export function useSaveTool({ onSuccess }: Props = {}) {
       onSuccess?.(data, !variables.id);
     },
     meta: {
-      invalidates: [toolsQueries.lists()],
       errorToast: {
         title: 'Failed to save the tool',
       },
