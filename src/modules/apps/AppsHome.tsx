@@ -32,7 +32,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
-import { useFirstAssistant } from '../assistants/hooks/useFirstAssistatn';
+import { useFirstAssistant } from '../assistants/hooks/useFirstAssistant';
 import { GeneralOnboardingModal } from '../onboarding/general/GeneralOnboardingModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import classes from './AppsHome.module.scss';

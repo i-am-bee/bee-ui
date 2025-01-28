@@ -19,7 +19,7 @@ import { Modal } from '@/components/Modal/Modal';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
-import { useFirstAssistant } from '@/modules/assistants/hooks/useFirstAssistatn';
+import { useFirstAssistant } from '@/modules/assistants/hooks/useFirstAssistant';
 import { useCaptureClickMetric } from '@/modules/metrics/api/mutations/useCaptureClickMetric';
 import { isNotNull, noop } from '@/utils/helpers';
 import { ModalBody, ModalHeader } from '@carbon/react';
