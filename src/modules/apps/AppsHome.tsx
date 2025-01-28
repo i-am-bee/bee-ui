@@ -73,7 +73,7 @@ export function AppsHome() {
     isFetchingNextPage,
   } = useArtifacts({ params });
 
-  const firstAssistant = useFirstAssistant({
+  const { assistant: firstAssistant } = useFirstAssistant({
     enabled: !data?.artifacts.length,
   });
 

@@ -25,5 +25,9 @@ export async function captureClickMetric(body: { type: CounterType }) {
     body: JSON.stringify(body),
   });
 
+  if (!res.ok) {
+    throw new Error('Capturing click metric failed.');
+  }
+
   return await res.json();
 }

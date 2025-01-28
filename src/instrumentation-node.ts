@@ -20,10 +20,7 @@ import { metrics, NodeSDK, resources } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { SERVICE_NAME } from './instrumentation';
 
-const metricExporter = new OTLPMetricExporter({
-  // TODO: Add the correct url address
-  // url: '',
-});
+const metricExporter = new OTLPMetricExporter({});
 
 const metricReader = new metrics.PeriodicExportingMetricReader({
   exporter: metricExporter,

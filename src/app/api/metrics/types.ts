@@ -15,7 +15,7 @@
  */
 
 export enum CounterType {
-  BUILD_AN_APP = 'onboardingClick:buildApp',
-  CHAT_WITH_AGENT = 'onboardingClick:chat',
-  CREATE_AN_AGENT = 'onboardingClick:createAgent',
+  BUILD_AN_APP = 'onboarding_click_build_app',
+  CHAT_WITH_AGENT = 'onboarding_click_chat',
+  CREATE_AN_AGENT = 'onboarding_click_create_agent',
 }
