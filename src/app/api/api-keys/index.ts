@@ -102,4 +102,5 @@ export async function deleteApiKey(
     },
   );
   assertSuccessResponse(res);
+  return res.data;
 }

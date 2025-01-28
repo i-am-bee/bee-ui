@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
 import { MouseEventHandler, useState } from 'react';
-import { useDeleteAssistant } from '../builder/useDeleteAssistant';
+import { useDeleteAssistant } from '../api/mutations/useDeleteAssistant';
 import { AssistantModalRenderer } from '../detail/AssistantModalRenderer';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
@@ -28,7 +29,7 @@ interface Props {
   assistant: Assistant;
   cta?: string;
   onClick?: MouseEventHandler;
-  onDeleteSuccess?: (assistant: Assistant) => void;
+  onDeleteSuccess?: (assistant?: AssistantDeleteResult) => void;
 }
 
 export function AssistantCard({
@@ -38,11 +39,11 @@ export function AssistantCard({
   onDeleteSuccess,
 }: Props) {
   const { name, description } = assistant;
-  const { deleteAssistant, isPending: isDeletePending } = useDeleteAssistant({
-    assistant,
-    onSuccess: async () => {
-      onDeleteSuccess?.(assistant);
-    },
+  const {
+    mutateAsyncWithConfirmation: deleteAssistant,
+    isPending: isDeletePending,
+  } = useDeleteAssistant({
+    onSuccess: onDeleteSuccess,
   });
   const { isProjectReadOnly } = useAppContext();
   const [builderModalOpened, setBuilderModalOpened] = useState<boolean>(false);
@@ -65,7 +66,7 @@ export function AssistantCard({
             ? {
                 isDelete: true,
                 itemText: 'Delete',
-                onClick: () => deleteAssistant(),
+                onClick: () => deleteAssistant(assistant),
               }
             : null,
         ].filter(isNotNull)}

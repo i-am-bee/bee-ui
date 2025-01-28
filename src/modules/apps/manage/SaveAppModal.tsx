@@ -18,10 +18,11 @@ import {
   ArtifactCreateBody,
   ArtifactUpdateBody,
 } from '@/app/api/artifacts/types';
-import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { encodeMetadata } from '@/app/api/utils';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
@@ -35,16 +36,15 @@ import {
   TextInput,
 } from '@carbon/react';
 import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { useSaveArtifact } from '../api/mutations/useSaveArtifact';
 import { AppIconName } from '../AppIcon';
 import { AppIconSelector } from '../builder/AppIconSelector';
-import { useSaveArtifact } from '../hooks/useSaveArtifact';
 import { Artifact, ArtifactMetadata } from '../types';
 import { extractAppMetadataFromStreamlitCode } from '../utils';
-import { useRouter } from 'next-nprogress-bar';
 import classes from './SaveAppModal.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export type AppFormValues = {
   name: string;
@@ -79,26 +79,27 @@ export function SaveAppModal({
   const isUpdating = !!artifactProp;
 
   const {
-    mutateAsync: mutateSave,
+    mutateAsync: saveArtifact,
     isError: isSaveError,
     error: saveError,
   } = useSaveArtifact({
-    onSuccess: (result) => {
-      const artifact = decodeEntityWithMetadata<Artifact>(result);
-
-      if (isConfirmation) {
-        router.push(`/${project.id}/apps`);
-      } else {
-        if (!isUpdating) {
-          window.history.pushState(
-            null,
-            '',
-            `/${project.id}/apps/builder/a/${artifact.id}`,
-          );
+    onSuccess: (artifact) => {
+      if (artifact) {
+        if (isConfirmation) {
+          router.push(`/${project.id}/apps`);
+        } else {
+          if (!isUpdating) {
+            window.history.pushState(
+              null,
+              '',
+              `/${project.id}/apps/builder/a/${artifact.id}`,
+            );
+          }
         }
+
+        onSaveSuccess?.(artifact);
       }
 
-      onSaveSuccess?.(artifact);
       onRequestClose();
     },
   });
@@ -124,7 +125,7 @@ export function SaveAppModal({
 
   const onSubmit: SubmitHandler<AppFormValues> = useCallback(
     async (data) => {
-      await mutateSave(
+      await saveArtifact(
         isUpdating
           ? {
               id: artifactProp.id,
@@ -146,7 +147,14 @@ export function SaveAppModal({
             },
       );
     },
-    [isUpdating, additionalMetadata, artifactProp, messageId, code, mutateSave],
+    [
+      isUpdating,
+      additionalMetadata,
+      artifactProp,
+      messageId,
+      code,
+      saveArtifact,
+    ],
   );
 
   return (

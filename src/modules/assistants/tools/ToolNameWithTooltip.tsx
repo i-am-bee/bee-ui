@@ -16,8 +16,8 @@
 
 import { ToolReference } from '@/app/api/tools/types';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
-import classes from './ToolNameWithTooltip.module.scss';
 import { ToolInfoButton } from './ToolInfoButton';
+import classes from './ToolNameWithTooltip.module.scss';
 
 interface Props {
   toolReference: ToolReference;

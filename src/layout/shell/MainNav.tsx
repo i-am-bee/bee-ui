@@ -15,8 +15,8 @@
  */
 
 import { Link } from '@/components/Link/Link';
-import { useArtifactsCount } from '@/modules/apps/hooks/useArtifactsCount';
-import { usePrefetchArtifacts } from '@/modules/apps/hooks/usePrefetchArtifacts';
+import { useArtifactsCount } from '@/modules/apps/api/queries/useArtifactsCount';
+import { usePrefetchArtifacts } from '@/modules/apps/api/queries/usePrefetchArtifacts';
 import { usePathname } from 'next/navigation';
 import { useAppContext } from '../providers/AppProvider';
 import classes from './MainNav.module.scss';

@@ -16,11 +16,11 @@
 
 import { SkeletonText } from '@carbon/react';
 import pluralize from 'pluralize';
-import { useProjectUsersCount } from './useProjectUsersCount';
+import { useProjectUsersCount } from './api/queries/useProjectUsersCount';
 import classes from './UsersCount.module.scss';
 
 export function UsersCount({ projectId }: { projectId: string }) {
-  const { totalCount, isLoading } = useProjectUsersCount(projectId);
+  const { totalCount, isLoading } = useProjectUsersCount({ id: projectId });
 
   return (
     <div className={classes.root}>

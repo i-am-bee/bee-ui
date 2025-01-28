@@ -15,16 +15,16 @@
  */
 
 import { ToolReference } from '@/app/api/tools/types';
-import { Tooltip } from '@/components/Tooltip/Tooltip';
-import classes from './ToolInfoButton.module.scss';
-import { ArrowUpRight, Edit, Information } from '@carbon/react/icons';
-import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
-import { useModal } from '@/layout/providers/ModalProvider';
-import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
-import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useModal } from '@/layout/providers/ModalProvider';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
+import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { ToolDescription } from '@/modules/tools/ToolCard';
+import { ArrowUpRight, Edit, Information } from '@carbon/react/icons';
+import classes from './ToolInfoButton.module.scss';
 
 interface Props {
   toolReference: ToolReference;

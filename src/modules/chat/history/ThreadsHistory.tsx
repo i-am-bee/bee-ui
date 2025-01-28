@@ -17,9 +17,9 @@
 'use client';
 import { Thread } from '@/app/api/threads/types';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { HTMLAttributes, memo } from 'react';
-import { THREADS_DEFAULT_PAGE_SIZE, useThreadsQueries } from '../queries';
+import { THREADS_DEFAULT_PAGE_SIZE } from '../api';
+import { useThreads } from '../api/queries/useThreads';
 import { ThreadItem } from './ThreadItem';
 import classes from './ThreadsHistory.module.scss';
 
@@ -31,8 +31,6 @@ export const ThreadsHistory = memo(function ThreadsHistory({
   enableFetch,
   className,
 }: Props) {
-  const threadsQueries = useThreadsQueries();
-
   const {
     data,
     error,
@@ -42,10 +40,7 @@ export const ThreadsHistory = memo(function ThreadsHistory({
     isFetching,
     isPending,
     isFetchingNextPage,
-  } = useInfiniteQuery({
-    ...threadsQueries.list(),
-    enabled: enableFetch,
-  });
+  } = useThreads({ enabled: enableFetch });
 
   const { ref: fetchMoreAnchorRef } = useFetchNextPageInView({
     onFetchNextPage: fetchNextPage,

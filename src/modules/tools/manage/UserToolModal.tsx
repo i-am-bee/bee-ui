@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-import { createTool, deleteTool, updateTool } from '@/app/api/tools';
-import { Tool, ToolResult, ToolsCreateBody } from '@/app/api/tools/types';
+import {
+  Tool,
+  ToolDeleteResult,
+  ToolResult,
+  ToolsCreateBody,
+} from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
-import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
+import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
   Button,
   Dropdown,
@@ -37,7 +40,6 @@ import {
   RadioButtonGroup,
   TextInput,
 } from '@carbon/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useId } from 'react';
 import {
   Controller,
@@ -47,7 +49,8 @@ import {
   useForm,
   useFormContext,
 } from 'react-hook-form';
-import { useToolsQueries } from '../queries';
+import { useDeleteTool } from '../api/mutations/useDeleteTool';
+import { useSaveTool } from '../api/mutations/useSaveTool';
 import { ToolDescription } from '../ToolCard';
 import classes from './UserToolModal.module.scss';
 
@@ -94,7 +97,7 @@ interface Props extends ModalProps {
   tool?: Tool;
   onCreateSuccess?: (tool: ToolResult) => void;
   onSaveSuccess?: (tool: ToolResult) => void;
-  onDeleteSuccess?: (tool: Tool) => void;
+  onDeleteSuccess?: (tool?: ToolDeleteResult) => void;
 }
 
 export function UserToolModal({
@@ -104,16 +107,11 @@ export function UserToolModal({
   onDeleteSuccess,
   ...props
 }: Props) {
-  const { project, organization } = useAppContext();
   const { onRequestClose } = props;
-  const { openConfirmation } = useModal();
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
 
   const editMode = tool != undefined;
-
-  const queryClient = useQueryClient();
-  const toolsQueries = useToolsQueries();
 
   const formReturn = useForm<FormValues>({
     defaultValues: {
@@ -138,60 +136,38 @@ export function UserToolModal({
   useConfirmModalCloseOnDirty(isDirty, 'tool');
 
   const {
-    mutateAsync: mutateSaveTool,
+    mutateAsync: saveTool,
     isError: isSaveError,
     error: saveError,
-  } = useMutation({
-    mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
-      return id
-        ? updateTool(organization.id, project.id, id, body)
-        : createTool(organization.id, project.id, body);
-    },
-    onSuccess: (tool, { id }) => {
+  } = useSaveTool({
+    onSuccess: (tool, isNew) => {
       if (tool) {
-        queryClient.invalidateQueries(toolsQueries.detail(tool.id));
-
-        if (!id) {
-          onCreateSuccess?.(tool);
-        }
-
-        onSaveSuccess?.(tool);
+        isNew ? onCreateSuccess?.(tool) : onSaveSuccess?.(tool);
       }
 
       onRequestClose();
     },
-    meta: {
-      invalidates: [toolsQueries.lists()],
-      errorToast: {
-        title: id ? 'Failed to update tool' : 'Failed to create a new tool',
-      },
+  });
+
+  const {
+    mutateAsyncWithConfirmation: deleteTool,
+    isPending: isDeletePending,
+  } = useDeleteTool({
+    onSuccess: (tool) => {
+      onDeleteSuccess?.(tool);
+
+      onRequestClose();
     },
   });
 
-  const { mutateAsync: mutateDeleteTool, isPending: isDeletePending } =
-    useMutation({
-      mutationFn: (id: string) => deleteTool(organization.id, project.id, id),
-      onSuccess: () => {
-        tool && onDeleteSuccess?.(tool);
-        onRequestClose();
-      },
-      meta: {
-        invalidates: [toolsQueries.lists()],
-        errorToast: {
-          title: 'Failed to delete tool',
-          includeErrorMessage: true,
-        },
-      },
-    });
-
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
-      await mutateSaveTool({
+      await saveTool({
         id: tool?.id,
         body: createSaveToolBody(data, tool),
       });
     },
-    [mutateSaveTool, tool],
+    [saveTool, tool],
   );
 
   const toolType = watch('type');
@@ -339,18 +315,7 @@ export function UserToolModal({
       <ModalFooter>
         <div className={classes.actions}>
           {editMode ? (
-            <Button
-              kind="danger--ghost"
-              onClick={() =>
-                openConfirmation({
-                  title: 'Are you sure you want to delete the tool?',
-                  body: tool.name,
-                  primaryButtonText: 'Delete',
-                  danger: true,
-                  onSubmit: () => mutateDeleteTool(tool.id),
-                })
-              }
-            >
+            <Button kind="danger--ghost" onClick={() => deleteTool(tool)}>
               {isDeletePending ? (
                 <InlineLoading description="Deleting..." />
               ) : (

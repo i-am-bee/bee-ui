@@ -17,8 +17,8 @@
 'use client';
 import {
   ListVectorStoresResponse,
-  VectorStore,
   VectorStoreCreateResponse,
+  VectorStoreDeleteResponse,
   VectorStoresListQueryOrderBy,
 } from '@/app/api/vector-stores/types';
 import { CardsList } from '@/components/CardsList/CardsList';
@@ -34,21 +34,18 @@ import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
+import { useVectorStoresQueries, VECTOR_STORES_DEFAULT_PAGE_SIZE } from './api';
+import { useVectorStores } from './api/queries/useVectorStores';
 import { CreateKnowledgeModal } from './create/CreateKnowledgeModal';
 import { useUpdatePendingVectorStore } from './hooks/useUpdatePendingVectorStore';
-import { useVectorStores } from './hooks/useVectorStores';
 import { KnowledgeCard } from './list/KnowledgeCard';
-import {
-  useVectorStoresQueries,
-  VECTOR_STORES_DEFAULT_PAGE_SIZE,
-} from './queries';
 
 export function KnowledgeView() {
   const [search, setSearch] = useDebounceValue('', 200);
   const [order, setOrder] = useState<VectorStoresListQueryOrderBy>(
     VECTOR_STORES_ORDER_DEFAULT,
   );
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { organization, isProjectReadOnly } = useAppContext();
   const queryClient = useQueryClient();
   const { openModal } = useModal();
   const vectorStoresQueries = useVectorStoresQueries();
@@ -97,20 +94,24 @@ export function KnowledgeView() {
     );
   };
 
-  const onUpdateSuccess = (store: VectorStore) => {
-    onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
-      if (!page) return;
-      const index = page.data.findIndex((item) => item.id === store.id);
-      index >= 0 && page?.data.splice(index, 1, store);
-    });
+  const onUpdateSuccess = (vectorStore?: VectorStoreCreateResponse) => {
+    if (vectorStore) {
+      onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
+        if (!page) return;
+        const index = page.data.findIndex((item) => item.id === vectorStore.id);
+        index >= 0 && page?.data.splice(index, 1, vectorStore);
+      });
+    }
   };
 
-  const onDeleteSuccess = (store: VectorStore) => {
-    onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
-      if (!page) return;
-      const index = page.data.findIndex((item) => item.id === store.id);
-      index >= 0 && page.data.splice(index, 1);
-    });
+  const onDeleteSuccess = (vectorStore?: VectorStoreDeleteResponse) => {
+    if (vectorStore) {
+      onUpdateQueryData((page: WritableDraft<ListVectorStoresResponse>) => {
+        if (!page) return;
+        const index = page.data.findIndex((item) => item.id === vectorStore.id);
+        index >= 0 && page.data.splice(index, 1);
+      });
+    }
   };
 
   const isLoading = isPending || isFetchingNextPage;

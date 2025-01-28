@@ -15,13 +15,15 @@
  */
 
 import { fetchProject } from '@/app/api/rsc';
-import { featureFlags, MAIN_ELEMENT_ID } from '@/utils/constants';
+import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
+import { MAIN_ELEMENT_ID } from '@/utils/constants';
+import { parseFeatureFlags } from '@/utils/parseFeatureFlags';
 import { notFound } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 import { AppProvider } from '../providers/AppProvider';
-import { AppHeader } from './AppHeader';
-import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { ModalProvider } from '../providers/ModalProvider';
+import { WorkspaceProvider } from '../providers/WorkspaceProvider';
+import { AppHeader } from './AppHeader';
 import classes from './AppShell.module.scss';
 
 interface Props {
@@ -33,26 +35,24 @@ export async function AppShell({
   children,
 }: PropsWithChildren<Props>) {
   const organizationId = await ensureDefaultOrganizationId();
-
+  const organization = { id: organizationId };
   const project = await fetchProject(organizationId, projectId);
 
-  if (!project) notFound();
+  if (!project || project.status === 'archived') notFound();
 
   return (
-    <AppProvider
-      project={project}
-      organization={{ id: organizationId }}
-      featureFlags={featureFlags}
-    >
-      <ModalProvider>
-        <div className={classes.root}>
-          <AppHeader />
+    <WorkspaceProvider organization={organization} project={project}>
+      <AppProvider featureFlags={parseFeatureFlags(process.env.FEATURE_FLAGS)}>
+        <ModalProvider>
+          <div className={classes.root}>
+            <AppHeader />
 
-          <main id={MAIN_ELEMENT_ID} className={classes.content}>
-            {children}
-          </main>
-        </div>
-      </ModalProvider>
-    </AppProvider>
+            <main id={MAIN_ELEMENT_ID} className={classes.content}>
+              {children}
+            </main>
+          </div>
+        </ModalProvider>
+      </AppProvider>
+    </WorkspaceProvider>
   );
 }

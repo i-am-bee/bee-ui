@@ -108,6 +108,7 @@ export async function deleteAssistant(
     headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
+  return res.data;
 }
 
 export async function fetchAssistant(

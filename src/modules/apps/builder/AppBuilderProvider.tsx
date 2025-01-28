@@ -17,7 +17,7 @@
 'use client';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { ARTIFACT_TEMPLATES } from '@/modules/onboarding/apps/templates';
-import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
+import { useOnboardingCompleted } from '@/modules/users/hooks/useOnboardingCompleted';
 import { useSearchParams } from 'next/navigation';
 import {
   createContext,

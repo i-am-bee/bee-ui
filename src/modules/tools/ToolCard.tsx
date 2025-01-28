@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Tool, ToolReference } from '@/app/api/tools/types';
+import { Tool, ToolDeleteResult, ToolReference } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -23,7 +23,7 @@ import { ArrowRight, ArrowUpRight, Edit } from '@carbon/react/icons';
 import clsx from 'clsx';
 import Markdown, { Components } from 'react-markdown';
 import { ToolTypeTag } from '../assistants/tools/ToolTypeTag';
-import { useDeleteTool } from './hooks/useDeleteTool';
+import { useDeleteTool } from './api/mutations/useDeleteTool';
 import { useToolInfo } from './hooks/useToolInfo';
 import { PublicToolModal } from './manage/PublicToolModal';
 import { UserToolModal } from './manage/UserToolModal';
@@ -32,15 +32,17 @@ import { getToolReferenceFromTool } from './utils';
 
 interface Props {
   tool: Tool;
-  onDeleteSuccess: (tool: Tool) => void;
+  onDeleteSuccess: (tool?: ToolDeleteResult) => void;
   onSaveSuccess?: () => void;
 }
 
 export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
   const { name, description, user_description, type } = tool;
-  const { deleteTool, isPending: isDeletePending } = useDeleteTool({
-    tool,
-    onSuccess: () => onDeleteSuccess(tool),
+  const {
+    mutateAsyncWithConfirmation: deleteTool,
+    isPending: isDeletePending,
+  } = useDeleteTool({
+    onSuccess: onDeleteSuccess,
   });
   const { isProjectReadOnly } = useAppContext();
   const { openModal } = useModal();
@@ -91,7 +93,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
                 {
                   isDelete: true,
                   itemText: 'Delete',
-                  onClick: () => deleteTool(),
+                  onClick: () => deleteTool(tool),
                 },
               ].filter(isNotNull)
             : undefined

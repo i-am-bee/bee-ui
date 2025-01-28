@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-import { deleteMessage } from '@/app/api/threads-messages';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { useMutation } from '@tanstack/react-query';
 import { v4 as uuid } from 'uuid';
+import { useDeleteMessage } from '../api/mutations/useDeleteMessage';
 import { useChat } from '../providers/chat-context';
 import { ChatMessage } from '../types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 export function useRetry(message: ChatMessage) {
   const { status, thread, sendMessage, getMessages, setMessages } = useChat();
   const { addToast } = useToast();
-  const { project, organization } = useAppContext();
 
-  const { mutateAsync, isPending: isDeleting } = useMutation({
-    mutationFn: ({ threadId, messageId }: DeleteMutationParams) =>
-      deleteMessage(organization.id, project.id, threadId, messageId),
-  });
+  const { mutateAsync, isPending: isDeleting } = useDeleteMessage();
 
   const retry = async () => {
     let messages = getMessages();
@@ -79,9 +73,4 @@ export function useRetry(message: ChatMessage) {
     }
   };
   return { pending: status !== 'ready', retry, isDeleting };
-}
-
-interface DeleteMutationParams {
-  threadId: string;
-  messageId: string;
 }

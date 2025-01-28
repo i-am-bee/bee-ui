@@ -16,8 +16,9 @@
 
 import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import { Link } from '@/components/Link/Link';
-import { usePrefetchVectorStores } from '@/modules/knowledge/hooks/usePrefetchVectorStores';
-import { usePrefetchTools } from '@/modules/tools/hooks/usePrefetchTools';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { usePrefetchVectorStores } from '@/modules/knowledge/api/queries/usePrefetchVectorStores';
+import { usePrefetchTools } from '@/modules/tools/api/queries/usePrefetchTools';
 import { DOCUMENTATION_URL, FEEDBACK_URL } from '@/utils/constants';
 import { FeatureName } from '@/utils/parseFeatureFlags';
 import { ArrowUpRight } from '@carbon/react/icons';
@@ -26,7 +27,6 @@ import { usePathname } from 'next/navigation';
 import { HTMLAttributes } from 'react';
 import classes from './UserNav.module.scss';
 import { UserProfile } from './UserProfile';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props extends HTMLAttributes<HTMLElement> {}
 

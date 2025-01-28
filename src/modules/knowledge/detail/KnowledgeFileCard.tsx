@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import {
+  VectorStoreFile,
+  VectorStoreFilesDeleteResponse,
+} from '@/app/api/vector-stores-files/types';
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useModal } from '@/layout/providers/ModalProvider';
+import { useFile } from '@/modules/files/api/queries/useFile';
 import {
   InlineLoading,
   SkeletonPlaceholder,
   SkeletonText,
 } from '@carbon/react';
-import { Document, TrashCan, WarningAlt } from '@carbon/react/icons';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { Document, WarningAlt } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { useFilesQueries } from '../../files/queries';
-import { useVectorStoresQueries } from '../queries';
+import { useDeleteVectorStoreFile } from '../api/mutations/useDeleteVectorStoreFile';
 import classes from './KnowledgeFileCard.module.scss';
 
 interface Props {
   vectorStore: VectorStore;
   vectorStoreFile: VectorStoreFile;
-  onDeleteSuccess?: (file: VectorStoreFile) => void;
+  onDeleteSuccess?: (file?: VectorStoreFilesDeleteResponse) => void;
   readOnly?: boolean;
   kind?: 'card' | 'list';
 }
@@ -48,33 +48,16 @@ export function KnowledgeFileCard({
   kind = 'card',
   onDeleteSuccess,
 }: Props) {
-  const { openConfirmation } = useModal();
-  const { project, organization, isProjectReadOnly } = useAppContext();
-  const filesQueries = useFilesQueries();
-  const vectorStoresQueries = useVectorStoresQueries();
+  const { isProjectReadOnly } = useAppContext();
 
-  const { mutateAsync: mutateDeleteFile, isPending: isDeletePending } =
-    useMutation({
-      mutationFn: () =>
-        deleteVectorStoreFile(
-          organization.id,
-          project.id,
-          vectorStore.id,
-          vectorStoreFile.id,
-        ),
-      onSuccess: async () => {
-        onDeleteSuccess?.(vectorStoreFile);
-      },
-      meta: {
-        invalidates: [vectorStoresQueries.lists()],
-        errorToast: {
-          title: 'Failed to delete the file',
-          includeErrorMessage: true,
-        },
-      },
-    });
+  const {
+    mutateAsyncWithConfirmation: deleteVectorStoreFile,
+    isPending: isDeletePending,
+  } = useDeleteVectorStoreFile({
+    onSuccess: onDeleteSuccess,
+  });
 
-  const { data, isLoading } = useQuery(filesQueries.detail(vectorStoreFile.id));
+  const { data, isLoading } = useFile({ id: vectorStoreFile.id });
 
   if (!data && isLoading)
     return kind === 'card' ? (
@@ -102,15 +85,10 @@ export function KnowledgeFileCard({
                 isDelete: true,
                 itemText: 'Delete',
                 onClick: () =>
-                  openConfirmation({
-                    title: 'Delete document?',
-                    // TODO: add apps info "Are you sure you would like to delete Lorem-Ipsum.pdf? It is currently used by 3 apps."
-                    body: `Are you sure you would like to delete ${data?.filename}?`,
-                    primaryButtonText: 'Delete document',
-                    danger: true,
-                    icon: TrashCan,
-                    size: 'md',
-                    onSubmit: mutateDeleteFile,
+                  deleteVectorStoreFile({
+                    vectorStore,
+                    vectorStoreFile,
+                    filename: data?.filename,
                   }),
               },
             ]

@@ -15,22 +15,19 @@
  */
 
 'use client';
-import { deleteFile } from '@/app/api/files';
 import { MessageAttachments } from '@/app/api/threads-messages/types';
 import { Thread } from '@/app/api/threads/types';
-import { createVectorStore } from '@/app/api/vector-stores';
-import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
-import { VectorStoreCreateBody } from '@/app/api/vector-stores/types';
 import { useHandleError } from '@/layout/hooks/useHandleError';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useDeleteFile } from '@/modules/files/api/mutations/useDeleteFile';
 import { isMimeTypeReadable } from '@/modules/files/utils';
+import { useCreateVectorStore } from '@/modules/knowledge/api/mutations/useCreateVectorStore';
+import { useDeleteVectorStoreFile } from '@/modules/knowledge/api/mutations/useDeleteVectorStoreFile';
 import {
   useVectoreStoreFilesUpload,
   VectoreStoreFileUpload,
 } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import { useVectorStoresQueries } from '@/modules/knowledge/queries';
 import { isNotNull, noop } from '@/utils/helpers';
-import { useMutation } from '@tanstack/react-query';
 import {
   createContext,
   Dispatch,
@@ -84,7 +81,7 @@ const ERROR_MESSAGES = {
 };
 
 export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
-  const { project, organization, assistant, featureFlags } = useAppContext();
+  const { assistant, featureFlags } = useAppContext();
   const {
     files,
     setFiles,
@@ -102,7 +99,6 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
   const ensureThreadRef = useRef<() => Promise<Thread>>(() => {
     throw Error('Thread retrieval function not defined');
   });
-  const vectorStoresQueries = useVectorStoresQueries();
 
   useEffect(() => {
     const attachments: MessageAttachments = files
@@ -122,36 +118,15 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
     setAttachments(attachments);
   }, [files]);
 
-  const { mutateAsync: mutateCreateVectorStore } = useMutation({
-    mutationFn: (body: VectorStoreCreateBody) =>
-      createVectorStore(organization.id, project.id, body),
-    onSuccess: (result) => {
-      if (result) setVectorStoreId(result.id);
-    },
-    retry: 3,
-    meta: {
-      errorTitle:
-        'Failed to create knowledge base, file search tool will not be available.',
-      includeErrorMessage: true,
+  const { mutateAsync: createVectorStore } = useCreateVectorStore({
+    onSuccess: (vectorStore) => {
+      if (vectorStore) {
+        setVectorStoreId(vectorStore.id);
+      }
     },
   });
-
-  const { mutateAsync: mutateDeleteFile } = useMutation({
-    mutationFn: (id: string) => deleteFile(organization.id, project.id, id),
-  });
-
-  const { mutateAsync: mutateDeleteStoreFile } = useMutation({
-    mutationFn: ({
-      vectorStoreId,
-      id,
-    }: {
-      vectorStoreId: string;
-      id: string;
-    }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
-    meta: {
-      invalidates: [vectorStoresQueries.lists()],
-    },
-  });
+  const { mutateAsync: deleteFile } = useDeleteFile();
+  const { mutateAsync: deleteVectorStoreFile } = useDeleteVectorStoreFile();
 
   const removeFile = useCallback(
     (id: string) => {
@@ -160,14 +135,14 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       if (fileId) {
         const vectorFileId = fileToRemove.vectorStoreFile?.id;
         if (vectorStoreId && vectorFileId)
-          mutateDeleteStoreFile({ vectorStoreId, id: vectorFileId });
+          deleteVectorStoreFile({ vectorStoreId, id: vectorFileId });
 
-        mutateDeleteFile(fileId);
+        deleteFile(fileId);
       }
 
       setFiles((files) => files.filter((file) => file.id !== id));
     },
-    [files, setFiles, vectorStoreId, mutateDeleteStoreFile, mutateDeleteFile],
+    [files, setFiles, vectorStoreId, deleteVectorStoreFile, deleteFile],
   );
 
   const onDropAccepted = useCallback(
@@ -186,7 +161,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       const isVectorStoreNeeded = newFiles.some((file) => file.isReadable);
       const thread = await ensureThreadRef.current();
       if (isVectorStoreNeeded && !vectorStoreId) {
-        await mutateCreateVectorStore({
+        await createVectorStore({
           depends_on: { thread: { id: thread.id } },
         });
       }
@@ -196,7 +171,7 @@ export const FilesUploadProvider = ({ children }: PropsWithChildren) => {
       });
     },
     [
-      mutateCreateVectorStore,
+      createVectorStore,
       onFileSubmit,
       setFiles,
       vectorStoreId,

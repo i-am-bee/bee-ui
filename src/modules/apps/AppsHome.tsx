@@ -16,6 +16,7 @@
 
 'use client';
 import {
+  ArtifactDeleteResult,
   ArtifactsListQueryOrderBy,
   ListArtifactsResponse,
 } from '@/app/api/artifacts/types';
@@ -32,15 +33,14 @@ import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
-import { useFirstAssistant } from '../assistants/hooks/useFirstAssistant';
+import { useFirstAssistant } from '../assistants/api/queries/useFirstAssistant';
 import { GeneralOnboardingModal } from '../onboarding/general/GeneralOnboardingModal';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
 import classes from './AppsHome.module.scss';
 import blinkingBeeAnimation from './BlinkingBeeAnimation.json';
-import { useArtifacts } from './hooks/useArtifacts';
+import { useArtifactsQueries } from './api';
+import { useArtifacts } from './api/queries/useArtifacts';
 import { AppsList } from './library/AppsList';
-import { useArtifactsQueries } from './queries';
-import { Artifact } from './types';
 
 export function AppsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -77,19 +77,21 @@ export function AppsHome() {
     enabled: !data?.artifacts.length,
   });
 
-  const handleDeleteArtifactSuccess = (artifact: Artifact) => {
-    queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
-      artifactsQueries.list(params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        for (const page of draft.pages) {
-          const index = page.data.findIndex(({ id }) => id === artifact.id);
-          if (index >= 0) {
-            page.data.splice(index, 1);
+  const handleDeleteArtifactSuccess = (artifact?: ArtifactDeleteResult) => {
+    if (artifact) {
+      queryClient.setQueryData<InfiniteData<ListArtifactsResponse>>(
+        artifactsQueries.list(params).queryKey,
+        produce((draft) => {
+          if (!draft?.pages) return null;
+          for (const page of draft.pages) {
+            const index = page.data.findIndex(({ id }) => id === artifact.id);
+            if (index >= 0) {
+              page.data.splice(index, 1);
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
+    }
   };
 
   return (

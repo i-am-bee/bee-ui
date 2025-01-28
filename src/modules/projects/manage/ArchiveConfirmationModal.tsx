@@ -15,7 +15,6 @@
  */
 
 import { Organization } from '@/app/api/organization/types';
-import { archiveProject } from '@/app/api/projects';
 import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
@@ -29,11 +28,10 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useId } from 'react';
 import { useForm } from 'react-hook-form';
-import { useProjectsQueries } from '../queries';
+import { useArchiveProject } from '../api/mutations/useArchiveProject';
 import classes from './ArchiveConfirmationModal.module.scss';
 
 interface Props extends ModalProps {
@@ -50,10 +48,8 @@ export function ArchiveConfirmationModal({
   const { addToast } = useToast();
   const router = useRouter();
   const projectId = useUserProfile((state) => state.default_project);
-  const projectsQueries = useProjectsQueries();
 
-  const { mutateAsync: mutateArchive } = useMutation({
-    mutationFn: () => archiveProject(organization.id, project.id),
+  const { mutateAsync: archiveProject } = useArchiveProject({
     onSuccess: () => {
       addToast({
         kind: 'success',
@@ -62,13 +58,6 @@ export function ArchiveConfirmationModal({
       });
       router.push(`/${projectId}`);
       props.onRequestClose();
-    },
-    meta: {
-      invalidates: [projectsQueries.lists()],
-      errorToast: {
-        title: 'Failed to archive the workspace',
-        includeErrorMessage: true,
-      },
     },
   });
 
@@ -92,7 +81,7 @@ export function ArchiveConfirmationModal({
         </p>
       </ModalHeader>
       <ModalBody>
-        <form onSubmit={handleSubmit(() => mutateArchive())}>
+        <form onSubmit={handleSubmit(() => archiveProject(project.id))}>
           <TextInput
             id={`${htmlId}:name`}
             labelText={`To confirm, type ”${project.name}” in the input box`}
@@ -115,7 +104,7 @@ export function ArchiveConfirmationModal({
         </Button>
         <Button
           kind="danger"
-          onClick={handleSubmit(() => mutateArchive())}
+          onClick={handleSubmit(() => archiveProject(project.id))}
           disabled={isSubmitting || !isValid}
         >
           {isSubmitting ? (
