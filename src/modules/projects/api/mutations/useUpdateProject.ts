@@ -50,9 +50,7 @@ export function useUpdateProject({ onSuccess }: Props = {}) {
             if (!draft?.pages) return null;
             for (const page of draft.pages) {
               page.data = page.data.map((item) =>
-                item.id === variables.id
-                  ? { ...item, ...variables.body }
-                  : item,
+                item.id === variables.id ? { ...item, ...data } : item,
               );
             }
           }),

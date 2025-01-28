@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { useVectorStoresQueries } from '@/modules/knowledge/api';
 import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
 import { useVectorStoreFiles } from '@/modules/knowledge/api/queries/useVectorStoreFiles';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
@@ -47,7 +46,6 @@ export function ThreadKnowledge({
   const { getMessages, disabledTools, setDisabledTools } = useChat();
   const { getThreadTools } = useChat();
   const { files } = useFilesUpload();
-  const vectorStoresQueries = useVectorStoresQueries();
 
   // TODO: We don't currently support paging of messages, so this works. When pagination is available, we need to figure out the functionality differently.
   const allFiles = useMemo(
