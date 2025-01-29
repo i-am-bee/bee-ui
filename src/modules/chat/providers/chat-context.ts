@@ -64,6 +64,7 @@ type ChatContextValue = ChatSetup & {
   onToolApprovalSubmitRef: MutableRefObject<
     ((value: ToolApprovalValue) => void) | null
   >;
+  fetchMoreInViewAnchorRef: (node?: Element | null) => void;
 };
 
 export const ChatContext = createContext<ChatContextValue>(

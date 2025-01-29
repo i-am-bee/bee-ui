@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 
-import { MESSAGES_PAGE_SIZE } from '@/app/api/threads-messages';
 import { Thread } from '@/app/api/threads/types';
 import { useImmerWithGetter } from '@/hooks/useImmerWithGetter';
 import { useListMessagesWithFiles } from '../api/queries/useListMessagesWithFiles';
-import { MessageWithFiles } from '../types';
+import { MessageWithFilesResponse } from '../types';
 import { getMessagesFromThreadMessages } from '../utils';
+import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 
 export function useMessages({
   thread,
   initialData,
 }: {
   thread?: Thread | null;
-  initialData?: MessageWithFiles[];
+  initialData?: MessageWithFilesResponse;
 }) {
-  const { data, refetch } = useListMessagesWithFiles({
-    threadId: thread?.id,
-    params: {
-      limit: MESSAGES_PAGE_SIZE,
-    },
-    initialData,
+  const { data, refetch, isFetching, hasNextPage, fetchNextPage } =
+    useListMessagesWithFiles({
+      threadId: thread?.id,
+      initialData,
+    });
+
+  const { ref: fetchMoreInViewAnchorRef } = useFetchNextPageInView({
+    onFetchNextPage: fetchNextPage,
+    isFetching,
+    hasNextPage,
   });
 
   return {
@@ -41,5 +45,6 @@ export function useMessages({
       thread ? getMessagesFromThreadMessages(data ?? []) : [],
     ),
     refetch,
+    fetchMoreInViewAnchorRef,
   };
 }

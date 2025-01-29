@@ -15,10 +15,7 @@
  */
 
 import { listThreads, readThread } from '@/app/api/threads';
-import {
-  listMessages,
-  listMessagesWithFiles,
-} from '@/app/api/threads-messages';
+import { listMessages } from '@/app/api/threads-messages';
 import { MessagesListQuery } from '@/app/api/threads-messages/types';
 import {
   listRuns,
@@ -37,6 +34,7 @@ import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { isNotNull } from '@/utils/helpers';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { listMessagesWithFiles } from './messages';
 
 export function useThreadsQueries() {
   const { organization, project } = useWorkspace();
@@ -103,6 +101,7 @@ export function useThreadsQueries() {
           queryKey: [...threadsQueries.messagesLists(threadId), params],
           queryFn: () =>
             listMessages(organization.id, project.id, threadId, params),
+
           staleTime: 60 * 60 * 1000,
         }),
       messagesWithFilesLists: (threadId: string) => [
@@ -110,18 +109,22 @@ export function useThreadsQueries() {
         'with-files',
       ],
       messagesWithFilesList: (threadId: string, params?: MessagesListQuery) =>
-        queryOptions({
+        infiniteQueryOptions({
           queryKey: [
             ...threadsQueries.messagesWithFilesLists(threadId),
             params,
           ],
-          queryFn: () =>
-            listMessagesWithFiles(
-              organization.id,
-              project.id,
-              threadId,
-              params,
-            ),
+          queryFn: ({ pageParam }: { pageParam?: string }) =>
+            listMessagesWithFiles(organization.id, project.id, threadId, {
+              ...params,
+              after: pageParam,
+            }),
+          initialPageParam: undefined,
+          getNextPageParam(lastPage) {
+            return lastPage?.has_more && lastPage?.last_id
+              ? lastPage.last_id
+              : undefined;
+          },
         }),
       runsLists: (threadId: string) => [
         ...threadsQueries.detail(threadId).queryKey,

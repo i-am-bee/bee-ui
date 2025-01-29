@@ -25,8 +25,6 @@ import {
 } from './types';
 import { MessageWithFiles } from '@/modules/chat/types';
 
-export const MESSAGES_PAGE_SIZE = 100;
-
 export async function createMessage(
   organizationId: string,
   projectId: string,
@@ -76,46 +74,6 @@ export async function listMessages(
   });
   assertSuccessResponse(res);
   return res.data;
-}
-
-export async function listMessagesWithFiles(
-  organizationId: string,
-  projectId: string,
-  threadId: string,
-  query?: MessagesListQuery,
-): Promise<MessageWithFiles[]> {
-  const messages =
-    (await listMessages(organizationId, projectId, threadId, query))?.data ??
-    [];
-
-  const messagesWithFiles = await Promise.all(
-    messages.map(async (message) => {
-      const attachments = message.attachments ?? [];
-
-      const files = (
-        await Promise.all(
-          attachments?.map(async (attachment) => {
-            const response = await readFile(
-              organizationId,
-              projectId,
-              attachment.file_id,
-            );
-
-            return {
-              file: response,
-            };
-          }),
-        )
-      ).filter(isNotNull);
-
-      return {
-        ...message,
-        files,
-      };
-    }),
-  );
-
-  return messagesWithFiles;
 }
 
 export async function updateMessage(

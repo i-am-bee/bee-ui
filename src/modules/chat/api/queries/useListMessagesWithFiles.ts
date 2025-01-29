@@ -16,35 +16,53 @@
 
 import { MessagesListQuery } from '@/app/api/threads-messages/types';
 import { decodeMetadata } from '@/app/api/utils';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
-import { MessageMetadata, MessageWithFiles } from '../../types';
+import {
+  MessageMetadata,
+  MessageWithFiles,
+  MessageWithFilesResponse,
+} from '../../types';
+import { isNotNull } from '@/utils/helpers';
 
 interface Props {
   threadId: string | undefined;
   params?: MessagesListQuery;
-  initialData?: MessageWithFiles[];
+  initialData?: MessageWithFilesResponse;
 }
 
 export function useListMessagesWithFiles({
   threadId,
   params,
-  ...props
+  initialData,
 }: Props) {
   const threadsQueries = useThreadsQueries();
 
-  const query = useQuery({
-    ...threadsQueries.messagesWithFilesList(threadId!, params),
-    select: (messages) =>
-      messages.filter(
-        ({ metadata }) =>
-          !['code-update', 'error-report'].includes(
-            decodeMetadata<MessageMetadata>(metadata).type ?? '',
-          ),
-      ),
+  const query = useInfiniteQuery({
+    ...threadsQueries.messagesWithFilesList(threadId!, {
+      ...MESSAGES_DEFAULT_PARAMS,
+      ...params,
+    }),
+    select: (data) =>
+      data.pages
+        .flatMap((page) => page?.data)
+        .filter(isNotNull)
+        .filter(
+          ({ metadata }) =>
+            !['code-update', 'error-report'].includes(
+              decodeMetadata<MessageMetadata>(metadata).type ?? '',
+            ),
+        ),
     enabled: Boolean(threadId),
-    ...props,
+    initialData: { pages: [initialData], pageParams: [] },
   });
 
   return query;
 }
+
+export const MESSAGES_DEFAULT_PAGE_SIZE = 2;
+export const MESSAGES_DEFAULT_PARAMS: MessagesListQuery = {
+  limit: MESSAGES_DEFAULT_PAGE_SIZE,
+  order: 'desc',
+  order_by: 'created_at',
+};

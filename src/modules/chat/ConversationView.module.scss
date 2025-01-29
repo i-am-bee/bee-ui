@@ -75,7 +75,7 @@
 
 .messages {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   padding-block-start: $spacing-06;
   padding-block-end: $spacing-03;
   div:empty + & {

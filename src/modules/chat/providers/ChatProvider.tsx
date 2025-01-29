@@ -42,7 +42,11 @@ import {
   toolIncluded,
 } from '@/modules/tools/utils';
 import { isNotNull } from '@/utils/helpers';
-import { FetchQueryOptions, useQueryClient } from '@tanstack/react-query';
+import {
+  FetchQueryOptions,
+  InfiniteData,
+  useQueryClient,
+} from '@tanstack/react-query';
 import truncate from 'lodash/truncate';
 import {
   PropsWithChildren,
@@ -65,6 +69,7 @@ import { useMessages } from '../hooks/useMessages';
 import {
   ChatMessage,
   MessageWithFiles,
+  MessageWithFilesResponse,
   ThreadAssistant,
   ToolApprovalValue,
   UserChatMessage,
@@ -83,6 +88,8 @@ import {
   SendMessageOptions,
 } from './chat-context';
 import { useFilesUpload } from './FilesUploadProvider';
+import { produce } from 'immer';
+import { useUpdateMessagesWithFilesQueryData } from '../hooks/useUpdateMessagesWithFilesQueryData';
 
 const RUN_CONTROLLER_DEFAULT: RunController = {
   abortController: null,
@@ -93,7 +100,7 @@ const RUN_CONTROLLER_DEFAULT: RunController = {
 interface Props extends ChatSetup {
   thread?: Thread;
   assistant?: ThreadAssistant;
-  initialData?: MessageWithFiles[];
+  initialData?: MessageWithFilesResponse;
   onMessageDeltaEventResponse?: (message: string) => void;
   onMessageCompleted?: (thread: Thread, content: string) => void;
   onBeforePostMessage?: (
@@ -141,17 +148,22 @@ export function ChatProvider({
   const { mutateAsync: createThread } = useCreateThread();
   const { mutate: cancelRun } = useCanceRun();
 
+  const { updateMessageData } = useUpdateMessagesWithFilesQueryData();
+
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {
     messages: [getMessages, setMessages],
     refetch: refetchMessages,
+    fetchMoreInViewAnchorRef,
   } = useMessages({
     thread,
     initialData,
   });
+
   const handleToolApprovalSubmitRef = useRef<
     ((value: ToolApprovalValue) => void) | null
   >(null);
+
   const { chatStream } = useChatStream({
     threadRef,
     controllerRef,
@@ -172,40 +184,6 @@ export function ChatProvider({
       thread?.tool_resources?.file_search?.vector_store_ids?.at(0);
     if (vectorStoreId) setVectorStoreId(vectorStoreId);
   }, [setVectorStoreId, thread?.tool_resources?.file_search?.vector_store_ids]);
-
-  const setMessagesWithFilesQueryData = useCallback(
-    (
-      threadId?: string,
-      newMessage?: MessageWithFiles | null,
-      runId?: string,
-    ) => {
-      if (threadId) {
-        queryClient.setQueryData(
-          threadsQueries.messagesWithFilesList(threadId).queryKey,
-          (messages) => {
-            if (!newMessage) return messages;
-
-            const existingIndex = messages?.findIndex(
-              (item) => item.id === newMessage.id,
-            );
-            if (existingIndex && existingIndex !== -1) {
-              return messages?.toSpliced(existingIndex, 1, newMessage);
-            }
-            return messages ? [...messages, newMessage] : [newMessage];
-          },
-        );
-        queryClient.invalidateQueries({
-          queryKey: threadsQueries.messagesWithFilesLists(threadId),
-        });
-        if (runId) {
-          queryClient.invalidateQueries({
-            queryKey: threadsQueries.runStepsLists(threadId, runId),
-          });
-        }
-      }
-    },
-    [queryClient, threadsQueries],
-  );
 
   const getThreadTools = useCallback(() => {
     return assistant
@@ -392,7 +370,7 @@ export function ChatProvider({
               approve: result !== 'decline',
             },
             onMessageCompleted: (response) => {
-              setMessagesWithFilesQueryData(thread?.id, response.data);
+              updateMessageData(thread?.id, response.data);
             },
           });
         } catch (err) {
@@ -408,21 +386,21 @@ export function ChatProvider({
       };
     },
     [
-      chatStream,
-      controller.abortController?.signal.aborted,
       controllerRef,
+      setController,
+      controller.abortController?.signal.aborted,
+      chatStream,
+      updateMessageData,
+      thread?.id,
+      handleError,
       handleRunCompleted,
       handleCancelCurrentRun,
-      handleError,
-      setController,
-      setMessagesWithFilesQueryData,
-      thread?.id,
     ],
   );
 
   // check if last run finished successfully
   useEffect(() => {
-    if (thread && getMessages().at(-1)?.role !== 'assistant') {
+    if (thread && getMessages().at(0)?.role !== 'assistant') {
       queryClient
         .fetchQuery(
           threadsQueries.runsList(thread.id, {
@@ -443,8 +421,8 @@ export function ChatProvider({
             }
 
             setMessages((messages) => {
-              if (messages.at(-1)?.role !== 'assistant')
-                messages.push({
+              if (messages.at(0)?.role !== 'assistant')
+                messages.unshift({
                   key: uuid(),
                   role: 'assistant',
                   content: '',
@@ -595,9 +573,9 @@ export function ChatProvider({
               messages.pop();
             }
 
-            messages.push(userMessage);
+            messages.unshift(userMessage);
           }
-          messages.push({
+          messages.unshift({
             key: uuid(),
             role: 'assistant',
             content: '',
@@ -624,7 +602,7 @@ export function ChatProvider({
           await onBeforePostMessage?.(thread, getMessages());
           newMessage = await handlePostMessage(thread.id, userMessage);
 
-          setMessagesWithFilesQueryData(thread.id, newMessage);
+          updateMessageData(thread.id, newMessage);
         }
 
         const { tools, toolApprovals } = getUsedTools(thread);
@@ -643,7 +621,7 @@ export function ChatProvider({
               },
             },
             onMessageCompleted: (response) => {
-              setMessagesWithFilesQueryData(
+              updateMessageData(
                 thread?.id,
                 response.data,
                 response.data?.run_id,
@@ -697,11 +675,11 @@ export function ChatProvider({
       getUsedTools,
       onBeforePostMessage,
       getMessages,
-      setMessagesWithFilesQueryData,
+      updateMessageData,
       chatStream,
       queryClient,
-      handleRunCompleted,
       threadsQueries,
+      handleRunCompleted,
     ],
   );
 
@@ -744,6 +722,7 @@ export function ChatProvider({
       threadSettingsEnabled,
       initialAssistantMessage,
       inputPlaceholder,
+      fetchMoreInViewAnchorRef,
     }),
     [
       controller.status,
@@ -764,6 +743,7 @@ export function ChatProvider({
       threadSettingsEnabled,
       initialAssistantMessage,
       inputPlaceholder,
+      fetchMoreInViewAnchorRef,
     ],
   );
 

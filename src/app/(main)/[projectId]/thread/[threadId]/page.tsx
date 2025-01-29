@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-import {
-  fetchThread,
-  fetchThreadAssistant,
-  listMessagesWithFiles,
-  MESSAGES_PAGE_SIZE,
-} from '@/app/api/rsc';
+import { fetchThread, fetchThreadAssistant } from '@/app/api/rsc';
 import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
+import { listMessagesWithFiles } from '@/modules/chat/api/messages';
+import { MESSAGES_DEFAULT_PARAMS } from '@/modules/chat/api/queries/useListMessagesWithFiles';
 import { ConversationView } from '@/modules/chat/ConversationView';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
@@ -59,9 +56,7 @@ export default async function ThreadPage({
     organizationId,
     projectId,
     threadId,
-    {
-      limit: MESSAGES_PAGE_SIZE,
-    },
+    MESSAGES_DEFAULT_PARAMS,
   );
 
   return (
