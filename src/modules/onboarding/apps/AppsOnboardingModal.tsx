@@ -18,7 +18,7 @@ import { Modal } from '@/components/Modal/Modal';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { AppTemplate } from '@/modules/apps/types';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { ModalBody, ModalFooter } from '@carbon/react';

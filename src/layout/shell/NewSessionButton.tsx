@@ -15,7 +15,7 @@
  */
 
 import { Link } from '@/components/Link/Link';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { useAppApiContext, useAppContext } from '../providers/AppProvider';
 import { ActionButton } from './ActionButton';
 import NewSession from './NewSession.svg';

@@ -19,7 +19,7 @@ import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { useUserProfile } from '@/store/user-profile';
 import {
   Button,

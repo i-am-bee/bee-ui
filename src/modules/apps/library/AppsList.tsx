@@ -15,7 +15,7 @@
  */
 
 import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
 

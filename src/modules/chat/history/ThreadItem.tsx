@@ -19,7 +19,7 @@ import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import {
   Button,
   ButtonBaseProps,

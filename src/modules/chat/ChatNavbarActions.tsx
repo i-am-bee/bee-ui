@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { useDeleteAssistant } from '../assistants/api/mutations/useDeleteAssistant';
 import { Assistant } from '../assistants/types';

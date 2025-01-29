@@ -16,7 +16,7 @@
 
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';

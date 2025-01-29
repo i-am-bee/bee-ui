@@ -30,7 +30,7 @@ import { useVectorStores } from '@/modules/knowledge/api/queries/useVectorStores
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
 import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';

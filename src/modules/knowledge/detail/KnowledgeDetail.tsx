@@ -32,7 +32,7 @@ import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ProjectHome } from '@/modules/projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipContent';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { IconButton } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
 import { produce } from 'immer';

@@ -21,7 +21,7 @@ import {
   useAppContext,
 } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { useLayout } from '@/store/layout';
 import {
   IconButton,

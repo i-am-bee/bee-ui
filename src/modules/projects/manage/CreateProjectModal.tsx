@@ -17,7 +17,7 @@
 import { Organization } from '@/app/api/organization/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import {
   Button,
   InlineLoading,

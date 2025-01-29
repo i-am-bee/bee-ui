@@ -18,7 +18,7 @@ import { Link } from '@/components/Link/Link';
 import { VersionTag } from '@/components/VersionTag/VersionTag';
 import { usePrefetchArtifacts } from '@/modules/apps/api/queries/usePrefetchArtifacts';
 import { usePrefetchThreads } from '@/modules/chat/api/queries/usePrefetchThreads';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { APP_NAME } from '@/utils/constants';
 import { Button, ButtonBaseProps } from '@carbon/react';
 import { Close, Menu } from '@carbon/react/icons';

@@ -17,7 +17,7 @@
 import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { MouseEventHandler } from 'react';
 import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { AppIcon } from '../AppIcon';

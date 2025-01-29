@@ -23,7 +23,7 @@ import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { InlineLoading } from '@carbon/react';
 import { Folder, WarningAlt } from '@carbon/react/icons';
 import pluralize from 'pluralize';

@@ -18,7 +18,7 @@ import { Modal } from '@/components/Modal/Modal';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useFirstAssistant } from '@/modules/assistants/api/queries/useFirstAssistant';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { isNotNull, noop } from '@/utils/helpers';
 import { ModalBody, ModalHeader } from '@carbon/react';
 import shuffle from 'lodash/shuffle';

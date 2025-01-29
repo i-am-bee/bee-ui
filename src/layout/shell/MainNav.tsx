@@ -17,7 +17,7 @@
 import { Link } from '@/components/Link/Link';
 import { useArtifactsCount } from '@/modules/apps/api/queries/useArtifactsCount';
 import { usePrefetchArtifacts } from '@/modules/apps/api/queries/usePrefetchArtifacts';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { usePathname } from 'next/navigation';
 import classes from './MainNav.module.scss';
 

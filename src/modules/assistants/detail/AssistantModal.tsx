@@ -26,7 +26,7 @@ import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { ToolDescription, ToolIcon } from '@/modules/tools/ToolCard';
 import { getAssistantToolReference } from '@/modules/tools/utils';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { noop } from '@/utils/helpers';
 import {
   Button,

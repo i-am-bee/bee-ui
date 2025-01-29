@@ -24,7 +24,7 @@ import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { getAssistantName } from '@/modules/assistants/utils';
 import { ChatNavbarActions } from '@/modules/chat/ChatNavbarActions';
 import { ProjectSelector } from '@/modules/projects/ProjectSelector';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { useLayout } from '@/store/layout';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';

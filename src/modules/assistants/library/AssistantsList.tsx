@@ -17,7 +17,7 @@
 import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppApiContext } from '@/layout/providers/AppProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { ASSISTANTS_DEFAULT_PAGE_SIZE } from '../api';
 import { Assistant } from '../types';
 import { AssistantCard } from './AssistantCard';

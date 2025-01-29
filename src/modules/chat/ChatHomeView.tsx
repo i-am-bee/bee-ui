@@ -16,7 +16,7 @@
 
 'use client';
 import { Thread } from '@/app/api/threads/types';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ConversationView } from './ConversationView';

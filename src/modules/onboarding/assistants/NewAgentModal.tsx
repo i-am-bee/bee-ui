@@ -20,7 +20,7 @@ import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ASSISTANT_TEMPLATES } from '@/modules/assistants/templates';
 import { AssistantTemplate } from '@/modules/assistants/types';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { ONBOARDING_AGENTS_PARAM } from '@/utils/constants';
 import { ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import clsx from 'clsx';

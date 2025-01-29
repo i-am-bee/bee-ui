@@ -32,7 +32,7 @@ import {
   MessageWithFiles,
 } from '@/modules/chat/types';
 import { isBotMessage } from '@/modules/chat/utils';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { useLayoutActions } from '@/store/layout';
 import { isNotNull } from '@/utils/helpers';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';

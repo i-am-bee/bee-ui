@@ -16,7 +16,7 @@
 
 'use client';
 
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 import { useMemo } from 'react';

@@ -24,7 +24,7 @@ import { AdminView } from '@/components/AdminView/AdminView';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';

@@ -28,7 +28,7 @@ import {
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { useOnboardingCompleted } from '@/modules/users/hooks/useOnboardingCompleted';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';

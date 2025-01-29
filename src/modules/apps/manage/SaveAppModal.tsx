@@ -24,7 +24,7 @@ import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGr
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import {
   Button,
   InlineLoading,

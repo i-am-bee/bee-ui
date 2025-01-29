@@ -16,7 +16,7 @@
 
 'use client';
 import { AdminView } from '@/components/AdminView/AdminView';
-import { useRoutes } from '@/routes';
+import { useRoutes } from '@/routes/useRoutes';
 import { Tab, TabList, Tabs } from '@carbon/react';
 import { ReactElement, useMemo } from 'react';
 import classes from './PreferencesLayout.module.scss';
