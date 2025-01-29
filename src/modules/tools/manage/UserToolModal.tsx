@@ -19,6 +19,7 @@ import {
   ToolDeleteResult,
   ToolResult,
   ToolsCreateBody,
+  ToolUpdateBody,
 } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
 import { Modal } from '@/components/Modal/Modal';
@@ -41,7 +42,7 @@ import {
   RadioButtonGroup,
   TextInput,
 } from '@carbon/react';
-import { useCallback, useId } from 'react';
+import { useCallback, useId, useLayoutEffect, useState } from 'react';
 import {
   Controller,
   FormProvider,
@@ -141,11 +142,7 @@ export function UserToolModal({
 
   useConfirmModalCloseOnDirty(isDirty, 'tool');
 
-  const {
-    mutateAsync: saveTool,
-    isError: isSaveError,
-    error: saveError,
-  } = useSaveTool({
+  const { mutateAsync: saveTool } = useSaveTool({
     onSuccess: (tool, isNew) => {
       if (tool) {
         isNew ? onCreateSuccess?.(tool) : onSaveSuccess?.(tool);
@@ -168,10 +165,14 @@ export function UserToolModal({
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
-      await saveTool({
-        id: tool?.id,
-        body: createSaveToolBody(data, tool),
-      });
+      await saveTool(
+        tool
+          ? {
+              id: tool.id,
+              body: getUpdateToolBody(data),
+            }
+          : { id: null, body: getCreateToolBody(data) },
+      );
     },
     [saveTool, tool],
   );
@@ -298,16 +299,6 @@ export function UserToolModal({
                     function. Exposing it can compromise any account.
                   </p>
                 </div>
-              )}
-
-              {isSaveError && (
-                <InlineNotification
-                  className={classes.error}
-                  kind="error"
-                  title={saveError.message}
-                  lowContrast
-                  hideCloseButton
-                />
               )}
             </SettingsFormGroup>
           </form>
@@ -477,10 +468,30 @@ UserToolModal.View = function ViewUserToolModal({
   );
 };
 
-function createSaveToolBody(
-  { type, name, sourceCode, api }: FormValues,
-  tool?: Tool,
-): ToolsCreateBody {
+function getCreateToolBody({
+  type,
+  name,
+  sourceCode,
+  api,
+}: FormValues): ToolsCreateBody {
+  return type.key === 'function'
+    ? {
+        name,
+        source_code: sourceCode ?? '',
+      }
+    : {
+        name: name || undefined,
+        api_key: api.auth === 'api-key' ? api.apiKey : undefined,
+        open_api_schema: api.schema ?? '',
+      };
+}
+
+function getUpdateToolBody({
+  type,
+  name,
+  sourceCode,
+  api,
+}: FormValues): ToolUpdateBody {
   return type.key === 'function'
     ? {
         name,
@@ -488,7 +499,7 @@ function createSaveToolBody(
       }
     : {
         name,
-        api_key: api.auth === 'api-key' ? api.apiKey : undefined,
+        api_key: api.auth === 'api-key' ? api.apiKey : null,
         open_api_schema: api.schema ?? '',
       };
 }
