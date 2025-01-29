@@ -14,7 +14,7 @@ import {
   VectorStoreBase,
 } from './types';
 
-export const base = {
+export const definitions = {
   home: () => '/' as const,
   termsOfUse: () => '/auth/accept-tou' as const,
   signIn: () => '/auth/signin' as const,
@@ -65,34 +65,34 @@ export const base = {
 export const commonRoutes = {
   home: () =>
     createRoute({
-      base: base.home(),
+      base: definitions.home(),
     }),
   termsOfUse: () =>
     createRoute({
-      base: base.termsOfUse(),
+      base: definitions.termsOfUse(),
     }),
   signIn: ({ params }: SignInRoute = {}) =>
     createRoute({
-      base: base.signIn(),
+      base: definitions.signIn(),
       params,
     }),
   unauthorized: ({ params }: UnauthorizedRoute = {}) =>
     createRoute({
-      base: base.unauthorized(),
+      base: definitions.unauthorized(),
       params,
     }),
   project: ({ projectId, params }: ProjectRoute) =>
     createRoute({
-      base: base.project({ projectId }),
+      base: definitions.project({ projectId }),
       params,
     }),
   artifacts: ({ projectId }: ArtifactsRoute) =>
     createRoute({
-      base: base.artifacts({ projectId }),
+      base: definitions.artifacts({ projectId }),
     }),
   artifactClone: ({ projectId, artifactId, params }: ArtifactCloneRoute) =>
     createRoute({
-      base: base.artifactClone({ projectId, artifactId }),
+      base: definitions.artifactClone({ projectId, artifactId }),
       params,
     }),
 };

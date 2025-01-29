@@ -17,7 +17,7 @@
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useRouter } from 'next-nprogress-bar';
 import { useMemo } from 'react';
-import { base, commonRoutes } from '.';
+import { commonRoutes, definitions } from '.';
 import { createRoute } from './helpers';
 import {
   ArtifactBuilderRoute,
@@ -40,35 +40,35 @@ export function useRoutes() {
       artifacts: () => commonRoutes.artifacts({ projectId }),
       artifact: ({ artifactId }: ArtifactRoute) =>
         createRoute({
-          base: base.artifact({ projectId, artifactId }),
+          base: definitions.artifact({ projectId, artifactId }),
         }),
       thread: ({ threadId }: ThreadRoute) =>
         createRoute({
-          base: base.thread({ projectId, threadId }),
+          base: definitions.thread({ projectId, threadId }),
         }),
       tools: () =>
         createRoute({
-          base: base.tools({ projectId }),
+          base: definitions.tools({ projectId }),
         }),
       preferences: () =>
         createRoute({
-          base: base.preferences({ projectId }),
+          base: definitions.preferences({ projectId }),
         }),
       apiKeys: () =>
         createRoute({
-          base: base.apiKeys({ projectId }),
+          base: definitions.apiKeys({ projectId }),
         }),
       vectorStores: () =>
         createRoute({
-          base: base.vectorStores({ projectId }),
+          base: definitions.vectorStores({ projectId }),
         }),
       vectorStore: ({ vectorStoreId }: VectorStoreRoute) =>
         createRoute({
-          base: base.vectorStore({ projectId, vectorStoreId }),
+          base: definitions.vectorStore({ projectId, vectorStoreId }),
         }),
       chat: ({ assistantId }: ChatRoute) =>
         createRoute({
-          base: base.chat({ projectId, assistantId }),
+          base: definitions.chat({ projectId, assistantId }),
         }),
       artifactBuilder: ({
         artifactId,
@@ -77,7 +77,7 @@ export function useRoutes() {
         params,
       }: ArtifactBuilderRoute = {}) =>
         createRoute({
-          base: base.artifactBuilder({
+          base: definitions.artifactBuilder({
             projectId,
             artifactId,
             threadId,
@@ -91,7 +91,11 @@ export function useRoutes() {
         params,
       }: AssistantBuilderRoute = {}) =>
         createRoute({
-          base: base.assistantBuilder({ projectId, assistantId, threadId }),
+          base: definitions.assistantBuilder({
+            projectId,
+            assistantId,
+            threadId,
+          }),
           params,
         }),
     }),
