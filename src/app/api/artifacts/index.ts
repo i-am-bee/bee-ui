@@ -106,6 +106,7 @@ export async function deleteArtifact(
     headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
+  return res.data;
 }
 
 export async function fetchArtifact(

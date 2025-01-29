@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { useRouter } from 'next-nprogress-bar';
+import { useDeleteAssistant } from '../assistants/api/mutations/useDeleteAssistant';
 import { Assistant } from '../assistants/types';
-import { useDeleteAssistant } from '../assistants/builder/useDeleteAssistant';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   assistant: Assistant;
@@ -27,8 +27,7 @@ interface Props {
 export function ChatNavbarActions({ assistant }: Props) {
   const router = useRouter();
   const { project } = useAppContext();
-  const { deleteAssistant } = useDeleteAssistant({
-    assistant,
+  const { mutateAsyncWithConfirmation: deleteAssistant } = useDeleteAssistant({
     onSuccess: () => router.push(`/${project.id}/`),
   });
 
@@ -41,7 +40,7 @@ export function ChatNavbarActions({ assistant }: Props) {
       <OverflowMenuItem
         isDelete
         itemText="Delete"
-        onClick={() => deleteAssistant()}
+        onClick={() => deleteAssistant(assistant)}
       />
     </OverflowMenu>
   );

@@ -15,7 +15,7 @@
  */
 
 import { VectorStore } from '@/app/api/vector-stores/types';
-import { useAssistants } from '@/modules/assistants/hooks/useAssistants';
+import { useAssistants } from '@/modules/assistants/api/queries/useAssistants';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { SkeletonText } from '@carbon/react';
 import pluralize from 'pluralize';

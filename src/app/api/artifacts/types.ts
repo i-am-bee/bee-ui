@@ -23,6 +23,9 @@ export type ListArtifactsResponse =
 export type ArtifactResult =
   paths['/v1/artifacts/{artifact_id}']['get']['responses']['200']['content']['application/json'];
 
+export type ArtifactDeleteResult =
+  paths['/v1/artifacts/{artifact_id}']['delete']['responses']['200']['content']['application/json'];
+
 export type ArtifactCreateBody = NonNullable<
   paths['/v1/artifacts']['post']['requestBody']
 >['content']['application/json'];

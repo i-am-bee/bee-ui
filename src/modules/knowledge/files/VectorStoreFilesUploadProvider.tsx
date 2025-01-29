@@ -17,10 +17,8 @@
 'use client';
 
 import { ApiError } from '@/app/api/errors';
-import { createFile } from '@/app/api/files';
 import { FileEntity } from '@/app/api/files/types';
 import { Thread } from '@/app/api/threads/types';
-import { createVectorStoreFile } from '@/app/api/vector-stores-files';
 import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
@@ -28,8 +26,9 @@ import { useHandleError } from '@/layout/hooks/useHandleError';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
+import { useCreateFile } from '@/modules/files/api/mutations/useCreateFile';
 import { isNotNull, noop } from '@/utils/helpers';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Dispatch,
   PropsWithChildren,
@@ -41,8 +40,9 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useWatchPendingVectorStoreFiles } from '../hooks/useWatchPendingVectoreStoreFiles';
-import { useVectorStoresQueries } from '../queries';
+import { useVectorStoresQueries } from '../api';
+import { useCreateVectorStoreFile } from '../api/mutations/useCreateVectorStoreFile';
+import { useWatchPendingVectorStoreFiles } from '../api/queries/useWatchPendingVectoreStoreFiles';
 
 export type VectoreStoreFileUpload = {
   id: string;
@@ -152,17 +152,7 @@ export const VectorStoreFilesUploadProvider = ({
   const handleError = useHandleError();
   const { openModal } = useModal();
 
-  const { mutateAsync: mutateAddToVectorStore } = useMutation({
-    mutationFn: ({
-      vectorStoreId,
-      inputFile,
-    }: {
-      vectorStoreId: string;
-      inputFile: VectoreStoreFileUpload;
-    }) =>
-      createVectorStoreFile(organization.id, project.id, vectorStoreId, {
-        file_id: inputFile.file?.id ?? '',
-      }),
+  const { mutateAsync: createVectorStoreFile } = useCreateVectorStoreFile({
     onSuccess: (response, { inputFile }) => {
       if (!response) return;
 
@@ -192,25 +182,9 @@ export const VectorStoreFilesUploadProvider = ({
         });
       }
     },
-    meta: {
-      errorToast: false,
-    },
   });
 
-  const { mutateAsync: mutateCreateFile } = useMutation({
-    mutationFn: async ({
-      inputFile,
-      thread,
-    }: {
-      inputFile: VectoreStoreFileUpload;
-      thread?: Thread;
-    }) => {
-      return await createFile(organization.id, project.id, {
-        file: inputFile.originalFile,
-        purpose: 'assistants',
-        depends_on_thread_id: thread?.id,
-      });
-    },
+  const { mutateAsync: createFile } = useCreateFile({
     onMutate: ({ inputFile }) => {
       inputFile.status = 'uploading';
       setFiles((files) =>
@@ -228,7 +202,7 @@ export const VectorStoreFilesUploadProvider = ({
       const vectorStoreId = vectorStoreIdRef.current;
       if (vectorStoreId && inputFile.isReadable) {
         inputFile.status = 'embedding';
-        mutateAddToVectorStore({ vectorStoreId, inputFile });
+        createVectorStoreFile({ vectorStoreId, inputFile });
       } else {
         inputFile.status = 'complete';
       }
@@ -239,12 +213,6 @@ export const VectorStoreFilesUploadProvider = ({
     },
     onError: (error, { inputFile }) => {
       removeFile(inputFile.id);
-    },
-    meta: {
-      errorToast: {
-        title: 'Failed to upload file',
-        includeErrorMessage: true,
-      },
     },
   });
 
@@ -266,7 +234,7 @@ export const VectorStoreFilesUploadProvider = ({
       onFileSubmit: (inputFile: VectoreStoreFileUpload, thread?: Thread) => {
         if (inputFile.isReadable && !vectorStoreIdRef.current)
           throw Error('Vector store id is not set!');
-        mutateCreateFile({ inputFile, thread });
+        createFile({ inputFile, threadId: thread?.id });
       },
       clearFiles,
       setVectorStoreId,
@@ -279,7 +247,7 @@ export const VectorStoreFilesUploadProvider = ({
     clearFiles,
     setVectorStoreId,
     vectorStoreIdRef,
-    mutateCreateFile,
+    createFile,
   ]);
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

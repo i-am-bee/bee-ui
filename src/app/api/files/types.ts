@@ -20,6 +20,9 @@ import { paths } from '../schema';
 export type FileCreateBody =
   paths['/v1/files']['post']['requestBody']['content']['multipart/form-data'];
 
+export type FileCreateResponse =
+  paths['/v1/files']['post']['responses']['200']['content']['application/json'];
+
 export type FilePurpose = FileCreateBody['purpose'];
 
 export type FileEntity = NonNullable<Awaited<ReturnType<typeof readFile>>>;

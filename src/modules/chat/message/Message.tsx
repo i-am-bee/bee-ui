@@ -20,17 +20,16 @@ import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { RunSetup } from '@/modules/assistants/builder/Builder';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { useUserProfile } from '@/store/user-profile';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import isEqual from 'lodash/isEqual';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useFocusWithin, useHover } from 'react-aria';
 import { useInView } from 'react-intersection-observer';
 import { mergeRefs } from 'react-merge-refs';
+import { useRun } from '../api/queries/useRun';
 import { PlanWithSources } from '../assistant-plan/PlanWithSources';
 import { AttachmentsList } from '../attachments/AttachmentsList';
-import { useThreadsQueries } from '../queries';
-import { getThreadAssistantName } from '../history/useGetThreadAssistant';
+import { getThreadAssistantName } from '../hooks/useGetThreadAssistant';
 import { useAssistantModal } from '../providers/AssistantModalProvider';
 import { useChat } from '../providers/chat-context';
 import { MessageFeedbackProvider } from '../providers/MessageFeedbackProvider';
@@ -61,16 +60,16 @@ export const Message = memo(function Message({
 }: Props) {
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
-  const threadsQueries = useThreadsQueries();
   const { setMessages } = useChat();
   const { ref: inViewRef, inView } = useInView({
     rootMargin: '30% 0%',
     triggerOnce: true,
   });
 
-  const { data: run } = useQuery({
-    ...threadsQueries.runDetail(thread?.id ?? '', message.run_id ?? ''),
-    enabled: Boolean(inView && thread && message.run_id),
+  const { data: run } = useRun({
+    threadId: thread?.id,
+    runId: message.run_id,
+    enabled: inView,
   });
 
   useEffect(() => {

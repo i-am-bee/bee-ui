@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
+import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useRouter } from 'next-nprogress-bar';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   artifacts?: NonNullable<Artifact>[];
   isLoading: boolean;
   pageSize?: number;
-  onDeleteSuccess: (artifact: Artifact) => void;
+  onDeleteSuccess: (artifact?: ArtifactDeleteResult) => void;
 }
 
 export function AppsList({

@@ -43,8 +43,8 @@ import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import JSON5 from 'json5';
 import { ReactElement, useCallback, useEffect, useId, useMemo } from 'react';
-import { useThreadsQueries } from '../queries';
-import { useThreadApi } from '../hooks/useThreadApi';
+import { useThreadsQueries } from '../api';
+import { useUpdateThread } from '../api/mutations/useUpdateThread';
 import { useChat } from '../providers/chat-context';
 import {
   useExpandedStep,
@@ -78,9 +78,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
   const { getUserSetting } = useUserSetting();
   const debugMode = getUserSetting('chatDebugMode');
 
-  const {
-    updateMutation: { mutate: mutateUpdateThread },
-  } = useThreadApi(thread);
+  const { mutate: updateThread } = useUpdateThread();
 
   const stepTrace = useMemo(
     () => traceData?.steps.find(({ stepId }) => stepId === step.id),
@@ -116,7 +114,10 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
 
       thread.uiMetadata = metadata;
       const updatedThread = encodeEntityWithMetadata<Thread>(thread);
-      mutateUpdateThread({ metadata: updatedThread.metadata });
+      updateThread({
+        id: thread.id,
+        body: { metadata: updatedThread.metadata },
+      });
       setThread(thread);
     }
 

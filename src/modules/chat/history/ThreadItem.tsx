@@ -15,17 +15,11 @@
  */
 
 'use client';
-import { deleteThread } from '@/app/api/threads';
-import {
-  Thread,
-  ThreadMetadata,
-  ThreadsListResponse,
-} from '@/app/api/threads/types';
+import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { useAppContext } from '@/layout/providers/AppProvider';
-import { useModal } from '@/layout/providers/ModalProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import {
   Button,
@@ -36,29 +30,23 @@ import {
   TextInput,
 } from '@carbon/react';
 import { WarningFilled } from '@carbon/react/icons';
-import {
-  InfiniteData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
 import clsx from 'clsx';
-import { produce } from 'immer';
 import { CODE_ENTER, CODE_ESCAPE } from 'keycode-js';
 import truncate from 'lodash/truncate';
 import { useRouter } from 'next-nprogress-bar';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useThreadApi } from '../hooks/useThreadApi';
-import { FileCount } from './FileCount';
-import { useThreadsQueries } from '../queries';
-import classes from './ThreadItem.module.scss';
+import { useDeleteThread } from '../api/mutations/useDeleteThread';
+import { useUpdateThread } from '../api/mutations/useUpdateThread';
+import { useListMessages } from '../api/queries/useListMessages';
 import {
   getThreadAssistantName,
   useGetThreadAssistant,
-} from './useGetThreadAssistant';
-import { useThreadFileCount } from './useThreadFileCount';
+} from '../hooks/useGetThreadAssistant';
+import { useThreadFileCount } from '../hooks/useThreadFileCount';
+import { FileCount } from './FileCount';
+import classes from './ThreadItem.module.scss';
 
 interface Props {
   thread: Thread;
@@ -72,15 +60,12 @@ export function ThreadItem({ thread }: Props) {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const pathname = usePathname();
-  const { openConfirmation } = useModal();
-  const queryClient = useQueryClient();
   const router = useRouter();
-  const { project, organization } = useAppContext();
+  const { project } = useAppContext();
   const id = useId();
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
   const fileCount = useThreadFileCount(thread);
-  const threadsQueries = useThreadsQueries();
 
   const isMdDown = useBreakpoint('mdDown');
 
@@ -104,47 +89,24 @@ export function ThreadItem({ thread }: Props) {
   });
 
   // Fallback for when the message is not saved in thread metadata
-  const { data, isLoading, error, refetch } = useQuery({
-    ...threadsQueries.messagesList(thread.id, { limit: 1 }),
+  const { data, isLoading, error, refetch } = useListMessages({
+    threadId: thread.id,
+    params: { limit: 1 },
     enabled: !title,
   });
 
-  const { mutateAsync: mutateDeleteThread, isPending: isDeletePending } =
-    useMutation({
-      mutationFn: (id: string) => deleteThread(organization.id, project.id, id),
-      onMutate: () => {
-        if (isActive) {
-          router.push(getNewSessionUrl(project.id, assistant.data));
-        }
-      },
-      onSuccess: () => {
-        queryClient.setQueryData<InfiniteData<ThreadsListResponse>>(
-          threadsQueries.list().queryKey,
-          produce((draft) => {
-            if (!draft?.pages) return null;
-            for (const page of draft.pages) {
-              const index = page.data.findIndex(
-                (item) => item.id === thread.id,
-              );
-              if (index >= 0) {
-                page.data.splice(index, 1);
-              }
-            }
-          }),
-        );
-      },
-      meta: {
-        invalidates: [threadsQueries.lists()],
-        errorToast: {
-          title: 'Failed to delete session',
-          includeErrorMessage: true,
-        },
-      },
-    });
-
   const {
-    updateMutation: { mutateAsync: mutateUpdateThread },
-  } = useThreadApi(thread);
+    mutateAsyncWithConfirmation: deleteThread,
+    isPending: isDeletePending,
+  } = useDeleteThread({
+    onMutate: () => {
+      if (isActive) {
+        router.push(getNewSessionUrl(project.id, assistant.data));
+      }
+    },
+  });
+
+  const { mutateAsync: updateThread } = useUpdateThread();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (values) => {
@@ -156,14 +118,17 @@ export function ThreadItem({ thread }: Props) {
         return;
       }
 
-      await mutateUpdateThread({
-        metadata: encodeMetadata<ThreadMetadata>({
-          ...thread.uiMetadata,
-          title: values.title,
-        }),
+      await updateThread({
+        id: thread.id,
+        body: {
+          metadata: encodeMetadata<ThreadMetadata>({
+            ...thread.uiMetadata,
+            title: values.title,
+          }),
+        },
       });
     },
-    [title, mutateUpdateThread, thread.uiMetadata, reset],
+    [title, updateThread, thread, reset],
   );
 
   const heading =
@@ -232,15 +197,7 @@ export function ThreadItem({ thread }: Props) {
             <OverflowMenuItem
               isDelete
               itemText="Delete"
-              onClick={() =>
-                openConfirmation({
-                  title: `Delete session?`,
-                  body: `“${heading}” will be deleted`,
-                  primaryButtonText: 'Delete session',
-                  danger: true,
-                  onSubmit: () => mutateDeleteThread(thread.id),
-                })
-              }
+              onClick={() => deleteThread({ thread, heading })}
             />
           </OverflowMenu>
         </div>

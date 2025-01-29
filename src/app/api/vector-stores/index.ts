@@ -87,6 +87,7 @@ export async function deleteVectorStore(
     headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
+  return res.data;
 }
 
 export async function fetchVectorStore(

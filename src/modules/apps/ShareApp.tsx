@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
-import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { ARTIFACTS_SITE_URL } from '@/utils/constants';
 import { removeTrailingSlash } from '@/utils/helpers';
 import {
@@ -28,7 +25,7 @@ import {
 } from '@carbon/react';
 import { ContentDeliveryNetwork } from '@carbon/react/icons';
 import { useId, useState } from 'react';
-import { useSaveArtifact } from './hooks/useSaveArtifact';
+import { useSaveArtifact } from './api/mutations/useSaveArtifact';
 import classes from './ShareApp.module.scss';
 import { Artifact } from './types';
 
@@ -46,16 +43,16 @@ export function ShareApp({ artifact, onSuccess }: Props) {
   });
 
   const {
-    mutateAsync: mutateSave,
+    mutateAsync: saveArtifact,
     isError,
     error,
     isPending,
   } = useSaveArtifact({
-    onSuccess: (result) => {
-      const artifact = decodeEntityWithMetadata<Artifact>(result);
-
-      setShareUrl(artifact.share_url);
-      onSuccess?.(artifact);
+    onSuccess: (artifact) => {
+      if (artifact) {
+        setShareUrl(artifact.share_url);
+        onSuccess?.(artifact);
+      }
     },
   });
 
@@ -80,7 +77,7 @@ export function ShareApp({ artifact, onSuccess }: Props) {
             id={`${id}:toggle`}
             size="sm"
             onToggle={(checked) =>
-              mutateSave({
+              saveArtifact({
                 id: artifact.id,
                 body: {
                   shared: checked,

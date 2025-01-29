@@ -24,7 +24,7 @@ import { useQueries } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useEffect, useId, useState } from 'react';
-import { useLinkPreviewQueries } from '../../link-preview/queries';
+import { useLinkPreviewQueries } from '../../link-preview/api';
 import classes from './SourcesView.module.scss';
 
 type Source = {

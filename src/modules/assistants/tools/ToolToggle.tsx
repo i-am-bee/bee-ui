@@ -17,15 +17,13 @@
 import { ToolReference } from '@/app/api/tools/types';
 import { LineClampText } from '@/components/LineClampText/LineClampText';
 import { LinkButton } from '@/components/LinkButton/LinkButton';
-import { ToolDescription } from '@/modules/tools/ToolCard';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { ToolDescription } from '@/modules/tools/ToolCard';
 import { getToolReferenceId } from '@/modules/tools/utils';
 import { SkeletonIcon, SkeletonText, Toggle, ToggleProps } from '@carbon/react';
 import { MouseEventHandler, useId } from 'react';
 import classes from './ToolToggle.module.scss';
 import { ToolTypeTag } from './ToolTypeTag';
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 
 interface Props extends Omit<ToggleProps, 'id' | 'size'> {
   tool: ToolReference;

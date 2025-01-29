@@ -16,6 +16,7 @@
 
 'use client';
 import {
+  AssistantDeleteResult,
   AssistantsListQueryOrderBy,
   ListAssistantsResponse,
 } from '@/app/api/assistants/types';
@@ -30,12 +31,11 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { AssistantsList } from '../assistants/library/AssistantsList';
-import { useAssistantsQueries } from '../assistants/queries';
-import { Assistant } from '../assistants/types';
 import { GeneralOnboardingModal } from '../onboarding/general/GeneralOnboardingModal';
 import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
-import { useAssistants } from './hooks/useAssistants';
+import { useAssistantsQueries } from './api';
+import { useAssistants } from './api/queries/useAssistants';
 
 export function AssistantsHome() {
   const { project, organization, isProjectReadOnly } = useAppContext();
@@ -68,19 +68,23 @@ export function AssistantsHome() {
     isFetchingNextPage,
   } = useAssistants({ params });
 
-  const handleDeleteAssistantSuccess = (assistant: Assistant) => {
-    queryClient.setQueryData<InfiniteData<ListAssistantsResponse>>(
-      assistantsQueries.list(params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        for (const page of draft.pages) {
-          const index = page.data.findIndex((item) => item.id === assistant.id);
-          if (index >= 0) {
-            page.data.splice(index, 1);
+  const handleDeleteAssistantSuccess = (assistant?: AssistantDeleteResult) => {
+    if (assistant) {
+      queryClient.setQueryData<InfiniteData<ListAssistantsResponse>>(
+        assistantsQueries.list(params).queryKey,
+        produce((draft) => {
+          if (!draft?.pages) return null;
+          for (const page of draft.pages) {
+            const index = page.data.findIndex(
+              (item) => item.id === assistant.id,
+            );
+            if (index >= 0) {
+              page.data.splice(index, 1);
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
+    }
   };
 
   return (

@@ -15,11 +15,11 @@
  */
 
 'use client';
-import { AssistantModel, AssistantResult } from '@/app/api/assistants/types';
+import { AssistantModel } from '@/app/api/assistants/types';
 import { SystemToolId } from '@/app/api/threads-runs/types';
 import { ToolReference } from '@/app/api/tools/types';
 import { AssistantTools } from '@/app/api/types';
-import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { encodeMetadata } from '@/app/api/utils';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import {
   useAppApiContext,
@@ -27,7 +27,7 @@ import {
 } from '@/layout/providers/AppProvider';
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
-import { useOnboardingCompleted } from '@/modules/users/useOnboardingCompleted';
+import { useOnboardingCompleted } from '@/modules/users/hooks/useOnboardingCompleted';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';
@@ -44,6 +44,7 @@ import {
   useRef,
 } from 'react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
+import { useSaveAssistant } from '../api/mutations/useSaveAssistant';
 import {
   AssistantIconColor,
   AssitantIconName,
@@ -55,7 +56,6 @@ import {
   encodeStarterQuestionsMetadata,
   getAssistantName,
 } from '../utils';
-import { useSaveAssistant } from './useSaveAssistant';
 
 export type AssistantFormValues = {
   icon: {
@@ -122,22 +122,21 @@ export function AssistantBuilderProvider({
 
   const createdAssistantRef = useRef<Assistant | null>(null);
 
-  const { saveAssistantAsync } = useSaveAssistant({
-    onSuccess: (result: AssistantResult, isNew: boolean) => {
-      if (!result) return;
-      const assistantFromResult = decodeEntityWithMetadata<Assistant>(result);
+  const { mutateAsync: saveAssistant } = useSaveAssistant({
+    onSuccess: (assistant, isNew) => {
+      if (!assistant) return;
 
-      selectAssistant(assistantFromResult);
+      selectAssistant(assistant);
 
       if (isMdDown) {
-        router.push(`/${project.id}/chat/${result.id}`);
+        router.push(`/${project.id}/chat/${assistant.id}`);
       } else {
         if (isNew) {
-          createdAssistantRef.current = assistantFromResult;
+          createdAssistantRef.current = assistant;
           window.history.pushState(
             {},
             '',
-            `/${project.id}/builder/${assistantFromResult.id}`,
+            `/${project.id}/builder/${assistant.id}`,
           );
         }
       }
@@ -234,7 +233,7 @@ export function AssistantBuilderProvider({
         );
       }
 
-      await saveAssistantAsync({
+      await saveAssistant({
         id: assistant?.id,
         body: {
           name: ownName,
@@ -252,7 +251,7 @@ export function AssistantBuilderProvider({
         },
       });
     },
-    [assistant, assistantTemplate, saveAssistantAsync],
+    [assistant, assistantTemplate, saveAssistant],
   );
 
   const handleError = useCallback(() => {

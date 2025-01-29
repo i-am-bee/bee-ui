@@ -29,7 +29,7 @@ import {
 } from '@tanstack/react-query';
 import { produce } from 'immer';
 import { useEffect } from 'react';
-import { useVectorStoresQueries } from '../queries';
+import { useVectorStoresQueries } from '../api';
 
 export const useUpdatePendingVectorStoreFiles = (
   vectorStore: VectorStore,

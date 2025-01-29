@@ -15,8 +15,6 @@
  */
 
 import { Organization } from '@/app/api/organization/types';
-import { createProject } from '@/app/api/projects';
-import { Project, ProjectCreateBody } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
@@ -27,53 +25,39 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useProjects } from '../hooks/useProjects';
-import { useProjectsQueries } from '../queries';
+import { useCreateProject } from '../api/mutations/useCreateProject';
+import { useListAllProjects } from '../api/queries/useListAllProjects';
 
 interface CreateProjectValues {
   name: string;
 }
 
 interface Props {
-  onSuccess?: (project: Project) => void;
   organization: Organization;
 }
 
 export function CreateProjectModal({
-  onSuccess,
   organization,
   ...props
 }: Props & ModalProps) {
   const htmlId = useId();
   const router = useRouter();
 
-  const projectsQueries = useProjectsQueries();
-  const { data: projects } = useProjects();
+  const { data: projects } = useListAllProjects();
 
   const projectNames = useMemo(
     () => projects?.projects.map(({ name }) => name),
     [projects?.projects],
   );
 
-  const { mutateAsync } = useMutation({
-    mutationFn: (body: ProjectCreateBody) =>
-      createProject(organization.id, body),
-    onSuccess: (response) => {
-      if (response) {
-        router.push(`/${response.id}`);
-        onSuccess?.(response);
+  const { mutateAsync: createProject } = useCreateProject({
+    onSuccess: (project) => {
+      if (project) {
+        router.push(`/${project.id}`);
       }
-    },
-    meta: {
-      invalidates: [projectsQueries.lists()],
-      errorToast: {
-        title: 'Failed to create the project',
-        includeErrorMessage: true,
-      },
     },
   });
 
@@ -87,13 +71,13 @@ export function CreateProjectModal({
   const {
     handleSubmit,
     control,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = useForm<CreateProjectValues>({
     mode: 'onChange',
   });
 
   const onSubmit = async ({ name }: CreateProjectValues) => {
-    const project = await mutateAsync({ name, visibility: 'private' });
+    const project = await createProject({ name, visibility: 'private' });
     if (project) props.onRequestClose();
   };
 

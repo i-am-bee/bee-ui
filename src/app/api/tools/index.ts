@@ -90,4 +90,5 @@ export async function deleteTool(
     headers: getRequestHeaders(organizationId, projectId),
   });
   assertSuccessResponse(res);
+  return res.data;
 }

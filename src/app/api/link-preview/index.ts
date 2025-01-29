@@ -26,5 +26,10 @@ export async function fetchLinkPreview(
     },
     body: JSON.stringify({ url }),
   });
+
+  if (!res.ok) {
+    throw new Error('Fetching link preview failed.');
+  }
+
   return await res.json();
 }

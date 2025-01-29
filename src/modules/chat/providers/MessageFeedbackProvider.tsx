@@ -32,7 +32,7 @@ import { FormState, UseFormReturn } from 'react-hook-form';
 import {
   MESSAGE_FEEDBACK_FORM_DEFAULTS,
   useMessageFeedbackForm,
-} from '../message/feedback/useMessageFeedbackForm';
+} from '../message/feedback/hooks/useMessageFeedbackForm';
 import { useChat } from './chat-context';
 
 export type MessageFeedbackContextValue = {

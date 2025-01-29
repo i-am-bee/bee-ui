@@ -22,7 +22,7 @@ import { TextWithCopyButton } from '@/components/TextWithCopyButton/TextWithCopy
 import { useOnMount } from '@/hooks/useOnMount';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
-import { useProjects } from '@/modules/projects/hooks/useProjects';
+import { useListAllProjects } from '@/modules/projects/api/queries/useListAllProjects';
 import { ProjectWithScope } from '@/modules/projects/types';
 import {
   Button,
@@ -36,11 +36,11 @@ import {
   TextInput,
 } from '@carbon/react';
 import clsx from 'clsx';
-import { useCallback, useEffect, useId } from 'react';
+import { useCallback, useId } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { useCreateApiKey } from '../api/useCreateApiKey';
-import { useDeleteApiKey } from '../api/useDeleteApiKey';
-import { useRegenerateApiKey } from '../api/useRegenerateApiKey';
+import { useCreateApiKey } from '../api/mutations/useCreateApiKey';
+import { useDeleteApiKey } from '../api/mutations/useDeleteApiKey';
+import { useRegenerateApiKey } from '../api/mutations/useRegenerateApiKey';
 import classes from './ApiKeyModal.module.scss';
 
 interface FormValues {
@@ -59,12 +59,7 @@ export function ApiKeyModal({ onSuccess, ...props }: Props) {
 
   const { project } = useAppContext();
 
-  const { projects, isLoading, isFetching, hasNextPage, fetchNextPage } =
-    useProjects({ withRole: true });
-
-  useEffect(() => {
-    if (!isFetching && hasNextPage) fetchNextPage();
-  }, [fetchNextPage, hasNextPage, isFetching]);
+  const { projects, isLoading } = useListAllProjects({ withRole: true });
 
   const {
     control,
@@ -79,20 +74,20 @@ export function ApiKeyModal({ onSuccess, ...props }: Props) {
     mode: 'onChange',
   });
 
-  const { mutateAsync: mutateCreate } = useCreateApiKey({
-    onSuccess: (result) => {
-      if (result) {
+  const { mutateAsync: createApiKey } = useCreateApiKey({
+    onSuccess: (apiKey) => {
+      if (apiKey) {
         onRequestClose();
-        openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
+        openModal((props) => <ApiKeyModal.View apiKey={apiKey} {...props} />);
       }
     },
   });
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (values) => {
-      await mutateCreate(values);
+      await createApiKey(values);
     },
-    [mutateCreate],
+    [createApiKey],
   );
 
   return (
@@ -176,16 +171,16 @@ ApiKeyModal.Regenerate = function RegenerateModal({
 } & ModalProps) {
   const { openModal } = useModal();
 
-  const { mutate } = useRegenerateApiKey({
-    onSuccess: (result) => {
-      if (result) {
-        openModal((props) => <ApiKeyModal.View apiKey={result} {...props} />);
+  const { mutate: regenerateApiKey } = useRegenerateApiKey({
+    onSuccess: (apiKey) => {
+      if (apiKey) {
+        openModal((props) => <ApiKeyModal.View apiKey={apiKey} {...props} />);
       }
       props.onRequestClose();
     },
   });
 
-  useOnMount(() => mutate(apiKey));
+  useOnMount(() => regenerateApiKey(apiKey));
 
   return (
     <Modal {...props} size="sm">
@@ -233,7 +228,7 @@ ApiKeyModal.Delete = function DeleteModal({
 }: {
   apiKey: ApiKey;
 } & ModalProps) {
-  const { mutate: mutateDelete, isPending } = useDeleteApiKey({
+  const { mutate: deleteApiKey, isPending } = useDeleteApiKey({
     onSuccess: () => props.onRequestClose(),
   });
 
@@ -259,7 +254,7 @@ ApiKeyModal.Delete = function DeleteModal({
           kind="danger"
           type="submit"
           disabled={isPending}
-          onClick={() => mutateDelete(apiKey)}
+          onClick={() => deleteApiKey(apiKey)}
         >
           {isPending ? <InlineLoading title="Deleting..." /> : 'Delete key'}
         </Button>

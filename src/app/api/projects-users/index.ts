@@ -18,8 +18,8 @@ import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
 import {
   ProjectUserCreateBody,
-  ProjectUserRole,
   ProjectUsersListQuery,
+  ProjectUserUpdateBody,
 } from './types';
 
 export async function readProjectUser(
@@ -92,13 +92,13 @@ export async function updateProjectUser(
   organizationId: string,
   projectId: string,
   userId: string,
-  role: ProjectUserRole,
+  body: ProjectUserUpdateBody,
 ) {
   const res = await client.POST(
     '/v1/organization/projects/{project_id}/users/{user_id}',
     {
       params: { path: { project_id: projectId, user_id: userId } },
-      body: { role },
+      body,
       headers: getRequestHeaders(organizationId, projectId),
     },
   );

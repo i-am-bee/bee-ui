@@ -16,16 +16,16 @@
 
 import { Link } from '@/components/Link/Link';
 import { VersionTag } from '@/components/VersionTag/VersionTag';
-import { usePrefetchArtifacts } from '@/modules/apps/hooks/usePrefetchArtifacts';
-import { usePrefetchThreads } from '@/modules/chat/history/usePrefetchThreads';
+import { usePrefetchArtifacts } from '@/modules/apps/api/queries/usePrefetchArtifacts';
+import { usePrefetchThreads } from '@/modules/chat/api/queries/usePrefetchThreads';
 import { APP_NAME } from '@/utils/constants';
 import { Button, ButtonBaseProps } from '@carbon/react';
 import { Close, Menu } from '@carbon/react/icons';
 import { MouseEvent } from 'react';
 import { UserSetting } from '../hooks/useUserSetting';
+import { useAppContext } from '../providers/AppProvider';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
-import { useAppContext } from '../providers/AppProvider';
 
 interface Props extends Omit<ButtonBaseProps, 'kind' | 'size' | 'className'> {
   sidebarId: SidebarProps['id'];

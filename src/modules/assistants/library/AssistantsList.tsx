@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import {
   useAppApiContext,
@@ -21,7 +22,7 @@ import {
 } from '@/layout/providers/AppProvider';
 import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
 import { useRouter } from 'next-nprogress-bar';
-import { ASSISTANTS_DEFAULT_PAGE_SIZE } from '../queries';
+import { ASSISTANTS_DEFAULT_PAGE_SIZE } from '../api';
 import { Assistant } from '../types';
 import { AssistantCard } from './AssistantCard';
 
@@ -29,7 +30,7 @@ interface Props {
   assistants?: NonNullable<Assistant>[];
   isLoading: boolean;
   pageSize?: number;
-  onDeleteSuccess: (assistant: Assistant) => void;
+  onDeleteSuccess: (assistant?: AssistantDeleteResult) => void;
 }
 
 export function AssistantsList({

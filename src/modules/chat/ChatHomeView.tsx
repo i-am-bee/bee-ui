@@ -22,7 +22,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useEffect } from 'react';
 import { ConversationView } from './ConversationView';
 import { EmptyChatView } from './EmptyChatView';
-import { useThreadsQueries } from './queries';
+import { useThreadsQueries } from './api';
 import {
   SendMessageResult,
   useChat,

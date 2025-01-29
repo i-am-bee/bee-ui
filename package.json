@@ -1,6 +1,6 @@
 {
   "name": "bee-ui",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "license": "Apache-2.0",
   "author": "IBM Corp.",
   "scripts": {
@@ -32,6 +32,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@opentelemetry/api-logs": "^0.53.0",
     "@opentelemetry/exporter-jaeger": "^1.26.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.57.1",
     "@opentelemetry/instrumentation": "^0.53.0",
     "@opentelemetry/instrumentation-http": "^0.53.0",
     "@opentelemetry/sdk-logs": "^0.53.0",

@@ -20,7 +20,7 @@ import { Modal } from '@/components/Modal/Modal';
 import { SSRSafePortal } from '@/components/SSRSafePortal/SSRSafePortal';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalProps, useModal } from '@/layout/providers/ModalProvider';
-import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
+import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
 import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
 import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
@@ -37,7 +37,7 @@ import {
 } from '@carbon/react';
 import { Edit, Folder, Launch, TrashCan } from '@carbon/react/icons';
 import { useRouter } from 'next-nprogress-bar';
-import { useDeleteAssistant } from '../builder/useDeleteAssistant';
+import { useDeleteAssistant } from '../api/mutations/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
 import classes from './AssistantModal.module.scss';
@@ -55,16 +55,13 @@ export default function AssistantModal({
   const { project, isProjectReadOnly } = useAppContext();
   const router = useRouter();
 
-  const { deleteAssistant } = useDeleteAssistant({
-    assistant,
-    onSuccess: async () => {
-      onDeleteSuccess?.();
-    },
+  const { mutateAsyncWithConfirmation: deleteAssistant } = useDeleteAssistant({
+    onSuccess: onDeleteSuccess,
   });
 
   const vectorStoreId =
     assistant.tool_resources?.file_search?.vector_store_ids?.at(0);
-  const { data: vectorStore } = useVectorStore(vectorStoreId);
+  const { data: vectorStore } = useVectorStore({ id: vectorStoreId });
 
   const { name, description, instructions, tools } = assistant;
 
@@ -141,7 +138,7 @@ export default function AssistantModal({
         <ModalFooter>
           <Button
             kind="danger--tertiary"
-            onClick={deleteAssistant}
+            onClick={() => deleteAssistant(assistant)}
             disabled={isProjectReadOnly}
             renderIcon={TrashCan}
           >

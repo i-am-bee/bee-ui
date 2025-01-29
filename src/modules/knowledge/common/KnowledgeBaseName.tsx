@@ -15,15 +15,15 @@
  */
 
 import { SkeletonText } from '@carbon/react';
+import { useVectorStore } from '../api/queries/useVectorStore';
 import classes from './KnowledgeBaseName.module.scss';
-import { useVectorStore } from '../hooks/useVectorStore';
 
 export function KnowledgeBaseName({
   vectoreStoreId,
 }: {
   vectoreStoreId: string;
 }) {
-  const { data, isLoading } = useVectorStore(vectoreStoreId);
+  const { data, isLoading } = useVectorStore({ id: vectoreStoreId });
 
   if (isLoading) return <KnowledgeBaseName.Skeleton />;
 

@@ -16,13 +16,12 @@
 
 import { Spinner } from '@/components/Spinner/Spinner';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { useLinkPreview } from '@/modules/link-preview/api/queries/useLinkPreview';
 import { SkeletonIcon } from '@carbon/react';
 import { Launch } from '@carbon/react/icons';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Link } from 'mdast';
 import { AnchorHTMLAttributes, useState } from 'react';
-import { useLinkPreviewQueries } from '../../../link-preview/queries';
 import classes from './PreviewLink.module.scss';
 
 interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -33,18 +32,13 @@ export function PreviewLink({ node, className, ...props }: Props) {
   const [enableFetch, setEnableFetch] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  const linkPreviewQueries = useLinkPreviewQueries();
-
   const url = props.href || '';
 
   const onImageError = () => {
     setImageError(true);
   };
 
-  const { data, isLoading } = useQuery({
-    ...linkPreviewQueries.detail(url),
-    enabled: enableFetch,
-  });
+  const { data, isLoading } = useLinkPreview({ url, enabled: enableFetch });
 
   return (
     <Tooltip

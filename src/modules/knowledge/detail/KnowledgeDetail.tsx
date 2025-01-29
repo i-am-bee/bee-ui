@@ -20,13 +20,13 @@ import { useModal } from '@/layout/providers/ModalProvider';
 import {
   InfiniteData,
   keepPreviousData,
-  useInfiniteQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 // import { useDebounceValue } from 'usehooks-ts';
 import {
   ListVectorStoreFilesResponse,
   VectorStoreFile,
+  VectorStoreFilesDeleteResponse,
 } from '@/app/api/vector-stores-files/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
@@ -36,13 +36,14 @@ import { IconButton } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
 import { produce } from 'immer';
 import { useRouter } from 'next-nprogress-bar';
-import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVectorStoreFiles';
-import { useVectorStore } from '../hooks/useVectorStore';
-import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
 import {
   VECTOR_STORES_DEFAULT_PAGE_SIZE,
   useVectorStoresQueries,
-} from '../queries';
+} from '../api';
+import { useVectorStore } from '../api/queries/useVectorStore';
+import { useVectorStoreFiles } from '../api/queries/useVectorStoreFiles';
+import { useUpdatePendingVectorStoreFiles } from '../hooks/useUpdatePendingVectorStoreFiles';
+import { KnowledgeItemsInfo } from '../list/KnowledgeCard';
 import { AddContentModal } from './AddContentModal';
 import { KnowledgeAppsInfo } from './KnowledgeAppsInfo';
 import classes from './KnowledgeDetail.module.scss';
@@ -64,7 +65,8 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
     // search, TODO: api not ready
   };
 
-  const { data: vectorStoreFetched } = useVectorStore(vectorStoreProps.id, {
+  const { data: vectorStoreFetched } = useVectorStore({
+    id: vectorStoreProps.id,
     initialData: vectorStoreProps,
   });
 
@@ -78,29 +80,32 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
     isPending,
     isFetchingNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
-    ...vectorStoresQueries.filesList(vectorStore.id, params),
+  } = useVectorStoreFiles({
+    storeId: vectorStore.id,
+    params,
     placeholderData: keepPreviousData,
   });
 
   useUpdatePendingVectorStoreFiles(vectorStore, data?.files ?? [], params);
 
-  const onDeleteSuccess = (file: VectorStoreFile) => {
-    queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
-      vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-        for (const page of draft.pages) {
-          if (!page) continue;
-          const index = page?.data.findIndex((item) => item.id === file.id);
-          if (index >= 0) {
-            page.data.splice(index, 1);
+  const onDeleteSuccess = (file?: VectorStoreFilesDeleteResponse) => {
+    if (file) {
+      queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
+        vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
+        produce((draft) => {
+          if (!draft?.pages) return null;
+          for (const page of draft.pages) {
+            if (!page) continue;
+            const index = page?.data.findIndex((item) => item.id === file.id);
+            if (index >= 0) {
+              page.data.splice(index, 1);
+            }
           }
-        }
-      }),
-    );
+        }),
+      );
 
-    queryClient.invalidateQueries(vectorStoresQueries.detail(vectorStore.id));
+      queryClient.invalidateQueries(vectorStoresQueries.detail(vectorStore.id));
+    }
   };
 
   const onCreateSuccess = (vectorStoreFile?: VectorStoreFile) => {

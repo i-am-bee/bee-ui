@@ -23,6 +23,9 @@ export type ListAssistantsResponse =
 export type AssistantResult =
   paths['/v1/assistants/{assistant_id}']['get']['responses']['200']['content']['application/json'];
 
+export type AssistantDeleteResult =
+  paths['/v1/assistants/{assistant_id}']['delete']['responses']['200']['content']['application/json'];
+
 type AssistantCreateBodyApi = NonNullable<
   paths['/v1/assistants']['post']['requestBody']
 >['content']['application/json'];

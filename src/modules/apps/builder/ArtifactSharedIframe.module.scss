@@ -30,8 +30,9 @@ $loading-size: rem(170px);
 .loading {
   position: absolute;
   inset: 0;
-  &.empty {
-    background-color: $layer-02;
+  background-color: $layer-02;
+  &.isAppReady {
+    background-color: transparent;
   }
 
   :global(.#{$prefix}--loading-overlay) {

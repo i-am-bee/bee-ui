@@ -22,11 +22,10 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';
 import { ActionableNotification, Button } from '@carbon/react';
 import { ChevronDown } from '@carbon/react/icons';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import { useThreadsQueries } from '../queries';
+import { useListRunSteps } from '../api/queries/useListRunSteps';
 import { SourcesView } from '../layout/SourcesView';
 import { useChat } from '../providers/chat-context';
 import {
@@ -34,10 +33,10 @@ import {
   useExpandedStep,
   useExpandedStepActions,
 } from '../providers/ExpandedStepProvider';
+import { useBuildTraceData } from '../trace/hooks/useBuildTraceData';
 import { TraceDataProvider } from '../trace/TraceDataProvider';
 import { TraceInfoView } from '../trace/TraceInfoView';
 import { TraceData } from '../trace/types';
-import { useBuildTraceData } from '../trace/useBuildTraceData';
 import { BotChatMessage } from '../types';
 import { PlanView } from './PlanView';
 import classes from './PlanWithSources.module.scss';
@@ -51,7 +50,6 @@ interface Props {
 
 function PlanWithSourcesComponent({ message, inView }: Props) {
   const { featureFlags } = useAppContext();
-  const threadsQueries = useThreadsQueries();
   const { thread } = useChat();
   const { setExpandedStep } = useExpandedStepActions();
   const expandedStep = useExpandedStep();
@@ -69,13 +67,13 @@ function PlanWithSourcesComponent({ message, inView }: Props) {
     data: stepsData,
     error,
     refetch,
-  } = useQuery({
-    ...threadsQueries.runStepsList(
-      thread?.id ?? '',
-      message?.run_id ?? '',
-      PLAN_STEPS_QUERY_PARAMS,
-    ),
-    enabled: Boolean(!message.plan && thread && message.run_id && inView),
+  } = useListRunSteps({
+    threadId: thread?.id,
+    runId: message.run_id,
+    params: {
+      limit: MAX_API_FETCH_LIMIT,
+    },
+    enabled: Boolean(!message.plan && inView),
   });
 
   const allStepsDone = useMemo(() => {
@@ -251,5 +249,3 @@ const getSourcesWithSteps = (
 
   return uniqueSourcesWithSteps;
 };
-
-export const PLAN_STEPS_QUERY_PARAMS = { limit: MAX_API_FETCH_LIMIT };

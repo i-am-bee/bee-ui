@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
+import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useRouter } from 'next-nprogress-bar';
 import { MouseEventHandler } from 'react';
+import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { AppIcon } from '../AppIcon';
-import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
 import classes from './AppCard.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
   artifact: Artifact;
   cta?: string;
   onClick?: MouseEventHandler;
-  onDeleteSuccess?: (artifact: Artifact) => void;
+  onDeleteSuccess?: (artifact?: ArtifactDeleteResult) => void;
 }
 
 export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
@@ -37,11 +38,11 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const router = useRouter();
   const { openModal } = useModal();
 
-  const { deleteArtifact, isPending: isDeletePending } = useDeleteArtifact({
-    artifact,
-    onSuccess: async () => {
-      onDeleteSuccess?.(artifact);
-    },
+  const {
+    mutateAsyncWithConfirmation: deleteArtifact,
+    isPending: isDeletePending,
+  } = useDeleteArtifact({
+    onSuccess: onDeleteSuccess,
   });
   const { project } = useAppContext();
 
@@ -75,7 +76,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
           {
             isDelete: true,
             itemText: 'Delete',
-            onClick: () => deleteArtifact(),
+            onClick: () => deleteArtifact(artifact),
           },
         ]}
       >

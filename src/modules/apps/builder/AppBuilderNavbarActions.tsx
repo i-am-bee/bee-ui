@@ -19,7 +19,7 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
 import { useRouter } from 'next-nprogress-bar';
-import { useDeleteArtifact } from '../hooks/useDeleteArtifact';
+import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
 
@@ -30,10 +30,9 @@ interface Props {
 
 export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
   const router = useRouter();
-  const { project, organization } = useAppContext();
+  const { project } = useAppContext();
   const { openModal } = useModal();
-  const { deleteArtifact } = useDeleteArtifact({
-    artifact,
+  const { mutateAsyncWithConfirmation: deleteArtifact } = useDeleteArtifact({
     onSuccess: () => router.push(`/${project.id}/apps/`),
   });
 
@@ -73,7 +72,7 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
         <OverflowMenuItem
           isDelete
           itemText="Delete"
-          onClick={() => deleteArtifact()}
+          onClick={() => deleteArtifact(artifact)}
         />
       </OverflowMenu>
     </>

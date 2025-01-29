@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-import { usePrefix } from '@carbon/react';
-import classes from './ToolsSelector.module.scss';
-import { Close } from '@carbon/react/icons';
-import { AnimatePresence, motion } from 'framer-motion';
-import { fadeProps } from '@/utils/fadeProps';
 import { ToolReference } from '@/app/api/tools/types';
+import { Tooltip } from '@/components/Tooltip/Tooltip';
+import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
+import { fadeProps } from '@/utils/fadeProps';
+import { usePrefix } from '@carbon/react';
+import { Close } from '@carbon/react/icons';
+import clsx from 'clsx';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useController } from 'react-hook-form';
 import {
   AssistantFormValues,
   useAssistantBuilder,
 } from '../builder/AssistantBuilderProvider';
-import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
-import { Tooltip } from '@/components/Tooltip/Tooltip';
-import { useToolInfo } from '@/modules/tools/hooks/useToolInfo';
-import clsx from 'clsx';
 import { ToolNameWithTooltip } from './ToolNameWithTooltip';
+import classes from './ToolsSelector.module.scss';
+import { ToolsSelectorDropdown } from './ToolsSelectorDropdown';
 
 export function ToolsSelector() {
   const prefix = usePrefix();

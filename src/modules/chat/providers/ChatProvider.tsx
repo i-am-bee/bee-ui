@@ -16,7 +16,6 @@
 'use client';
 import { ApiError } from '@/app/api/errors';
 import { createMessage } from '@/app/api/threads-messages';
-import { cancelRun } from '@/app/api/threads-runs';
 import {
   RunsListResponse,
   ThreadRun,
@@ -43,11 +42,7 @@ import {
   toolIncluded,
 } from '@/modules/tools/utils';
 import { isNotNull } from '@/utils/helpers';
-import {
-  FetchQueryOptions,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { FetchQueryOptions, useQueryClient } from '@tanstack/react-query';
 import truncate from 'lodash/truncate';
 import {
   PropsWithChildren,
@@ -58,12 +53,15 @@ import {
   useState,
 } from 'react';
 import { v4 as uuid } from 'uuid';
-import { useDeleteMessage } from '../api/useDeleteMessage';
+import { useThreadsQueries } from '../api';
+import { useCanceRun } from '../api/mutations/useCancelRun';
+import { useCreateThread } from '../api/mutations/useCreateThread';
+import { useDeleteMessage } from '../api/mutations/useDeleteMessage';
+import { useUpdateThread } from '../api/mutations/useUpdateThread';
 import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
-import { useGetThreadAssistant } from '../history/useGetThreadAssistant';
 import { useChatStream } from '../hooks/useChatStream';
-import { useThreadApi } from '../hooks/useThreadApi';
-import { useThreadsQueries } from '../queries';
+import { useGetThreadAssistant } from '../hooks/useGetThreadAssistant';
+import { useMessages } from '../hooks/useMessages';
 import {
   ChatMessage,
   MessageWithFiles,
@@ -85,12 +83,6 @@ import {
   SendMessageOptions,
 } from './chat-context';
 import { useFilesUpload } from './FilesUploadProvider';
-import { useMessages } from './useMessages';
-
-interface CancelRunParams {
-  threadId: string;
-  runId: string;
-}
 
 const RUN_CONTROLLER_DEFAULT: RunController = {
   abortController: null,
@@ -144,7 +136,10 @@ export function ChatProvider({
   const threadsQueries = useThreadsQueries();
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
-  const { mutateAsync: mutateDeleteMessage } = useDeleteMessage();
+  const { mutateAsync: deleteMessage } = useDeleteMessage();
+  const { mutateAsync: updateThread } = useUpdateThread();
+  const { mutateAsync: createThread } = useCreateThread();
+  const { mutate: cancelRun } = useCanceRun();
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {
@@ -167,16 +162,6 @@ export function ChatProvider({
       setController((controller) => ({ ...controller, ...data }));
     },
   });
-
-  const { mutate: mutateCancel } = useMutation({
-    mutationFn: ({ threadId, runId }: CancelRunParams) =>
-      cancelRun(organization.id, project.id, threadId, runId),
-  });
-
-  const {
-    updateMutation: { mutateAsync: mutateUpdateThread },
-    createMutation: { mutateAsync: mutateCreateThread },
-  } = useThreadApi(thread);
 
   useEffect(() => {
     if (threadAssistant?.data) selectAssistant(threadAssistant.data);
@@ -295,9 +280,12 @@ export function ChatProvider({
               ? truncate(message, { length: THREAD_TITLE_MAX_LENGTH })
               : threadMetadata.title;
 
-          const { thread: updatedThread } = await mutateUpdateThread({
-            tool_resources: toolResources,
-            metadata: encodeMetadata<ThreadMetadata>(threadMetadata),
+          const updatedThread = await updateThread({
+            id: thread.id,
+            body: {
+              tool_resources: toolResources,
+              metadata: encodeMetadata<ThreadMetadata>(threadMetadata),
+            },
           });
 
           if (updatedThread) {
@@ -310,7 +298,7 @@ export function ChatProvider({
         return thread;
       }
 
-      const { thread: createdThread } = await mutateCreateThread({
+      const createdThread = await createThread({
         tool_resources: toolResources,
         metadata: encodeMetadata<ThreadMetadata>({
           assistantName: getAssistantName(assistant),
@@ -327,14 +315,7 @@ export function ChatProvider({
 
       return createdThread;
     },
-    [
-      assistant,
-      mutateCreateThread,
-      mutateUpdateThread,
-      setThread,
-      thread,
-      vectorStoreId,
-    ],
+    [assistant, createThread, updateThread, setThread, thread, vectorStoreId],
   );
 
   if (ensureThreadRef) ensureThreadRef.current = ensureThread;
@@ -345,11 +326,11 @@ export function ChatProvider({
   const handleCancelCurrentRun = useCallback(() => {
     threadRef.current &&
       controllerRef.current.runId &&
-      mutateCancel({
+      cancelRun({
         threadId: threadRef.current.id,
         runId: controllerRef.current.runId,
       });
-  }, [controllerRef, mutateCancel, threadRef]);
+  }, [controllerRef, cancelRun, threadRef]);
 
   const handleRunCompleted = useCallback(() => {
     const lastMessage = getMessages().at(-1);
@@ -531,7 +512,7 @@ export function ChatProvider({
           ) {
             messages.pop();
             if (thread && message.id) {
-              mutateDeleteMessage({
+              deleteMessage({
                 threadId: thread?.id,
                 messageId: message.id,
               });
@@ -541,7 +522,7 @@ export function ChatProvider({
             if (message?.role === 'user') {
               messages.pop();
               if (thread && message.id)
-                mutateDeleteMessage({
+                deleteMessage({
                   threadId: thread?.id,
                   messageId: message.id,
                 });
@@ -702,7 +683,7 @@ export function ChatProvider({
       setController,
       refetchMessages,
       setMessages,
-      mutateDeleteMessage,
+      deleteMessage,
       handleCancelCurrentRun,
       openModal,
       handleError,

@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
+import { useVectorStoreFiles } from '@/modules/knowledge/api/queries/useVectorStoreFiles';
 import { VectoreStoreFileUpload } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
-import { useVectorStore } from '@/modules/knowledge/hooks/useVectorStore';
-import { useVectorStoresQueries } from '@/modules/knowledge/queries';
 import { toolsEqual } from '@/modules/tools/utils';
 import { SkeletonText, Toggle } from '@carbon/react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import pluralize from 'pluralize';
 import { useId, useMemo } from 'react';
@@ -48,8 +46,6 @@ export function ThreadKnowledge({
   const { getMessages, disabledTools, setDisabledTools } = useChat();
   const { getThreadTools } = useChat();
   const { files } = useFilesUpload();
-  const { project, organization } = useAppContext();
-  const vectorStoresQueries = useVectorStoresQueries();
 
   // TODO: We don't currently support paging of messages, so this works. When pagination is available, we need to figure out the functionality differently.
   const allFiles = useMemo(
@@ -70,7 +66,8 @@ export function ThreadKnowledge({
   );
 
   const { data: assistantKnowledge, isLoading: isAssistantKnowledgeLoading } =
-    useVectorStore(assistantVectorStores.at(0), {
+    useVectorStore({
+      id: assistantVectorStores.at(0),
       enabled: enableFetch,
     });
 
@@ -79,12 +76,11 @@ export function ThreadKnowledge({
   const {
     data: threadKnowledgeFilesData,
     isLoading: isThreadKnowledgeFilesLoading,
-  } = useInfiniteQuery({
+  } = useVectorStoreFiles({
     // We support only one vector store per thread
-    ...vectorStoresQueries.filesList(threadVectorStores.at(0)!, {
-      limit: VECTOR_STORES_FILES_LIMIT,
-    }),
-    enabled: enableFetch && threadVectorStores.length > 0,
+    storeId: threadVectorStores.at(0),
+    params: { limit: VECTOR_STORES_FILES_LIMIT },
+    enabled: enableFetch,
   });
 
   const threadKnowledgeFiles = useMemo(
