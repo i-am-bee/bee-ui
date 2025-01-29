@@ -115,7 +115,7 @@ export function PlanStep({ step, toolCall, allStepsDone }: Props) {
       thread.uiMetadata = metadata;
       const updatedThread = encodeEntityWithMetadata<Thread>(thread);
       updateThread({
-        id: thread.id,
+        thread,
         body: { metadata: updatedThread.metadata },
       });
       setThread(thread);

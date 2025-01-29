@@ -283,7 +283,7 @@ export function ChatProvider({
               : threadMetadata.title;
 
           const updatedThread = await updateThread({
-            id: thread.id,
+            thread,
             body: {
               tool_resources: toolResources,
               metadata: encodeMetadata<ThreadMetadata>(threadMetadata),
