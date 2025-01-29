@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { SkeletonPlaceholder, SkeletonText } from '@carbon/react';
+import clsx from 'clsx';
 import { ReactNode } from 'react';
 import classes from './OnboardingCard.module.scss';
 
@@ -42,3 +44,13 @@ export function OnboardingCard({
     </article>
   );
 }
+
+OnboardingCard.Skeleton = function Skeleton() {
+  return (
+    <article className={clsx(classes.root, classes.skeleton)}>
+      <SkeletonPlaceholder className={classes.image} />
+      <SkeletonText className={classes.heading} />
+      <SkeletonText paragraph lineCount={3} className={classes.description} />
+    </article>
+  );
+};

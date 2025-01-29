@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-import { LinkPreview } from '../types';
+import { CounterType } from './types';
 
-export async function fetchLinkPreview(
-  url: string,
-): Promise<LinkPreview | { error: string }> {
-  const res = await fetch('/api/link-preview', {
+export async function captureClickMetric(body: { type: CounterType }) {
+  const res = await fetch('/api/metrics', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
     },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
-    throw new Error('Fetching link preview failed.');
+    throw new Error('Capturing click metric failed.');
   }
 
   return await res.json();

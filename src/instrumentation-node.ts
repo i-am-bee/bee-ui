@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-import { NodeSDK, resources } from '@opentelemetry/sdk-node';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { metrics, NodeSDK, resources } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { SERVICE_NAME } from './instrumentation';
+
+const metricExporter = new OTLPMetricExporter({});
+
+const metricReader = new metrics.PeriodicExportingMetricReader({
+  exporter: metricExporter,
+});
 
 const sdk = new NodeSDK({
   resource: new resources.Resource({
     [ATTR_SERVICE_NAME]: SERVICE_NAME,
   }),
   instrumentations: [new HttpInstrumentation()],
+  metricReader,
 });
+
 sdk.start();

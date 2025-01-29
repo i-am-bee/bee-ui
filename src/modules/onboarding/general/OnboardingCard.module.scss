@@ -23,7 +23,7 @@
   padding: $spacing-05;
   position: relative;
   block-size: 100%;
-  &:hover {
+  &:hover:not(.skeleton) {
     background-color: $card-background-hover;
   }
 }
@@ -59,6 +59,16 @@
 
 .description {
   color: $text-secondary;
+}
+
+.skeleton {
+  .image {
+    inline-size: 100%;
+  }
+  .heading {
+    block-size: rem(28px);
+    margin-block-end: $spacing-05;
+  }
 }
 
 @include breakpoint-up(md) {

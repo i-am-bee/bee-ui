@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-import { LinkPreview } from '../types';
+import { captureClickMetric } from '@/app/api/metrics';
+import { CounterType } from '@/app/api/metrics/types';
+import { useMutation } from '@tanstack/react-query';
 
-export async function fetchLinkPreview(
-  url: string,
-): Promise<LinkPreview | { error: string }> {
-  const res = await fetch('/api/link-preview', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
+export function useCaptureClickMetric() {
+  const mutation = useMutation({
+    mutationFn: (body: { type: CounterType }) => captureClickMetric(body),
+    meta: {
+      errorToast: false,
     },
-    body: JSON.stringify({ url }),
   });
 
-  if (!res.ok) {
-    throw new Error('Fetching link preview failed.');
-  }
-
-  return await res.json();
+  return mutation;
 }

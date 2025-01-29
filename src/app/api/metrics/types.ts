@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-import { LinkPreview } from '../types';
-
-export async function fetchLinkPreview(
-  url: string,
-): Promise<LinkPreview | { error: string }> {
-  const res = await fetch('/api/link-preview', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({ url }),
-  });
-
-  if (!res.ok) {
-    throw new Error('Fetching link preview failed.');
-  }
-
-  return await res.json();
+export enum CounterType {
+  BUILD_AN_APP = 'onboarding_click_build_app',
+  CHAT_WITH_AGENT = 'onboarding_click_chat',
+  CREATE_AN_AGENT = 'onboarding_click_create_agent',
 }
