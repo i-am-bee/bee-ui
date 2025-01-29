@@ -16,12 +16,8 @@
 
 import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import {
-  useAppApiContext,
-  useAppContext,
-} from '@/layout/providers/AppProvider';
-import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
-import { useRouter } from 'next-nprogress-bar';
+import { useAppApiContext } from '@/layout/providers/AppProvider';
+import { useRoutes } from '@/routes';
 import { ASSISTANTS_DEFAULT_PAGE_SIZE } from '../api';
 import { Assistant } from '../types';
 import { AssistantCard } from './AssistantCard';
@@ -40,8 +36,7 @@ export function AssistantsList({
   onDeleteSuccess,
 }: Props) {
   const { selectAssistant } = useAppApiContext();
-  const { project } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   return (
     <>
@@ -53,7 +48,7 @@ export function AssistantsList({
           onDeleteSuccess={onDeleteSuccess}
           onClick={() => {
             selectAssistant(assistant);
-            router.push(getNewSessionUrl(project.id, assistant));
+            navigate(routes.chat({ assistantId: assistant.id }));
           }}
         />
       ))}

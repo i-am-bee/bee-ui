@@ -21,7 +21,7 @@ import {
   useAppContext,
 } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
+import { useRoutes } from '@/routes';
 import { useLayout } from '@/store/layout';
 import {
   IconButton,
@@ -32,7 +32,6 @@ import {
 } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { useRouter } from 'next-nprogress-bar';
 import { PropsWithChildren, useState } from 'react';
 import { NewAgentModal } from '../onboarding/assistants/NewAgentModal';
 import { useAssistants } from './api/queries/useAssistants';
@@ -111,9 +110,9 @@ function AgentLink({
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [builderModalOpened, setBuilderModalOpened] = useState(false);
   const { selectAssistant } = useAppApiContext();
-  const { project, assistant: selectedAssistant } = useAppContext();
+  const { assistant: selectedAssistant } = useAppContext();
   const navbarProps = useLayout((state) => state.navbarProps);
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const isMdDown = useBreakpoint('mdDown');
 
@@ -139,7 +138,7 @@ function AgentLink({
           className={classes.button}
           onClick={() => {
             selectAssistant(assistant);
-            router.push(getNewSessionUrl(project.id, assistant));
+            navigate(routes.chat({ assistantId: assistant.id }));
           }}
         >
           {children}
@@ -162,13 +161,22 @@ function AgentLink({
             <OverflowMenuItem
               itemText="Edit"
               onClick={() => {
-                router.push(`/${project.id}/builder/${assistant.id}`);
+                navigate(
+                  routes.assistantBuilder({ assistantId: assistant.id }),
+                );
               }}
             />
             <OverflowMenuItem
               itemText="Copy to edit"
               onClick={() => {
-                router.push(`/${project.id}/builder/${assistant.id}?duplicate`);
+                navigate(
+                  routes.assistantBuilder({
+                    assistantId: assistant.id,
+                    params: {
+                      duplicate: true,
+                    },
+                  }),
+                );
               }}
             />
           </OverflowMenu>

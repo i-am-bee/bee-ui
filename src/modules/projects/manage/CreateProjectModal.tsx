@@ -17,6 +17,7 @@
 import { Organization } from '@/app/api/organization/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { useRoutes } from '@/routes';
 import {
   Button,
   InlineLoading,
@@ -25,7 +26,6 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useCreateProject } from '../api/mutations/useCreateProject';
@@ -44,7 +44,7 @@ export function CreateProjectModal({
   ...props
 }: Props & ModalProps) {
   const htmlId = useId();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const { data: projects } = useListAllProjects();
 
@@ -56,7 +56,7 @@ export function CreateProjectModal({
   const { mutateAsync: createProject } = useCreateProject({
     onSuccess: (project) => {
       if (project) {
-        router.push(`/${project.id}`);
+        navigate(routes.project({ projectId: project.id }));
       }
     },
   });

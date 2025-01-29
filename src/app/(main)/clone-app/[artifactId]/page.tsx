@@ -15,6 +15,7 @@
  */
 
 import { ensureSession } from '@/app/auth/rsc';
+import { commonRoutes } from '@/routes';
 import { redirect } from 'next/navigation';
 
 interface Props {
@@ -32,6 +33,10 @@ export default async function CloneAppPage({
   const { default_project: defaultProjectId } = session.userProfile;
 
   redirect(
-    `/${defaultProjectId}/apps/builder/clone/${artifactId}?token=${token}`,
+    commonRoutes.artifactClone({
+      projectId: defaultProjectId,
+      artifactId,
+      params: { token },
+    }),
   );
 }

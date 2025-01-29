@@ -20,10 +20,10 @@ import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ASSISTANT_TEMPLATES } from '@/modules/assistants/templates';
 import { AssistantTemplate } from '@/modules/assistants/types';
-import { ONBOARDING_PARAM } from '@/utils/constants';
+import { useRoutes } from '@/routes';
+import { ONBOARDING_AGENTS_PARAM } from '@/utils/constants';
 import { ModalBody, ModalFooter, ModalHeader } from '@carbon/react';
 import clsx from 'clsx';
-import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
 import classes from './NewAgentModal.module.scss';
 import { OnboardingAssistantSelection } from './OnboardingAssistantSelection';
@@ -34,7 +34,7 @@ interface Props extends ModalProps {
 }
 
 export function NewAgentModal({ isOnboarding, ...props }: Props) {
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
   const { project } = useAppContext();
   const [step, setStep] = useState(
     isOnboarding ? Steps.INTRO : Steps.ASSISTANT_SELECTION,
@@ -69,8 +69,13 @@ export function NewAgentModal({ isOnboarding, ...props }: Props) {
             onBackClick={isOnboarding ? () => setStep(Steps.INTRO) : undefined}
             onNextClick={() => {
               props.onRequestClose();
-              router.push(
-                `/${project.id}/builder?${ONBOARDING_PARAM}${selectedTemplate ? `&template=${selectedTemplate.key}` : ''}`,
+              navigate(
+                routes.assistantBuilder({
+                  params: {
+                    [ONBOARDING_AGENTS_PARAM]: true,
+                    template: selectedTemplate?.key,
+                  },
+                }),
               );
             }}
           />

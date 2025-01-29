@@ -16,6 +16,7 @@
 
 'use client';
 
+import { commonRoutes } from '@/routes';
 import { Button } from '@carbon/react';
 import { ArrowRight, Restart } from '@carbon/react/icons';
 import classes from './ErrorPage.module.scss';
@@ -43,7 +44,12 @@ export function ErrorPage({ statusCode, title, onRetry }: ErrorPageProps) {
           >
             Try again
           </Button>
-          <Button size="md" href="/" kind="secondary" renderIcon={ArrowRight}>
+          <Button
+            size="md"
+            href={commonRoutes.home()}
+            kind="secondary"
+            renderIcon={ArrowRight}
+          >
             Go to Home page
           </Button>
         </div>

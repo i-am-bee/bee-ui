@@ -15,10 +15,9 @@
  */
 
 import { useBreakpoint } from '@/hooks/useBreakpoint';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useRoutes } from '@/routes';
 import { Button, OverflowMenu, OverflowMenuItem } from '@carbon/react';
-import { useRouter } from 'next-nprogress-bar';
 import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { ShareAppModal } from '../ShareAppModal';
 import { Artifact } from '../types';
@@ -29,11 +28,10 @@ interface Props {
 }
 
 export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
-  const router = useRouter();
-  const { project } = useAppContext();
+  const { routes, navigate } = useRoutes();
   const { openModal } = useModal();
   const { mutateAsyncWithConfirmation: deleteArtifact } = useDeleteArtifact({
-    onSuccess: () => router.push(`/${project.id}/apps/`),
+    onSuccess: () => navigate(routes.artifacts()),
   });
 
   const isMdDown = useBreakpoint('mdDown');
@@ -60,13 +58,15 @@ export function AppBuilderNavbarActions({ artifact, showShareButton }: Props) {
         <OverflowMenuItem
           itemText="Edit"
           onClick={() =>
-            router.push(`/${project.id}/apps/builder/a/${artifact.id}`)
+            navigate(routes.artifactBuilder({ artifactId: artifact.id }))
           }
         />
         <OverflowMenuItem
           itemText="Copy to edit"
           onClick={() =>
-            router.push(`/${project.id}/apps/builder/clone/${artifact.id}`)
+            navigate(
+              routes.artifactBuilder({ artifactId: artifact.id, clone: true }),
+            )
           }
         />
         <OverflowMenuItem

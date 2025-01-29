@@ -30,6 +30,7 @@ import { useVectorStores } from '@/modules/knowledge/api/queries/useVectorStores
 import { CreateKnowledgeModal } from '@/modules/knowledge/create/CreateKnowledgeModal';
 import { KnowledgeFileCard } from '@/modules/knowledge/detail/KnowledgeFileCard';
 import { getStaticToolName } from '@/modules/tools/hooks/useToolInfo';
+import { useRoutes } from '@/routes';
 import { ActionableNotification, DropdownSkeleton } from '@carbon/react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
@@ -43,6 +44,7 @@ import classes from './KnowledgeSelector.module.scss';
 export function KnowledgeSelector() {
   const { openModal } = useModal();
   const { project, isProjectReadOnly } = useAppContext();
+  const { routes } = useRoutes();
   const vectorStoresQueries = useVectorStoresQueries();
   const {
     field: { value, onChange },
@@ -143,7 +145,7 @@ export function KnowledgeSelector() {
             itemToString={(item) => item.name}
             submitButtonTitle="Connect"
             actionBarContentLeft={
-              <Link href={`/${project.id}/knowledge`} target="_blank">
+              <Link href={routes.vectorStores()} target="_blank">
                 Browse knowledge library
               </Link>
             }

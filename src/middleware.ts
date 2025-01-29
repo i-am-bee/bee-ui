@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { ACCEPT_TOU_PAGE, auth, SIGN_IN_PAGE } from '@/app/auth';
+import { auth } from '@/app/auth';
 import { NextMiddleware, NextResponse } from 'next/server';
 import { v4 as uuid } from 'uuid';
+import { commonRoutes } from './routes';
 import { DUMMY_JWT_TOKEN, USERCONTENT_SITE_URL } from './utils/constants';
 
 const middleware: NextMiddleware = async (request, ev) => {
@@ -48,7 +49,10 @@ const middleware: NextMiddleware = async (request, ev) => {
           // or returning the 500 response, it continues with a session as string with http status :(
           if (!session || typeof session !== 'object') {
             const { pathname, search, origin, basePath } = req.nextUrl;
-            const redirectUrl = new URL(`${basePath}${SIGN_IN_PAGE}`, origin);
+            const redirectUrl = new URL(
+              `${basePath}${commonRoutes.signIn()}`,
+              origin,
+            );
             redirectUrl.searchParams.set(
               'callbackUrl',
               `${basePath}${pathname}${search}`,
@@ -59,7 +63,7 @@ const middleware: NextMiddleware = async (request, ev) => {
             if (!Boolean(session.userProfile.metadata?.tou_accepted_at)) {
               const { pathname, search, origin, basePath } = req.nextUrl;
               const redirectUrl = new URL(
-                `${basePath}${ACCEPT_TOU_PAGE}`,
+                `${basePath}${commonRoutes.termsOfUse()}`,
                 origin,
               );
               redirectUrl.searchParams.set(

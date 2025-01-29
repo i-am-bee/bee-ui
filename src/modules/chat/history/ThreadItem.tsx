@@ -19,8 +19,7 @@ import { Thread, ThreadMetadata } from '@/app/api/threads/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { Link } from '@/components/Link/Link';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
+import { useRoutes } from '@/routes';
 import {
   Button,
   ButtonBaseProps,
@@ -33,7 +32,6 @@ import { WarningFilled } from '@carbon/react/icons';
 import clsx from 'clsx';
 import { CODE_ENTER, CODE_ESCAPE } from 'keycode-js';
 import truncate from 'lodash/truncate';
-import { useRouter } from 'next-nprogress-bar';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -60,8 +58,7 @@ export function ThreadItem({ thread }: Props) {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-  const { project } = useAppContext();
+  const { routes, navigate } = useRoutes();
   const id = useId();
   const assistant = useGetThreadAssistant(thread);
   const { title } = thread.uiMetadata;
@@ -71,8 +68,8 @@ export function ThreadItem({ thread }: Props) {
 
   const href =
     assistant.data?.agent === 'streamlit'
-      ? `/${project.id}/apps/builder/t/${thread.id}`
-      : `/${project.id}/thread/${thread.id}`;
+      ? routes.artifactBuilder({ threadId: thread.id })
+      : routes.thread({ threadId: thread.id });
   const isActive = pathname === href;
 
   const {
@@ -100,8 +97,8 @@ export function ThreadItem({ thread }: Props) {
     isPending: isDeletePending,
   } = useDeleteThread({
     onMutate: () => {
-      if (isActive) {
-        router.push(getNewSessionUrl(project.id, assistant.data));
+      if (isActive && assistant.data) {
+        navigate(routes.chat({ assistantId: assistant.data.id }));
       }
     },
   });

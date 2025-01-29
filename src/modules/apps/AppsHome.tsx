@@ -24,12 +24,12 @@ import { AdminView } from '@/components/AdminView/AdminView';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useRoutes } from '@/routes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { produce } from 'immer';
 import Lottie from 'lottie-react';
-import { useRouter } from 'next-nprogress-bar';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
@@ -43,12 +43,12 @@ import { useArtifacts } from './api/queries/useArtifacts';
 import { AppsList } from './library/AppsList';
 
 export function AppsHome() {
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<ArtifactsListQueryOrderBy>(
     ARTIFACTS_ORDER_DEFAULT,
   );
   const [search, setSearch] = useDebounceValue('', 200);
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const searchParams = useSearchParams();
   const showOnboarding =
@@ -118,8 +118,8 @@ export function AppsHome() {
                 <Link
                   href={
                     firstAssistant
-                      ? `/${project.id}/chat/${firstAssistant.id}`
-                      : `/${project.id}/builder`
+                      ? routes.chat({ assistantId: firstAssistant.id })
+                      : routes.assistantBuilder()
                   }
                 >
                   Agent Bee
@@ -138,7 +138,7 @@ export function AppsHome() {
           }}
           newButtonProps={{
             title: 'Create app',
-            onClick: () => router.push(`/${project.id}/apps/builder`),
+            onClick: () => navigate(routes.artifactBuilder()),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (
               <ReadOnlyTooltipContent

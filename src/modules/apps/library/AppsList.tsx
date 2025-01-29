@@ -15,8 +15,7 @@
  */
 
 import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { useRouter } from 'next-nprogress-bar';
+import { useRoutes } from '@/routes';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
 
@@ -33,8 +32,7 @@ export function AppsList({
   pageSize = PAGE_SIZE,
   onDeleteSuccess,
 }: Props) {
-  const { project } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   return (
     <>
@@ -45,7 +43,7 @@ export function AppsList({
           cta="Use app"
           onDeleteSuccess={onDeleteSuccess}
           onClick={() => {
-            router.push(`/${project.id}/apps/${artifact.id}`);
+            navigate(routes.artifact({ artifactId: artifact.id }));
           }}
         />
       ))}

@@ -18,6 +18,7 @@ import { ExternalLink } from '@/components/ExternalLink/ExternalLink';
 import { Link } from '@/components/Link/Link';
 import { CurrentUserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { commonRoutes, useRoutes } from '@/routes';
 import { useUserProfile } from '@/store/user-profile';
 import { PRIVACY_URL, TOU_TEXT } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
@@ -30,7 +31,6 @@ import { KeyboardEventHandler, useId, useMemo, useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { TermsOfUseModal } from './TermsOfUseModal';
 import classes from './UserProfile.module.scss';
-import { useAppContext } from '../providers/AppProvider';
 
 interface Props {
   className?: string;
@@ -40,8 +40,8 @@ export function UserProfile({ className }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const { project } = useAppContext();
   const id = useId();
+  const { routes } = useRoutes();
 
   const { openModal } = useModal();
   const userEmail = useUserProfile((state) => state.email);
@@ -67,7 +67,7 @@ export function UserProfile({ className }: Props) {
       [
         {
           label: 'Preferences',
-          href: `/${project.id}/preferences`,
+          href: routes.preferences(),
         },
         TOU_TEXT
           ? {
@@ -84,7 +84,7 @@ export function UserProfile({ className }: Props) {
             }
           : null,
       ].filter(isNotNull),
-    [openModal, project.id],
+    [openModal, routes],
   );
 
   return (
@@ -160,7 +160,7 @@ export function UserProfile({ className }: Props) {
               <button
                 type="button"
                 className={classes.link}
-                onClick={() => signOut({ callbackUrl: '/' })}
+                onClick={() => signOut({ callbackUrl: commonRoutes.home() })}
               >
                 Log out
               </button>

@@ -16,9 +16,8 @@
 
 'use client';
 import { Thread } from '@/app/api/threads/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useRoutes } from '@/routes';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next-nprogress-bar';
 import { useEffect } from 'react';
 import { ConversationView } from './ConversationView';
 import { EmptyChatView } from './EmptyChatView';
@@ -39,8 +38,7 @@ export function ChatHomeView() {
   const { getMessages, clear, reset, setThread, builderState, assistant } =
     useChat();
   const queryClient = useQueryClient();
-  const router = useRouter();
-  const { project } = useAppContext();
+  const { routes } = useRoutes();
   const threadsQueries = useThreadsQueries();
 
   const handleMessageSent = ({ thread }: SendMessageResult) => {
@@ -60,8 +58,14 @@ export function ChatHomeView() {
           } satisfies ChatState,
         },
         '',
-        `/${project.id}${builderState ? `/builder/${assistant.data?.id}` : ''}/thread/${thread.id}`,
+        builderState && assistant.data
+          ? routes.assistantBuilder({
+              assistantId: assistant.data.id,
+              threadId: thread.id,
+            })
+          : routes.thread({ threadId: thread.id }),
       );
+
       queryClient.invalidateQueries({
         queryKey: threadsQueries.lists(),
       });
@@ -82,7 +86,7 @@ export function ChatHomeView() {
     return () => {
       window.removeEventListener('popstate', onPopState);
     };
-  }, [clear, setThread, reset, router]);
+  }, [clear, setThread, reset]);
 
   const messages = useChatMessages();
   if (!messages.length) {

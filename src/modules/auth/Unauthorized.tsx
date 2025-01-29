@@ -15,11 +15,12 @@
  */
 
 'use client';
+import { commonRoutes } from '@/routes';
 import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
-import classes from './SignIn.module.scss';
 import { useRouter } from 'next-nprogress-bar';
 import { LoginError } from './SignIn';
+import classes from './SignIn.module.scss';
 
 interface Props {
   error: LoginError | null;
@@ -27,6 +28,7 @@ interface Props {
 
 export function Unauthorized({ error }: Props) {
   const router = useRouter();
+
   return (
     <div className={classes.root}>
       <div className={classes.loginGrid}>
@@ -37,7 +39,7 @@ export function Unauthorized({ error }: Props) {
           <Button
             renderIcon={ArrowRight}
             className={classes.unauthCtaButton}
-            onClick={() => router.push(`/`)}
+            onClick={() => router.push(commonRoutes.home())}
           >
             Go to the default workspace
           </Button>

@@ -22,9 +22,9 @@ import { encodeMetadata } from '@/app/api/utils';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
 import { useConfirmModalCloseOnDirty } from '@/layout/hooks/useConfirmModalCloseOnDirtyFields';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
+import { useRoutes } from '@/routes';
 import {
   Button,
   InlineLoading,
@@ -36,7 +36,6 @@ import {
   TextInput,
 } from '@carbon/react';
 import isEmpty from 'lodash/isEmpty';
-import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useId } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useSaveArtifact } from '../api/mutations/useSaveArtifact';
@@ -70,11 +69,10 @@ export function SaveAppModal({
   additionalMetadata,
   ...props
 }: Props) {
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
   const { onRequestClose } = props;
   const id = useId();
   const { onRequestCloseSafe } = useModalControl();
-  const { project } = useAppContext();
 
   const isUpdating = !!artifactProp;
 
@@ -86,13 +84,13 @@ export function SaveAppModal({
     onSuccess: (artifact) => {
       if (artifact) {
         if (isConfirmation) {
-          router.push(`/${project.id}/apps`);
+          navigate(routes.artifacts());
         } else {
           if (!isUpdating) {
             window.history.pushState(
               null,
               '',
-              `/${project.id}/apps/builder/a/${artifact.id}`,
+              routes.artifactBuilder({ artifactId: artifact.id }),
             );
           }
         }
@@ -219,7 +217,9 @@ export function SaveAppModal({
         <Button
           kind="ghost"
           onClick={() => {
-            if (isConfirmation) router.push(`/${project.id}/apps`);
+            if (isConfirmation) {
+              navigate(routes.artifacts());
+            }
 
             onRequestCloseSafe();
           }}

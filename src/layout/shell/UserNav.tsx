@@ -19,6 +19,7 @@ import { Link } from '@/components/Link/Link';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { usePrefetchVectorStores } from '@/modules/knowledge/api/queries/usePrefetchVectorStores';
 import { usePrefetchTools } from '@/modules/tools/api/queries/usePrefetchTools';
+import { useRoutes } from '@/routes';
 import { DOCUMENTATION_URL, FEEDBACK_URL } from '@/utils/constants';
 import { FeatureName } from '@/utils/parseFeatureFlags';
 import { ArrowUpRight } from '@carbon/react/icons';
@@ -32,8 +33,8 @@ interface Props extends HTMLAttributes<HTMLElement> {}
 
 export function UserNav({ className }: Props) {
   const pathname = usePathname();
-
-  const { project, featureFlags } = useAppContext();
+  const { routes } = useRoutes();
+  const { featureFlags } = useAppContext();
 
   const prefetchTools = usePrefetchTools({ useDefaultParams: true });
   const prefetchVectoreStores = usePrefetchVectorStores({
@@ -43,12 +44,12 @@ export function UserNav({ className }: Props) {
   const ITEMS = [
     {
       label: 'Tools',
-      href: `/${project.id}/tools`,
+      href: routes.tools(),
       prefetchData: prefetchTools,
     },
     {
       label: 'Knowledge',
-      href: `/${project.id}/knowledge`,
+      href: routes.vectorStores(),
       featureName: FeatureName.Knowledge,
       prefetchData: prefetchVectoreStores,
     },

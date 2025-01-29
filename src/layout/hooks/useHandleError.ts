@@ -15,10 +15,11 @@
  */
 
 import { UnauthenticatedError } from '@/app/api/errors';
-import { usePathname } from 'next/navigation';
+import { commonRoutes } from '@/routes';
 import { useRouter } from 'next-nprogress-bar';
-import { useToast } from '../providers/ToastProvider';
+import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
+import { useToast } from '../providers/ToastProvider';
 
 interface QueryMetaData {
   toast?: false | { title?: string; includeErrorMessage?: boolean };
@@ -33,7 +34,7 @@ export function useHandleError() {
     (err: unknown, opts: QueryMetaData = {}) => {
       if (err instanceof UnauthenticatedError) {
         router.replace(
-          `/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`,
+          commonRoutes.signIn({ params: { callbackUrl: pathname } }),
         );
       } else if (opts.toast !== false) {
         addToast({

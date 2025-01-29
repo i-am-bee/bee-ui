@@ -23,9 +23,9 @@ import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useRoutes } from '@/routes';
 import { InlineLoading } from '@carbon/react';
 import { Folder, WarningAlt } from '@carbon/react/icons';
-import { useRouter } from 'next-nprogress-bar';
 import pluralize from 'pluralize';
 import { useDeleteVectorStore } from '../api/mutations/useDeleteVectorStore';
 import { KnowledgeAppsInfo } from '../detail/KnowledgeAppsInfo';
@@ -45,7 +45,7 @@ export function KnowledgeCard({
 }: Props) {
   const { openModal } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const {
     mutateAsyncWithConfirmation: deleteStore,
@@ -63,7 +63,9 @@ export function KnowledgeCard({
           <Folder size="20" />
         </span>
       }
-      onClick={() => router.push(`/${project.id}/knowledge/${vectorStore.id}`)}
+      onClick={() =>
+        navigate(routes.vectorStore({ vectorStoreId: vectorStore.id }))
+      }
       actions={
         !isProjectReadOnly
           ? [

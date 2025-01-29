@@ -16,9 +16,8 @@
 
 import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useRouter } from 'next-nprogress-bar';
+import { useRoutes } from '@/routes';
 import { MouseEventHandler } from 'react';
 import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { AppIcon } from '../AppIcon';
@@ -35,7 +34,7 @@ interface Props {
 
 export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   const { name, description } = artifact;
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
   const { openModal } = useModal();
 
   const {
@@ -44,7 +43,6 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
   } = useDeleteArtifact({
     onSuccess: onDeleteSuccess,
   });
-  const { project } = useAppContext();
 
   return (
     <>
@@ -59,7 +57,7 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
           {
             itemText: 'Edit',
             onClick: () =>
-              router.push(`/${project.id}/apps/builder/a/${artifact.id}`),
+              navigate(routes.artifactBuilder({ artifactId: artifact.id })),
           },
           {
             itemText: 'Share',
@@ -71,7 +69,12 @@ export function AppCard({ artifact, cta, onClick, onDeleteSuccess }: Props) {
           {
             itemText: 'Copy to edit',
             onClick: () =>
-              router.push(`/${project.id}/apps/builder/clone/${artifact.id}`),
+              navigate(
+                routes.artifactBuilder({
+                  artifactId: artifact.id,
+                  clone: true,
+                }),
+              ),
           },
           {
             isDelete: true,

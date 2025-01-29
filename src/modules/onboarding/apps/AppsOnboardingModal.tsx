@@ -15,15 +15,14 @@
  */
 
 import { Modal } from '@/components/Modal/Modal';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { AppTemplate } from '@/modules/apps/types';
+import { useRoutes } from '@/routes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
 import { ModalBody, ModalFooter } from '@carbon/react';
 import clsx from 'clsx';
-import { useRouter } from 'next-nprogress-bar';
 import { useState } from 'react';
 import { AppsOnboardingIntro } from './AppsOnboardingIntro';
 import classes from './AppsOnboardingModal.module.scss';
@@ -34,8 +33,7 @@ import { ARTIFACT_TEMPLATES } from './templates';
 interface Props extends ModalProps {}
 
 export function AppsOnboardingModal({ ...props }: Props) {
-  const router = useRouter();
-  const { project } = useAppContext();
+  const { routes, navigate } = useRoutes();
   const [step, setStep] = useState(Steps.INTRO);
   const [selectedTemplate, setSelectedTemplate] = useState<AppTemplate | null>(
     null,
@@ -63,8 +61,13 @@ export function AppsOnboardingModal({ ...props }: Props) {
         ),
         footerProps: {
           onNextClick: () =>
-            router.push(
-              `/${project.id}/apps/builder?${ONBOARDING_PARAM}${selectedTemplate ? `&template=${selectedTemplate.key}` : ''}`,
+            navigate(
+              routes.artifactBuilder({
+                params: {
+                  [ONBOARDING_PARAM]: true,
+                  template: selectedTemplate?.key,
+                },
+              }),
             ),
           onBackClick: () => setStep(Steps.INTRO),
           nextButtonTitle: 'Start building',

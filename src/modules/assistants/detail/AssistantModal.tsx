@@ -26,6 +26,7 @@ import { PublicToolModal } from '@/modules/tools/manage/PublicToolModal';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { ToolDescription, ToolIcon } from '@/modules/tools/ToolCard';
 import { getAssistantToolReference } from '@/modules/tools/utils';
+import { useRoutes } from '@/routes';
 import { noop } from '@/utils/helpers';
 import {
   Button,
@@ -36,7 +37,6 @@ import {
   SkeletonText,
 } from '@carbon/react';
 import { Edit, Folder, Launch, TrashCan } from '@carbon/react/icons';
-import { useRouter } from 'next-nprogress-bar';
 import { useDeleteAssistant } from '../api/mutations/useDeleteAssistant';
 import { AssistantIcon } from '../icons/AssistantIcon';
 import { Assistant } from '../types';
@@ -52,8 +52,8 @@ export default function AssistantModal({
   onDeleteSuccess,
   ...props
 }: AssistantModalProps & ModalProps) {
-  const { project, isProjectReadOnly } = useAppContext();
-  const router = useRouter();
+  const { isProjectReadOnly } = useAppContext();
+  const { routes, navigate } = useRoutes();
 
   const { mutateAsyncWithConfirmation: deleteAssistant } = useDeleteAssistant({
     onSuccess: onDeleteSuccess,
@@ -148,7 +148,7 @@ export default function AssistantModal({
           <Button
             kind="secondary"
             onClick={() => {
-              router.push(`/${project.id}/builder/${assistant.id}`);
+              navigate(routes.assistantBuilder({ assistantId: assistant.id }));
               props.onRequestClose();
             }}
             renderIcon={Edit}

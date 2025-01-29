@@ -24,10 +24,10 @@ import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { getAssistantName } from '@/modules/assistants/utils';
 import { ChatNavbarActions } from '@/modules/chat/ChatNavbarActions';
 import { ProjectSelector } from '@/modules/projects/ProjectSelector';
+import { useRoutes } from '@/routes';
 import { useLayout } from '@/store/layout';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
-import { useRouter } from 'next-nprogress-bar';
 import { ReactElement, useMemo } from 'react';
 import { UserSetting, useUserSetting } from '../hooks/useUserSetting';
 import { useNavigationControl } from '../providers/NavigationControlProvider';
@@ -45,7 +45,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
   const { setUserSetting } = useUserSetting();
   const { onLeaveWithConfirmation } = useNavigationControl();
   const { featureFlags } = useAppContext();
-  const router = useRouter();
+  const { navigate } = useRoutes();
   const navbarProps = useLayout((state) => state.navbarProps);
 
   const headingItems = useMemo(() => {
@@ -116,7 +116,7 @@ export function Navbar({ sidebarId, sidebarOpen }: Props) {
                   onClick();
                 } else {
                   onLeaveWithConfirmation({
-                    onSuccess: () => router.push(url),
+                    onSuccess: () => navigate(url),
                   });
                 }
               }}

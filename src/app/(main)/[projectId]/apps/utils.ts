@@ -15,6 +15,7 @@
  */
 
 import { Artifact } from '@/modules/apps/types';
+import { commonRoutes } from '@/routes';
 
 export const getAppBuilderNavbarProps = (
   projectId: string,
@@ -23,7 +24,7 @@ export const getAppBuilderNavbarProps = (
   ({
     type: 'app-builder',
     backButton: {
-      url: `/${projectId}/apps`,
+      url: commonRoutes.artifacts({ projectId }),
       title: 'App library',
     },
     artifact,
