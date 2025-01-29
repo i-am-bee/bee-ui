@@ -52,8 +52,6 @@ export function useUpdateDataOnMutation<T extends ListDataResponse = never>({
               for (const page of draft.pages) {
                 const index = page.data.findIndex(({ id }) => id === data.id);
                 if (index >= 0) {
-                  console.log('updating...', { page, data });
-
                   page.data.splice(index, 1, data);
                 }
               }
