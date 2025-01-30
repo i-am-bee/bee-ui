@@ -52,12 +52,13 @@ export function useUpdateThread({ optimistic }: Props = {}) {
 
       return thread;
     },
-    onMutate: ({ thread, body: { tool_resources, metadata, ...body } }) => {
+    onMutate: ({ thread, body: { tool_resources, ...body } }) => {
       if (optimistic) {
         onItemUpdate({
           data: {
             ...encodeEntityWithMetadata<Thread>(thread),
             ...body,
+            ...(tool_resources ? tool_resources : undefined),
           },
           listQueryKey: threadsQueries.lists(),
           invalidateQueries: false,
