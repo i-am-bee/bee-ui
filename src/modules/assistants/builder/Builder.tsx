@@ -27,11 +27,11 @@ import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
 import { MessageWithFiles } from '@/modules/chat/types';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
+import { useRoutes } from '@/routes/useRoutes';
 import { Button, InlineLoading, TextArea, TextInput } from '@carbon/react';
 import { ChatLaunch, CheckmarkFilled, TrashCan } from '@carbon/react/icons';
 import clsx from 'clsx';
 import isEmpty from 'lodash/isEmpty';
-import { useRouter } from 'next-nprogress-bar';
 import { useId } from 'react';
 import { Controller } from 'react-hook-form';
 import { useDeleteAssistant } from '../api/mutations/useDeleteAssistant';
@@ -60,17 +60,17 @@ export function Builder({ thread, initialMessages }: Props) {
       formState: { isSubmitting, dirtyFields },
     },
   } = useAssistantBuilder();
-  const { project, isProjectReadOnly } = useAppContext();
+  const { isProjectReadOnly } = useAppContext();
   const { onSubmit } = useAssistantBuilderApi();
   const id = useId();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const {
     mutateAsyncWithConfirmation: deleteAssistant,
     isPending: isDeletePending,
   } = useDeleteAssistant({
     onSuccess: () => {
-      router.push(`/${project.id}`);
+      navigate(routes.home());
     },
   });
 
@@ -166,7 +166,7 @@ export function Builder({ thread, initialMessages }: Props) {
               <Button
                 kind="tertiary"
                 onClick={() =>
-                  router.push(`/${project.id}/chat/${assistant.id}`)
+                  navigate(routes.chat({ assistantId: assistant.id }))
                 }
                 disabled={isSubmitting}
               >
@@ -221,16 +221,16 @@ const NAME_MAX_LENGTH = 55;
 
 function BuilderChat() {
   const { thread, assistant, reset } = useChat();
-  const { project } = useAppContext();
+  const { routes } = useRoutes();
 
   const handleClear = () => {
     reset([]);
 
-    if (thread)
+    if (thread && assistant.data)
       window.history.replaceState(
         undefined,
         '',
-        `/${project.id}/builder/${assistant.data?.id}`,
+        routes.assistantBuilder({ assistantId: assistant.data.id }),
       );
   };
 

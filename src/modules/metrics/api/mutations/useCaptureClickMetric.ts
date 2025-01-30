@@ -14,29 +14,17 @@
  * limitations under the License.
  */
 
-import { ensureSession } from '@/app/auth/rsc';
-import { commonRoutes } from '@/routes';
-import { redirect } from 'next/navigation';
+import { captureClickMetric } from '@/app/api/metrics';
+import { CounterType } from '@/app/api/metrics/types';
+import { useMutation } from '@tanstack/react-query';
 
-interface Props {
-  params: {
-    artifactId: string;
-  };
-  searchParams: { token?: string };
-}
+export function useCaptureClickMetric() {
+  const mutation = useMutation({
+    mutationFn: (body: { type: CounterType }) => captureClickMetric(body),
+    meta: {
+      errorToast: false,
+    },
+  });
 
-export default async function CloneAppPage({
-  params: { artifactId },
-  searchParams: { token },
-}: Props) {
-  const session = await ensureSession();
-  const { default_project: defaultProjectId } = session.userProfile;
-
-  redirect(
-    commonRoutes.artifactClone({
-      projectId: defaultProjectId,
-      artifactId,
-      params: { token },
-    }),
-  );
+  return mutation;
 }

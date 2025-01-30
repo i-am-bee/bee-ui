@@ -21,12 +21,13 @@ interface Props {
 }
 
 export function useFirstAssistant({ enabled = true }: Props = {}) {
-  const { data } = useAssistants({
-    params: {
-      limit: 1,
-    },
+  const { data, isPending } = useAssistants({
+    params: { limit: 1 },
     enabled,
   });
 
-  return data?.assistants.at(0);
+  return {
+    assistant: data?.assistants.at(0),
+    isPending,
+  };
 }

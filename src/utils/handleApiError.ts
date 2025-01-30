@@ -21,7 +21,7 @@ import {
 } from '@/app/api/errors';
 import { createApiErrorResponse } from '@/app/api/server-utils';
 import { ApiErrorResponse } from '@/app/api/types';
-import { SIGN_IN_PAGE } from '@/app/auth';
+import { commonRoutes } from '@/routes';
 import { notFound, redirect } from 'next/navigation';
 import { isNotNull } from './helpers';
 
@@ -54,10 +54,10 @@ export function handleApiError(error: unknown): void | ApiErrorResponse {
     error instanceof UnauthenticatedError ||
     error instanceof UnauthorizedError
   ) {
-    redirect(SIGN_IN_PAGE);
+    redirect(commonRoutes.signIn());
   } else if (error instanceof ApiError) {
     if (error.code === 'auth_error') {
-      redirect(SIGN_IN_PAGE);
+      redirect(commonRoutes.signIn());
     } else if (error.code === 'not_found') {
       notFound();
     }

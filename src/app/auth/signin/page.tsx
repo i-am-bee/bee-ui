@@ -16,6 +16,7 @@
 
 import { LoginError, SignIn } from '@/modules/auth/SignIn';
 import { redis, RedisKey } from '@/redis';
+import { commonRoutes } from '@/routes';
 import { DUMMY_JWT_TOKEN } from '@/utils/constants';
 import { isAbsoluteUrl } from '@/utils/url';
 import { redirect } from 'next/navigation';
@@ -32,7 +33,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
     ? searchParams.callbackUrl[0]
     : searchParams.callbackUrl;
   if (!callbackUrl || isAbsoluteUrl(callbackUrl)) {
-    callbackUrl = '/';
+    callbackUrl = commonRoutes.home();
   }
 
   const errorCode = Array.isArray(searchParams.error)
@@ -41,9 +42,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
 
   if (DUMMY_JWT_TOKEN)
     // user shouldn't be here, let's redirect him to the error page
-    redirect(
-      `/auth/unauthorized?${new URLSearchParams({ error: errorCode ?? '' }).toString()}`,
-    );
+    redirect(commonRoutes.unauthorized({ params: { error: errorCode } }));
 
   const error: LoginError | null = (() => {
     switch (errorCode) {

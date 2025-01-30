@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-import { ensureSession } from '@/app/auth/rsc';
-import { commonRoutes } from '@/routes';
-import { redirect } from 'next/navigation';
-
-interface Props {
-  params: {
-    artifactId: string;
-  };
-  searchParams: { token?: string };
-}
-
-export default async function CloneAppPage({
-  params: { artifactId },
-  searchParams: { token },
-}: Props) {
-  const session = await ensureSession();
-  const { default_project: defaultProjectId } = session.userProfile;
-
-  redirect(
-    commonRoutes.artifactClone({
-      projectId: defaultProjectId,
-      artifactId,
-      params: { token },
-    }),
-  );
+export enum CounterType {
+  BUILD_AN_APP = 'onboarding_click_build_app',
+  CHAT_WITH_AGENT = 'onboarding_click_chat',
+  CREATE_AN_AGENT = 'onboarding_click_create_agent',
 }

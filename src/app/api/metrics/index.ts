@@ -14,29 +14,20 @@
  * limitations under the License.
  */
 
-import { ensureSession } from '@/app/auth/rsc';
-import { commonRoutes } from '@/routes';
-import { redirect } from 'next/navigation';
+import { CounterType } from './types';
 
-interface Props {
-  params: {
-    artifactId: string;
-  };
-  searchParams: { token?: string };
-}
+export async function captureClickMetric(body: { type: CounterType }) {
+  const res = await fetch('/api/metrics', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
 
-export default async function CloneAppPage({
-  params: { artifactId },
-  searchParams: { token },
-}: Props) {
-  const session = await ensureSession();
-  const { default_project: defaultProjectId } = session.userProfile;
+  if (!res.ok) {
+    throw new Error('Capturing click metric failed.');
+  }
 
-  redirect(
-    commonRoutes.artifactClone({
-      projectId: defaultProjectId,
-      artifactId,
-      params: { token },
-    }),
-  );
+  return await res.json();
 }

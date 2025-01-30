@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-import 'server-only';
+import { commonRoutes } from '@/routes';
+import { UserMetadata } from '@/store/user-profile/types';
 import { DUMMY_JWT_TOKEN } from '@/utils/constants';
 import { addDaysToDate } from '@/utils/dates';
+import { Session } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { SIGN_IN_PAGE, auth } from '.';
+import { cache } from 'react';
+import 'server-only';
+import { auth } from '.';
 import { readUser } from '../api/users';
 import { decodeMetadata } from '../api/utils';
-import { UserMetadata } from '@/store/user-profile/types';
-import { cache } from 'react';
-import { Session } from 'next-auth';
 
 export const getSession = cache(async () => {
   return await auth();
@@ -59,7 +60,7 @@ export const ensureSession = async () => {
   const session = await getSession();
 
   if (!session) {
-    redirect(`${SIGN_IN_PAGE}?error=unauthenticated`);
+    redirect(commonRoutes.signIn({ params: { error: 'unauthenticated' } }));
   }
   return session;
 };

@@ -19,6 +19,7 @@ import {
   ToolResult,
   ToolsCreateBody,
   ToolsListResponse,
+  ToolUpdateBody,
 } from '@/app/api/tools/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useToolsQueries } from '..';
@@ -35,8 +36,8 @@ export function useSaveTool({ onSuccess }: Props = {}) {
   const { onItemUpdate } = useUpdateDataOnMutation<ToolsListResponse>();
 
   const mutation = useMutation({
-    mutationFn: ({ id, body }: { id?: string; body: ToolsCreateBody }) => {
-      return id
+    mutationFn: ({ id, body }: MutationBody) => {
+      return id !== null
         ? updateTool(organization.id, project.id, id, body)
         : createTool(organization.id, project.id, body);
     },
@@ -54,9 +55,14 @@ export function useSaveTool({ onSuccess }: Props = {}) {
     meta: {
       errorToast: {
         title: 'Failed to save the tool',
+        includeErrorMessage: true,
       },
     },
   });
 
   return mutation;
 }
+
+type MutationBody =
+  | { id: null; body: ToolsCreateBody }
+  | { id: string; body: ToolUpdateBody };

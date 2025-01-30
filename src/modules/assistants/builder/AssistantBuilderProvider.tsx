@@ -28,6 +28,7 @@ import {
 import { useNavigationControl } from '@/layout/providers/NavigationControlProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { useOnboardingCompleted } from '@/modules/users/hooks/useOnboardingCompleted';
+import { useRoutes } from '@/routes/useRoutes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { isNotNull } from '@/utils/helpers';
 import isEmpty from 'lodash/isEmpty';
@@ -115,6 +116,7 @@ export function AssistantBuilderProvider({
     ? ASSISTANT_TEMPLATES.find((template) => template.key === templateKey)
     : undefined;
 
+  const { routes, navigate } = useRoutes();
   const router = useRouter();
   const isMdDown = useBreakpoint('mdDown');
 
@@ -129,14 +131,14 @@ export function AssistantBuilderProvider({
       selectAssistant(assistant);
 
       if (isMdDown) {
-        router.push(`/${project.id}/chat/${assistant.id}`);
+        navigate(routes.chat({ assistantId: assistant.id }));
       } else {
         if (isNew) {
           createdAssistantRef.current = assistant;
           window.history.pushState(
             {},
             '',
-            `/${project.id}/builder/${assistant.id}`,
+            routes.assistantBuilder({ assistantId: assistant.id }),
           );
         }
       }

@@ -32,10 +32,10 @@ import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ProjectHome } from '@/modules/projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipContent';
+import { useRoutes } from '@/routes/useRoutes';
 import { IconButton } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
 import { produce } from 'immer';
-import { useRouter } from 'next-nprogress-bar';
 import {
   VECTOR_STORES_DEFAULT_PAGE_SIZE,
   useVectorStoresQueries,
@@ -57,8 +57,8 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
   // const [search, setSearch] = useDebounceValue('', 200);
   const queryClient = useQueryClient();
   const { openModal } = useModal();
-  const { project, organization, isProjectReadOnly } = useAppContext();
-  const router = useRouter();
+  const { organization, isProjectReadOnly } = useAppContext();
+  const { routes, navigate } = useRoutes();
   const vectorStoresQueries = useVectorStoresQueries();
 
   const params = {
@@ -105,7 +105,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
           <IconButton
             kind="tertiary"
             label="Back to Knowledge bases"
-            onClick={() => router.push(`/${project.id}/knowledge`)}
+            onClick={() => navigate(routes.vectorStores())}
           >
             <ArrowLeft />
           </IconButton>

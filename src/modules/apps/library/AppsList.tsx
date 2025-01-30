@@ -15,8 +15,7 @@
  */
 
 import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
-import { useAppContext } from '@/layout/providers/AppProvider';
-import { useRouter } from 'next-nprogress-bar';
+import { useRoutes } from '@/routes/useRoutes';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
 
@@ -31,8 +30,7 @@ export function AppsList({
   isLoading,
   pageSize = PAGE_SIZE,
 }: Props) {
-  const { project } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   return (
     <>
@@ -42,7 +40,7 @@ export function AppsList({
           artifact={artifact}
           cta="Use app"
           onClick={() => {
-            router.push(`/${project.id}/apps/${artifact.id}`);
+            navigate(routes.artifact({ artifactId: artifact.id }));
           }}
         />
       ))}

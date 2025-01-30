@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { commonRoutes } from '@/routes';
 import { UserMetadata, UserProfileState } from '@/store/user-profile/types';
 import { checkErrorCode } from '@/utils/handleApiError';
 import { noop } from '@/utils/helpers';
@@ -97,7 +98,7 @@ const authResult = NextAuth(() => ({
     maxAge: 604800,
   },
   pages: {
-    signIn: SIGN_IN_PAGE,
+    signIn: commonRoutes.signIn(),
   },
   callbacks: {
     async signIn({ user, account }) {
@@ -106,7 +107,7 @@ const authResult = NextAuth(() => ({
       try {
         await authorizeUser(account.id_token);
       } catch (err) {
-        return `${SIGN_IN_PAGE}?error=unauthorized`;
+        return commonRoutes.signIn({ params: { error: 'unauthorized' } });
       }
 
       try {
@@ -120,7 +121,9 @@ const authResult = NextAuth(() => ({
           error instanceof TypeError &&
           checkErrorCode(error) === 'ECONNREFUSED'
         ) {
-          return `${SIGN_IN_PAGE}?error=service_unavailable`;
+          return commonRoutes.signIn({
+            params: { error: 'service_unavailable' },
+          });
         }
       }
 
@@ -138,10 +141,12 @@ const authResult = NextAuth(() => ({
       } catch (error) {
         if (error instanceof ApiError && error.code === 'auth_error') {
           if (error.message)
-            return `${SIGN_IN_PAGE}?error=${encodeURIComponent(error.message)}`;
+            return commonRoutes.signIn({ params: { error: error.message } });
         }
 
-        return `${SIGN_IN_PAGE}?error=service_unavailable`;
+        return commonRoutes.signIn({
+          params: { error: 'service_unavailable' },
+        });
       }
     },
     async jwt({ token: oldToken, account, user, trigger }) {
@@ -226,9 +231,6 @@ const authResult = NextAuth(() => ({
     },
   },
 }));
-
-export const SIGN_IN_PAGE = '/auth/signin';
-export const ACCEPT_TOU_PAGE = '/auth/accept-tou';
 
 export const {
   handlers: { GET, POST },

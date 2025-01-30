@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
+import { CounterType } from '@/app/api/metrics/types';
 import { Modal } from '@/components/Modal/Modal';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useFirstAssistant } from '@/modules/assistants/api/queries/useFirstAssistant';
+import { useCaptureClickMetric } from '@/modules/metrics/api/mutations/useCaptureClickMetric';
+import { useRoutes } from '@/routes/useRoutes';
 import { isNotNull, noop } from '@/utils/helpers';
 import { ModalBody, ModalHeader } from '@carbon/react';
 import shuffle from 'lodash/shuffle';
-import { useRouter } from 'next-nprogress-bar';
+import { useMemo } from 'react';
 import classes from './GeneralOnboardingModal.module.scss';
 import { OnboardingCard } from './OnboardingCard';
 import OnboardingAgent from './onboarding-agent.svg';
@@ -30,41 +32,48 @@ import OnboardingApp from './onboarding-app.svg';
 import OnboardingChat from './onboarding-chat.svg';
 
 export function GeneralOnboardingModal({ ...props }: ModalProps) {
-  const router = useRouter();
-  const { project } = useAppContext();
-  const firstAssistant = useFirstAssistant();
+  const { routes, navigate } = useRoutes();
+  const { assistant: firstAssistant, isPending } = useFirstAssistant();
+  const { mutate: captureClickMetric } = useCaptureClickMetric();
 
-  const CARDS = shuffle([
-    firstAssistant
-      ? {
-          heading: 'Chat with Agent Bee',
+  const cards = useMemo(
+    () =>
+      shuffle([
+        firstAssistant
+          ? {
+              heading: 'Chat with Agent Bee',
+              description:
+                'Chat with our general purpose agent, perform internet searches and work with documents.',
+              image: <OnboardingChat />,
+              onClick: () => {
+                captureClickMetric({ type: CounterType.CHAT_WITH_AGENT });
+                navigate(routes.chat({ assistantId: firstAssistant.id }));
+              },
+            }
+          : undefined,
+        {
+          heading: 'Create an Agent',
           description:
-            'Chat with our general purpose agent, perform internet searches and work with documents.',
-          image: <OnboardingChat />,
+            'Create a new agent by writing its role, connecting tools, and giving it access to documents.',
+          image: <OnboardingAgent />,
           onClick: () => {
-            router.push(`/${project.id}/chat/${firstAssistant.id}`);
+            captureClickMetric({ type: CounterType.CREATE_AN_AGENT });
+            navigate(routes.assistantBuilder());
           },
-        }
-      : undefined,
-    {
-      heading: 'Create an Agent',
-      description:
-        'Create a new agent by writing its role, connecting tools, and giving it access to documents.',
-      image: <OnboardingAgent />,
-      onClick: () => {
-        router.push(`/${project.id}/builder`);
-      },
-    },
-    {
-      heading: 'Build an App',
-      description:
-        'Chat to build reusable automations like transcript summarizers and dashboards',
-      image: <OnboardingApp />,
-      onClick: () => {
-        router.push(`/${project.id}/apps/builder`);
-      },
-    },
-  ]).filter(isNotNull);
+        },
+        {
+          heading: 'Build an App',
+          description:
+            'Chat to build reusable automations like transcript summarizers and dashboards',
+          image: <OnboardingApp />,
+          onClick: () => {
+            captureClickMetric({ type: CounterType.BUILD_AN_APP });
+            navigate(routes.artifactBuilder());
+          },
+        },
+      ]).filter(isNotNull),
+    [captureClickMetric, firstAssistant, routes, navigate],
+  );
 
   return (
     <ModalControlProvider onRequestClose={noop}>
@@ -77,9 +86,13 @@ export function GeneralOnboardingModal({ ...props }: ModalProps) {
           </p>
 
           <ul className={classes.list}>
-            {CARDS.map((props, idx) => (
+            {cards.map((props, idx) => (
               <li key={idx}>
-                <OnboardingCard {...props} />
+                {isPending ? (
+                  <OnboardingCard.Skeleton />
+                ) : (
+                  <OnboardingCard {...props} />
+                )}
               </li>
             ))}
           </ul>

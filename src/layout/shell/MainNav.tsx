@@ -17,23 +17,21 @@
 import { Link } from '@/components/Link/Link';
 import { useArtifactsCount } from '@/modules/apps/api/queries/useArtifactsCount';
 import { usePrefetchArtifacts } from '@/modules/apps/api/queries/usePrefetchArtifacts';
+import { useRoutes } from '@/routes/useRoutes';
 import { usePathname } from 'next/navigation';
-import { useAppContext } from '../providers/AppProvider';
 import classes from './MainNav.module.scss';
 
 export function MainNav() {
   const pathname = usePathname();
-
-  const { project } = useAppContext();
+  const { routes } = useRoutes();
 
   const artifactsCount = useArtifactsCount();
-
   const prefetchArtifacts = usePrefetchArtifacts({ useDefaultParams: true });
 
   const ITEMS = [
     {
       label: 'Apps',
-      href: `/${project.id}`,
+      href: routes.artifacts(),
       count: artifactsCount,
       prefetchData: prefetchArtifacts,
     },

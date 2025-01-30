@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+import { ensureSession } from '@/app/auth/rsc';
+import { commonRoutes } from '@/routes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
-import { redirect } from 'next/navigation';
-import { ensureSession } from '../auth/rsc';
 import isObject from 'lodash/isObject';
+import { redirect } from 'next/navigation';
 
 export default async function AppsPage() {
   const session = await ensureSession();
@@ -30,5 +31,10 @@ export default async function AppsPage() {
     isObject(onboardingCompleted) && onboardingCompleted.apps,
   );
 
-  redirect(`/${defaultProject}${showOnboarding ? `?${ONBOARDING_PARAM}` : ''}`);
+  redirect(
+    commonRoutes.project({
+      projectId: defaultProject,
+      params: { [ONBOARDING_PARAM]: showOnboarding },
+    }),
+  );
 }

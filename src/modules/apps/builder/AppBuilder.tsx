@@ -32,13 +32,13 @@ import {
   MessageWithFiles,
 } from '@/modules/chat/types';
 import { isBotMessage } from '@/modules/chat/utils';
+import { useRoutes } from '@/routes/useRoutes';
 import { useLayoutActions } from '@/store/layout';
 import { isNotNull } from '@/utils/helpers';
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { ArrowLeft, Share } from '@carbon/react/icons';
 import { useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useRouter } from 'next-nprogress-bar';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Assistant } from '../../assistants/types';
 import { useThreadsQueries } from '../../chat/api';
@@ -62,6 +62,7 @@ interface Props {
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
   const { project, organization } = useAppContext();
+  const { routes } = useRoutes();
   const queryClient = useQueryClient();
   const { setCode, getCode } = useAppBuilderApi();
   const { artifact, code } = useAppBuilder();
@@ -78,14 +79,14 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
         window.history.pushState(
           null,
           '',
-          `/${project.id}/apps/builder/t/${newThread.id}`,
+          routes.artifactBuilder({ threadId: newThread.id }),
         );
         queryClient.invalidateQueries({
           queryKey: threadsQueries.lists(),
         });
       }
     },
-    [project.id, queryClient, setCode, thread, threadsQueries],
+    [queryClient, setCode, thread, threadsQueries, routes],
   );
 
   const handleMessageContentUpdated = useCallback(
@@ -168,7 +169,7 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
 function AppBuilderContent() {
   const [selectedTab, setSelectedTab] = useState(TabsKeys.Preview);
 
-  const router = useRouter();
+  const { navigate } = useRoutes();
   const { project, organization } = useAppContext();
   const { openModal } = useModal();
   const { getMessages, sendMessage } = useChat();
@@ -235,7 +236,7 @@ function AppBuilderContent() {
               return;
             }
 
-            router.push(navbarProps.backButton.url);
+            navigate(navbarProps.backButton.url);
           },
         },
       },
@@ -249,10 +250,10 @@ function AppBuilderContent() {
     organization,
     project,
     project.id,
-    router,
     setArtifact,
     setLayout,
     totalCount,
+    navigate,
   ]);
 
   const handleFixError = useCallback(

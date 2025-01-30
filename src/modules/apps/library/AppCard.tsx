@@ -1,24 +1,6 @@
-/**
- * Copyright 2024 IBM Corp.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
-import { useRouter } from 'next-nprogress-bar';
+import { useRoutes } from '@/routes/useRoutes';
 import { MouseEventHandler } from 'react';
 import { useDeleteArtifact } from '../api/mutations/useDeleteArtifact';
 import { AppIcon } from '../AppIcon';
@@ -34,14 +16,13 @@ interface Props {
 
 export function AppCard({ artifact, cta, onClick }: Props) {
   const { name, description } = artifact;
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
   const { openModal } = useModal();
 
   const {
     mutateAsyncWithConfirmation: deleteArtifact,
     isPending: isDeletePending,
   } = useDeleteArtifact();
-  const { project } = useAppContext();
 
   return (
     <>
@@ -56,7 +37,7 @@ export function AppCard({ artifact, cta, onClick }: Props) {
           {
             itemText: 'Edit',
             onClick: () =>
-              router.push(`/${project.id}/apps/builder/a/${artifact.id}`),
+              navigate(routes.artifactBuilder({ artifactId: artifact.id })),
           },
           {
             itemText: 'Share',
@@ -68,7 +49,12 @@ export function AppCard({ artifact, cta, onClick }: Props) {
           {
             itemText: 'Copy to edit',
             onClick: () =>
-              router.push(`/${project.id}/apps/builder/clone/${artifact.id}`),
+              navigate(
+                routes.artifactBuilder({
+                  artifactId: artifact.id,
+                  clone: true,
+                }),
+              ),
           },
           {
             isDelete: true,
