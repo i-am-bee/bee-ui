@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Tool, ToolDeleteResult, ToolReference } from '@/app/api/tools/types';
+import { Tool, ToolReference } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
@@ -32,18 +32,15 @@ import { getToolReferenceFromTool } from './utils';
 
 interface Props {
   tool: Tool;
-  onDeleteSuccess: (tool?: ToolDeleteResult) => void;
-  onSaveSuccess?: () => void;
+  onCreateSuccess?: () => void;
 }
 
-export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
+export function ToolCard({ tool, onCreateSuccess }: Props) {
   const { name, description, user_description, type } = tool;
   const {
     mutateAsyncWithConfirmation: deleteTool,
     isPending: isDeletePending,
-  } = useDeleteTool({
-    onSuccess: onDeleteSuccess,
-  });
+  } = useDeleteTool();
   const { isProjectReadOnly } = useAppContext();
   const { openModal } = useModal();
 
@@ -68,8 +65,7 @@ export function ToolCard({ tool, onDeleteSuccess, onSaveSuccess }: Props) {
                   <UserToolModal
                     {...props}
                     tool={tool}
-                    onDeleteSuccess={onDeleteSuccess}
-                    onSaveSuccess={onSaveSuccess}
+                    onCreateSuccess={onCreateSuccess}
                   />
                 )
               ) : (

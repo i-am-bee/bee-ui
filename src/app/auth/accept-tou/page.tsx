@@ -15,9 +15,9 @@
  */
 
 import { AcceptToU } from '@/modules/auth/AcceptToU';
+import { commonRoutes } from '@/routes';
 import { isAbsoluteUrl } from '@/utils/url';
 import { redirect } from 'next/navigation';
-import { SIGN_IN_PAGE } from '..';
 import { getSession } from '../rsc';
 
 interface PageProps {
@@ -29,13 +29,13 @@ export default async function AcceptToUPage({ searchParams }: PageProps) {
     ? searchParams.callbackUrl[0]
     : searchParams.callbackUrl;
   if (!callbackUrl || isAbsoluteUrl(callbackUrl)) {
-    callbackUrl = '/';
+    callbackUrl = commonRoutes.home();
   }
 
   const session = await getSession();
 
   if (!session) {
-    redirect(`${SIGN_IN_PAGE}?callbackUrl=${callbackUrl}`);
+    redirect(commonRoutes.signIn({ params: { callbackUrl } }));
   }
 
   // We intentionally don't check touAccepted in the session because it can be stale

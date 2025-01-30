@@ -18,13 +18,15 @@ import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
 import {
   VectorStoreFile,
   VectorStoreFilesDeleteResponse,
+  VectorStoreFilesListResponse,
 } from '@/app/api/vector-stores-files/types';
 import { VectorStore } from '@/app/api/vector-stores/types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { TrashCan } from '@carbon/react/icons';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: VectorStoreFilesDeleteResponse) => void;
@@ -34,6 +36,9 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
   const { organization, project } = useWorkspace();
   const { openConfirmation } = useModal();
   const vectorStoresQueries = useVectorStoresQueries();
+  const queryClient = useQueryClient();
+  const { onItemDelete } =
+    useUpdateDataOnMutation<VectorStoreFilesListResponse>();
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -43,9 +48,18 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
       vectorStoreId: string;
       id: string;
     }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
-    onSuccess: (data, variables) => {
+    onSuccess: (data, { vectorStoreId, id }) => {
+      onItemDelete({
+        id: data?.id,
+        listQueryKey: vectorStoresQueries.filesLists(vectorStoreId),
+        detailQueryKey: vectorStoresQueries.fileDetail(vectorStoreId, id)
+          .queryKey,
+      });
+
       if (data) {
-        vectorStoresQueries.detail(variables.vectorStoreId);
+        queryClient.invalidateQueries(
+          vectorStoresQueries.detail(vectorStoreId),
+        );
       }
 
       onSuccess?.(data);

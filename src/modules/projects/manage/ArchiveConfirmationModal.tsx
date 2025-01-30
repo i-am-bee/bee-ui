@@ -19,6 +19,7 @@ import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
+import { useRoutes } from '@/routes/useRoutes';
 import { useUserProfile } from '@/store/user-profile';
 import {
   Button,
@@ -28,7 +29,6 @@ import {
   ModalHeader,
   TextInput,
 } from '@carbon/react';
-import { useRouter } from 'next-nprogress-bar';
 import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { useArchiveProject } from '../api/mutations/useArchiveProject';
@@ -46,7 +46,7 @@ export function ArchiveConfirmationModal({
 }: Props) {
   const htmlId = useId();
   const { addToast } = useToast();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
   const projectId = useUserProfile((state) => state.default_project);
 
   const { mutateAsync: archiveProject } = useArchiveProject({
@@ -56,7 +56,7 @@ export function ArchiveConfirmationModal({
         title: 'The workspace was archived.',
         timeout: 10_000,
       });
-      router.push(`/${projectId}`);
+      navigate(routes.project({ projectId }));
       props.onRequestClose();
     },
   });

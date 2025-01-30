@@ -56,4 +56,11 @@ export type EntityWithDecodedMetadata<T, M> = Omit<T, 'metadata'> & {
   uiMetadata: M;
 };
 
+export interface DataItemWithId {
+  id: string;
+}
+export interface ListDataResponse {
+  data: DataItemWithId[];
+}
+
 export const METADATA_MAX_LENGTH = 512;

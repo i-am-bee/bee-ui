@@ -16,15 +16,14 @@
 
 import { CounterType } from '@/app/api/metrics/types';
 import { Modal } from '@/components/Modal/Modal';
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { ModalControlProvider } from '@/layout/providers/ModalControlProvider';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useFirstAssistant } from '@/modules/assistants/api/queries/useFirstAssistant';
 import { useCaptureClickMetric } from '@/modules/metrics/api/mutations/useCaptureClickMetric';
+import { useRoutes } from '@/routes/useRoutes';
 import { isNotNull, noop } from '@/utils/helpers';
 import { ModalBody, ModalHeader } from '@carbon/react';
 import shuffle from 'lodash/shuffle';
-import { useRouter } from 'next-nprogress-bar';
 import { useMemo } from 'react';
 import classes from './GeneralOnboardingModal.module.scss';
 import { OnboardingCard } from './OnboardingCard';
@@ -33,8 +32,7 @@ import OnboardingApp from './onboarding-app.svg';
 import OnboardingChat from './onboarding-chat.svg';
 
 export function GeneralOnboardingModal({ ...props }: ModalProps) {
-  const router = useRouter();
-  const { project } = useAppContext();
+  const { routes, navigate } = useRoutes();
   const { assistant: firstAssistant, isPending } = useFirstAssistant();
   const { mutate: captureClickMetric } = useCaptureClickMetric();
 
@@ -49,7 +47,7 @@ export function GeneralOnboardingModal({ ...props }: ModalProps) {
               image: <OnboardingChat />,
               onClick: () => {
                 captureClickMetric({ type: CounterType.CHAT_WITH_AGENT });
-                router.push(`/${project.id}/chat/${firstAssistant.id}`);
+                navigate(routes.chat({ assistantId: firstAssistant.id }));
               },
             }
           : undefined,
@@ -60,7 +58,7 @@ export function GeneralOnboardingModal({ ...props }: ModalProps) {
           image: <OnboardingAgent />,
           onClick: () => {
             captureClickMetric({ type: CounterType.CREATE_AN_AGENT });
-            router.push(`/${project.id}/builder`);
+            navigate(routes.assistantBuilder());
           },
         },
         {
@@ -70,11 +68,11 @@ export function GeneralOnboardingModal({ ...props }: ModalProps) {
           image: <OnboardingApp />,
           onClick: () => {
             captureClickMetric({ type: CounterType.BUILD_AN_APP });
-            router.push(`/${project.id}/apps/builder`);
+            navigate(routes.artifactBuilder());
           },
         },
       ]).filter(isNotNull),
-    [captureClickMetric, firstAssistant, project.id, router],
+    [captureClickMetric, firstAssistant, routes, navigate],
   );
 
   return (

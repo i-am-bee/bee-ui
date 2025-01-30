@@ -24,6 +24,10 @@ export type ToolsCreateBody = NonNullable<
   paths['/v1/tools']['post']['requestBody']
 >['content']['application/json'];
 
+export type ToolUpdateBody = NonNullable<
+  paths['/v1/tools/{tool_id}']['post']['requestBody']
+>['content']['application/json'];
+
 export type ToolResult = NonNullable<
   paths['/v1/tools/{tool_id}']['get']['responses']['200']['content']['application/json']
 >;

@@ -15,12 +15,16 @@
  */
 
 import { createAssistant, updateAssistant } from '@/app/api/assistants';
-import { AssistantCreateBody } from '@/app/api/assistants/types';
+import {
+  AssistantCreateBody,
+  AssistantsListResponse,
+} from '@/app/api/assistants/types';
 import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
 import { Assistant } from '../../types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: Assistant, isNew?: boolean) => void;
@@ -30,6 +34,7 @@ export function useSaveAssistant({ onSuccess }: Props = {}) {
   const queryClient = useQueryClient();
   const assistantsQueries = useAssistantsQueries();
   const { project, organization } = useWorkspace();
+  const { onItemUpdate } = useUpdateDataOnMutation<AssistantsListResponse>();
 
   const mutation = useMutation({
     mutationFn: async ({
@@ -42,19 +47,20 @@ export function useSaveAssistant({ onSuccess }: Props = {}) {
       const result = await (id
         ? updateAssistant(organization.id, project.id, id, body)
         : createAssistant(organization.id, project.id, body));
-      const assistant = result && decodeEntityWithMetadata<Assistant>(result);
 
-      return assistant;
+      return result;
     },
-    onSuccess: (data, variables) => {
-      if (data) {
-        queryClient.invalidateQueries(assistantsQueries.detail(data.id));
-      }
+    onSuccess: (data, { id }) => {
+      onItemUpdate({
+        data,
+        listQueryKey: assistantsQueries.lists(),
+        detailQueryKey: data && assistantsQueries.detail(data.id).queryKey,
+      });
 
-      onSuccess?.(data, !variables.id);
+      const assistant = data && decodeEntityWithMetadata<Assistant>(data);
+      onSuccess?.(assistant, !id);
     },
     meta: {
-      invalidates: [assistantsQueries.lists()],
       errorToast: {
         title: 'Failed to save the assistant',
         includeErrorMessage: true,

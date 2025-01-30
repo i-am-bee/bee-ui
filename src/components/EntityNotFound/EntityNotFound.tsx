@@ -16,10 +16,9 @@
 
 'use client';
 
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { useRoutes } from '@/routes/useRoutes';
 import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
-import { useRouter } from 'next-nprogress-bar';
 import { useMemo } from 'react';
 import classes from './EntityNotFound.module.scss';
 import AgentNotFound from './agent-not-found.svg';
@@ -30,8 +29,7 @@ interface Props {
 }
 
 export function EntityNotFound({ type }: Props) {
-  const { project } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const { Icon, button } = useMemo(
     () =>
@@ -40,18 +38,18 @@ export function EntityNotFound({ type }: Props) {
           Icon: AppNotFound,
           button: {
             label: 'Create your own',
-            href: `/${project.id}/apps/builder`,
+            href: routes.artifactBuilder(),
           },
         },
         agent: {
           Icon: AgentNotFound,
           button: {
             label: 'Back to apps',
-            href: `/${project.id}`,
+            href: routes.artifacts(),
           },
         },
       })[type],
-    [type, project.id],
+    [type, routes],
   );
 
   return (
@@ -63,7 +61,7 @@ export function EntityNotFound({ type }: Props) {
 
         <p>We couldn’t find the {type} you were looking for.</p>
 
-        <Button kind="secondary" onClick={() => router.push(button.href)}>
+        <Button kind="secondary" onClick={() => navigate(button.href)}>
           <span>{button.label}</span>
           <ArrowRight />
         </Button>

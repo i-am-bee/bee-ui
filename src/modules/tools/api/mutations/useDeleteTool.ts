@@ -15,26 +15,38 @@
  */
 
 import { deleteTool } from '@/app/api/tools';
-import { Tool, ToolDeleteResult } from '@/app/api/tools/types';
+import {
+  Tool,
+  ToolDeleteResult,
+  ToolsListResponse,
+} from '@/app/api/tools/types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: ToolDeleteResult) => void;
 }
 
-export function useDeleteTool({ onSuccess }: Props) {
+export function useDeleteTool({ onSuccess }: Props = {}) {
   const { openConfirmation } = useModal();
   const { project, organization } = useWorkspace();
   const toolsQueries = useToolsQueries();
+  const { onItemDelete } = useUpdateDataOnMutation<ToolsListResponse>();
 
   const mutation = useMutation({
     mutationFn: (id: string) => deleteTool(organization.id, project.id, id),
-    onSuccess,
+    onSuccess: (data, id) => {
+      onItemDelete({
+        id,
+        listQueryKey: toolsQueries.lists(),
+        detailQueryKey: toolsQueries.detail(id).queryKey,
+      });
+      onSuccess?.();
+    },
     meta: {
-      invalidates: [toolsQueries.lists()],
       errorToast: {
         title: 'Failed to delete the tool',
         includeErrorMessage: true,

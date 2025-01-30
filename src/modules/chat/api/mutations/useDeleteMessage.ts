@@ -16,13 +16,15 @@
 
 import { deleteMessage } from '@/app/api/threads-messages';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
+import { MessagesListResponse } from '@/app/api/threads-messages/types';
 
 export function useDeleteMessage() {
   const { project, organization } = useWorkspace();
-  const queryClient = useQueryClient();
   const threadsQueries = useThreadsQueries();
+  const { onItemDelete } = useUpdateDataOnMutation<MessagesListResponse>();
 
   const mutation = useMutation({
     mutationFn: ({
@@ -33,8 +35,9 @@ export function useDeleteMessage() {
       messageId: string;
     }) => deleteMessage(organization.id, project.id, threadId, messageId),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: threadsQueries.messagesLists(variables.threadId),
+      onItemDelete({
+        id: variables.messageId,
+        listQueryKey: threadsQueries.messagesLists(variables.threadId),
       });
     },
   });

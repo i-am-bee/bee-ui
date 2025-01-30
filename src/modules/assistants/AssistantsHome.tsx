@@ -15,18 +15,13 @@
  */
 
 'use client';
-import {
-  AssistantDeleteResult,
-  AssistantsListQueryOrderBy,
-  ListAssistantsResponse,
-} from '@/app/api/assistants/types';
+import { AssistantsListQueryOrderBy } from '@/app/api/assistants/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
+import { useRoutes } from '@/routes/useRoutes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
-import { produce } from 'immer';
-import { useRouter } from 'next-nprogress-bar';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
@@ -38,12 +33,12 @@ import { useAssistantsQueries } from './api';
 import { useAssistants } from './api/queries/useAssistants';
 
 export function AssistantsHome() {
-  const { project, organization, isProjectReadOnly } = useAppContext();
+  const { organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<AssistantsListQueryOrderBy>(
     ASSISTANTS_ORDER_DEFAULT,
   );
   const [search, setSearch] = useDebounceValue('', 200);
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const searchParams = useSearchParams();
   const showOnboarding =
@@ -67,25 +62,6 @@ export function AssistantsHome() {
     isPending,
     isFetchingNextPage,
   } = useAssistants({ params });
-
-  const handleDeleteAssistantSuccess = (assistant?: AssistantDeleteResult) => {
-    if (assistant) {
-      queryClient.setQueryData<InfiniteData<ListAssistantsResponse>>(
-        assistantsQueries.list(params).queryKey,
-        produce((draft) => {
-          if (!draft?.pages) return null;
-          for (const page of draft.pages) {
-            const index = page.data.findIndex(
-              (item) => item.id === assistant.id,
-            );
-            if (index >= 0) {
-              page.data.splice(index, 1);
-            }
-          }
-        }),
-      );
-    }
-  };
 
   return (
     <>
@@ -111,7 +87,7 @@ export function AssistantsHome() {
           }}
           newButtonProps={{
             title: 'New agent',
-            onClick: () => router.push(`/${project.id}/builder`),
+            onClick: () => navigate(routes.assistantBuilder()),
             disabled: isProjectReadOnly,
             tooltipContent: isProjectReadOnly ? (
               <ReadOnlyTooltipContent
@@ -124,7 +100,6 @@ export function AssistantsHome() {
           <AssistantsList
             assistants={data?.assistants}
             isLoading={isPending || isFetchingNextPage}
-            onDeleteSuccess={handleDeleteAssistantSuccess}
           />
         </CardsList>
       </ProjectHome>

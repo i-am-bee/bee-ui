@@ -29,22 +29,14 @@ interface Props {
   assistant: Assistant;
   cta?: string;
   onClick?: MouseEventHandler;
-  onDeleteSuccess?: (assistant?: AssistantDeleteResult) => void;
 }
 
-export function AssistantCard({
-  assistant,
-  cta,
-  onClick,
-  onDeleteSuccess,
-}: Props) {
+export function AssistantCard({ assistant, cta, onClick }: Props) {
   const { name, description } = assistant;
   const {
     mutateAsyncWithConfirmation: deleteAssistant,
     isPending: isDeletePending,
-  } = useDeleteAssistant({
-    onSuccess: onDeleteSuccess,
-  });
+  } = useDeleteAssistant();
   const { isProjectReadOnly } = useAppContext();
   const [builderModalOpened, setBuilderModalOpened] = useState<boolean>(false);
 

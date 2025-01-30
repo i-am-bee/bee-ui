@@ -23,9 +23,9 @@ import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useRoutes } from '@/routes/useRoutes';
 import { InlineLoading } from '@carbon/react';
 import { Folder, WarningAlt } from '@carbon/react/icons';
-import { useRouter } from 'next-nprogress-bar';
 import pluralize from 'pluralize';
 import { useDeleteVectorStore } from '../api/mutations/useDeleteVectorStore';
 import { KnowledgeAppsInfo } from '../detail/KnowledgeAppsInfo';
@@ -34,25 +34,17 @@ import { RenameModal } from './RenameModal';
 
 interface Props {
   vectorStore: VectorStore;
-  onUpdateSuccess: (vectorStore?: VectorStoreCreateResponse) => void;
-  onDeleteSuccess: (vectorStore?: VectorStoreDeleteResponse) => void;
 }
 
-export function KnowledgeCard({
-  vectorStore,
-  onUpdateSuccess,
-  onDeleteSuccess,
-}: Props) {
+export function KnowledgeCard({ vectorStore }: Props) {
   const { openModal } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const {
     mutateAsyncWithConfirmation: deleteStore,
     isPending: isDeletePending,
-  } = useDeleteVectorStore({
-    onSuccess: onDeleteSuccess,
-  });
+  } = useDeleteVectorStore();
 
   return (
     <CardsListItem
@@ -63,7 +55,9 @@ export function KnowledgeCard({
           <Folder size="20" />
         </span>
       }
-      onClick={() => router.push(`/${project.id}/knowledge/${vectorStore.id}`)}
+      onClick={() =>
+        navigate(routes.vectorStore({ vectorStoreId: vectorStore.id }))
+      }
       actions={
         !isProjectReadOnly
           ? [
@@ -75,7 +69,6 @@ export function KnowledgeCard({
                       organization={organization}
                       project={project}
                       vectorStore={vectorStore}
-                      onSuccess={onUpdateSuccess}
                       {...props}
                     />
                   )),

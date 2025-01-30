@@ -15,11 +15,26 @@
  */
 
 import { ensureSession } from '@/app/auth/rsc';
+import { commonRoutes } from '@/routes';
+import { ONBOARDING_AGENTS_PARAM } from '@/utils/constants';
+import isObject from 'lodash/isObject';
 import { redirect } from 'next/navigation';
 
 export default async function AgentsOnboardingPage() {
   const session = await ensureSession();
-  const { default_project: defaultProjectId } = session.userProfile;
+  const { onboarding_section_completed_at: onboardingCompleted } =
+    session.userProfile.metadata ?? {};
 
-  redirect(`/${defaultProjectId}/?agents-onboarding`);
+  const { default_project: defaultProject } = session.userProfile;
+
+  const showOnboarding = !Boolean(
+    isObject(onboardingCompleted) && onboardingCompleted.assistants,
+  );
+
+  redirect(
+    commonRoutes.project({
+      projectId: defaultProject,
+      params: { [ONBOARDING_AGENTS_PARAM]: showOnboarding },
+    }),
+  );
 }

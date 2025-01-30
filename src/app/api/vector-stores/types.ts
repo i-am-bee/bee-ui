@@ -30,8 +30,8 @@ export type VectorStoreDeleteResponse = NonNullable<
   Awaited<ReturnType<typeof deleteVectorStore>>
 >;
 
-export type ListVectorStoresResponse = Awaited<
-  ReturnType<typeof listVectorStores>
+export type VectorStoresListResponse = NonNullable<
+  Awaited<ReturnType<typeof listVectorStores>>
 >;
 
 export type VectorStoresListQuery = NonNullable<

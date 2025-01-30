@@ -15,17 +15,18 @@
  */
 
 import { Link } from '@/components/Link/Link';
-import { Assistant } from '@/modules/assistants/types';
+import { useRoutes } from '@/routes/useRoutes';
 import { useAppApiContext, useAppContext } from '../providers/AppProvider';
 import { ActionButton } from './ActionButton';
 import NewSession from './NewSession.svg';
 
 export function NewSessionButton() {
-  const { assistant, project } = useAppContext();
+  const { assistant } = useAppContext();
+  const { routes } = useRoutes();
   const { onPageLeave } = useAppApiContext();
 
-  return (
-    <Link href={getNewSessionUrl(project.id, assistant)} prefetch>
+  return assistant ? (
+    <Link href={routes.chat({ assistantId: assistant.id })} prefetch>
       <ActionButton
         kind="tertiary"
         iconDescription="New session"
@@ -34,12 +35,5 @@ export function NewSessionButton() {
         <NewSession />
       </ActionButton>
     </Link>
-  );
-}
-
-export function getNewSessionUrl(
-  projectId: string,
-  assistant: Assistant | null,
-) {
-  return `/${projectId}/chat/${assistant?.id ?? ''}`;
+  ) : null;
 }

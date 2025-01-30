@@ -17,11 +17,3 @@
 // https://stackoverflow.com/a/19709846
 const ABSOLUTE_URL_REGEX = new RegExp('^(?:[a-z+]+:)?//', 'i');
 export const isAbsoluteUrl = (url: string) => ABSOLUTE_URL_REGEX.test(url);
-
-export function maybeParseUrl(url: string) {
-  try {
-    return new URL(url, 'http://base');
-  } catch {
-    return;
-  }
-}

@@ -18,12 +18,12 @@ import { Link } from '@/components/Link/Link';
 import { VersionTag } from '@/components/VersionTag/VersionTag';
 import { usePrefetchArtifacts } from '@/modules/apps/api/queries/usePrefetchArtifacts';
 import { usePrefetchThreads } from '@/modules/chat/api/queries/usePrefetchThreads';
+import { useRoutes } from '@/routes/useRoutes';
 import { APP_NAME } from '@/utils/constants';
 import { Button, ButtonBaseProps } from '@carbon/react';
 import { Close, Menu } from '@carbon/react/icons';
 import { MouseEvent } from 'react';
 import { UserSetting } from '../hooks/useUserSetting';
-import { useAppContext } from '../providers/AppProvider';
 import { SidebarProps } from './Sidebar';
 import classes from './SidebarButton.module.scss';
 
@@ -38,7 +38,7 @@ export function SidebarButton({
   onMouseEnter,
   ...props
 }: Props) {
-  const { project } = useAppContext();
+  const { routes } = useRoutes();
 
   const prefetchThreads = usePrefetchThreads();
   const prefetchArtifacts = usePrefetchArtifacts({ useDefaultParams: true });
@@ -63,7 +63,7 @@ export function SidebarButton({
       </Button>
 
       <p className={classes.title}>
-        <Link href={`/${project.id}`} onMouseEnter={() => prefetchArtifacts()}>
+        <Link href={routes.home()} onMouseEnter={() => prefetchArtifacts()}>
           {APP_NAME}
         </Link>
       </p>

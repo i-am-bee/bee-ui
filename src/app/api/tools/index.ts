@@ -16,7 +16,7 @@
 
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { ToolsCreateBody, ToolsListQuery } from './types';
+import { ToolsCreateBody, ToolsListQuery, ToolUpdateBody } from './types';
 
 export async function createTool(
   organizationId: string,
@@ -65,7 +65,7 @@ export async function updateTool(
   organizationId: string,
   projectId: string,
   id: string,
-  body: ToolsCreateBody,
+  body: ToolUpdateBody,
 ) {
   const res = await client.POST('/v1/tools/{tool_id}', {
     params: {

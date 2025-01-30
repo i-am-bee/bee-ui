@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 IBM Corp.
+ * Copyright 2025 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ export interface paths {
                                 message_id: string | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 name: string;
                                 /** @enum {unknown} */
                                 object: "artifact";
@@ -125,7 +125,7 @@ export interface paths {
                         message_id?: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name: string;
                         shared?: boolean;
                         source_code: string;
@@ -148,7 +148,7 @@ export interface paths {
                             message_id: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "artifact";
@@ -199,7 +199,7 @@ export interface paths {
                             message_id: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "artifact";
@@ -230,7 +230,7 @@ export interface paths {
                         message_id?: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name?: string;
                         shared?: boolean;
                         source_code?: string;
@@ -251,7 +251,7 @@ export interface paths {
                             message_id: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "artifact";
@@ -330,7 +330,7 @@ export interface paths {
                             id: string;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "artifact.shared";
@@ -391,7 +391,7 @@ export interface paths {
                                 instructions: string | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 model: string;
                                 name: string | null;
                                 /** @enum {unknown} */
@@ -482,7 +482,7 @@ export interface paths {
                         instructions?: string | null;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         model?: string;
                         name?: string | null;
                         system_prompt_overwrite?: string | null;
@@ -561,7 +561,7 @@ export interface paths {
                             instructions: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             name: string | null;
                             /** @enum {unknown} */
@@ -666,7 +666,7 @@ export interface paths {
                             instructions: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             name: string | null;
                             /** @enum {unknown} */
@@ -749,7 +749,7 @@ export interface paths {
                         instructions?: string | null;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         model?: string;
                         name?: string | null;
                         system_prompt_overwrite?: string | null;
@@ -827,7 +827,7 @@ export interface paths {
                             instructions: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             name: string | null;
                             /** @enum {unknown} */
@@ -968,6 +968,8 @@ export interface paths {
                             /** @enum {unknown} */
                             type: "json_schema";
                         };
+                        /** @default false */
+                        stream?: boolean | null;
                     };
                 };
             };
@@ -992,6 +994,68 @@ export interface paths {
                             model: string;
                             /** @enum {unknown} */
                             object: "chat.completion";
+                        };
+                        "text/event-stream": {
+                            choices: {
+                                delta: {
+                                    content: string | null;
+                                    /** @enum {unknown} */
+                                    role: "assistant";
+                                };
+                                index: number;
+                            }[];
+                            created: number;
+                            id: string;
+                            model: string;
+                            /** @enum {unknown} */
+                            object: "chat.completion.chunk";
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/embeddings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        input: string | string[];
+                        model?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Default Response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            embedding: number[];
+                            index: number;
+                            /** @enum {unknown} */
+                            object: "embedding";
                         };
                     };
                 };
@@ -2149,7 +2213,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread";
                                 tool_resources?: ({
@@ -2210,13 +2274,13 @@ export interface paths {
                             content: string;
                             metadata?: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {string} */
                             role: "user" | "assistant";
                         }[];
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         tool_resources?: ({
                             code_interpreter?: {
                                 /** @default [] */
@@ -2247,7 +2311,7 @@ export interface paths {
                             id: string;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {unknown} */
                             object: "thread";
                             tool_resources?: ({
@@ -2305,7 +2369,7 @@ export interface paths {
                             id: string;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {unknown} */
                             object: "thread";
                             tool_resources?: ({
@@ -2343,7 +2407,7 @@ export interface paths {
                     "application/json": {
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         tool_resources?: ({
                             code_interpreter?: {
                                 /** @default [] */
@@ -2374,7 +2438,7 @@ export interface paths {
                             id: string;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {unknown} */
                             object: "thread";
                             tool_resources?: ({
@@ -2491,7 +2555,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.message";
                                 /** @enum {string} */
@@ -2541,7 +2605,7 @@ export interface paths {
                         content: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         /** @enum {string} */
                         role: "user" | "assistant";
                     };
@@ -2584,7 +2648,7 @@ export interface paths {
                             id: string;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {unknown} */
                             object: "thread.message";
                             /** @enum {string} */
@@ -2656,7 +2720,7 @@ export interface paths {
                             id: string;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {unknown} */
                             object: "thread.message";
                             /** @enum {string} */
@@ -2683,7 +2747,7 @@ export interface paths {
                     "application/json": {
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                     };
                 };
             };
@@ -2724,7 +2788,7 @@ export interface paths {
                             id: string;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {unknown} */
                             object: "thread.message";
                             /** @enum {string} */
@@ -2818,7 +2882,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 model: string;
                                 /** @enum {unknown} */
                                 object: "thread.run";
@@ -3037,7 +3101,7 @@ export interface paths {
                         instructions?: string | null;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         model?: string | null;
                         stream?: boolean | null;
                         temperature?: number | null;
@@ -3113,7 +3177,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             /** @enum {unknown} */
                             object: "thread.run";
@@ -3311,7 +3375,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread";
                                 tool_resources?: ({
@@ -3350,7 +3414,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 model: string;
                                 /** @enum {unknown} */
                                 object: "thread.run";
@@ -3556,7 +3620,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.run.step";
                                 run_id: string;
@@ -3774,7 +3838,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.message";
                                 /** @enum {string} */
@@ -3869,7 +3933,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             /** @enum {unknown} */
                             object: "thread.run";
@@ -4081,7 +4145,7 @@ export interface paths {
                     "application/json": {
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                     };
                 };
             };
@@ -4109,7 +4173,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             /** @enum {unknown} */
                             object: "thread.run";
@@ -4355,7 +4419,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             /** @enum {unknown} */
                             object: "thread.run";
@@ -4600,7 +4664,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.run.step";
                                 run_id: string;
@@ -4746,7 +4810,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @enum {unknown} */
                             object: "thread.run.step";
                             run_id: string;
@@ -4904,7 +4968,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             /** @enum {unknown} */
                             object: "thread.run";
@@ -5102,7 +5166,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread";
                                 tool_resources?: ({
@@ -5141,7 +5205,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 model: string;
                                 /** @enum {unknown} */
                                 object: "thread.run";
@@ -5347,7 +5411,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.run.step";
                                 run_id: string;
@@ -5565,7 +5629,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.message";
                                 /** @enum {string} */
@@ -5672,7 +5736,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             /** @enum {unknown} */
                             object: "thread.run";
@@ -5870,7 +5934,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread";
                                 tool_resources?: ({
@@ -5909,7 +5973,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 model: string;
                                 /** @enum {unknown} */
                                 object: "thread.run";
@@ -6115,7 +6179,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.run.step";
                                 run_id: string;
@@ -6333,7 +6397,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.message";
                                 /** @enum {string} */
@@ -6478,13 +6542,13 @@ export interface paths {
                                 content: string;
                                 metadata?: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {string} */
                                 role: "user" | "assistant";
                             }[];
                             metadata?: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             tool_resources?: ({
                                 code_interpreter?: {
                                     /** @default [] */
@@ -6573,7 +6637,7 @@ export interface paths {
                             } | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             /** @enum {unknown} */
                             object: "thread.run";
@@ -6771,7 +6835,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread";
                                 tool_resources?: ({
@@ -6810,7 +6874,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 model: string;
                                 /** @enum {unknown} */
                                 object: "thread.run";
@@ -7016,7 +7080,7 @@ export interface paths {
                                 } | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.run.step";
                                 run_id: string;
@@ -7234,7 +7298,7 @@ export interface paths {
                                 id: string;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @enum {unknown} */
                                 object: "thread.message";
                                 /** @enum {string} */
@@ -7319,6 +7383,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             data: {
+                                api_key?: string | null;
                                 created_at: number;
                                 description: string;
                                 id: string;
@@ -7326,7 +7391,7 @@ export interface paths {
                                 json_schema: string | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 name: string;
                                 /** @enum {unknown} */
                                 object: "tool";
@@ -7358,7 +7423,7 @@ export interface paths {
                     "application/json": {
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name?: string;
                         source_code: string;
                         user_description?: string;
@@ -7366,14 +7431,15 @@ export interface paths {
                         api_key?: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
+                        name?: string;
                         open_api_schema: string;
                         user_description?: string;
                     } | {
                         description?: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name: string;
                         parameters?: {
                             [key: string]: unknown;
@@ -7390,6 +7456,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            api_key?: string | null;
                             created_at: number;
                             description: string;
                             id: string;
@@ -7397,7 +7464,7 @@ export interface paths {
                             json_schema: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "tool";
@@ -7442,6 +7509,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            api_key?: string | null;
                             created_at: number;
                             description: string;
                             id: string;
@@ -7449,7 +7517,7 @@ export interface paths {
                             json_schema: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "tool";
@@ -7479,15 +7547,16 @@ export interface paths {
                         description?: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name?: string;
                         source_code?: string;
                         user_description?: string;
                     } | {
+                        api_key?: string | null;
                         description?: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name?: string;
                         open_api_schema: string;
                         user_description?: string;
@@ -7495,7 +7564,7 @@ export interface paths {
                         description?: string;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name?: string;
                         parameters?: {
                             [key: string]: unknown;
@@ -7512,6 +7581,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            api_key?: string | null;
                             created_at: number;
                             description: string;
                             id: string;
@@ -7519,7 +7589,7 @@ export interface paths {
                             json_schema: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string;
                             /** @enum {unknown} */
                             object: "tool";
@@ -7597,7 +7667,7 @@ export interface paths {
                             instructions: string | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             model: string;
                             name: string | null;
                             /** @enum {unknown} */
@@ -7739,7 +7809,7 @@ export interface paths {
                             id: string;
                             metadata?: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string | null;
                             /** @enum {unknown} */
                             object: "user";
@@ -7760,7 +7830,7 @@ export interface paths {
                     "application/json": {
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name?: string | null;
                     };
                 };
@@ -7779,7 +7849,7 @@ export interface paths {
                             id: string;
                             metadata?: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string | null;
                             /** @enum {unknown} */
                             object: "user";
@@ -7800,7 +7870,7 @@ export interface paths {
                     "application/json": {
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         name?: string;
                     };
                 };
@@ -7819,7 +7889,7 @@ export interface paths {
                             id: string;
                             metadata?: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             name: string | null;
                             /** @enum {unknown} */
                             object: "user";
@@ -7906,7 +7976,7 @@ export interface paths {
                                 last_active_at: number | null;
                                 metadata: {
                                     [key: string]: string;
-                                };
+                                } | null;
                                 /** @description The name of the vector store. */
                                 name: string;
                                 /**
@@ -7972,7 +8042,7 @@ export interface paths {
                         file_ids?: string[];
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         /** @description The name of the vector store. */
                         name?: string;
                     };
@@ -8026,7 +8096,7 @@ export interface paths {
                             last_active_at: number | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @description The name of the vector store. */
                             name: string;
                             /**
@@ -8117,7 +8187,7 @@ export interface paths {
                             last_active_at: number | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @description The name of the vector store. */
                             name: string;
                             /**
@@ -8165,7 +8235,7 @@ export interface paths {
                         } | null;
                         metadata?: {
                             [key: string]: string;
-                        };
+                        } | null;
                         /** @description The name of the vector store. */
                         name?: string | null;
                     };
@@ -8219,7 +8289,7 @@ export interface paths {
                             last_active_at: number | null;
                             metadata: {
                                 [key: string]: string;
-                            };
+                            } | null;
                             /** @description The name of the vector store. */
                             name: string;
                             /**

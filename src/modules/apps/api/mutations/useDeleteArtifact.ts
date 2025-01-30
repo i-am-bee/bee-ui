@@ -15,12 +15,16 @@
  */
 
 import { deleteArtifact } from '@/app/api/artifacts';
-import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
+import {
+  ArtifactDeleteResult,
+  ArtifactsListResponse,
+} from '@/app/api/artifacts/types';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useArtifactsQueries } from '..';
 import { Artifact } from '../../types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: ArtifactDeleteResult) => void;
@@ -30,12 +34,19 @@ export function useDeleteArtifact({ onSuccess }: Props = {}) {
   const { openConfirmation } = useModal();
   const { organization, project } = useWorkspace();
   const artifactsQueries = useArtifactsQueries();
+  const { onItemDelete } = useUpdateDataOnMutation<ArtifactsListResponse>();
 
   const mutation = useMutation({
     mutationFn: (id: string) => deleteArtifact(organization.id, project.id, id),
-    onSuccess,
+    onSuccess: (data, id) => {
+      onItemDelete({
+        id,
+        listQueryKey: artifactsQueries.lists(),
+        detailQueryKey: artifactsQueries.detail(id).queryKey,
+      });
+      onSuccess?.();
+    },
     meta: {
-      invalidates: [artifactsQueries.lists()],
       errorToast: {
         title: 'Failed to delete the app',
         includeErrorMessage: true,

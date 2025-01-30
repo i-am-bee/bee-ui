@@ -18,9 +18,9 @@ import { Project } from '@/app/api/projects/types';
 import { Dropdown } from '@/components/Dropdown/Dropdown';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
+import { useRoutes } from '@/routes/useRoutes';
 import { Button, SkeletonPlaceholder, Tag } from '@carbon/react';
 import { Add } from '@carbon/react/icons';
-import { useRouter } from 'next-nprogress-bar';
 import { useMemo } from 'react';
 import { useListAllProjects } from './api/queries/useListAllProjects';
 import { CreateProjectModal } from './manage/CreateProjectModal';
@@ -34,7 +34,7 @@ interface Props {
 export function ProjectSelector({ hideReadOnlyTag }: Props) {
   const { openModal } = useModal();
   const { project, organization, isProjectReadOnly } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   const { projects, isFetching } = useListAllProjects({ withRole: true });
 
@@ -64,7 +64,7 @@ export function ProjectSelector({ hideReadOnlyTag }: Props) {
               </span>
             )}
             onChange={(item: Project | null) =>
-              item && router.push(`/${item.id}`)
+              item && navigate(routes.project({ projectId: item.id }))
             }
             selected={selectedItem ?? null}
             footer={

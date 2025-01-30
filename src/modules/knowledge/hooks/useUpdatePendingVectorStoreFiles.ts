@@ -15,7 +15,7 @@
  */
 
 import {
-  ListVectorStoreFilesResponse,
+  VectorStoreFilesListResponse,
   VectorStoreFile,
   VectorStoreFilesListQuery,
 } from '@/app/api/vector-stores-files/types';
@@ -74,7 +74,7 @@ export const useUpdatePendingVectorStoreFiles = (
       ) {
         isSomeUpdated = true;
 
-        queryClient.setQueryData<InfiniteData<ListVectorStoreFilesResponse>>(
+        queryClient.setQueryData<InfiniteData<VectorStoreFilesListResponse>>(
           vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
           produce((draft) => {
             if (!draft?.pages) return null;

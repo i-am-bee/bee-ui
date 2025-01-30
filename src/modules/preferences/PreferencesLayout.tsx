@@ -16,11 +16,10 @@
 
 'use client';
 import { AdminView } from '@/components/AdminView/AdminView';
-import classes from './PreferencesLayout.module.scss';
+import { useRoutes } from '@/routes/useRoutes';
 import { Tab, TabList, Tabs } from '@carbon/react';
-import { useRouter } from 'next-nprogress-bar';
-import { ReactElement } from 'react';
-import { useAppContext } from '@/layout/providers/AppProvider';
+import { ReactElement, useMemo } from 'react';
+import classes from './PreferencesLayout.module.scss';
 
 interface Props {
   section: PreferencesSection;
@@ -28,8 +27,23 @@ interface Props {
 }
 
 export function PreferencesLayout({ section, children }: Props) {
-  const router = useRouter();
-  const { project } = useAppContext();
+  const { routes, navigate } = useRoutes();
+
+  const TABS = useMemo(
+    () => [
+      {
+        id: PreferencesSection.SystemPreferences,
+        title: 'System preferences',
+        url: routes.preferences(),
+      },
+      {
+        id: PreferencesSection.ApiKeys,
+        title: 'API keys',
+        url: routes.apiKeys(),
+      },
+    ],
+    [routes],
+  );
 
   return (
     <AdminView title="User Preferences">
@@ -37,7 +51,7 @@ export function PreferencesLayout({ section, children }: Props) {
         <Tabs selectedIndex={TABS.findIndex(({ id }) => id === section)}>
           <TabList aria-label="User preferences sections">
             {TABS.map(({ id, url, title }) => (
-              <Tab key={id} onClick={() => router.push(`/${project.id}${url}`)}>
+              <Tab key={id} onClick={() => navigate(url)}>
                 {title}
               </Tab>
             ))}
@@ -54,16 +68,3 @@ export enum PreferencesSection {
   SystemPreferences = 'SystemPreferences',
   ApiKeys = 'ApiKeys',
 }
-
-const TABS = [
-  {
-    id: PreferencesSection.SystemPreferences,
-    title: 'System preferences',
-    url: '/preferences',
-  },
-  {
-    id: PreferencesSection.ApiKeys,
-    title: 'API keys',
-    url: '/api-keys',
-  },
-];

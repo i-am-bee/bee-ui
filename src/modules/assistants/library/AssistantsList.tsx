@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 IBM Corp.
+ * Copyright 2025 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
-import {
-  useAppApiContext,
-  useAppContext,
-} from '@/layout/providers/AppProvider';
-import { getNewSessionUrl } from '@/layout/shell/NewSessionButton';
-import { useRouter } from 'next-nprogress-bar';
+import { useAppApiContext } from '@/layout/providers/AppProvider';
+import { useRoutes } from '@/routes/useRoutes';
 import { ASSISTANTS_DEFAULT_PAGE_SIZE } from '../api';
 import { Assistant } from '../types';
 import { AssistantCard } from './AssistantCard';
@@ -30,18 +25,15 @@ interface Props {
   assistants?: NonNullable<Assistant>[];
   isLoading: boolean;
   pageSize?: number;
-  onDeleteSuccess: (assistant?: AssistantDeleteResult) => void;
 }
 
 export function AssistantsList({
   assistants,
   isLoading,
   pageSize = ASSISTANTS_DEFAULT_PAGE_SIZE,
-  onDeleteSuccess,
 }: Props) {
   const { selectAssistant } = useAppApiContext();
-  const { project } = useAppContext();
-  const router = useRouter();
+  const { routes, navigate } = useRoutes();
 
   return (
     <>
@@ -50,10 +42,9 @@ export function AssistantsList({
           key={assistant.id}
           assistant={assistant}
           cta="Start chat"
-          onDeleteSuccess={onDeleteSuccess}
           onClick={() => {
             selectAssistant(assistant);
-            router.push(getNewSessionUrl(project.id, assistant));
+            navigate(routes.chat({ assistantId: assistant.id }));
           }}
         />
       ))}
