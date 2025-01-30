@@ -58,7 +58,6 @@ export function useUpdateThread({ optimistic }: Props = {}) {
           data: {
             ...encodeEntityWithMetadata<Thread>(thread),
             ...body,
-            ...(tool_resources ? tool_resources : undefined),
           },
           listQueryKey: threadsQueries.lists(),
           invalidateQueries: false,
