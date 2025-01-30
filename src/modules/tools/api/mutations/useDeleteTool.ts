@@ -39,7 +39,11 @@ export function useDeleteTool({ onSuccess }: Props = {}) {
   const mutation = useMutation({
     mutationFn: (id: string) => deleteTool(organization.id, project.id, id),
     onSuccess: (data, id) => {
-      onItemDelete({ id, listQueryKey: toolsQueries.lists() });
+      onItemDelete({
+        id,
+        listQueryKey: toolsQueries.lists(),
+        detailQueryKey: toolsQueries.detail(id).queryKey,
+      });
       onSuccess?.();
     },
     meta: {

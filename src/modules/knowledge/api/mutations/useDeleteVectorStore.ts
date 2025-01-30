@@ -41,7 +41,11 @@ export function useDeleteVectorStore({ onSuccess }: Props = {}) {
     mutationFn: (id: string) =>
       deleteVectorStore(organization.id, project.id, id),
     onSuccess: (data, id) => {
-      onItemDelete({ id, listQueryKey: vectorStoresQueries.lists() });
+      onItemDelete({
+        id,
+        listQueryKey: vectorStoresQueries.lists(),
+        detailQueryKey: vectorStoresQueries.detail(id).queryKey,
+      });
       onSuccess?.();
     },
     meta: {

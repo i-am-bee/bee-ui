@@ -36,7 +36,7 @@ export function useDeleteThread({ onMutate }: Props = {}) {
     mutationFn: (id: string) => deleteThread(organization.id, project.id, id),
     onMutate,
     onSuccess: (data, id) => {
-      if (data) onItemDelete({ id, listQueryKey: threadsQueries.lists() });
+      onItemDelete({ id, listQueryKey: threadsQueries.lists() });
     },
     meta: {
       errorToast: {

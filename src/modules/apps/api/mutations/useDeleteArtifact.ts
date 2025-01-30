@@ -39,7 +39,11 @@ export function useDeleteArtifact({ onSuccess }: Props = {}) {
   const mutation = useMutation({
     mutationFn: (id: string) => deleteArtifact(organization.id, project.id, id),
     onSuccess: (data, id) => {
-      onItemDelete({ id, listQueryKey: artifactsQueries.lists() });
+      onItemDelete({
+        id,
+        listQueryKey: artifactsQueries.lists(),
+        detailQueryKey: artifactsQueries.detail(id).queryKey,
+      });
       onSuccess?.();
     },
     meta: {

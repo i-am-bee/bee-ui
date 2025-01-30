@@ -48,10 +48,12 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
       vectorStoreId: string;
       id: string;
     }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
-    onSuccess: (data, { vectorStoreId }) => {
+    onSuccess: (data, { vectorStoreId, id }) => {
       onItemDelete({
         id: data?.id,
         listQueryKey: vectorStoresQueries.filesLists(vectorStoreId),
+        detailQueryKey: vectorStoresQueries.fileDetail(vectorStoreId, id)
+          .queryKey,
       });
 
       if (data) {

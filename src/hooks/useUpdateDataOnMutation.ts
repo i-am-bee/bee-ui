@@ -97,14 +97,18 @@ export function useUpdateDataOnMutation<T extends ListDataResponse = never>({
     ({
       id: itemId,
       listQueryKey,
+      detailQueryKey,
       invalidateQueries = true,
     }: {
       id?: string;
       listQueryKey?: readonly string[];
+      detailQueryKey?: readonly string[];
       invalidateQueries?: boolean;
     }) => {
       if (listQueryKey && invalidateQueries)
         queryClient.invalidateQueries({ queryKey: listQueryKey });
+      if (detailQueryKey)
+        queryClient.removeQueries({ queryKey: detailQueryKey });
 
       if (!itemId) return;
 

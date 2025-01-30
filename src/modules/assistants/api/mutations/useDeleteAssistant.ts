@@ -41,7 +41,11 @@ export function useDeleteAssistant({ onSuccess }: Props = {}) {
     mutationFn: (id: string) =>
       deleteAssistant(organization.id, project.id, id),
     onSuccess: (data, id) => {
-      onItemDelete({ id, listQueryKey: assistantsQueries.lists() });
+      onItemDelete({
+        id,
+        listQueryKey: assistantsQueries.lists(),
+        detailQueryKey: assistantsQueries.detail(id).queryKey,
+      });
       onSuccess?.();
     },
     meta: {
