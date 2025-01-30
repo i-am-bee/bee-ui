@@ -54,7 +54,7 @@ export function useListMessagesWithFiles({
             ),
         ),
     enabled: Boolean(threadId),
-    initialData: { pages: [initialData], pageParams: [] },
+    initialData: { pages: [initialData], pageParams: [undefined] },
   });
 
   return query;

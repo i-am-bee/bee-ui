@@ -36,7 +36,6 @@ import { useFilesUpload } from './providers/FilesUploadProvider';
 import { BotChatMessage } from './types';
 import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
 import { useChat, useChatMessages } from './providers/chat-context';
-import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
 
 interface Props {
   onShowMobilePreviewButtonClick?: MouseEventHandler<HTMLButtonElement>;
@@ -58,6 +57,11 @@ export const ConversationView = memo(function ConversationView({
     builderState,
     topBarEnabled,
     initialAssistantMessage,
+    messagesQueryControl: {
+      fetchNextPageInViewAnchorRef,
+      hasNextPage,
+      isLoading,
+    },
   } = useChat();
 
   const showTopBar = topBarEnabled && !assistant.isDeleted;
@@ -143,6 +147,7 @@ export const ConversationView = memo(function ConversationView({
               />
             );
           })}
+          {hasNextPage && <li ref={fetchNextPageInViewAnchorRef}> </li>}
         </ol>
       </div>
 

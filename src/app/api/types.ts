@@ -61,6 +61,10 @@ export interface DataItemWithId {
 }
 export interface ListDataResponse {
   data: DataItemWithId[];
+  first_id: string | null;
+  has_more: boolean;
+  last_id: string | null;
+  total_count: number;
 }
 
 export const METADATA_MAX_LENGTH = 512;

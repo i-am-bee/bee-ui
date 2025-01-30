@@ -29,6 +29,7 @@ import {
   EntityMetadata,
   EntityResultWithMetadata,
   EntityWithEncodedMetadata,
+  ListDataResponse,
 } from './types';
 import has from 'lodash/has';
 
@@ -160,6 +161,12 @@ export function getRequestHeaders(
     ...getProjectHeaders(organizationId, projectId),
     ...additionalHeaders,
   };
+}
+
+export function getNextPageParam(listResponse: ListDataResponse) {
+  return listResponse?.has_more && listResponse?.last_id
+    ? listResponse.last_id
+    : undefined;
 }
 
 export type FetchParamsOrderBy<

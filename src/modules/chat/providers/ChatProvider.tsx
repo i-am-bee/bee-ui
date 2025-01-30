@@ -153,12 +153,14 @@ export function ChatProvider({
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {
     messages: [getMessages, setMessages],
-    refetch: refetchMessages,
-    fetchMoreInViewAnchorRef,
+    queryControl: messagesQueryControl,
   } = useMessages({
     thread,
     initialData,
   });
+  const { refetch: refetchMessages } = messagesQueryControl;
+
+  console.log({ messages: getMessages() });
 
   const handleToolApprovalSubmitRef = useRef<
     ((value: ToolApprovalValue) => void) | null
@@ -722,7 +724,7 @@ export function ChatProvider({
       threadSettingsEnabled,
       initialAssistantMessage,
       inputPlaceholder,
-      fetchMoreInViewAnchorRef,
+      messagesQueryControl,
     }),
     [
       controller.status,
@@ -743,7 +745,7 @@ export function ChatProvider({
       threadSettingsEnabled,
       initialAssistantMessage,
       inputPlaceholder,
-      fetchMoreInViewAnchorRef,
+      messagesQueryControl,
     ],
   );
 

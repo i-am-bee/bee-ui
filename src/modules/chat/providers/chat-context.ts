@@ -31,6 +31,8 @@ import {
   UserChatMessage,
 } from '../types';
 import { AssistantBuilderState } from '@/modules/assistants/builder/Builder';
+import { UseQueryResult } from '@tanstack/react-query';
+import { useMessages } from '../hooks/useMessages';
 
 export type ChatStatus = 'ready' | 'fetching' | 'waiting' | 'aborting';
 
@@ -64,7 +66,7 @@ type ChatContextValue = ChatSetup & {
   onToolApprovalSubmitRef: MutableRefObject<
     ((value: ToolApprovalValue) => void) | null
   >;
-  fetchMoreInViewAnchorRef: (node?: Element | null) => void;
+  messagesQueryControl: ReturnType<typeof useMessages>['queryControl'];
 };
 
 export const ChatContext = createContext<ChatContextValue>(

@@ -28,13 +28,13 @@ export function useMessages({
   thread?: Thread | null;
   initialData?: MessageWithFilesResponse;
 }) {
-  const { data, refetch, isFetching, hasNextPage, fetchNextPage } =
-    useListMessagesWithFiles({
-      threadId: thread?.id,
-      initialData,
-    });
+  const { data, ...queryRest } = useListMessagesWithFiles({
+    threadId: thread?.id,
+    initialData,
+  });
 
-  const { ref: fetchMoreInViewAnchorRef } = useFetchNextPageInView({
+  const { fetchNextPage, isFetching, hasNextPage } = queryRest;
+  const { ref: fetchNextPageInViewAnchorRef } = useFetchNextPageInView({
     onFetchNextPage: fetchNextPage,
     isFetching,
     hasNextPage,
@@ -44,7 +44,9 @@ export function useMessages({
     messages: useImmerWithGetter(
       thread ? getMessagesFromThreadMessages(data ?? []) : [],
     ),
-    refetch,
-    fetchMoreInViewAnchorRef,
+    queryControl: {
+      ...queryRest,
+      fetchNextPageInViewAnchorRef,
+    },
   };
 }
