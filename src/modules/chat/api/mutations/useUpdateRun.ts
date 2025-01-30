@@ -60,15 +60,12 @@ export function useUpdateRun({ onSuccess }: Props = {}) {
 
       return run;
     },
-    onSuccess: (data, variables) => {
-      if (data) {
-        onItemUpdate({
-          data: encodeEntityWithMetadata<ThreadRun>(data),
-          listQueryKey: threadsQueries.runsLists(variables.threadId),
-          detailQueryKey: threadsQueries.runDetail(variables.threadId, data.id)
-            .queryKey,
-        });
-      }
+    onSuccess: (data, { threadId, runId }) => {
+      onItemUpdate({
+        data: data && encodeEntityWithMetadata<ThreadRun>(data),
+        listQueryKey: threadsQueries.runsLists(threadId),
+        detailQueryKey: threadsQueries.runDetail(threadId, runId).queryKey,
+      });
 
       const run = data && decodeEntityWithMetadata<ThreadRun>(data);
       onSuccess?.(run);

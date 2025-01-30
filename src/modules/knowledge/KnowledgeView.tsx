@@ -70,19 +70,6 @@ export function KnowledgeView() {
 
   useUpdatePendingVectorStore(data?.stores ?? [], params);
 
-  const onCreateSuccess = (response: VectorStoreCreateResponse) => {
-    // TODO: Should we even do this? The new item might not be in scope for current params
-    queryClient.setQueryData<InfiniteData<VectorStoresListResponse>>(
-      vectorStoresQueries.list(params).queryKey,
-      produce((draft) => {
-        if (!draft?.pages) return null;
-
-        const pageFirst = draft?.pages.at(0);
-        pageFirst && pageFirst.data.unshift(response);
-      }),
-    );
-  };
-
   const isLoading = isPending || isFetchingNextPage;
 
   return (
@@ -106,12 +93,7 @@ export function KnowledgeView() {
         newButtonProps={{
           title: 'Create a knowledge base',
           onClick: () =>
-            openModal((props) => (
-              <CreateKnowledgeModal
-                {...props}
-                onCreateVectorStore={onCreateSuccess}
-              />
-            )),
+            openModal((props) => <CreateKnowledgeModal {...props} />),
           disabled: isProjectReadOnly,
           tooltipContent: isProjectReadOnly ? (
             <ReadOnlyTooltipContent

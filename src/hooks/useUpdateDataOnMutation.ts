@@ -35,20 +35,27 @@ export function useUpdateDataOnMutation<T extends ListDataResponse = never>({
       listQueryKey,
       invalidateQueries = true,
     }: {
-      data: T['data'][number];
+      data?: T['data'][number];
       detailQueryKey?: readonly string[];
       listQueryKey?: readonly string[];
       invalidateQueries?: boolean;
     }) => {
-      if (listQueryKey) {
-        invalidateQueries &&
+      if (invalidateQueries) {
+        listQueryKey &&
           queryClient.invalidateQueries({ queryKey: listQueryKey });
+        detailQueryKey &&
+          queryClient.invalidateQueries({ queryKey: detailQueryKey });
+      }
 
+      if (!data) return;
+
+      if (listQueryKey) {
         if (isListInfiniteQuery) {
           queryClient.setQueriesData<InfiniteData<T>>(
             { queryKey: listQueryKey },
             produce((draft) => {
-              if (!draft?.pages) return null;
+              if (!draft?.pages) return;
+
               for (const page of draft.pages) {
                 const index = page.data.findIndex(({ id }) => id === data.id);
                 if (index >= 0) {
@@ -71,8 +78,6 @@ export function useUpdateDataOnMutation<T extends ListDataResponse = never>({
       }
 
       if (detailQueryKey) {
-        invalidateQueries &&
-          queryClient.invalidateQueries({ queryKey: detailQueryKey });
         queryClient.setQueryData<T['data'][number]>(
           detailQueryKey,
           (savedData) =>
@@ -81,7 +86,7 @@ export function useUpdateDataOnMutation<T extends ListDataResponse = never>({
                   ...savedData,
                   ...data,
                 }
-              : undefined,
+              : data,
         );
       }
     },
@@ -94,14 +99,16 @@ export function useUpdateDataOnMutation<T extends ListDataResponse = never>({
       listQueryKey,
       invalidateQueries = true,
     }: {
-      id: string;
+      id?: string;
       listQueryKey?: readonly string[];
       invalidateQueries?: boolean;
     }) => {
-      if (listQueryKey) {
-        invalidateQueries &&
-          queryClient.invalidateQueries({ queryKey: listQueryKey });
+      if (listQueryKey && invalidateQueries)
+        queryClient.invalidateQueries({ queryKey: listQueryKey });
 
+      if (!itemId) return;
+
+      if (listQueryKey) {
         if (isListInfiniteQuery) {
           queryClient.setQueriesData<InfiniteData<T>>(
             { queryKey: listQueryKey },

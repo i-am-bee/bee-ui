@@ -56,9 +56,8 @@ export function useUpdateThread({ optimistic }: Props = {}) {
       if (optimistic) {
         onItemUpdate({
           data: {
-            ...thread,
+            ...encodeEntityWithMetadata<Thread>(thread),
             ...body,
-            metadata: metadata || {},
             ...(tool_resources ? tool_resources : undefined),
           },
           listQueryKey: threadsQueries.lists(),
@@ -66,14 +65,12 @@ export function useUpdateThread({ optimistic }: Props = {}) {
         });
       }
     },
-    onSuccess: (data) => {
-      if (data) {
-        onItemUpdate({
-          data: encodeEntityWithMetadata<Thread>(data),
-          listQueryKey: threadsQueries.lists(),
-          detailQueryKey: threadsQueries.detail(data.id).queryKey,
-        });
-      }
+    onSuccess: (data, { thread }) => {
+      onItemUpdate({
+        data: data && encodeEntityWithMetadata<Thread>(data),
+        listQueryKey: threadsQueries.lists(),
+        detailQueryKey: threadsQueries.detail(thread.id).queryKey,
+      });
     },
     meta: {
       errorToast: {

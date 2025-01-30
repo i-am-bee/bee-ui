@@ -59,16 +59,16 @@ export function useSaveArtifact({ onSuccess }: Props = {}) {
       return result;
     },
     onSuccess: (data) => {
-      if (data) {
-        onItemUpdate({
-          data: {
-            ...data,
-            metadata: data.metadata ?? null,
-          },
-          listQueryKey: artifactsQueries.lists(),
-          detailQueryKey: artifactsQueries.detail(data.id).queryKey,
-        });
-      }
+      onItemUpdate({
+        data: data
+          ? {
+              ...data,
+              metadata: data.metadata ?? null,
+            }
+          : undefined,
+        listQueryKey: artifactsQueries.lists(),
+        detailQueryKey: data && artifactsQueries.detail(data.id).queryKey,
+      });
 
       const artifact = data && decodeEntityWithMetadata<Artifact>(data);
       onSuccess?.(artifact);

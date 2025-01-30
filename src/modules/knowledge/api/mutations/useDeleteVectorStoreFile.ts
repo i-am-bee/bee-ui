@@ -49,18 +49,18 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
       id: string;
     }) => deleteVectorStoreFile(organization.id, project.id, vectorStoreId, id),
     onSuccess: (data, { vectorStoreId }) => {
-      if (data) {
-        onItemDelete({
-          id: data.id,
-          listQueryKey: vectorStoresQueries.filesLists(vectorStoreId),
-        });
+      onItemDelete({
+        id: data?.id,
+        listQueryKey: vectorStoresQueries.filesLists(vectorStoreId),
+      });
 
+      if (data) {
         queryClient.invalidateQueries(
           vectorStoresQueries.detail(vectorStoreId),
         );
-
-        onSuccess?.(data);
       }
+
+      onSuccess?.(data);
     },
     meta: {
       invalidates: [vectorStoresQueries.lists()],

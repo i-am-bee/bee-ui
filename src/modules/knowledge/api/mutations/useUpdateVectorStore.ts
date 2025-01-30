@@ -37,14 +37,12 @@ export function useUpdateVectorStore({ onSuccess }: Props = {}) {
   const mutation = useMutation({
     mutationFn: ({ id, body }: { id: string; body: VectorStoreCreateBody }) =>
       updateVectorStore(organization.id, project.id, id, body),
-    onSuccess: (data) => {
-      if (data) {
-        onItemUpdate({
-          data,
-          listQueryKey: vectorStoresQueries.lists(),
-          detailQueryKey: vectorStoresQueries.detail(data.id).queryKey,
-        });
-      }
+    onSuccess: (data, { id }) => {
+      onItemUpdate({
+        data,
+        listQueryKey: vectorStoresQueries.lists(),
+        detailQueryKey: vectorStoresQueries.detail(id).queryKey,
+      });
 
       onSuccess?.(data);
     },

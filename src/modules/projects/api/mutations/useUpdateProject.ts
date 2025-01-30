@@ -44,13 +44,11 @@ export function useUpdateProject({ onSuccess }: Props = {}) {
       body: ProjectCreateBody;
     }) => updateProject(organization.id, project.id, body),
     onSuccess: (data, { project }) => {
-      if (data) {
-        onItemUpdate({
-          data: { ...project, ...data },
-          listQueryKey: projectsQueries.lists(),
-          detailQueryKey: projectsQueries.detail(project.id).queryKey,
-        });
-      }
+      onItemUpdate({
+        data: { ...project, ...data },
+        listQueryKey: projectsQueries.lists(),
+        detailQueryKey: projectsQueries.detail(project.id).queryKey,
+      });
 
       onSuccess?.(data);
     },

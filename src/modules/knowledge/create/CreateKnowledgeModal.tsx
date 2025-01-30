@@ -41,7 +41,7 @@ export interface CreateKnowledgeValues {
 }
 
 interface Props {
-  onCreateVectorStore: (vectorStore: VectorStore) => void;
+  onCreateVectorStore?: (vectorStore: VectorStore) => void;
   onSuccess?: () => void;
 }
 
@@ -71,7 +71,7 @@ export function CreateKnowledgeModal({
 
 interface ContentProps {
   onSuccess: () => void;
-  onCreateVectorStore: (vectorStore: VectorStore) => void;
+  onCreateVectorStore?: (vectorStore: VectorStore) => void;
 }
 
 function CreateKnowledgeModalContent({
@@ -88,7 +88,7 @@ function CreateKnowledgeModalContent({
     onSuccess: (vectorStore) => {
       if (vectorStore) {
         setVectorStoreId(vectorStore.id);
-        onCreateVectorStore(vectorStore);
+        onCreateVectorStore?.(vectorStore);
       }
     },
   });

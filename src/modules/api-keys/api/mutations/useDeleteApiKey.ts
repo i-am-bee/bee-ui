@@ -44,7 +44,6 @@ export function useDeleteApiKey({ onSuccess }: Props = {}) {
       onSuccess?.();
     },
     meta: {
-      invalidates: [apiKeysQueries.lists()],
       errorToast: {
         title: 'Failed to delete the api key',
         includeErrorMessage: true,

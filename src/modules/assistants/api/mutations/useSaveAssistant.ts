@@ -50,20 +50,15 @@ export function useSaveAssistant({ onSuccess }: Props = {}) {
 
       return result;
     },
-    onSuccess: (data, variables) => {
-      if (data) {
-        onItemUpdate({
-          data,
-          listQueryKey: assistantsQueries.lists(),
-          detailQueryKey: assistantsQueries.detail(data.id).queryKey,
-        });
-      }
-      if (data) {
-        queryClient.invalidateQueries(assistantsQueries.detail(data.id));
-      }
+    onSuccess: (data, { id }) => {
+      onItemUpdate({
+        data,
+        listQueryKey: assistantsQueries.lists(),
+        detailQueryKey: data && assistantsQueries.detail(data.id).queryKey,
+      });
 
       const assistant = data && decodeEntityWithMetadata<Assistant>(data);
-      onSuccess?.(assistant, !variables.id);
+      onSuccess?.(assistant, !id);
     },
     meta: {
       errorToast: {

@@ -88,23 +88,7 @@ export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {
 
   useUpdatePendingVectorStoreFiles(vectorStore, data?.files ?? [], params);
 
-  const onCreateSuccess = (vectorStoreFile?: VectorStoreFile) => {
-    if (vectorStoreFile)
-      queryClient.setQueryData<InfiniteData<VectorStoreFilesListResponse>>(
-        vectorStoresQueries.filesList(vectorStore.id, params).queryKey,
-        produce((draft) => {
-          if (
-            !draft?.pages ||
-            draft?.pages.some((page) =>
-              page?.data.some((item) => item.id === vectorStoreFile.id),
-            )
-          )
-            return null;
-          const page = draft.pages.at(0);
-          if (page) page.data.unshift(vectorStoreFile);
-        }),
-      );
-
+  const onCreateSuccess = () => {
     queryClient.invalidateQueries(vectorStoresQueries.detail(vectorStore.id));
   };
 

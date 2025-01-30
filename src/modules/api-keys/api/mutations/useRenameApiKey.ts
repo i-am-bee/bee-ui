@@ -39,12 +39,10 @@ export function useRenameApiKey() {
       name: string;
     }) => updateApiKey(organization.id, projectId, id, { name }),
     onSuccess: (data) => {
-      if (data) {
-        onItemUpdate({
-          data,
-          listQueryKey: apiKeysQueries.lists(),
-        });
-      }
+      onItemUpdate({
+        data,
+        listQueryKey: apiKeysQueries.lists(),
+      });
     },
     meta: {
       errorToast: {
