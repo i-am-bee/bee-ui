@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Button, ButtonBaseProps } from '@carbon/react';
+import { ButtonBaseProps, IconButton } from '@carbon/react';
 import { ChevronDown } from '@carbon/react/icons';
 import classes from './ExpandPanelButton.module.scss';
 
@@ -30,15 +30,16 @@ interface Props
 
 export function ExpandPanelButton({ panelId, expanded, ...props }: Props) {
   return (
-    <Button
+    <IconButton
       {...props}
       wrapperClasses={classes.root}
       kind="ghost"
+      label={expanded ? 'Collapse' : 'Expand'}
       aria-label={expanded ? 'Collapse' : 'Expand'}
       aria-controls={panelId}
       aria-expanded={expanded}
-      renderIcon={ChevronDown}
-      hasIconOnly
-    />
+    >
+      <ChevronDown />
+    </IconButton>
   );
 }

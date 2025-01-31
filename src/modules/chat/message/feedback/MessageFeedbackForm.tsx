@@ -22,7 +22,13 @@ import { useToast } from '@/layout/providers/ToastProvider';
 import { Button, IconButton, Tag, TextArea, usePrefix } from '@carbon/react';
 import { Close } from '@carbon/react/icons';
 import clsx from 'clsx';
-import { PropsWithChildren, useCallback, useId, useMemo } from 'react';
+import {
+  MouseEventHandler,
+  PropsWithChildren,
+  useCallback,
+  useId,
+  useMemo,
+} from 'react';
 import { ControllerProps, useController } from 'react-hook-form';
 import { useMessageFeedback } from '../../providers/MessageFeedbackProvider';
 import classes from './MessageFeedbackForm.module.scss';
@@ -148,6 +154,12 @@ function Item({
     [field, prevValue],
   );
 
+  const handleTagClick: MouseEventHandler = (event) => {
+    event.preventDefault();
+
+    handleChange(value, !isSelected);
+  };
+
   return (
     <li>
       <Tag
@@ -155,11 +167,7 @@ function Item({
         className={clsx(`${carbonPrefix}--tag--operational`, classes.tag, {
           [classes.toggled]: isSelected,
         })}
-        onClick={(e: MouseEvent) => {
-          e.preventDefault();
-
-          handleChange(value, !isSelected);
-        }}
+        onClick={handleTagClick}
         disabled={controllerProps.disabled}
       >
         {children}
