@@ -86,8 +86,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(ajv@8.17.1)
       cheerio:
-        specifier: 1.0.0-rc.12
-        version: 1.0.0-rc.12
+        specifier: 1.0.0
+        version: 1.0.0
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -134,11 +134,11 @@ importers:
         specifier: ^2.1.35
         version: 2.1.35
       next:
-        specifier: 14.2.22
-        version: 14.2.22(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
+        specifier: 14.2.23
+        version: 14.2.23(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
       next-auth:
         specifier: 5.0.0-beta.25
-        version: 5.0.0-beta.25(patch_hash=26ragcmzyweuk5jess3ovh6srq)(next@14.2.22(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1)
+        version: 5.0.0-beta.25(patch_hash=26ragcmzyweuk5jess3ovh6srq)(next@14.2.23(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1)
       next-nprogress-bar:
         specifier: ^2.3.13
         version: 2.4.3
@@ -262,7 +262,7 @@ importers:
         version: 9.0.8
       bee-agent-framework:
         specifier: ^0.0.16
-        version: 0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1))))(@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1)))(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(groq-sdk@0.7.0)(ollama@0.5.11)(openai-chat-tokens@0.2.8)(openai@4.77.3(zod@3.24.1))
+        version: 0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1))))(@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1)))(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(groq-sdk@0.7.0)(ollama@0.5.11)(openai-chat-tokens@0.2.8)(openai@4.77.3(zod@3.24.1))
       cross-var:
         specifier: ^1.1.0
         version: 1.1.0
@@ -1633,62 +1633,62 @@ packages:
   '@mixmark-io/domino@2.2.0':
     resolution: {integrity: sha512-Y28PR25bHXUg88kCV7nivXrP2Nj2RueZ3/l/jdx6J9f8J4nsEGcgX0Qe6lt7Pa+J79+kPiJU3LguR6O/6zrLOw==}
 
-  '@next/env@14.2.22':
-    resolution: {integrity: sha512-EQ6y1QeNQglNmNIXvwP/Bb+lf7n9WtgcWvtoFsHquVLCJUuxRs+6SfZ5EK0/EqkkLex4RrDySvKgKNN7PXip7Q==}
+  '@next/env@14.2.23':
+    resolution: {integrity: sha512-CysUC9IO+2Bh0omJ3qrb47S8DtsTKbFidGm6ow4gXIG6reZybqxbkH2nhdEm1tC8SmgzDdpq3BIML0PWsmyUYA==}
 
   '@next/eslint-plugin-next@14.2.5':
     resolution: {integrity: sha512-LY3btOpPh+OTIpviNojDpUdIbHW9j0JBYBjsIp8IxtDFfYFyORvw3yNq6N231FVqQA7n7lwaf7xHbVJlA1ED7g==}
 
-  '@next/swc-darwin-arm64@14.2.22':
-    resolution: {integrity: sha512-HUaLiehovgnqY4TMBZJ3pDaOsTE1spIXeR10pWgdQVPYqDGQmHJBj3h3V6yC0uuo/RoY2GC0YBFRkOX3dI9WVQ==}
+  '@next/swc-darwin-arm64@14.2.23':
+    resolution: {integrity: sha512-WhtEntt6NcbABA8ypEoFd3uzq5iAnrl9AnZt9dXdO+PZLACE32z3a3qA5OoV20JrbJfSJ6Sd6EqGZTrlRnGxQQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-x64@14.2.22':
-    resolution: {integrity: sha512-ApVDANousaAGrosWvxoGdLT0uvLBUC+srqOcpXuyfglA40cP2LBFaGmBjhgpxYk5z4xmunzqQvcIgXawTzo2uQ==}
+  '@next/swc-darwin-x64@14.2.23':
+    resolution: {integrity: sha512-vwLw0HN2gVclT/ikO6EcE+LcIN+0mddJ53yG4eZd0rXkuEr/RnOaMH8wg/sYl5iz5AYYRo/l6XX7FIo6kwbw1Q==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@next/swc-linux-arm64-gnu@14.2.22':
-    resolution: {integrity: sha512-3O2J99Bk9aM+d4CGn9eEayJXHuH9QLx0BctvWyuUGtJ3/mH6lkfAPRI4FidmHMBQBB4UcvLMfNf8vF0NZT7iKw==}
+  '@next/swc-linux-arm64-gnu@14.2.23':
+    resolution: {integrity: sha512-uuAYwD3At2fu5CH1wD7FpP87mnjAv4+DNvLaR9kiIi8DLStWSW304kF09p1EQfhcbUI1Py2vZlBO2VaVqMRtpg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-arm64-musl@14.2.22':
-    resolution: {integrity: sha512-H/hqfRz75yy60y5Eg7DxYfbmHMjv60Dsa6IWHzpJSz4MRkZNy5eDnEW9wyts9bkxwbOVZNPHeb3NkqanP+nGPg==}
+  '@next/swc-linux-arm64-musl@14.2.23':
+    resolution: {integrity: sha512-Mm5KHd7nGgeJ4EETvVgFuqKOyDh+UMXHXxye6wRRFDr4FdVRI6YTxajoV2aHE8jqC14xeAMVZvLqYqS7isHL+g==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@14.2.22':
-    resolution: {integrity: sha512-LckLwlCLcGR1hlI5eiJymR8zSHPsuruuwaZ3H2uudr25+Dpzo6cRFjp/3OR5UYJt8LSwlXv9mmY4oI2QynwpqQ==}
+  '@next/swc-linux-x64-gnu@14.2.23':
+    resolution: {integrity: sha512-Ybfqlyzm4sMSEQO6lDksggAIxnvWSG2cDWnG2jgd+MLbHYn2pvFA8DQ4pT2Vjk3Cwrv+HIg7vXJ8lCiLz79qoQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-linux-x64-musl@14.2.22':
-    resolution: {integrity: sha512-qGUutzmh0PoFU0fCSu0XYpOfT7ydBZgDfcETIeft46abPqP+dmePhwRGLhFKwZWxNWQCPprH26TjaTxM0Nv8mw==}
+  '@next/swc-linux-x64-musl@14.2.23':
+    resolution: {integrity: sha512-OSQX94sxd1gOUz3jhhdocnKsy4/peG8zV1HVaW6DLEbEmRRtUCUQZcKxUD9atLYa3RZA+YJx+WZdOnTkDuNDNA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-win32-arm64-msvc@14.2.22':
-    resolution: {integrity: sha512-K6MwucMWmIvMb9GlvT0haYsfIPxfQD8yXqxwFy4uLFMeXIb2TcVYQimxkaFZv86I7sn1NOZnpOaVk5eaxThGIw==}
+  '@next/swc-win32-arm64-msvc@14.2.23':
+    resolution: {integrity: sha512-ezmbgZy++XpIMTcTNd0L4k7+cNI4ET5vMv/oqNfTuSXkZtSA9BURElPFyarjjGtRgZ9/zuKDHoMdZwDZIY3ehQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@next/swc-win32-ia32-msvc@14.2.22':
-    resolution: {integrity: sha512-5IhDDTPEbzPR31ZzqHe90LnNe7BlJUZvC4sA1thPJV6oN5WmtWjZ0bOYfNsyZx00FJt7gggNs6SrsX0UEIcIpA==}
+  '@next/swc-win32-ia32-msvc@14.2.23':
+    resolution: {integrity: sha512-zfHZOGguFCqAJ7zldTKg4tJHPJyJCOFhpoJcVxKL9BSUHScVDnMdDuOU1zPPGdOzr/GWxbhYTjyiEgLEpAoFPA==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
 
-  '@next/swc-win32-x64-msvc@14.2.22':
-    resolution: {integrity: sha512-nvRaB1PyG4scn9/qNzlkwEwLzuoPH3Gjp7Q/pLuwUgOTt1oPMlnCI3A3rgkt+eZnU71emOiEv/mR201HoURPGg==}
+  '@next/swc-win32-x64-msvc@14.2.23':
+    resolution: {integrity: sha512-xCtq5BD553SzOgSZ7UH5LH+OATQihydObTrCTvVzOro8QiWYKdBVwcB2Mn2MLMo6DGW9yH1LSPw7jS7HhgJgjw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -3489,9 +3489,9 @@ packages:
   cheerio-select@2.1.0:
     resolution: {integrity: sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g==}
 
-  cheerio@1.0.0-rc.12:
-    resolution: {integrity: sha512-VqR8m68vM46BNnuZ5NtnGBKIE/DfN0cRIzg9n40EIq9NOv90ayxLBXA8fXC5gquFRGJSTRqBq25Jt2ECLR431Q==}
-    engines: {node: '>= 6'}
+  cheerio@1.0.0:
+    resolution: {integrity: sha512-quS9HgjQpdaXOvsZz82Oz7uxtXiy6UIsIQcpBj7HRw2M63Skasm9qlDocAM7jNuaxdhpPU7c4kJN+gA5MCu4ww==}
+    engines: {node: '>=18.17'}
 
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
@@ -4009,6 +4009,9 @@ packages:
 
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
+
+  encoding-sniffer@0.2.0:
+    resolution: {integrity: sha512-ju7Wq1kg04I3HtiYIOrUrdfdDvkyO9s5XM8QAj/bN61Yo/Vb4vgJxy5vi4Yxk01gWHbrofpPtpxM8bKger9jhg==}
 
   enhanced-resolve@5.18.0:
     resolution: {integrity: sha512-0/r0MySGYG8YqlayBZ6MuCfECmHFdJ5qyPh8s8wa5Hnm6SaFLSK1VYCbj+NKp090Nm1caZhD+QTnmxO7esYGyQ==}
@@ -4633,8 +4636,8 @@ packages:
   html-url-attributes@3.0.1:
     resolution: {integrity: sha512-ol6UPyBWqsrO6EJySPz2O7ZSr856WDrEzM5zMqp+FJJLGMW35cLYmmZnl0vztAZxRUoNZJFTCohfjuIJ8I4QBQ==}
 
-  htmlparser2@8.0.2:
-    resolution: {integrity: sha512-GYdjWKDkbRLkZ5geuHs5NY1puJ+PXwP7+fHPRz06Eirsb9ugf6d8kkXav6ADhcODhFFPMIXyxkxSuMf3D6NCFA==}
+  htmlparser2@9.1.0:
+    resolution: {integrity: sha512-5zfg6mHUoaer/97TxnGpxmbR7zJtPwIYFMZ/H5ucTlPZhKvtum05yiPK3Mgai3a0DyVxv7qYqoweaEd2nrYQzQ==}
 
   http-proxy-agent@7.0.2:
     resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
@@ -5749,8 +5752,8 @@ packages:
   next-nprogress-bar@2.4.3:
     resolution: {integrity: sha512-069WmFALkpCyKiIy89q6dWcPiHhUmXh6EZz6oLpOS7zsIunNOYLscloKFALjIQNCOg3ZO9dWRPowYW4ULho4HQ==}
 
-  next@14.2.22:
-    resolution: {integrity: sha512-Ps2caobQ9hlEhscLPiPm3J3SYhfwfpMqzsoCMZGWxt9jBRK9hoBZj2A37i8joKhsyth2EuVKDVJCTF5/H4iEDw==}
+  next@14.2.23:
+    resolution: {integrity: sha512-mjN3fE6u/tynneLiEg56XnthzuYw+kD7mCujgVqioxyPqbmiotUCGJpIZGS/VaPg3ZDT1tvWxiVyRzeqJFm/kw==}
     engines: {node: '>=18.17.0'}
     hasBin: true
     peerDependencies:
@@ -6032,6 +6035,9 @@ packages:
 
   parse5-htmlparser2-tree-adapter@7.1.0:
     resolution: {integrity: sha512-ruw5xyKs6lrpo9x9rCZqZZnIUntICjQAd0Wsmp396Ul9lN/h+ifgVV1x1gZHi8euej6wTfpqX8j+BFQxF0NS/g==}
+
+  parse5-parser-stream@7.1.2:
+    resolution: {integrity: sha512-JyeQc9iwFLn5TbvvqACIF/VXG6abODeB3Fwmv/TGdLk2LfbWkaySGY72at4+Ty7EkPZj854u4CrICqNk2qIbow==}
 
   parse5@7.2.1:
     resolution: {integrity: sha512-BuBYQYlv1ckiPdQi/ohiivi9Sagc9JG+Ozs0r7b/0iK3sKmrb0b9FdWdBbOdx6hBCM/F9Ir82ofnBhtZOjCRPQ==}
@@ -7072,6 +7078,10 @@ packages:
     resolution: {integrity: sha512-zICwjrDrcrUE0pyyJc1I2QzBkLM8FINsgOrt6WjA+BgajVq9Nxu2PbFFXUrAggLfDXlZGZBVZYw7WNV5KiBiBA==}
     engines: {node: '>=14.0'}
 
+  undici@6.21.1:
+    resolution: {integrity: sha512-q/1rj5D0/zayJB2FraXdaWxbhWiNKDvu8naDT2dl1yTlvJp4BLtOcp2a5BvgGNQpYYJzau7tf1WgKv3b+7mqpQ==}
+    engines: {node: '>=18.17'}
+
   unescape-js@1.1.4:
     resolution: {integrity: sha512-42SD8NOQEhdYntEiUQdYq/1V/YHwr1HLwlHuTJB5InVVdOSbgI6xu8jK5q65yIzuFCfczzyDF/7hbGzVbyCw0g==}
 
@@ -7199,8 +7209,16 @@ packages:
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
+  whatwg-encoding@3.1.1:
+    resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
+    engines: {node: '>=18'}
+
   whatwg-fetch@3.6.20:
     resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
+
+  whatwg-mimetype@4.0.0:
+    resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
+    engines: {node: '>=18'}
 
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
@@ -8547,7 +8565,7 @@ snapshots:
     dependencies:
       buffer: 6.0.3
 
-  '@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1))':
+  '@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1))':
     dependencies:
       '@langchain/core': 0.2.36(openai@4.77.3(zod@3.24.1))
       '@langchain/openai': 0.2.11
@@ -8555,14 +8573,14 @@ snapshots:
       expr-eval: 2.0.2
       flat: 5.0.2
       js-yaml: 4.1.0
-      langchain: 0.2.20(axios@1.7.9)(cheerio@1.0.0-rc.12)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(openai@4.77.3(zod@3.24.1))
+      langchain: 0.2.20(axios@1.7.9)(cheerio@1.0.0)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(openai@4.77.3(zod@3.24.1))
       langsmith: 0.1.68(openai@4.77.3(zod@3.24.1))
       uuid: 10.0.0
       zod: 3.24.1
       zod-to-json-schema: 3.24.1(zod@3.24.1)
     optionalDependencies:
       '@langchain/langgraph': 0.0.34(openai@4.77.3(zod@3.24.1))
-      cheerio: 1.0.0-rc.12
+      cheerio: 1.0.0
       duck-duck-scrape: 2.2.6
       ignore: 5.3.2
       ioredis: 5.4.2
@@ -8628,37 +8646,37 @@ snapshots:
 
   '@mixmark-io/domino@2.2.0': {}
 
-  '@next/env@14.2.22': {}
+  '@next/env@14.2.23': {}
 
   '@next/eslint-plugin-next@14.2.5':
     dependencies:
       glob: 10.3.10
 
-  '@next/swc-darwin-arm64@14.2.22':
+  '@next/swc-darwin-arm64@14.2.23':
     optional: true
 
-  '@next/swc-darwin-x64@14.2.22':
+  '@next/swc-darwin-x64@14.2.23':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@14.2.22':
+  '@next/swc-linux-arm64-gnu@14.2.23':
     optional: true
 
-  '@next/swc-linux-arm64-musl@14.2.22':
+  '@next/swc-linux-arm64-musl@14.2.23':
     optional: true
 
-  '@next/swc-linux-x64-gnu@14.2.22':
+  '@next/swc-linux-x64-gnu@14.2.23':
     optional: true
 
-  '@next/swc-linux-x64-musl@14.2.22':
+  '@next/swc-linux-x64-musl@14.2.23':
     optional: true
 
-  '@next/swc-win32-arm64-msvc@14.2.22':
+  '@next/swc-win32-arm64-msvc@14.2.23':
     optional: true
 
-  '@next/swc-win32-ia32-msvc@14.2.22':
+  '@next/swc-win32-ia32-msvc@14.2.23':
     optional: true
 
-  '@next/swc-win32-x64-msvc@14.2.22':
+  '@next/swc-win32-x64-msvc@14.2.23':
     optional: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -11072,13 +11090,13 @@ snapshots:
 
   basic-ftp@5.0.5: {}
 
-  bee-agent-framework@0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1))))(@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1)))(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(groq-sdk@0.7.0)(ollama@0.5.11)(openai-chat-tokens@0.2.8)(openai@4.77.3(zod@3.24.1)):
+  bee-agent-framework@0.0.16(@bufbuild/protobuf@1.10.0)(@ibm-generative-ai/node-sdk@3.2.4(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1))))(@langchain/community@0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1)))(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1)))(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(groq-sdk@0.7.0)(ollama@0.5.11)(openai-chat-tokens@0.2.8)(openai@4.77.3(zod@3.24.1)):
     dependencies:
       '@ai-zen/node-fetch-event-source': 2.1.4
       '@connectrpc/connect': 1.6.1(@bufbuild/protobuf@1.10.0)
       '@connectrpc/connect-node': 1.6.1(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.6.1(@bufbuild/protobuf@1.10.0))
       '@ibm-generative-ai/node-sdk': 3.2.4(@langchain/core@0.2.36(openai@4.77.3(zod@3.24.1)))
-      '@langchain/community': 0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0-rc.12)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1))
+      '@langchain/community': 0.2.33(@langchain/langgraph@0.0.34(openai@4.77.3(zod@3.24.1)))(axios@1.7.9)(cheerio@1.0.0)(duck-duck-scrape@2.2.6)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(lodash@4.17.21)(openai@4.77.3(zod@3.24.1))
       '@langchain/core': 0.2.36(openai@4.77.3(zod@3.24.1))
       '@langchain/langgraph': 0.0.34(openai@4.77.3(zod@3.24.1))
       ajv: 8.17.1
@@ -11264,15 +11282,19 @@ snapshots:
       domhandler: 5.0.3
       domutils: 3.2.2
 
-  cheerio@1.0.0-rc.12:
+  cheerio@1.0.0:
     dependencies:
       cheerio-select: 2.1.0
       dom-serializer: 2.0.0
       domhandler: 5.0.3
       domutils: 3.2.2
-      htmlparser2: 8.0.2
+      encoding-sniffer: 0.2.0
+      htmlparser2: 9.1.0
       parse5: 7.2.1
       parse5-htmlparser2-tree-adapter: 7.1.0
+      parse5-parser-stream: 7.1.2
+      undici: 6.21.1
+      whatwg-mimetype: 4.0.0
 
   chokidar@4.0.3:
     dependencies:
@@ -11782,6 +11804,11 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
+
+  encoding-sniffer@0.2.0:
+    dependencies:
+      iconv-lite: 0.6.3
+      whatwg-encoding: 3.1.1
 
   enhanced-resolve@5.18.0:
     dependencies:
@@ -12615,7 +12642,7 @@ snapshots:
 
   html-url-attributes@3.0.1: {}
 
-  htmlparser2@8.0.2:
+  htmlparser2@9.1.0:
     dependencies:
       domelementtype: 2.3.0
       domhandler: 5.0.3
@@ -13079,7 +13106,7 @@ snapshots:
 
   ky@1.7.4: {}
 
-  langchain@0.2.20(axios@1.7.9)(cheerio@1.0.0-rc.12)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(openai@4.77.3(zod@3.24.1)):
+  langchain@0.2.20(axios@1.7.9)(cheerio@1.0.0)(fast-xml-parser@4.5.1)(handlebars@4.7.8)(ignore@5.3.2)(ioredis@5.4.2)(openai@4.77.3(zod@3.24.1)):
     dependencies:
       '@langchain/core': 0.2.36(openai@4.77.3(zod@3.24.1))
       '@langchain/openai': 0.2.11
@@ -13097,7 +13124,7 @@ snapshots:
       zod-to-json-schema: 3.24.1(zod@3.24.1)
     optionalDependencies:
       axios: 1.7.9
-      cheerio: 1.0.0-rc.12
+      cheerio: 1.0.0
       fast-xml-parser: 4.5.1
       handlebars: 4.7.8
       ignore: 5.3.2
@@ -13718,19 +13745,19 @@ snapshots:
     dependencies:
       type-fest: 2.19.0
 
-  next-auth@5.0.0-beta.25(patch_hash=26ragcmzyweuk5jess3ovh6srq)(next@14.2.22(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1):
+  next-auth@5.0.0-beta.25(patch_hash=26ragcmzyweuk5jess3ovh6srq)(next@14.2.23(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4))(react@18.3.1):
     dependencies:
       '@auth/core': 0.37.2
-      next: 14.2.22(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
+      next: 14.2.23(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4)
       react: 18.3.1
 
   next-nprogress-bar@2.4.3:
     dependencies:
       nprogress-v2: 1.0.4
 
-  next@14.2.22(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4):
+  next@14.2.23(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.83.4):
     dependencies:
-      '@next/env': 14.2.22
+      '@next/env': 14.2.23
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001690
@@ -13740,15 +13767,15 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       styled-jsx: 5.1.1(@babel/core@7.26.0)(react@18.3.1)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 14.2.22
-      '@next/swc-darwin-x64': 14.2.22
-      '@next/swc-linux-arm64-gnu': 14.2.22
-      '@next/swc-linux-arm64-musl': 14.2.22
-      '@next/swc-linux-x64-gnu': 14.2.22
-      '@next/swc-linux-x64-musl': 14.2.22
-      '@next/swc-win32-arm64-msvc': 14.2.22
-      '@next/swc-win32-ia32-msvc': 14.2.22
-      '@next/swc-win32-x64-msvc': 14.2.22
+      '@next/swc-darwin-arm64': 14.2.23
+      '@next/swc-darwin-x64': 14.2.23
+      '@next/swc-linux-arm64-gnu': 14.2.23
+      '@next/swc-linux-arm64-musl': 14.2.23
+      '@next/swc-linux-x64-gnu': 14.2.23
+      '@next/swc-linux-x64-musl': 14.2.23
+      '@next/swc-win32-arm64-msvc': 14.2.23
+      '@next/swc-win32-ia32-msvc': 14.2.23
+      '@next/swc-win32-x64-msvc': 14.2.23
       '@opentelemetry/api': 1.9.0
       sass: 1.83.4
     transitivePeerDependencies:
@@ -14079,6 +14106,10 @@ snapshots:
   parse5-htmlparser2-tree-adapter@7.1.0:
     dependencies:
       domhandler: 5.0.3
+      parse5: 7.2.1
+
+  parse5-parser-stream@7.1.2:
+    dependencies:
       parse5: 7.2.1
 
   parse5@7.2.1:
@@ -15273,6 +15304,8 @@ snapshots:
     dependencies:
       '@fastify/busboy': 2.1.1
 
+  undici@6.21.1: {}
+
   unescape-js@1.1.4:
     dependencies:
       string.fromcodepoint: 0.2.1
@@ -15407,7 +15440,13 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
+  whatwg-encoding@3.1.1:
+    dependencies:
+      iconv-lite: 0.6.3
+
   whatwg-fetch@3.6.20: {}
+
+  whatwg-mimetype@4.0.0: {}
 
   whatwg-url@5.0.0:
     dependencies:
