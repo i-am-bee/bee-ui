@@ -16,10 +16,7 @@
 
 'use client';
 
-import {
-  CONFIRM_MESSAGE_DEFAULT,
-  useNavigationControl,
-} from '@/layout/providers/NavigationControlProvider';
+import { useModalControl } from '@/layout/providers/ModalControlProvider';
 import { moderate02 } from '@carbon/motion';
 import { ComposedModal } from '@carbon/react';
 import clsx from 'clsx';
@@ -34,7 +31,6 @@ import {
   useState,
 } from 'react';
 import classes from './Modal.module.scss';
-import { useModalControl } from '@/layout/providers/ModalControlProvider';
 
 type Props = {
   rootClassName?: string;

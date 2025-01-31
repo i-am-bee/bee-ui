@@ -53,6 +53,7 @@ OnboardingIntro.Footer = function OnboardingIntroFooter({
           href={DOCUMENTATION_URL}
           target="_blank"
           rel="noopener noreferrer"
+          as="a"
         >
           Resources
         </Button>

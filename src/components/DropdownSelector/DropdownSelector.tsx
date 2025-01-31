@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
+import { fadeProps } from '@/utils/fadeProps';
+import { noop } from '@/utils/helpers';
 import { Button, Checkbox, Tag, TextInput } from '@carbon/react';
-import classes from './DropdownSelector.module.scss';
-import { Checkmark, ChevronDown, Close } from '@carbon/react/icons';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Checkmark, ChevronDown } from '@carbon/react/icons';
 import {
   autoUpdate,
   flip,
@@ -29,6 +29,9 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
+import clsx from 'clsx';
+import { AnimatePresence, motion } from 'framer-motion';
+import has from 'lodash/has';
 import {
   ReactElement,
   useCallback,
@@ -37,12 +40,9 @@ import {
   useRef,
   useState,
 } from 'react';
-import { fadeProps } from '@/utils/fadeProps';
 import { mergeRefs } from 'react-merge-refs';
-import clsx from 'clsx';
-import has from 'lodash/has';
 import { ClearButton } from '../ClearButton/ClearButton';
-import { noop } from '@/utils/helpers';
+import classes from './DropdownSelector.module.scss';
 
 type ItemWithId = { id: string };
 

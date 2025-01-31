@@ -27,6 +27,7 @@ const headers = [
 const nextConfig = {
   experimental: {
     instrumentationHook: true,
+    serverComponentsExternalPackages: ['@opentelemetry/instrumentation'],
   },
   sassOptions: {
     includePaths: [fileURLToPath(new URL('src/', import.meta.url))],

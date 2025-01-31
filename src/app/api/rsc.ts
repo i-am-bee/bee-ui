@@ -15,8 +15,8 @@
  */
 
 import { headers } from 'next/headers';
-import { client } from './client';
 import { ensureAccessToken } from '../auth/rsc';
+import { client } from './client';
 
 // App dir, doesn't have a single entrypoint like a in pages _app.tsx
 // where we could put it and have a global effect.
@@ -27,25 +27,25 @@ import { ensureAccessToken } from '../auth/rsc';
 // IDEA: use webpack resolve for a RSC layer to alias ./index.ts to this file
 
 client.use({
-  async onRequest(req, options) {
+  async onRequest({ request }) {
     const correlationId = headers().get('x-correlation-id');
     if (correlationId) {
-      req.headers.set('x-correlation-id', correlationId);
+      request.headers.set('x-correlation-id', correlationId);
     }
 
-    if (req.headers.get('authorization') == null) {
+    if (request.headers.get('authorization') == null) {
       const accessToken = await ensureAccessToken();
-      req.headers.set('authorization', `Bearer ${accessToken}`);
+      request.headers.set('authorization', `Bearer ${accessToken}`);
     }
 
-    return req;
+    return request;
   },
 });
 
+export * from './assistants';
+export * from './projects';
+export * from './threads';
 export * from './threads-messages';
 export * from './threads-runs';
-export * from './threads';
 export * from './users';
-export * from './assistants';
 export * from './vector-stores';
-export * from './projects';
