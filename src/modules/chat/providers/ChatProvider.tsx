@@ -22,9 +22,9 @@ import {
   ToolApprovals,
 } from '@/app/api/threads-runs/types';
 import { isRequiredActionToolApprovals } from '@/app/api/threads-runs/utils';
-import { Thread, ThreadMetadata } from '@/app/api/threads/types';
+import { Thread } from '@/app/api/threads/types';
 import { ToolsUsage } from '@/app/api/tools/types';
-import { decodeEntityWithMetadata, encodeMetadata } from '@/app/api/utils';
+import { decodeEntityWithMetadata } from '@/app/api/utils';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useHandleError } from '@/layout/hooks/useHandleError';
@@ -35,7 +35,6 @@ import {
 import { useModal } from '@/layout/providers/ModalProvider';
 import { FILE_SEARCH_TOOL_DEFINITION } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { GET_USER_LOCATION_FUNCTION_TOOL } from '@/modules/assistants/tools/functionTools';
-import { getAssistantName } from '@/modules/assistants/utils';
 import {
   getToolUsageId,
   isExternalTool,
@@ -43,22 +42,17 @@ import {
 } from '@/modules/tools/utils';
 import { isNotNull } from '@/utils/helpers';
 import { FetchQueryOptions, useQueryClient } from '@tanstack/react-query';
-import truncate from 'lodash/truncate';
 import {
   PropsWithChildren,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useThreadsQueries } from '../api';
 import { useCanceRun } from '../api/mutations/useCancelRun';
-import { useCreateThread } from '../api/mutations/useCreateThread';
 import { useDeleteMessage } from '../api/mutations/useDeleteMessage';
-import { useUpdateThread } from '../api/mutations/useUpdateThread';
-import { THREAD_TITLE_MAX_LENGTH } from '../history/ThreadItem';
 import { useChatStream } from '../hooks/useChatStream';
 import { useGetThreadAssistant } from '../hooks/useGetThreadAssistant';
 import { useMessages } from '../hooks/useMessages';
@@ -70,11 +64,7 @@ import {
   ToolApprovalValue,
   UserChatMessage,
 } from '../types';
-import {
-  getRunResources,
-  getThreadVectorStoreId,
-  isBotMessage,
-} from '../utils';
+import { getRunResources, isBotMessage } from '../utils';
 import { AssistantModalProvider } from './AssistantModalProvider';
 import {
   ChatContext,
@@ -86,6 +76,7 @@ import {
 import { useFilesUpload } from './FilesUploadProvider';
 import { useUpdateMessagesWithFilesQueryData } from '../hooks/useUpdateMessagesWithFilesQueryData';
 import { DraftFunction } from '@/hooks/useImmerWithGetter';
+import { useChatThread } from '../hooks/useChatThread';
 
 const RUN_CONTROLLER_DEFAULT: RunController = {
   abortController: null,
@@ -121,7 +112,6 @@ export function ChatProvider({
 }: PropsWithChildren<Props>) {
   const [controller, setController, controllerRef] =
     useStateWithRef<RunController>(RUN_CONTROLLER_DEFAULT);
-  const [thread, setThread, threadRef] = useStateWithRef(initialThread || null);
   const [disabledTools, setDisabledTools] = useState<ToolsUsage>([]);
   const {
     files,
@@ -140,11 +130,14 @@ export function ChatProvider({
   const threadSettingsButtonRef = useRef<HTMLButtonElement>(null);
 
   const { mutateAsync: deleteMessage } = useDeleteMessage();
-  const { mutateAsync: updateThread } = useUpdateThread();
-  const { mutateAsync: createThread } = useCreateThread();
   const { mutate: cancelRun } = useCanceRun();
 
   const { updateMessageData } = useUpdateMessagesWithFilesQueryData();
+
+  const { ensureThread, thread, threadRef, setThread } = useChatThread({
+    thread: initialThread,
+    assistant,
+  });
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {
@@ -248,63 +241,6 @@ export function ChatProvider({
   );
 
   const clear = useCallback(() => reset([]), [reset]);
-
-  const ensureThread = useCallback(
-    async (message?: string) => {
-      const toolResources = vectorStoreId
-        ? { file_search: { vector_store_ids: [vectorStoreId] } }
-        : undefined;
-
-      if (thread) {
-        const threadMetadata = thread.uiMetadata;
-        if (
-          (vectorStoreId && !getThreadVectorStoreId(thread)) ||
-          threadMetadata.title === ''
-        ) {
-          threadMetadata.title =
-            threadMetadata.title === ''
-              ? truncate(message, { length: THREAD_TITLE_MAX_LENGTH })
-              : threadMetadata.title;
-
-          const updatedThread = await updateThread({
-            thread,
-            body: {
-              tool_resources: toolResources,
-              metadata: encodeMetadata<ThreadMetadata>(threadMetadata),
-            },
-          });
-
-          if (updatedThread) {
-            setThread(updatedThread);
-
-            return updatedThread;
-          }
-        }
-
-        return thread;
-      }
-
-      const createdThread = await createThread({
-        tool_resources: toolResources,
-        metadata: encodeMetadata<ThreadMetadata>({
-          assistantName: getAssistantName(assistant),
-          assistantId: assistant?.id ?? '',
-          title: truncate(message, { length: THREAD_TITLE_MAX_LENGTH }),
-        }),
-      });
-
-      if (!createdThread) {
-        throw Error('Thread creation failed.');
-      }
-
-      setThread(createdThread);
-
-      return createdThread;
-    },
-    [assistant, createThread, updateThread, setThread, thread, vectorStoreId],
-  );
-
-  if (ensureThreadRef) ensureThreadRef.current = ensureThread;
 
   const handleError = useHandleError();
   const { openModal } = useModal();
@@ -454,242 +390,206 @@ export function ChatProvider({
     threadsQueries,
   ]);
 
-  const sendMessage = useCallback(
-    async (
-      input: string,
-      { regenerate, onAfterRemoveSentMessage }: SendMessageOptions = {},
-    ) => {
-      if (controllerRef.current.status !== 'ready') {
-        return { aborted: true, thread: null };
-      }
+  const sendMessage = async (
+    input: string,
+    { regenerate, onAfterRemoveSentMessage }: SendMessageOptions = {},
+  ) => {
+    if (controllerRef.current.status !== 'ready') {
+      return { aborted: true, thread: null };
+    }
 
-      const abortController = new AbortController();
-      setController({
-        abortController,
-        status: 'fetching',
-        runId: null,
-      });
+    const abortController = new AbortController();
+    setController({
+      abortController,
+      status: 'fetching',
+      runId: null,
+    });
 
-      // Remove last bot message if it was empty, and also last user message
-      async function removeLastMessagePair(ignoreError?: boolean) {
-        // synchronize messages before removing
-        await refetchMessages();
+    // Remove last bot message if it was empty, and also last user message
+    async function removeLastMessagePair(ignoreError?: boolean) {
+      // synchronize messages before removing
+      await refetchMessages();
 
-        setMessages((messages) => {
-          let message = messages.at(-1);
-          if (!isBotMessage(message)) {
-            throw new Error('Unexpected last message found.');
+      setMessages((messages) => {
+        let message = messages.at(-1);
+        if (!isBotMessage(message)) {
+          throw new Error('Unexpected last message found.');
+        }
+
+        if (message.plan) {
+          message.plan.steps = message.plan.steps.map((step) =>
+            step.status === 'in_progress'
+              ? { ...step, status: 'cancelled' }
+              : step,
+          );
+        }
+
+        if (
+          !regenerate &&
+          messages.length > 2 &&
+          !message.content &&
+          message.plan == null &&
+          (ignoreError || message.error == null)
+        ) {
+          messages.pop();
+          if (thread && message.id) {
+            deleteMessage({
+              threadId: thread?.id,
+              messageId: message.id,
+            });
           }
 
-          if (message.plan) {
-            message.plan.steps = message.plan.steps.map((step) =>
-              step.status === 'in_progress'
-                ? { ...step, status: 'cancelled' }
-                : step,
-            );
-          }
-
-          if (
-            !regenerate &&
-            messages.length > 2 &&
-            !message.content &&
-            message.plan == null &&
-            (ignoreError || message.error == null)
-          ) {
+          message = messages.at(-1);
+          if (message?.role === 'user') {
             messages.pop();
-            if (thread && message.id) {
+            if (thread && message.id)
               deleteMessage({
                 threadId: thread?.id,
                 messageId: message.id,
               });
-            }
-
-            message = messages.at(-1);
-            if (message?.role === 'user') {
-              messages.pop();
-              if (thread && message.id)
-                deleteMessage({
-                  threadId: thread?.id,
-                  messageId: message.id,
-                });
-              onAfterRemoveSentMessage?.(message);
-            }
+            onAfterRemoveSentMessage?.(message);
           }
-        });
-      }
-
-      function handleAborted() {
-        handleCancelCurrentRun();
-        removeLastMessagePair();
-      }
-
-      function handleChatError(err: unknown) {
-        if (err instanceof ApiError && err.code === 'too_many_requests') {
-          openModal((props) => <UsageLimitModal {...props} />);
-          removeLastMessagePair(true);
-        } else {
-          handleError(err, { toast: false });
         }
+      });
+    }
+
+    function handleAborted() {
+      handleCancelCurrentRun();
+      removeLastMessagePair();
+    }
+
+    function handleChatError(err: unknown) {
+      if (err instanceof ApiError && err.code === 'too_many_requests') {
+        openModal((props) => <UsageLimitModal {...props} />);
+        removeLastMessagePair(true);
+      } else {
+        handleError(err, { toast: false });
       }
+    }
 
-      async function handlePostMessage(
-        threadId: string,
-        { role, content, attachments, files }: UserChatMessage,
-      ): Promise<MessageWithFiles | null> {
-        const message = await createMessage(
-          organization.id,
-          project.id,
-          threadId,
-          {
-            role,
-            content,
-            attachments,
-          },
-        );
-
-        setMessages((messages) => {
-          const lastUserMessage = messages.findLast(
-            ({ role }) => role === 'user',
-          );
-          if (!lastUserMessage) throw Error('Message was not created.');
-          lastUserMessage.id = message?.id;
-        });
-
-        return message
-          ? {
-              ...message,
-              files,
-            }
-          : null;
-      }
-
-      function handleCreateChatMessages(): UserChatMessage {
-        const userMessage: UserChatMessage = {
-          key: uuid(),
-          role: 'user',
-          content: input,
+    async function handlePostMessage(
+      threadId: string,
+      { role, content, attachments, files }: UserChatMessage,
+    ): Promise<MessageWithFiles | null> {
+      const message = await createMessage(
+        organization.id,
+        project.id,
+        threadId,
+        {
+          role,
+          content,
           attachments,
-          files,
-          created_at: new Date().getTime(),
-        };
+        },
+      );
 
-        setMessages((messages) => {
-          // if we are regenerating we don't add a new message
-          if (!regenerate) {
-            const lastMessage = messages.at(-1);
-            if (lastMessage?.role === 'user') {
-              messages.pop();
-            }
+      setMessages((messages) => {
+        const lastUserMessage = messages.findLast(
+          ({ role }) => role === 'user',
+        );
+        if (!lastUserMessage) throw Error('Message was not created.');
+        lastUserMessage.id = message?.id;
+      });
 
-            messages.push(userMessage);
+      return message
+        ? {
+            ...message,
+            files,
           }
-          messages.push({
-            key: uuid(),
-            role: 'assistant',
-            content: '',
-            pending: true,
-            created_at: new Date().getTime(),
-          });
+        : null;
+    }
+
+    function handleCreateChatMessages(): UserChatMessage {
+      const userMessage: UserChatMessage = {
+        key: uuid(),
+        role: 'user',
+        content: input,
+        attachments,
+        files,
+        created_at: new Date().getTime(),
+      };
+
+      setMessages((messages) => {
+        // if we are regenerating we don't add a new message
+        if (!regenerate) {
+          const lastMessage = messages.at(-1);
+          if (lastMessage?.role === 'user') {
+            messages.pop();
+          }
+
+          messages.push(userMessage);
+        }
+        messages.push({
+          key: uuid(),
+          role: 'assistant',
+          content: '',
+          pending: true,
+          created_at: new Date().getTime(),
         });
+      });
 
-        clearFiles();
+      clearFiles();
 
-        return userMessage;
+      return userMessage;
+    }
+
+    let thread: Thread | null = null;
+    let newMessage: MessageWithFiles | null = null;
+
+    try {
+      if (!assistant) throw Error('Assistant is not available.');
+
+      const userMessage = handleCreateChatMessages();
+      thread = await ensureThread(userMessage.content);
+
+      if (!regenerate) {
+        await onBeforePostMessage?.(thread, getMessages());
+        newMessage = await handlePostMessage(thread.id, userMessage);
+
+        updateMessageData(thread.id, newMessage);
       }
 
-      let thread: Thread | null = null;
-      let newMessage: MessageWithFiles | null = null;
+      const { tools, toolApprovals } = getUsedTools(thread);
 
-      try {
-        if (!assistant) throw Error('Assistant is not available.');
-
-        const userMessage = handleCreateChatMessages();
-        thread = await ensureThread(userMessage.content);
-
-        if (!regenerate) {
-          await onBeforePostMessage?.(thread, getMessages());
-          newMessage = await handlePostMessage(thread.id, userMessage);
-
-          updateMessageData(thread.id, newMessage);
-        }
-
-        const { tools, toolApprovals } = getUsedTools(thread);
-
-        if (!abortController.signal.aborted) {
-          await chatStream({
-            action: {
-              id: 'create-run',
-              body: {
-                assistant_id: assistant.id,
-                tools,
-                tool_approvals: toolApprovals,
-                uiMetadata: {
-                  resources: getRunResources(thread, assistant),
-                },
+      if (!abortController.signal.aborted) {
+        await chatStream({
+          action: {
+            id: 'create-run',
+            body: {
+              assistant_id: assistant.id,
+              tools,
+              tool_approvals: toolApprovals,
+              uiMetadata: {
+                resources: getRunResources(thread, assistant),
               },
             },
-            onMessageCompleted: (response) => {
-              updateMessageData(
-                thread?.id,
-                response.data,
-                response.data?.run_id,
-              );
+          },
+          onMessageCompleted: (response) => {
+            updateMessageData(thread?.id, response.data, response.data?.run_id);
 
-              if (files.length > 0) {
-                queryClient.invalidateQueries({
-                  queryKey: threadsQueries.lists(),
-                });
-
-                // TODO: The thread detail is not used anywhere on the client, so it's probably not necessary.
-                queryClient.invalidateQueries(
-                  threadsQueries.detail(thread?.id ?? ''),
-                );
-              }
-            },
-          });
-        }
-      } catch (err) {
-        handleChatError(err);
-      } finally {
-        handleRunCompleted();
+            if (files.length > 0) {
+              queryClient.invalidateQueries({
+                queryKey: threadsQueries.lists(),
+              });
+            }
+          },
+        });
       }
+    } catch (err) {
+      handleChatError(err);
+    } finally {
+      handleRunCompleted();
+    }
 
-      const aborted = abortController.signal.aborted;
-      if (aborted) {
-        handleAborted();
-      }
+    const aborted = abortController.signal.aborted;
+    if (aborted) {
+      handleAborted();
+    }
 
-      return {
-        aborted,
-        thread,
-      };
-    },
-    [
-      controllerRef,
-      setController,
-      refetchMessages,
-      setMessages,
-      deleteMessage,
-      handleCancelCurrentRun,
-      openModal,
-      handleError,
-      organization.id,
-      project.id,
-      attachments,
-      files,
-      clearFiles,
-      assistant,
-      ensureThread,
-      getUsedTools,
-      onBeforePostMessage,
-      getMessages,
-      updateMessageData,
-      chatStream,
-      queryClient,
-      threadsQueries,
-      handleRunCompleted,
-    ],
-  );
+    return {
+      aborted,
+      thread,
+    };
+  };
 
   useEffect(() => {
     onPageLeaveRef.current = clear;
@@ -702,58 +602,35 @@ export function ChatProvider({
     };
   }, [controllerRef]);
 
-  const contextValue = useMemo(
-    () => ({
-      status: controller.status,
-      builderState,
-      getMessages,
-      cancel,
-      clear,
-      reset,
-      setMessages,
-      sendMessage,
-      setThread,
-      setDisabledTools,
-      getThreadTools,
-      onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
-      thread,
-      assistant: {
-        ...threadAssistant,
-        data:
-          threadAssistant.data || threadAssistant.isDeleted
-            ? threadAssistant.data
-            : assistant,
-      },
-      disabledTools,
-      threadSettingsButtonRef,
-      topBarEnabled,
-      threadSettingsEnabled,
-      initialAssistantMessage,
-      inputPlaceholder,
-      messagesQueryControl,
-    }),
-    [
-      controller.status,
-      builderState,
-      getMessages,
-      cancel,
-      clear,
-      reset,
-      setMessages,
-      sendMessage,
-      setThread,
-      getThreadTools,
-      thread,
-      threadAssistant,
-      assistant,
-      disabledTools,
-      topBarEnabled,
-      threadSettingsEnabled,
-      initialAssistantMessage,
-      inputPlaceholder,
-      messagesQueryControl,
-    ],
-  );
+  const contextValue = {
+    status: controller.status,
+    builderState,
+    getMessages,
+    cancel,
+    clear,
+    reset,
+    setMessages,
+    sendMessage,
+    setThread,
+    setDisabledTools,
+    getThreadTools,
+    onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
+    thread,
+    assistant: {
+      ...threadAssistant,
+      data:
+        threadAssistant.data || threadAssistant.isDeleted
+          ? threadAssistant.data
+          : assistant,
+    },
+    disabledTools,
+    threadSettingsButtonRef,
+    topBarEnabled,
+    threadSettingsEnabled,
+    initialAssistantMessage,
+    inputPlaceholder,
+    messagesQueryControl,
+  };
 
   return (
     <ChatContext.Provider value={contextValue}>
