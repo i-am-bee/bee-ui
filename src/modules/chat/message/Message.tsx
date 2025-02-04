@@ -22,7 +22,7 @@ import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { useUserProfile } from '@/store/user-profile';
 import clsx from 'clsx';
 import isEqual from 'lodash/isEqual';
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useFocusWithin, useHover } from 'react-aria';
 import { useInView } from 'react-intersection-observer';
 import { mergeRefs } from 'react-merge-refs';
@@ -34,7 +34,7 @@ import { useAssistantModal } from '../providers/AssistantModalProvider';
 import { useChat } from '../providers/chat-context';
 import { MessageFeedbackProvider } from '../providers/MessageFeedbackProvider';
 import { RunProvider } from '../providers/RunProvider';
-import { ChatMessage } from '../types';
+import { BotChatMessage, ChatMessage } from '../types';
 import { getRunSetup, isBotMessage } from '../utils';
 import { ActionBar } from './ActionBar';
 import { ErrorMessage } from './ErrorMessage';
@@ -42,12 +42,15 @@ import { AttachmentLink } from './markdown/AttachmentLink';
 import classes from './Message.module.scss';
 import { MessageContent } from './MessageContent';
 import { RunSetupDelta } from './RunSetupDelta';
+import { SkeletonIcon, SkeletonText } from '@carbon/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { fadeProps } from '@/utils/fadeProps';
 
 interface Props {
   message: ChatMessage;
   isPast?: boolean;
   isScrolled?: boolean;
-  nextRunSetup?: RunSetup;
+  nextBotMessage?: BotChatMessage;
   currentSetup?: RunSetup;
 }
 
@@ -55,9 +58,10 @@ export const Message = memo(function Message({
   message,
   isPast,
   isScrolled,
-  nextRunSetup,
+  nextBotMessage,
   currentSetup,
 }: Props) {
+  const id = useId();
   const contentRef = useRef<HTMLLIElement>(null);
   const { thread, builderState } = useChat();
   const { setMessages } = useChat();
@@ -71,6 +75,17 @@ export const Message = memo(function Message({
     runId: message.run_id,
     enabled: inView,
   });
+
+  const { data: nextRunData } = useRun({
+    threadId: thread?.id,
+    runId: nextBotMessage?.run_id,
+    enabled: Boolean(inView && isBotMessage(message) && nextBotMessage),
+  });
+
+  const nextRunSetup = useMemo(() => {
+    const nextRun = nextRunData || nextBotMessage?.run;
+    return nextRun ? getRunSetup(nextRun) : undefined;
+  }, [nextBotMessage?.run, nextRunData]);
 
   useEffect(() => {
     if (run) {
@@ -113,70 +128,74 @@ export const Message = memo(function Message({
         run={run}
         message={isBotMessage(message) ? message : undefined}
       >
-        <li
-          ref={mergeRefs([contentRef, inViewRef])}
-          className={clsx(classes.root, {
-            [classes.hovered]: showActions,
-            [classes.isBuilder]: builderState,
-            [classes.hasOutdatedSetup]: hasOutdatedSetup,
-          })}
-          {...focusWithinProps}
-          {...contentHover.hoverProps}
-          onBlur={() => {
-            setFocusWithin(false);
-          }}
-        >
-          <Container size="sm" className={classes.container}>
-            <div
-              className={clsx(classes.holder, {
-                [classes.user]: message.role === 'user',
-                [classes.past]: isPast && !showActions,
-                [classes.scrolled]: isScrolled,
+        <AnimatePresence>
+          <motion.section {...fadeProps()} key={`${id}:root`} role="status">
+            <li
+              ref={mergeRefs([contentRef, inViewRef])}
+              className={clsx(classes.root, {
+                [classes.hovered]: showActions,
+                [classes.isBuilder]: builderState,
+                [classes.hasOutdatedSetup]: hasOutdatedSetup,
               })}
+              {...focusWithinProps}
+              {...contentHover.hoverProps}
+              onBlur={() => {
+                setFocusWithin(false);
+              }}
             >
-              <div className={classes.content}>
-                <Sender message={message} />
-                <MessageContent message={message} />
-              </div>
-
-              {files && files.length > 0 && (
-                <AttachmentsList className={classes.files}>
-                  {files.map(({ file }) => {
-                    return file ? (
-                      <li key={file.id}>
-                        <AttachmentLink
-                          fileId={file.id}
-                          filename={file.filename}
-                          size="md"
-                        />
-                      </li>
-                    ) : null;
+              <Container size="sm" className={classes.container}>
+                <div
+                  className={clsx(classes.holder, {
+                    [classes.user]: message.role === 'user',
+                    [classes.past]: isPast && !showActions,
+                    [classes.scrolled]: isScrolled,
                   })}
-                </AttachmentsList>
-              )}
+                >
+                  <div className={classes.content}>
+                    <Sender message={message} />
+                    <MessageContent message={message} />
+                  </div>
 
-              {isAssistant && (
-                <PlanWithSources message={message} inView={inView} />
-              )}
+                  {files && files.length > 0 && (
+                    <AttachmentsList className={classes.files}>
+                      {files.map(({ file }) => {
+                        return file ? (
+                          <li key={file.id}>
+                            <AttachmentLink
+                              fileId={file.id}
+                              filename={file.filename}
+                              size="md"
+                            />
+                          </li>
+                        ) : null;
+                      })}
+                    </AttachmentsList>
+                  )}
 
-              {message.error != null && (
-                <ErrorMessage
-                  error={message.error}
-                  message={message}
-                  className={classes.error}
-                  hideRetry={isPast}
-                />
-              )}
-            </div>
-            {hasActions && (
-              <ActionBar
-                visible={showActions}
-                message={message}
-                isPast={isPast}
-              />
-            )}
-          </Container>
-        </li>
+                  {isAssistant && (
+                    <PlanWithSources message={message} inView={inView} />
+                  )}
+
+                  {message.error != null && (
+                    <ErrorMessage
+                      error={message.error}
+                      message={message}
+                      className={classes.error}
+                      hideRetry={isPast}
+                    />
+                  )}
+                </div>
+                {hasActions && (
+                  <ActionBar
+                    visible={showActions}
+                    message={message}
+                    isPast={isPast}
+                  />
+                )}
+              </Container>
+            </li>
+          </motion.section>
+        </AnimatePresence>
 
         {builderState && run && (nextRunSetup || currentSetup) && (
           <li>
@@ -231,4 +250,22 @@ function Sender({ message }: { message: ChatMessage }) {
       </figure>
     );
   }
+}
+
+export function MessageSkeleton() {
+  return (
+    <li className={clsx(classes.root, classes.skeleton)}>
+      <Container size="sm" className={classes.container}>
+        <div className={classes.holder}>
+          <div className={classes.content}>
+            <figure>
+              <SkeletonIcon className={classes.icon} />
+              <SkeletonText />
+            </figure>
+            <SkeletonText paragraph lineCount={2} />
+          </div>
+        </div>
+      </Container>
+    </li>
+  );
 }

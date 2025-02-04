@@ -30,6 +30,7 @@ import {
   ChatMessage,
   MessageMetadata,
   MessageWithFiles,
+  MessageWithFilesResponse,
 } from '@/modules/chat/types';
 import { isBotMessage } from '@/modules/chat/utils';
 import { useRoutes } from '@/routes/useRoutes';
@@ -57,7 +58,7 @@ import { SourceCodeEditor } from './SourceCodeEditor';
 interface Props {
   thread?: Thread;
   assistant: Assistant;
-  initialMessages?: MessageWithFiles[];
+  initialMessages?: MessageWithFilesResponse;
 }
 
 export function AppBuilder({ assistant, thread, initialMessages }: Props) {
@@ -122,13 +123,14 @@ export function AppBuilder({ assistant, thread, initialMessages }: Props) {
   );
 
   const isEditAppThread = (() => {
-    const isInitialCloneState = code && !artifact && !initialMessages?.length;
-    const firstMessage = initialMessages?.at(0);
+    const messages = initialMessages?.data;
+    const isInitialCloneState = code && !artifact && !messages?.length;
+    const firstMessage = messages?.at(0);
     const isThreadWithClonedApp = firstMessage
       ? decodeMetadata<MessageMetadata>(firstMessage.metadata).type ===
         'code-update'
       : false;
-    const isAppWithoutThread = artifact && !initialMessages?.length;
+    const isAppWithoutThread = artifact && !messages?.length;
 
     return isInitialCloneState || isThreadWithClonedApp || isAppWithoutThread;
   })();

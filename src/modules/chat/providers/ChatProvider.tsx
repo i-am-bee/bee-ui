@@ -42,11 +42,7 @@ import {
   toolIncluded,
 } from '@/modules/tools/utils';
 import { isNotNull } from '@/utils/helpers';
-import {
-  FetchQueryOptions,
-  InfiniteData,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { FetchQueryOptions, useQueryClient } from '@tanstack/react-query';
 import truncate from 'lodash/truncate';
 import {
   PropsWithChildren,
@@ -88,8 +84,8 @@ import {
   SendMessageOptions,
 } from './chat-context';
 import { useFilesUpload } from './FilesUploadProvider';
-import { produce } from 'immer';
 import { useUpdateMessagesWithFilesQueryData } from '../hooks/useUpdateMessagesWithFilesQueryData';
+import { DraftFunction } from '@/hooks/useImmerWithGetter';
 
 const RUN_CONTROLLER_DEFAULT: RunController = {
   abortController: null,
@@ -152,7 +148,8 @@ export function ChatProvider({
 
   const threadAssistant = useGetThreadAssistant(thread, initialThreadAssistant);
   const {
-    messages: [getMessages, setMessages],
+    getMessages,
+    setMessages,
     queryControl: messagesQueryControl,
   } = useMessages({
     thread,
@@ -160,18 +157,27 @@ export function ChatProvider({
   });
   const { refetch: refetchMessages } = messagesQueryControl;
 
-  console.log({ messages: getMessages() });
-
   const handleToolApprovalSubmitRef = useRef<
     ((value: ToolApprovalValue) => void) | null
   >(null);
+
+  const updateCurrentMessage = useCallback(
+    (updater: DraftFunction<ChatMessage>) => {
+      setMessages((messages) => {
+        const message = messages.at(-1);
+        if (!message) throw Error('No current message exists.');
+        updater(message);
+      });
+    },
+    [setMessages],
+  );
 
   const { chatStream } = useChatStream({
     threadRef,
     controllerRef,
     onToolApprovalSubmitRef: handleToolApprovalSubmitRef,
     onMessageDeltaEventResponse,
-    setMessages,
+    updateCurrentMessage,
     updateController: (data: Partial<RunController>) => {
       setController((controller) => ({ ...controller, ...data }));
     },
@@ -402,7 +408,7 @@ export function ChatProvider({
 
   // check if last run finished successfully
   useEffect(() => {
-    if (thread && getMessages().at(0)?.role !== 'assistant') {
+    if (thread && getMessages().at(-1)?.role !== 'assistant') {
       queryClient
         .fetchQuery(
           threadsQueries.runsList(thread.id, {
@@ -412,7 +418,7 @@ export function ChatProvider({
           }) as FetchQueryOptions<RunsListResponse>,
         )
         .then((data) => {
-          const result = data?.data.at(0);
+          const result = data?.data.at(-1);
           if (result) {
             const run = decodeEntityWithMetadata<ThreadRun>(result);
             if (
@@ -424,7 +430,7 @@ export function ChatProvider({
 
             setMessages((messages) => {
               if (messages.at(0)?.role !== 'assistant')
-                messages.unshift({
+                messages.push({
                   key: uuid(),
                   role: 'assistant',
                   content: '',
@@ -575,9 +581,9 @@ export function ChatProvider({
               messages.pop();
             }
 
-            messages.unshift(userMessage);
+            messages.push(userMessage);
           }
-          messages.unshift({
+          messages.push({
             key: uuid(),
             role: 'assistant',
             content: '',

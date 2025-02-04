@@ -49,3 +49,4 @@ export * from './users';
 export * from './assistants';
 export * from './vector-stores';
 export * from './projects';
+export * from '@/modules/chat/api/messages';

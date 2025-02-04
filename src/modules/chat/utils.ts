@@ -48,6 +48,28 @@ export function getMessagesFromThreadMessages(
   );
 }
 
+export function getMessageFromThreadMessage({
+  id,
+  role,
+  content,
+  attachments,
+  files,
+  created_at,
+  run_id,
+}: MessageWithFiles): ChatMessage {
+  return {
+    key: id,
+    id,
+    role,
+    pending: false,
+    content: content.map(({ text: { value } }) => value).join(''),
+    attachments,
+    files,
+    created_at,
+    run_id,
+  } satisfies ChatMessage;
+}
+
 export function getThreadVectorStoreId(thread: Thread): string | null {
   return thread.tool_resources?.file_search?.vector_store_ids?.at(0) ?? null;
 }

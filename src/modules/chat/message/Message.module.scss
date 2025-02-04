@@ -137,3 +137,21 @@
     inline-size: rem(24px);
   }
 }
+
+.skeleton {
+  figure {
+    align-items: center;
+    margin-block-end: $spacing-04;
+
+    :global(.#{$prefix}--icon--skeleton) {
+      block-size: rem(32px);
+      inline-size: rem(32px);
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    p {
+      margin: 0;
+      max-inline-size: 12rem;
+    }
+  }
+}

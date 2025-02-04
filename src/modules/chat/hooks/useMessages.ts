@@ -18,8 +18,12 @@ import { Thread } from '@/app/api/threads/types';
 import { useImmerWithGetter } from '@/hooks/useImmerWithGetter';
 import { useListMessagesWithFiles } from '../api/queries/useListMessagesWithFiles';
 import { MessageWithFilesResponse } from '../types';
-import { getMessagesFromThreadMessages } from '../utils';
+import {
+  getMessageFromThreadMessage,
+  getMessagesFromThreadMessages,
+} from '../utils';
 import { useFetchNextPageInView } from '@/hooks/useFetchNextPageInView';
+import { useEffect } from 'react';
 
 export function useMessages({
   thread,
@@ -33,6 +37,21 @@ export function useMessages({
     initialData,
   });
 
+  const [getMessages, setMessages] = useImmerWithGetter(
+    thread ? getMessagesFromThreadMessages(data.toReversed() ?? []) : [],
+  );
+
+  useEffect(() => {
+    if (data) {
+      setMessages((messages) => {
+        data.forEach((message) => {
+          if (!messages.some(({ id }) => id === message.id))
+            messages.unshift(getMessageFromThreadMessage(message));
+        });
+      });
+    }
+  }, [data, setMessages]);
+
   const { fetchNextPage, isFetching, hasNextPage } = queryRest;
   const { ref: fetchNextPageInViewAnchorRef } = useFetchNextPageInView({
     onFetchNextPage: fetchNextPage,
@@ -41,9 +60,8 @@ export function useMessages({
   });
 
   return {
-    messages: useImmerWithGetter(
-      thread ? getMessagesFromThreadMessages(data ?? []) : [],
-    ),
+    getMessages,
+    setMessages,
     queryControl: {
       ...queryRest,
       fetchNextPageInViewAnchorRef,

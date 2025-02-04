@@ -58,13 +58,8 @@
 }
 
 @include breakpoint-up(lg) {
-  .root {
-    &::after {
-      block-size: rem(116px);
-    }
-  }
   .holder {
-    padding-block-start: rem(62px);
-    padding-block-end: $spacing-06;
+    padding-block-start: $spacing-08;
+    padding-block-end: $spacing-04;
   }
 }

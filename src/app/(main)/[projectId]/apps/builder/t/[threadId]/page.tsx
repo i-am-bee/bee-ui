@@ -29,6 +29,7 @@ import { notFound } from 'next/navigation';
 import { getMessagesFromThreadMessages } from '@/modules/chat/utils';
 import { MessageResult } from '@/app/api/threads-messages/types';
 import { getAppBuilderNavbarProps } from '../../../utils';
+import { MESSAGES_DEFAULT_PARAMS } from '@/modules/chat/api/queries/useListMessagesWithFiles';
 
 interface Props {
   params: {
@@ -51,9 +52,7 @@ export default async function AppBuilderPage({
     organizationId,
     projectId,
     threadId,
-    {
-      limit: MESSAGES_PAGE_SIZE,
-    },
+    MESSAGES_DEFAULT_PARAMS,
   );
 
   return (
@@ -62,7 +61,7 @@ export default async function AppBuilderPage({
     >
       <AppBuilderProvider
         code={extractCodeFromMessageContent(
-          getLastMessageWithStreamlitCode(initialMessages)?.content ?? '',
+          getLastMessageWithStreamlitCode(initialMessages?.data)?.content ?? '',
         )}
       >
         <AppBuilder
@@ -75,7 +74,9 @@ export default async function AppBuilderPage({
   );
 }
 
-function getLastMessageWithStreamlitCode(messages: MessageResult[]) {
+function getLastMessageWithStreamlitCode(messages?: MessageResult[]) {
+  if (!messages) return null;
+
   const chatMessages = getMessagesFromThreadMessages(messages);
   return chatMessages.findLast((message) =>
     Boolean(extractCodeFromMessageContent(message.content)),

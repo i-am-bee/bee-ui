@@ -31,11 +31,12 @@ import { ConversationHeader } from './ConversationHeader';
 import classes from './ConversationView.module.scss';
 import { FilesDropzone } from './layout/FilesDropzone';
 import { InputBar } from './layout/InputBar';
-import { Message } from './message/Message';
+import { Message, MessageSkeleton } from './message/Message';
 import { useFilesUpload } from './providers/FilesUploadProvider';
-import { BotChatMessage } from './types';
-import { getNewRunSetup, getRunSetup, isBotMessage } from './utils';
+import { BotChatMessage, ChatMessage } from './types';
+import { getNewRunSetup, isBotMessage } from './utils';
 import { useChat, useChatMessages } from './providers/chat-context';
+import { MESSAGES_PAGE_SIZE } from './api/messages';
 
 interface Props {
   onShowMobilePreviewButtonClick?: MouseEventHandler<HTMLButtonElement>;
@@ -60,6 +61,7 @@ export const ConversationView = memo(function ConversationView({
     messagesQueryControl: {
       fetchNextPageInViewAnchorRef,
       hasNextPage,
+      isFetchingNextPage,
       isLoading,
     },
   } = useChat();
@@ -112,21 +114,26 @@ export const ConversationView = memo(function ConversationView({
       <div className={classes.content} ref={scrollRef}>
         <div ref={bottomRef} />
         <ol className={classes.messages} aria-label="messages">
-          {initialAssistantMessage && (
+          {initialAssistantMessage && !hasNextPage && (
             <InitialBuilderMessage
               isPast={messages.length > 2}
               isScrolled={isScrolled}
               initialAssistantMessage={initialAssistantMessage}
             />
           )}
+
+          {isFetchingNextPage &&
+            Array.from({ length: MESSAGES_PAGE_SIZE }, (_, i) => (
+              <MessageSkeleton key={i} />
+            ))}
+
+          {hasNextPage && <li ref={fetchNextPageInViewAnchorRef}> </li>}
+
           {messages.map((msg, index, arr) => {
             const size = arr.length;
-            const evenMessages = size % 2 === 0;
-            const isPast = evenMessages ? index < size - 2 : index < size - 1;
+            const isPast = index < size - 2;
 
-            const nextBotMessage = isBotMessage(msg)
-              ? arr.at(index + 2)
-              : arr.at(index + 1);
+            const nextBotMessage = getNextBotMessage(index, messages);
 
             return (
               <Message
@@ -134,11 +141,7 @@ export const ConversationView = memo(function ConversationView({
                 message={msg}
                 isPast={isPast}
                 isScrolled={isScrolled}
-                nextRunSetup={
-                  isBotMessage(nextBotMessage) && nextBotMessage.run
-                    ? getRunSetup(nextBotMessage.run)
-                    : undefined
-                }
+                nextBotMessage={nextBotMessage}
                 currentSetup={
                   assistant.data && thread
                     ? getNewRunSetup(assistant.data, thread)
@@ -147,7 +150,6 @@ export const ConversationView = memo(function ConversationView({
               />
             );
           })}
-          {hasNextPage && <li ref={fetchNextPageInViewAnchorRef}> </li>}
         </ol>
       </div>
 
@@ -221,4 +223,13 @@ function InitialBuilderMessage({
   };
 
   return <Message message={message} isPast={isPast} isScrolled={isScrolled} />;
+}
+
+function getNextBotMessage(index: number, messages: ChatMessage[]) {
+  const nextBotMessage = messages.find(
+    (targetMessage, targetIndex) =>
+      targetIndex > index && isBotMessage(targetMessage),
+  );
+
+  return isBotMessage(nextBotMessage) ? nextBotMessage : undefined;
 }

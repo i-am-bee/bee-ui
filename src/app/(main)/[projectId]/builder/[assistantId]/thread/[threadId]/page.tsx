@@ -23,6 +23,7 @@ import {
 import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AssistantBuilderProvider } from '@/modules/assistants/builder/AssistantBuilderProvider';
 import { Builder } from '@/modules/assistants/builder/Builder';
+import { MESSAGES_DEFAULT_PARAMS } from '@/modules/chat/api/queries/useListMessagesWithFiles';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
 
@@ -52,9 +53,7 @@ export default async function AssistantBuilderPage({
     organizationId,
     projectId,
     threadId,
-    {
-      limit: MESSAGES_PAGE_SIZE,
-    },
+    MESSAGES_DEFAULT_PARAMS,
   );
 
   return (

@@ -24,6 +24,7 @@ import {
   MessageWithFilesResponse,
 } from '../../types';
 import { isNotNull } from '@/utils/helpers';
+import { MESSAGES_PAGE_SIZE } from '../messages';
 
 interface Props {
   threadId: string | undefined;
@@ -60,9 +61,8 @@ export function useListMessagesWithFiles({
   return query;
 }
 
-export const MESSAGES_DEFAULT_PAGE_SIZE = 2;
 export const MESSAGES_DEFAULT_PARAMS: MessagesListQuery = {
-  limit: MESSAGES_DEFAULT_PAGE_SIZE,
+  limit: MESSAGES_PAGE_SIZE,
   order: 'desc',
   order_by: 'created_at',
 };

@@ -23,7 +23,6 @@ import {
   MessagesListQuery,
   MessageUpdateBody,
 } from './types';
-import { MessageWithFiles } from '@/modules/chat/types';
 
 export async function createMessage(
   organizationId: string,

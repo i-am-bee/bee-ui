@@ -25,7 +25,10 @@ import { ChatHomeView } from '@/modules/chat/ChatHomeView';
 import { useChat } from '@/modules/chat/providers/chat-context';
 import { ChatProvider } from '@/modules/chat/providers/ChatProvider';
 import { FilesUploadProvider } from '@/modules/chat/providers/FilesUploadProvider';
-import { MessageWithFiles } from '@/modules/chat/types';
+import {
+  MessageWithFiles,
+  MessageWithFilesResponse,
+} from '@/modules/chat/types';
 import { VectorStoreFilesUploadProvider } from '@/modules/knowledge/files/VectorStoreFilesUploadProvider';
 import { useRoutes } from '@/routes/useRoutes';
 import { Button, InlineLoading, TextArea, TextInput } from '@carbon/react';
@@ -49,7 +52,7 @@ import { StarterQuestionsTextArea } from './StarterQuestionsTextArea';
 
 interface Props {
   thread?: Thread;
-  initialMessages?: MessageWithFiles[];
+  initialMessages?: MessageWithFilesResponse;
 }
 
 export function Builder({ thread, initialMessages }: Props) {

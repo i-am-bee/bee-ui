@@ -46,7 +46,7 @@ import {
   handleFailedResponse,
   maybeGetJsonBody,
 } from '@/app/api/utils';
-import { Updater } from '@/hooks/useImmerWithGetter';
+import { DraftFunction, Updater } from '@/hooks/useImmerWithGetter';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import {
   FunctionTool,
@@ -93,7 +93,7 @@ interface Props {
   onToolApprovalSubmitRef: MutableRefObject<
     ((value: ToolApprovalValue) => void) | null
   >;
-  setMessages: Updater<ChatMessage[]>;
+  updateCurrentMessage: (updater: DraftFunction<ChatMessage>) => void;
   updateController: (data: Partial<RunController>) => void;
   onMessageDeltaEventResponse?: (message: string) => void;
 }
@@ -103,7 +103,7 @@ export function useChatStream({
   controllerRef,
   onToolApprovalSubmitRef,
   onMessageDeltaEventResponse,
-  setMessages,
+  updateCurrentMessage,
   updateController,
 }: Props) {
   const queryClient = useQueryClient();
@@ -163,7 +163,7 @@ export function useChatStream({
         projectId: project.id,
         organizationId: organization.id,
         abortController,
-        setMessages,
+        updateCurrentMessage,
         handleRunEventResponse,
       });
     };
@@ -226,7 +226,7 @@ export function useChatStream({
         projectId: project.id,
         organizationId: organization.id,
         abortController,
-        setMessages,
+        updateCurrentMessage,
         handleRunEventResponse,
       });
     };
@@ -236,9 +236,7 @@ export function useChatStream({
         const runId = response.data?.id;
         if (runId) updateController({ runId });
 
-        setMessages((messages) => {
-          const message = messages.at(-1);
-
+        updateCurrentMessage((message) => {
           if (!isBotMessage(message)) {
             throw new Error('Unexpected last message found.');
           }
@@ -252,9 +250,7 @@ export function useChatStream({
         isMessageCreatedEventResponse(response) ||
         isMessageCompletedEventResponse(response)
       ) {
-        setMessages((messages) => {
-          const message = messages.at(-1);
-
+        updateCurrentMessage((message) => {
           if (!isBotMessage(message)) {
             throw new Error('Unexpected last message found.');
           }
@@ -309,7 +305,7 @@ export function useChatStream({
             projectId: project.id,
             body: encodeEntityWithMetadata<RunsCreateBodyDecoded>(action.body),
             abortController,
-            setMessages,
+            updateCurrentMessage,
             handleRunEventResponse,
           })
         : processToolApprovals(action.requiredAction, action.approve),
@@ -332,7 +328,7 @@ async function fetchEventStream({
   url,
   body,
   abortController,
-  setMessages,
+  updateCurrentMessage,
   handleRunEventResponse,
 }: {
   projectId: string;
@@ -341,7 +337,7 @@ async function fetchEventStream({
   handleRunEventResponse: (response: RunsCreateResponse) => void;
   body: RunsCreateBody | SubmitToolOutputsBody | SubmitToolApprovalsBody;
   abortController: AbortController | null;
-  setMessages: Updater<ChatMessage[]>;
+  updateCurrentMessage: (updater: DraftFunction<ChatMessage>) => void;
 }) {
   await fetchEventSource(url, {
     method: 'POST',
@@ -376,8 +372,7 @@ async function fetchEventStream({
       if (event === 'thread.run.failed') {
         throw makeAgentError(parsedData);
       } else if (event === 'retry') {
-        setMessages((messages) => {
-          const message = messages.at(-1);
+        updateCurrentMessage((message) => {
           if (!isBotMessage(message)) {
             throw new Error('Unexpected last message found.');
           }
@@ -391,8 +386,7 @@ async function fetchEventStream({
       }
     },
     onerror(error) {
-      setMessages((messages) => {
-        const message = messages.at(-1);
+      updateCurrentMessage((message) => {
         if (message != null) {
           message.error = error;
         }

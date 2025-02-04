@@ -65,3 +65,5 @@ export async function listMessagesWithFiles(
 
   return { ...responseWithoutData, data: messagesWithFiles };
 }
+
+export const MESSAGES_PAGE_SIZE = 10;
