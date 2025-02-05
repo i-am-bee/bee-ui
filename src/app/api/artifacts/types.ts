@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-import { paths } from '../schema';
+import { ApiQuery, ApiRequestBody, ApiResponse } from '@/@types/utils';
 import { FetchParamsOrderBy } from '../utils';
 
-export type ArtifactsListResponse =
-  paths['/v1/artifacts']['get']['responses']['200']['content']['application/json'];
+export type ArtifactsListResponse = ApiResponse<'/v1/artifacts'>;
 
-export type ArtifactResult =
-  paths['/v1/artifacts/{artifact_id}']['get']['responses']['200']['content']['application/json'];
+export type ArtifactResponse = ApiResponse<'/v1/artifacts/{artifact_id}'>;
 
-export type ArtifactDeleteResult =
-  paths['/v1/artifacts/{artifact_id}']['delete']['responses']['200']['content']['application/json'];
-
-export type ArtifactCreateBody = NonNullable<
-  paths['/v1/artifacts']['post']['requestBody']
->['content']['application/json'];
-
-export type ArtifactUpdateBody = NonNullable<
-  paths['/v1/artifacts/{artifact_id}']['post']['requestBody']
->['content']['application/json'];
-
-export type ArtifactsListQuery = NonNullable<
-  paths['/v1/artifacts']['get']['parameters']['query']
+export type ArtifactDeleteResponse = ApiResponse<
+  '/v1/artifacts/{artifact_id}',
+  'delete'
 >;
+
+export type ArtifactCreateBody = ApiRequestBody<'/v1/artifacts'>;
+
+export type ArtifactUpdateBody = ApiRequestBody<'/v1/artifacts/{artifact_id}'>;
+
+export type ArtifactsListQuery = ApiQuery<'/v1/artifacts'>;
 
 export type ArtifactsListQueryOrderBy = FetchParamsOrderBy<ArtifactsListQuery>;

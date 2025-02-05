@@ -16,21 +16,21 @@
 
 import { updateRun } from '@/app/api/threads-runs';
 import {
+  Run,
   RunsListResponse,
   RunUpdateBody,
-  ThreadRun,
 } from '@/app/api/threads-runs/types';
 import {
   decodeEntityWithMetadata,
   encodeEntityWithMetadata,
 } from '@/app/api/utils';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 type Props = {
-  onSuccess?: (data?: ThreadRun) => void;
+  onSuccess?: (data?: Run) => void;
 };
 
 export function useUpdateRun({ onSuccess }: Props = {}) {
@@ -56,18 +56,18 @@ export function useUpdateRun({ onSuccess }: Props = {}) {
         body,
       );
 
-      const run = result && decodeEntityWithMetadata<ThreadRun>(result);
+      const run = result && decodeEntityWithMetadata<Run>(result);
 
       return run;
     },
     onSuccess: (data, { threadId, runId }) => {
       onItemUpdate({
-        data: data && encodeEntityWithMetadata<ThreadRun>(data),
+        data: data && encodeEntityWithMetadata<Run>(data),
         listQueryKey: threadsQueries.runsLists(threadId),
         detailQueryKey: threadsQueries.runDetail(threadId, runId).queryKey,
       });
 
-      const run = data && decodeEntityWithMetadata<ThreadRun>(data);
+      const run = data && decodeEntityWithMetadata<Run>(data);
       onSuccess?.(run);
     },
   });

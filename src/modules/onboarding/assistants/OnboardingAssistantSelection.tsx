@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { useAppContext } from '@/layout/providers/AppProvider';
 import { Button } from '@carbon/react';
 import { ArrowRight } from '@carbon/react/icons';
 import { Dispatch, SetStateAction } from 'react';
@@ -33,8 +32,6 @@ export function OnboardingAssistantSelection({
   selected,
   onSelect,
 }: Props) {
-  const { project, organization } = useAppContext();
-
   return (
     <div>
       <div className={classes.grid}>
@@ -51,8 +48,6 @@ export function OnboardingAssistantSelection({
           <div className={classes.grid}>
             {templates.map((template) => (
               <AssistantTemplateCard
-                organization={organization}
-                project={project}
                 key={template.key}
                 template={template}
                 selected={template.key === selected?.key}

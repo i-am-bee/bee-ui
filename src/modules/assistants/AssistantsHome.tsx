@@ -21,7 +21,6 @@ import { useAppContext } from '@/layout/providers/AppProvider';
 import { useRoutes } from '@/routes/useRoutes';
 import { ONBOARDING_PARAM } from '@/utils/constants';
 import { noop } from '@/utils/helpers';
-import { useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
@@ -29,7 +28,6 @@ import { AssistantsList } from '../assistants/library/AssistantsList';
 import { GeneralOnboardingModal } from '../onboarding/general/GeneralOnboardingModal';
 import { ProjectHome } from '../projects/ProjectHome';
 import { ReadOnlyTooltipContent } from '../projects/ReadOnlyTooltipContent';
-import { useAssistantsQueries } from './api';
 import { useAssistants } from './api/queries/useAssistants';
 
 export function AssistantsHome() {
@@ -43,9 +41,6 @@ export function AssistantsHome() {
   const searchParams = useSearchParams();
   const showOnboarding =
     !isProjectReadOnly && searchParams?.has(ONBOARDING_PARAM);
-
-  const queryClient = useQueryClient();
-  const assistantsQueries = useAssistantsQueries();
 
   const params = {
     ...order,

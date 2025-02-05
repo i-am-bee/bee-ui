@@ -16,19 +16,19 @@
 
 import { deleteAssistant } from '@/app/api/assistants';
 import {
-  AssistantDeleteResult,
+  AssistantDeleteResponse,
   AssistantsListResponse,
 } from '@/app/api/assistants/types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
 import { Assistant } from '../../types';
 import { getAssistantName } from '../../utils';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
-  onSuccess?: (data?: AssistantDeleteResult) => void;
+  onSuccess?: (data?: AssistantDeleteResponse) => void;
 }
 
 export function useDeleteAssistant({ onSuccess }: Props = {}) {

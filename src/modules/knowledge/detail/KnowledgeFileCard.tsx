@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreFileResponse } from '@/app/api/vector-stores-files/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
@@ -31,8 +31,8 @@ import { useDeleteVectorStoreFile } from '../api/mutations/useDeleteVectorStoreF
 import classes from './KnowledgeFileCard.module.scss';
 
 interface Props {
-  vectorStore: VectorStore;
-  vectorStoreFile: VectorStoreFile;
+  vectorStore: VectorStoreResponse;
+  vectorStoreFile: VectorStoreFileResponse;
   readOnly?: boolean;
   kind?: 'card' | 'list';
 }
@@ -116,7 +116,11 @@ KnowledgeFileCard.Skeleton = function Skeleton() {
   );
 };
 
-function FileStatus({ vectorStoreFile }: { vectorStoreFile: VectorStoreFile }) {
+function FileStatus({
+  vectorStoreFile,
+}: {
+  vectorStoreFile: VectorStoreFileResponse;
+}) {
   if (vectorStoreFile.status === 'completed') return null;
 
   return (

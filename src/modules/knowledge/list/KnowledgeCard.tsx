@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  VectorStore,
-  VectorStoreCreateResponse,
-  VectorStoreDeleteResponse,
-} from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { Tooltip } from '@/components/Tooltip/Tooltip';
 import { useAppContext } from '@/layout/providers/AppProvider';
@@ -33,7 +29,7 @@ import classes from './KnowledgeCard.module.scss';
 import { RenameModal } from './RenameModal';
 
 interface Props {
-  vectorStore: VectorStore;
+  vectorStore: VectorStoreResponse;
 }
 
 export function KnowledgeCard({ vectorStore }: Props) {
@@ -99,7 +95,7 @@ export function KnowledgeItemsInfo({
   vectorStore,
   showStatus,
 }: {
-  vectorStore: VectorStore;
+  vectorStore: VectorStoreResponse;
   showStatus?: boolean;
 }) {
   return (

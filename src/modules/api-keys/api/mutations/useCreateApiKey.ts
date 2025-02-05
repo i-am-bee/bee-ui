@@ -15,14 +15,14 @@
  */
 
 import { createApiKey } from '@/app/api/api-keys';
-import { ApiKey, ApiKeysCreateBody } from '@/app/api/api-keys/types';
+import { ApiKeyCreateBody, ApiKeyResponse } from '@/app/api/api-keys/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { ProjectWithScope } from '@/modules/projects/types';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
 interface Props {
-  onSuccess?: (data?: ApiKey) => void;
+  onSuccess?: (data?: ApiKeyResponse) => void;
 }
 
 export function useCreateApiKey({ onSuccess }: Props = {}) {
@@ -33,7 +33,7 @@ export function useCreateApiKey({ onSuccess }: Props = {}) {
     mutationFn: ({
       project,
       ...body
-    }: { project: ProjectWithScope } & ApiKeysCreateBody) =>
+    }: { project: ProjectWithScope } & ApiKeyCreateBody) =>
       createApiKey(organization.id, project.id, body),
     onSuccess,
     meta: {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AssistantResult, ToolResources } from '@/app/api/assistants/types';
+import { AssistantResponse, ToolResources } from '@/app/api/assistants/types';
 import { EntityWithDecodedMetadata } from '@/app/api/types';
 import {
   AssistantIconColor,
@@ -31,7 +31,7 @@ export interface AssistantMetadata extends StarterQuestionsMetadata {
 }
 
 export type Assistant = EntityWithDecodedMetadata<
-  AssistantResult,
+  AssistantResponse,
   AssistantMetadata
 >;
 

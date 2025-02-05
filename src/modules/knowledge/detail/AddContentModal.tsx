@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreFileResponse } from '@/app/api/vector-stores-files/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
@@ -34,8 +34,8 @@ import {
 } from '../files/VectorStoreFilesUploadProvider';
 
 interface Props extends ModalProps {
-  vectorStore: VectorStore;
-  onCreateSuccess: (vectorStoreFile?: VectorStoreFile) => void;
+  vectorStore: VectorStoreResponse;
+  onCreateSuccess: (vectorStoreFile?: VectorStoreFileResponse) => void;
 }
 
 export function AddContentModal({

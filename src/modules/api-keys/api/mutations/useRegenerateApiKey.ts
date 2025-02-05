@@ -15,13 +15,13 @@
  */
 
 import { createApiKey, deleteApiKey } from '@/app/api/api-keys';
-import { ApiKey } from '@/app/api/api-keys/types';
+import { ApiKeyResponse } from '@/app/api/api-keys/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
 
 interface Props {
-  onSuccess?: (data?: ApiKey) => void;
+  onSuccess?: (data?: ApiKeyResponse) => void;
 }
 
 export function useRegenerateApiKey({ onSuccess }: Props = {}) {
@@ -29,7 +29,7 @@ export function useRegenerateApiKey({ onSuccess }: Props = {}) {
   const apiKeysQueries = useApiKeysQueries();
 
   const mutation = useMutation({
-    mutationFn: async ({ id, name, project }: ApiKey) => {
+    mutationFn: async ({ id, name, project }: ApiKeyResponse) => {
       const apiKey = await createApiKey(organization.id, project.id, { name });
       await deleteApiKey(organization.id, project.id, id);
 

@@ -16,10 +16,10 @@
 
 import {
   MessageAttachments,
-  MessageResult,
+  MessageResponse,
   MessagesListResponse,
 } from '@/app/api/threads-messages/types';
-import { AssistantPlan, ThreadRun } from '@/app/api/threads-runs/types';
+import { AssistantPlan, Run } from '@/app/api/threads-runs/types';
 import { EntityWithDecodedMetadata } from '@/app/api/types';
 import { Assistant } from '../assistants/types';
 import { VectoreStoreFileUpload } from '../knowledge/files/VectorStoreFilesUploadProvider';
@@ -34,9 +34,12 @@ export interface MessageMetadata {
   type?: 'code-update' | 'report-error';
 }
 
-export type Message = EntityWithDecodedMetadata<MessageResult, MessageMetadata>;
+export type Message = EntityWithDecodedMetadata<
+  MessageResponse,
+  MessageMetadata
+>;
 
-export type MessageWithFiles = MessageResult & {
+export type MessageWithFiles = MessageResponse & {
   files?: Partial<VectoreStoreFileUpload>[];
 };
 
@@ -63,8 +66,8 @@ export type BotChatMessage = ChatMessageBase & {
   role: 'assistant';
   plan?: AssistantPlan;
   pending: boolean;
-  previousRun?: ThreadRun;
-  run?: ThreadRun;
+  previousRun?: Run;
+  run?: Run;
 };
 
 export type ChatMessage = UserChatMessage | BotChatMessage;

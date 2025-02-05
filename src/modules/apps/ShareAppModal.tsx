@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { ModalBody, ModalHeader } from '@carbon/react';

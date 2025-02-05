@@ -16,18 +16,18 @@
 
 import { createTool, updateTool } from '@/app/api/tools';
 import {
-  ToolResult,
-  ToolsCreateBody,
+  ToolCreateBody,
+  ToolResponse,
   ToolsListResponse,
   ToolUpdateBody,
 } from '@/app/api/tools/types';
-import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
-import { useToolsQueries } from '..';
 import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
+import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
+import { useToolsQueries } from '..';
 
 interface Props {
-  onSuccess?: (data?: ToolResult, isNew?: boolean) => void;
+  onSuccess?: (data?: ToolResponse, isNew?: boolean) => void;
 }
 
 export function useSaveTool({ onSuccess }: Props = {}) {
@@ -64,5 +64,5 @@ export function useSaveTool({ onSuccess }: Props = {}) {
 }
 
 type MutationBody =
-  | { id: null; body: ToolsCreateBody }
+  | { id: null; body: ToolCreateBody }
   | { id: string; body: ToolUpdateBody };

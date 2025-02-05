@@ -15,9 +15,9 @@
  */
 
 import {
-  VectorStoresListResponse,
-  VectorStore,
+  VectorStoreResponse,
   VectorStoresListQuery,
+  VectorStoresListResponse,
 } from '@/app/api/vector-stores/types';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
 import { useAppContext } from '@/layout/providers/AppProvider';
@@ -31,7 +31,7 @@ import { useEffect } from 'react';
 import { useVectorStoresQueries } from '../api';
 
 export const useUpdatePendingVectorStore = (
-  data: VectorStore[],
+  data: VectorStoreResponse[],
   params: VectorStoresListQuery,
 ) => {
   const queryClient = useQueryClient();

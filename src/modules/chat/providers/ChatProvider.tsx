@@ -17,8 +17,8 @@
 import { ApiError } from '@/app/api/errors';
 import { createMessage } from '@/app/api/threads-messages';
 import {
+  Run,
   RunsListResponse,
-  ThreadRun,
   ToolApprovals,
 } from '@/app/api/threads-runs/types';
 import { isRequiredActionToolApprovals } from '@/app/api/threads-runs/utils';
@@ -287,7 +287,7 @@ export function ChatProvider({
   ]);
 
   const requireUserApproval = useCallback(
-    async (run: ThreadRun) => {
+    async (run: Run) => {
       const requiredAction = run.required_action;
       if (
         run.status !== 'requires_action' ||
@@ -356,7 +356,7 @@ export function ChatProvider({
         .then((data) => {
           const result = data?.data.at(-1);
           if (result) {
-            const run = decodeEntityWithMetadata<ThreadRun>(result);
+            const run = decodeEntityWithMetadata<Run>(result);
             if (
               run.status === 'requires_action' &&
               run.required_action?.type === 'submit_tool_approvals'

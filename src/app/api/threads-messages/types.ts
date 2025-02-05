@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-import { paths } from '../schema';
+import { ApiQuery, ApiRequestBody, ApiResponse } from '@/@types/utils';
 
-export type MessageCreateBody = NonNullable<
-  paths['/v1/threads/{thread_id}/messages']['post']['requestBody']['content']['application/json']
->;
+export type MessagesListResponse =
+  ApiResponse<'/v1/threads/{thread_id}/messages'>;
 
-export type MessagesListResponse = NonNullable<
-  paths['/v1/threads/{thread_id}/messages']['get']['responses']['200']['content']['application/json']
->;
+export type MessageResponse =
+  ApiResponse<'/v1/threads/{thread_id}/messages/{message_id}'>;
 
-export type MessagesListQuery = NonNullable<
-  paths['/v1/threads/{thread_id}/messages']['get']['parameters']['query']
->;
+export type MessageCreateBody =
+  ApiRequestBody<'/v1/threads/{thread_id}/messages'>;
 
-export type MessageUpdateBody = NonNullable<
-  paths['/v1/threads/{thread_id}/messages/{message_id}']['post']['requestBody']
->['content']['application/json'];
+export type MessageUpdateBody =
+  ApiRequestBody<'/v1/threads/{thread_id}/messages/{message_id}'>;
 
-export type MessageResult = MessagesListResponse['data'][number];
+export type MessagesListQuery = ApiQuery<'/v1/threads/{thread_id}/messages'>;
 
 export type MessageAttachments = NonNullable<MessageCreateBody['attachments']>;
 
@@ -56,11 +52,11 @@ const MessageFeedbackCategories = [
   'latency',
 ] as const;
 
-export type MessageFeedbackCategories =
+export type MessageFeedbackCategory =
   (typeof MessageFeedbackCategories)[number];
 
 export type MessageFeedback = {
-  categories?: MessageFeedbackCategories[];
+  categories?: MessageFeedbackCategory[];
   comment?: string;
   vote?: 'up' | 'down';
 };

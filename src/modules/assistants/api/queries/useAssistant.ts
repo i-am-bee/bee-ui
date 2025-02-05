@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AssistantResult } from '@/app/api/assistants/types';
+import { AssistantResponse } from '@/app/api/assistants/types';
 import { QueryMetadata } from '@/layout/providers/QueryProvider';
 import { QueryOptions, useQuery } from '@tanstack/react-query';
 import { useAssistantsQueries } from '..';
@@ -22,7 +22,7 @@ import { useAssistantsQueries } from '..';
 interface Props {
   id: string | undefined;
   meta?: QueryMetadata;
-  initialData?: AssistantResult;
+  initialData?: AssistantResponse;
   enabled?: boolean;
   retry?: QueryOptions['retry'];
   throwOnError?: (error: Error) => boolean;

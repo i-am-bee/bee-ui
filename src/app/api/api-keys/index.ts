@@ -16,12 +16,12 @@
 
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { ApiKeysCreateBody, ApiKeysListQuery } from './types';
+import { ApiKeyCreateBody, ApiKeysListQuery } from './types';
 
 export async function createApiKey(
   organizationId: string,
   projectId: string,
-  body: ApiKeysCreateBody,
+  body: ApiKeyCreateBody,
 ) {
   const res = await client.POST(
     '/v1/organization/projects/{project_id}/api_keys',
@@ -71,7 +71,7 @@ export async function updateApiKey(
   organizationId: string,
   projectId: string,
   id: string,
-  body: ApiKeysCreateBody,
+  body: ApiKeyCreateBody,
 ) {
   const res = await client.POST(
     '/v1/organization/projects/{project_id}/api_keys/{api_key_id}',

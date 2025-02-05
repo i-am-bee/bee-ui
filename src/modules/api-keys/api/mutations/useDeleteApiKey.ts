@@ -16,17 +16,17 @@
 
 import { deleteApiKey } from '@/app/api/api-keys';
 import {
-  ApiKey,
-  ApiKeyDeleteResult,
+  ApiKeyDeleteResponse,
+  ApiKeyResponse,
   ApiKeysListResponse,
 } from '@/app/api/api-keys/types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useApiKeysQueries } from '..';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
-  onSuccess?: (data?: ApiKeyDeleteResult) => void;
+  onSuccess?: (data?: ApiKeyDeleteResponse) => void;
 }
 
 export function useDeleteApiKey({ onSuccess }: Props = {}) {
@@ -37,7 +37,7 @@ export function useDeleteApiKey({ onSuccess }: Props = {}) {
   });
 
   const mutation = useMutation({
-    mutationFn: ({ project, id }: ApiKey) =>
+    mutationFn: ({ project, id }: ApiKeyResponse) =>
       deleteApiKey(organization.id, project.id, id),
     onSuccess: (data, { id }) => {
       onItemDelete({ id, listQueryKey: apiKeysQueries.lists() });

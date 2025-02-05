@@ -16,12 +16,12 @@
 
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { ToolsCreateBody, ToolsListQuery, ToolUpdateBody } from './types';
+import { ToolCreateBody, ToolsListQuery, ToolUpdateBody } from './types';
 
 export async function createTool(
   organizationId: string,
   projectId: string,
-  body: ToolsCreateBody,
+  body: ToolCreateBody,
 ) {
   const res = await client.POST('/v1/tools', {
     body,
