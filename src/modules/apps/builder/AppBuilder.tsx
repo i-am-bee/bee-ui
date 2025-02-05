@@ -327,7 +327,6 @@ function AppBuilderContent() {
                     className={classes.shareButton}
                     kind="tertiary"
                     size="sm"
-                    align="bottom"
                     disabled={!artifact}
                     onClick={
                       artifact

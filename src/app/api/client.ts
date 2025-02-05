@@ -26,16 +26,6 @@ if (!API_URL.endsWith('/')) {
 
 export const client = createApiClient<paths>(API_URL);
 
-client.use({
-  onRequest: (req) => {
-    if (req.method.toLocaleLowerCase() === 'delete') {
-      req.headers.delete('Content-Type');
-    }
-
-    return req;
-  },
-});
-
 export function createApiClient<T extends Record<string, any>>(
   baseUrl: string,
   path?: string,
