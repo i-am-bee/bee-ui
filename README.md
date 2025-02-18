@@ -1,7 +1,12 @@
 <p align="center">
-    <img src="./docs/assets/Bee_Dark.svg" height="128">
-    <h1 align="center">Bee UI</h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="/docs/assets/Bee_logo_white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="/docs/assets/Bee_logo_black.svg">
+    <img alt="Bee Framework logo" height="90">
+  </picture>
 </p>
+
+<h1 align="center">bee-ui</h1>
 
 <p align="center">
   <a aria-label="Join the community on GitHub" href="https://github.com/i-am-bee/bee-ui/discussions">
