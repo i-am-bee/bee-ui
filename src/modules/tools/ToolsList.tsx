@@ -17,8 +17,7 @@
 'use client';
 import { ToolType } from '@/app/api/threads-runs/types';
 import {
-  ToolDeleteResult,
-  ToolResult,
+  ToolResponse,
   ToolsListQuery,
   ToolsListResponse,
   ToosListQueryOrderBy,
@@ -42,7 +41,7 @@ interface Props {
 }
 
 export function ToolsList({ type }: Props) {
-  const { organization, isProjectReadOnly, featureFlags } = useAppContext();
+  const { organization, isProjectReadOnly } = useAppContext();
   const [order, setOrder] = useState<ToosListQueryOrderBy>(TOOLS_ORDER_DEFAULT);
   const { openModal } = useModal();
   const [search, setSearch] = useDebounceValue('', 200);
@@ -82,7 +81,7 @@ export function ToolsList({ type }: Props) {
     isFetchingNextPage,
   } = useTools({ params });
 
-  const handleCreateSuccess = (tool: ToolResult) => {
+  const handleCreateSuccess = (tool: ToolResponse) => {
     queryClient.setQueryData<InfiniteData<ToolsListResponse>>(
       toolsQueries.list(params).queryKey,
       produce((draft) => {

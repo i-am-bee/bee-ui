@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { ToolResult } from '@/app/api/tools/types';
+import { ToolResponse } from '@/app/api/tools/types';
 import { useQuery } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
 
 interface Props {
   id: string;
   enabled?: boolean;
-  initialData?: ToolResult;
+  initialData?: ToolResponse;
 }
 
 export function useTool({ id, ...props }: Props) {

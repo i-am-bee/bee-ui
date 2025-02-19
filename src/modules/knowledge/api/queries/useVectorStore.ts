@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { useQuery } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
 
 interface Props {
   id: string | undefined;
   enabled?: boolean;
-  initialData?: VectorStore;
+  initialData?: VectorStoreResponse;
 }
 
 export function useVectorStore({ id, enabled = true, ...props }: Props) {

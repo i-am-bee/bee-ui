@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-import { paths } from '../schema';
+import { ApiQuery, ApiRequestBody, ApiResponse } from '@/@types/utils';
 import { FetchParamsOrderBy } from '../utils';
 
-export type AssistantsListResponse =
-  paths['/v1/assistants']['get']['responses']['200']['content']['application/json'];
+export type AssistantsListResponse = ApiResponse<'/v1/assistants'>;
 
-export type AssistantResult =
-  paths['/v1/assistants/{assistant_id}']['get']['responses']['200']['content']['application/json'];
+export type AssistantResponse = ApiResponse<'/v1/assistants/{assistant_id}'>;
 
-export type AssistantDeleteResult =
-  paths['/v1/assistants/{assistant_id}']['delete']['responses']['200']['content']['application/json'];
-
-type AssistantCreateBodyApi = NonNullable<
-  paths['/v1/assistants']['post']['requestBody']
->['content']['application/json'];
-
-export type ToolResources = Pick<
-  NonNullable<AssistantCreateBodyApi['tool_resources']>,
-  'code_interpreter' | 'file_search'
+export type AssistantDeleteResponse = ApiResponse<
+  '/v1/assistants/{assistant_id}',
+  'delete'
 >;
+
+type AssistantCreateBodyApi = ApiRequestBody<'/v1/assistants', 'post'>;
 
 export type AssistantCreateBody = Omit<
   AssistantCreateBodyApi,
@@ -42,13 +35,16 @@ export type AssistantCreateBody = Omit<
   tool_resources?: ToolResources;
 };
 
-export type AssistantsListQuery = NonNullable<
-  paths['/v1/assistants']['get']['parameters']['query']
->;
+export type AssistantsListQuery = ApiQuery<'/v1/assistants'>;
 
 export type AssistantsListQueryOrderBy =
   FetchParamsOrderBy<AssistantsListQuery>;
 
 export type AssistantModel = AssistantCreateBody['model'];
 
-export type AssistantTool = AssistantResult['tools'][number];
+export type AssistantTool = AssistantResponse['tools'][number];
+
+export type ToolResources = Pick<
+  NonNullable<AssistantCreateBodyApi['tool_resources']>,
+  'code_interpreter' | 'file_search'
+>;

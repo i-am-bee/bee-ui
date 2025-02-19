@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { listUsers } from '@/app/api/organization-users';
-import { UsersListQuery } from '@/app/api/organization-users/types';
+import { listOrganizationUsers } from '@/app/api/organization-users';
+import { OrganizationUsersListQuery } from '@/app/api/organization-users/types';
 import { listProjectUsers, readProjectUser } from '@/app/api/projects-users';
 import { ProjectUsersListQuery } from '@/app/api/projects-users/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
@@ -86,8 +86,8 @@ export function useOrganizationUsersQueries() {
     () => ({
       all: () => ['organization-users'] as const,
       lists: () => [...organizationUsersQueries.all(), 'list'] as const,
-      list: (params?: UsersListQuery) => {
-        const usedParams: UsersListQuery = {
+      list: (params?: OrganizationUsersListQuery) => {
+        const usedParams: OrganizationUsersListQuery = {
           limit: PROJECT_USERS_DEFAULT_PAGE_SIZE,
           order: 'asc',
           order_by: 'created_at',
@@ -97,7 +97,7 @@ export function useOrganizationUsersQueries() {
         return infiniteQueryOptions({
           queryKey: [...organizationUsersQueries.lists(), usedParams],
           queryFn: ({ pageParam }: { pageParam?: string }) =>
-            listUsers(organization.id, {
+            listOrganizationUsers(organization.id, {
               ...usedParams,
               after: pageParam,
             }),

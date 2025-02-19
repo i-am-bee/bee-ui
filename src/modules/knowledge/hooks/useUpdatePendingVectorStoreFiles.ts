@@ -15,11 +15,11 @@
  */
 
 import {
-  VectorStoreFilesListResponse,
-  VectorStoreFile,
+  VectorStoreFileResponse,
   VectorStoreFilesListQuery,
+  VectorStoreFilesListResponse,
 } from '@/app/api/vector-stores-files/types';
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import {
@@ -32,8 +32,8 @@ import { useEffect } from 'react';
 import { useVectorStoresQueries } from '../api';
 
 export const useUpdatePendingVectorStoreFiles = (
-  vectorStore: VectorStore,
-  data: VectorStoreFile[],
+  vectorStore: VectorStoreResponse,
+  data: VectorStoreFileResponse[],
   params: VectorStoreFilesListQuery,
 ) => {
   const { project, organization } = useAppContext();

@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
+import { ApiRequestBody, ApiResponse } from '@/@types/utils';
 import { UserMetadata } from '@/store/user-profile/types';
-import { paths } from '../schema';
 import { EntityWithDecodedMetadata } from '../types';
 
-export type UserResult =
-  paths['/v1/users']['get']['responses']['200']['content']['application/json'];
+export type UserResponse = ApiResponse<'/v1/users'>;
 
-export type UserEntity = EntityWithDecodedMetadata<UserResult, UserMetadata>;
+export type UserCreateBody = ApiRequestBody<'/v1/users'>;
 
-export type UserCreateBody = NonNullable<
-  paths['/v1/users']['post']['requestBody']
->['content']['application/json'];
+export type UserUpdateBody = ApiRequestBody<'/v1/users', 'put'>;
 
-export type UserUpdateBody = NonNullable<
-  paths['/v1/users']['put']['requestBody']
->['content']['application/json'];
+export type UserEntity = EntityWithDecodedMetadata<UserResponse, UserMetadata>;

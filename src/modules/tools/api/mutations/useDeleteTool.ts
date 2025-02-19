@@ -17,17 +17,17 @@
 import { deleteTool } from '@/app/api/tools';
 import {
   Tool,
-  ToolDeleteResult,
+  ToolDeleteResponse,
   ToolsListResponse,
 } from '@/app/api/tools/types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useToolsQueries } from '..';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
-  onSuccess?: (data?: ToolDeleteResult) => void;
+  onSuccess?: (data?: ToolDeleteResponse) => void;
 }
 
 export function useDeleteTool({ onSuccess }: Props = {}) {

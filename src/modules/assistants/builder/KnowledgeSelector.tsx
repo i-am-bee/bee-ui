@@ -16,9 +16,9 @@
 
 import { MAX_API_FETCH_LIMIT } from '@/app/api/utils';
 import {
-  VectorStoresListResponse,
-  VectorStore,
   VectorStoreCreateResponse,
+  VectorStoreResponse,
+  VectorStoresListResponse,
 } from '@/app/api/vector-stores/types';
 import { DropdownSelector } from '@/components/DropdownSelector/DropdownSelector';
 import { Link } from '@/components/Link/Link';
@@ -130,7 +130,7 @@ export function KnowledgeSelector() {
 
       {data?.stores && (
         <div className={classes.select}>
-          <DropdownSelector<VectorStore>
+          <DropdownSelector<VectorStoreResponse>
             items={data.stores}
             onSubmit={(value) => {
               if (value === null) {

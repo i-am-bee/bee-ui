@@ -16,10 +16,7 @@
 
 import { Organization } from '@/app/api/organization/types';
 import { Project } from '@/app/api/projects/types';
-import {
-  VectorStore,
-  VectorStoreCreateResponse,
-} from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import {
@@ -36,7 +33,7 @@ import { useForm } from 'react-hook-form';
 import { useUpdateVectorStore } from '../api/mutations/useUpdateVectorStore';
 
 interface Props extends ModalProps {
-  vectorStore: VectorStore;
+  vectorStore: VectorStoreResponse;
   project: Project;
   organization: Organization;
 }

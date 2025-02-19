@@ -23,9 +23,10 @@ import {
   RequiredActionToolApprovals,
   RequiredActionToolOutput,
   ResponseToolCall,
+  RUN_EVENT_NAMES,
   RUN_STEP_EVENT_NAMES,
+  RunCreateResponse,
   RunEventResponse,
-  RunsCreateResponse,
   RunStepDeltaEventDetails,
   RunStepDeltaEventDetailsThought,
   RunStepDeltaEventResponse,
@@ -33,21 +34,20 @@ import {
   RunStepEventResponseDetail,
   RunStepEventResponseDetailToolCall,
   SystemToolCall,
-  THREAD_RUN_EVENT_NAMES,
   WebSearchToolResult,
   WikipediaToolResult,
 } from './types';
 
 export function isRunEventResponse(
-  response: RunsCreateResponse,
+  response: RunCreateResponse,
 ): response is RunEventResponse {
   return response.event
-    ? (THREAD_RUN_EVENT_NAMES as ReadonlyArray<string>).includes(response.event)
+    ? (RUN_EVENT_NAMES as ReadonlyArray<string>).includes(response.event)
     : false;
 }
 
 export function isStepEventResponse(
-  response: RunsCreateResponse,
+  response: RunCreateResponse,
 ): response is RunStepEventResponse {
   return response.event
     ? (RUN_STEP_EVENT_NAMES as ReadonlyArray<string>).includes(response.event)
@@ -55,25 +55,25 @@ export function isStepEventResponse(
 }
 
 export function isStepDeltaEventResponse(
-  response: RunsCreateResponse,
+  response: RunCreateResponse,
 ): response is RunStepDeltaEventResponse {
   return response.event === 'thread.run.step.delta';
 }
 
 export function isMessageDeltaEventResponse(
-  response: RunsCreateResponse,
+  response: RunCreateResponse,
 ): response is MessageDeltaEventResponse {
   return response.event === 'thread.message.delta';
 }
 
 export function isMessageCreatedEventResponse(
-  response: RunsCreateResponse,
+  response: RunCreateResponse,
 ): response is MessageCreatedEventResponse {
   return response.event === 'thread.message.created';
 }
 
 export function isMessageCompletedEventResponse(
-  response: RunsCreateResponse,
+  response: RunCreateResponse,
 ): response is MessageCompletedEventResponse {
   return response.event === 'thread.message.completed';
 }

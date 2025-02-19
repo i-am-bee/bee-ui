@@ -14,53 +14,42 @@
  * limitations under the License.
  */
 
+import { ApiQuery, ApiRequestBody, ApiResponse } from '@/@types/utils';
 import { Assistant } from '@/modules/assistants/types';
-import { paths } from '../schema';
 import { SystemToolId, ToolType } from '../threads-runs/types';
 import { EntityWithDecodedMetadata } from '../types';
 import { FetchParamsOrderBy } from '../utils';
 
-export type ToolsCreateBody = NonNullable<
-  paths['/v1/tools']['post']['requestBody']
->['content']['application/json'];
+export type ToolsListResponse = ApiResponse<'/v1/tools'>;
 
-export type ToolUpdateBody = NonNullable<
-  paths['/v1/tools/{tool_id}']['post']['requestBody']
->['content']['application/json'];
+export type ToolResponse = ApiResponse<'/v1/tools/{tool_id}'>;
 
-export type ToolResult = NonNullable<
-  paths['/v1/tools/{tool_id}']['get']['responses']['200']['content']['application/json']
->;
+export type ToolDeleteResponse = ApiResponse<'/v1/tools/{tool_id}', 'delete'>;
 
-export type ToolDeleteResult = NonNullable<
-  paths['/v1/tools/{tool_id}']['delete']['responses']['200']['content']['application/json']
->;
+export type ToolCreateBody = ApiRequestBody<'/v1/tools'>;
+
+export type ToolUpdateBody = ApiRequestBody<'/v1/tools/{tool_id}'>;
+
+export type SubmitToolOutputsBody =
+  ApiRequestBody<'/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs'>;
+
+export type SubmitToolApprovalsBody =
+  ApiRequestBody<'/v1/threads/{thread_id}/runs/{run_id}/submit_tool_approvals'>;
+
+export type ToolsListQuery = ApiQuery<'/v1/tools'>;
+
+export type ToosListQueryOrderBy = FetchParamsOrderBy<ToolsListQuery>;
 
 export type Tool = EntityWithDecodedMetadata<
-  ToolResult,
+  ToolResponse,
   {
     description_short?: string;
   }
 >;
 
-export type ToolsListQuery = NonNullable<
-  paths['/v1/tools']['get']['parameters']['query']
->;
-
-export type ToosListQueryOrderBy = FetchParamsOrderBy<ToolsListQuery>;
-
-export type ToolsListResponse =
-  paths['/v1/tools']['get']['responses']['200']['content']['application/json'];
-
 export type ToolsList = ToolsListResponse['data'];
 
-export type SubmitToolOutputsBody =
-  paths['/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs']['post']['requestBody']['content']['application/json'];
-
 export type SubmitToolOutput = SubmitToolOutputsBody['tool_outputs'][number];
-
-export type SubmitToolApprovalsBody =
-  paths['/v1/threads/{thread_id}/runs/{run_id}/submit_tool_approvals']['post']['requestBody']['content']['application/json'];
 
 export type ToolReference = (
   | {

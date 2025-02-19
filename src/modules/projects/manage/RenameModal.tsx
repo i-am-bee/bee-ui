@@ -39,7 +39,7 @@ interface Props extends ModalProps {
 // TODO: refactor - a lot of the same code as in CreateProjectModal.tsx
 export function RenameModal({ project, organization, ...props }: Props) {
   const htmlId = useId();
-  const { id, name } = project;
+  const { name } = project;
   const { data: projects } = useListAllProjects();
 
   const { mutateAsync: updateProject } = useUpdateProject({

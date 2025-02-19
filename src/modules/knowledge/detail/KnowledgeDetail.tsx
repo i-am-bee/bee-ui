@@ -15,19 +15,10 @@
  */
 
 'use client';
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { useModal } from '@/layout/providers/ModalProvider';
-import {
-  InfiniteData,
-  keepPreviousData,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
 // import { useDebounceValue } from 'usehooks-ts';
-import {
-  VectorStoreFilesListResponse,
-  VectorStoreFile,
-  VectorStoreFilesDeleteResponse,
-} from '@/app/api/vector-stores-files/types';
 import { CardsList } from '@/components/CardsList/CardsList';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { ProjectHome } from '@/modules/projects/ProjectHome';
@@ -35,7 +26,6 @@ import { ReadOnlyTooltipContent } from '@/modules/projects/ReadOnlyTooltipConten
 import { useRoutes } from '@/routes/useRoutes';
 import { IconButton } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
-import { produce } from 'immer';
 import {
   VECTOR_STORES_DEFAULT_PAGE_SIZE,
   useVectorStoresQueries,
@@ -50,7 +40,7 @@ import classes from './KnowledgeDetail.module.scss';
 import { KnowledgeFileCard } from './KnowledgeFileCard';
 
 interface Props {
-  vectorStore: VectorStore;
+  vectorStore: VectorStoreResponse;
 }
 
 export function KnowledgeDetail({ vectorStore: vectorStoreProps }: Props) {

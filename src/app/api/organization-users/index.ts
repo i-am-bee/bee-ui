@@ -16,9 +16,12 @@
 
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { UsersListQuery } from './types';
+import { OrganizationUsersListQuery } from './types';
 
-export async function listUsers(organizationId: string, query: UsersListQuery) {
+export async function listOrganizationUsers(
+  organizationId: string,
+  query: OrganizationUsersListQuery,
+) {
   const res = await client.GET('/v1/organization/users', {
     params: {
       query,

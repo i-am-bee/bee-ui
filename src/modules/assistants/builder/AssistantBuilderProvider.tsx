@@ -17,8 +17,7 @@
 'use client';
 import { AssistantModel } from '@/app/api/assistants/types';
 import { SystemToolId } from '@/app/api/threads-runs/types';
-import { ToolReference } from '@/app/api/tools/types';
-import { AssistantTools } from '@/app/api/types';
+import { ToolReference, ToolsUsage } from '@/app/api/tools/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import {
@@ -199,7 +198,7 @@ export function AssistantBuilderProvider({
       model,
       starterQuestions,
     }: AssistantFormValues) => {
-      const tools: AssistantTools = toolsValue
+      const tools: ToolsUsage = toolsValue
         .map(({ type, id }) => {
           if (type === 'user') return { type, user: { tool: { id } } };
           if (type === 'system')

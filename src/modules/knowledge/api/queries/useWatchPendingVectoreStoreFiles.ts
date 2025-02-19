@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import { VectorStoreFileResponse } from '@/app/api/vector-stores-files/types';
 import { useGetLinearIncreaseDuration } from '@/hooks/useGetLinearIncreaseDuration';
 import { isNotNull } from '@/utils/helpers';
 import { useQueries } from '@tanstack/react-query';
@@ -23,7 +23,7 @@ import { useVectorStoresQueries } from '..';
 
 export const useWatchPendingVectorStoreFiles = (
   vectorStoreId: string | null,
-  data: VectorStoreFile[],
+  data: VectorStoreFileResponse[],
 ) => {
   const vectorStoresQueries = useVectorStoresQueries();
   const { onResetDuration, getDuration } = useGetLinearIncreaseDuration({

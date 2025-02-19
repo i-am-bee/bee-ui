@@ -15,13 +15,13 @@
  */
 
 import { createProject } from '@/app/api/projects';
-import { Project, ProjectCreateBody } from '@/app/api/projects/types';
+import { ProjectCreateBody, ProjectResponse } from '@/app/api/projects/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useProjectsQueries } from '..';
 
 interface Props {
-  onSuccess?: (data?: Project) => void;
+  onSuccess?: (data?: ProjectResponse) => void;
 }
 
 export function useCreateProject({ onSuccess }: Props = {}) {

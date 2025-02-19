@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { UsersListQuery } from '@/app/api/organization-users/types';
+import { OrganizationUsersListQuery } from '@/app/api/organization-users/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useOrganizationUsersQueries } from '..';
 
 interface Props {
-  params?: UsersListQuery;
+  params?: OrganizationUsersListQuery;
   enabled?: boolean;
 }
 

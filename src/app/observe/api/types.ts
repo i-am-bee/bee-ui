@@ -21,8 +21,10 @@ export enum InterationType {
   FINAL_ANSWER = 'final_answer',
 }
 
-export type TraceSpan =
-  paths['/v1/traces/{trace_id}/spans']['get']['responses']['200']['content']['application/json']['results'][number];
+export type TraceSpansListResponse =
+  paths['/v1/traces/{trace_id}/spans']['get']['responses']['200']['content']['application/json'];
+
+export type TraceSpan = TraceSpansListResponse['results'][number];
 
 export type SpanDataValueRawWithMeta = {
   raw: {

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
+import { Run } from '@/app/api/threads-runs/types';
+import { RunSetup } from '@/modules/assistants/builder/Builder';
+import { KnowledgeBaseName } from '@/modules/knowledge/common/KnowledgeBaseName';
+import { ToolName } from '@/modules/tools/common/ToolName';
+import { getToolReferenceFromToolUsage } from '@/modules/tools/utils';
+import differenceWith from 'lodash/differenceWith';
+import isEqual from 'lodash/isEqual';
 import { useMemo } from 'react';
 import classes from './RunSetupDelta.module.scss';
-import { RunSetup } from '@/modules/assistants/builder/Builder';
-import { ThreadRun } from '@/app/api/threads-runs/types';
-import { getToolReferenceFromToolUsage } from '@/modules/tools/utils';
-import isEqual from 'lodash/isEqual';
-import differenceWith from 'lodash/differenceWith';
-import { ToolName } from '@/modules/tools/common/ToolName';
-import { KnowledgeBaseName } from '@/modules/knowledge/common/KnowledgeBaseName';
 
 export function RunSetupDelta({
   run,
   nextRunSetup,
 }: {
-  run: ThreadRun;
+  run: Run;
   nextRunSetup?: RunSetup;
 }) {
   const deltaMessages = useMemo(() => {
