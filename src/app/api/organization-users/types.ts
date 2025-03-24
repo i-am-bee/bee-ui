@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import { listUsers } from '.';
-import { paths } from '../schema';
+import { ApiQuery, ApiResponse } from '@/@types/utils';
 
-export type UsersListQuery = NonNullable<
-  paths['/v1/organization/users']['get']['parameters']['query']
->;
+export type OrganizationUsersListResponse =
+  ApiResponse<'/v1/organization/users'>;
 
-export type UsersListResponse = NonNullable<
-  Awaited<ReturnType<typeof listUsers>>
->;
+export type OrganizationUsersListQuery = ApiQuery<'/v1/organization/users'>;
 
-export type OrganizationUser = UsersListResponse['data'][number];
+export type OrganizationUser = OrganizationUsersListResponse['data'][number];

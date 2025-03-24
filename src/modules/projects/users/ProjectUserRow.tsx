@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ProjectUser } from '@/app/api/projects-users/types';
+import { ProjectUserResponse } from '@/app/api/projects-users/types';
 import { UserAvatar } from '@/components/UserAvatar/UserAvatar';
 import { useUserProfile } from '@/store/user-profile';
 import { SkeletonPlaceholder, SkeletonText } from '@carbon/react';
@@ -25,7 +25,7 @@ import { useDeleteProjectUser } from './api/mutations/useDeleteProjectUser';
 import { useUpdateProjectUser } from './api/mutations/useUpdateProjectUser';
 
 interface Props {
-  user: ProjectUser;
+  user: ProjectUserResponse;
 }
 
 export function ProjectUserRow({ user }: Props) {

@@ -15,7 +15,7 @@
  */
 
 import { createVectorStoreFile } from '@/app/api/vector-stores-files';
-import { VectorStoreFilesCreateResponse } from '@/app/api/vector-stores-files/types';
+import { VectorStoreFileCreateResponse } from '@/app/api/vector-stores-files/types';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
@@ -23,7 +23,7 @@ import { VectoreStoreFileUpload } from '../../files/VectorStoreFilesUploadProvid
 
 interface Props {
   onSuccess?: (
-    data: VectorStoreFilesCreateResponse,
+    data: VectorStoreFileCreateResponse | undefined,
     variables: VectorStoreFileCreateVariables,
   ) => void;
   onError?: (error: Error, variables: VectorStoreFileCreateVariables) => void;

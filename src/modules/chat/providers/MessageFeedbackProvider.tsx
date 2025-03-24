@@ -17,7 +17,7 @@
 'use client';
 
 import { MessageFeedback } from '@/app/api/threads-messages/types';
-import { ThreadRun } from '@/app/api/threads-runs/types';
+import { Run } from '@/app/api/threads-runs/types';
 import {
   createContext,
   Dispatch,
@@ -41,7 +41,7 @@ export type MessageFeedbackContextValue = {
   form: UseFormReturn<MessageFeedback>;
   formOpen: boolean;
   closeForm: () => void;
-  run?: ThreadRun;
+  run?: Run;
   onSubmit: (
     values: MessageFeedback,
     onSuccess?: (feedback?: MessageFeedback) => void,
@@ -56,7 +56,7 @@ export const MessageFeedbackContext =
   );
 
 interface Props {
-  run?: ThreadRun;
+  run?: Run;
 }
 
 type Vote = NonNullable<MessageFeedback['vote']>;

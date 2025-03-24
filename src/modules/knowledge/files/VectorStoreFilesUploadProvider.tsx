@@ -17,9 +17,9 @@
 'use client';
 
 import { ApiError } from '@/app/api/errors';
-import { FileEntity } from '@/app/api/files/types';
+import { FileResponse } from '@/app/api/files/types';
 import { Thread } from '@/app/api/threads/types';
-import { VectorStoreFile } from '@/app/api/vector-stores-files/types';
+import { VectorStoreFileResponse } from '@/app/api/vector-stores-files/types';
 import { UsageLimitModal } from '@/components/UsageLimitModal/UsageLimitModal';
 import { useStateWithRef } from '@/hooks/useStateWithRef';
 import { useHandleError } from '@/layout/hooks/useHandleError';
@@ -49,8 +49,8 @@ export type VectoreStoreFileUpload = {
   originalFile: File;
   status: 'new' | 'uploading' | 'embedding' | 'complete';
   isReadable?: boolean;
-  file?: FileEntity;
-  vectorStoreFile?: VectorStoreFile;
+  file?: FileResponse;
+  vectorStoreFile?: VectorStoreFileResponse;
 };
 
 const Context = createContext<{
@@ -77,7 +77,7 @@ const Context = createContext<{
 
 interface Props {
   vectorStoreId?: string;
-  onCreateFileSuccess?: (vectorStoreFile: VectorStoreFile) => void;
+  onCreateFileSuccess?: (vectorStoreFile: VectorStoreFileResponse) => void;
 }
 
 export const VectorStoreFilesUploadProvider = ({

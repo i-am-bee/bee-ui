@@ -18,10 +18,10 @@ import {
   MessageCompletedEventResponse,
   RequiredActionToolApprovals,
   RequiredActionToolOutput,
+  RunCreateBody,
+  RunCreateResponse,
   RunEventResponse,
   RunMetadata,
-  RunsCreateBody,
-  RunsCreateResponse,
 } from '@/app/api/threads-runs/types';
 import {
   isMessageCompletedEventResponse,
@@ -69,7 +69,7 @@ import { ChatMessage, ToolApprovalValue } from '../types';
 import { isBotMessage } from '../utils';
 
 type RunsCreateBodyDecoded = EntityWithDecodedMetadata<
-  RunsCreateBody,
+  RunCreateBody,
   RunMetadata
 >;
 
@@ -231,7 +231,7 @@ export function useChatStream({
       });
     };
 
-    async function handleRunEventResponse(response: RunsCreateResponse) {
+    async function handleRunEventResponse(response: RunCreateResponse) {
       if (response.event === 'thread.run.created') {
         const runId = response.data?.id;
         if (runId) updateController({ runId });
@@ -334,8 +334,8 @@ async function fetchEventStream({
   projectId: string;
   organizationId: string;
   url: string;
-  handleRunEventResponse: (response: RunsCreateResponse) => void;
-  body: RunsCreateBody | SubmitToolOutputsBody | SubmitToolApprovalsBody;
+  handleRunEventResponse: (response: RunCreateResponse) => void;
+  body: RunCreateBody | SubmitToolOutputsBody | SubmitToolApprovalsBody;
   abortController: AbortController | null;
   updateCurrentMessage: (updater: DraftFunction<ChatMessage>) => void;
 }) {
@@ -382,7 +382,7 @@ async function fetchEventStream({
         handleRunEventResponse({
           event,
           data: parsedData,
-        } as RunsCreateResponse);
+        } as RunCreateResponse);
       }
     },
     onerror(error) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ApiKey } from '@/app/api/api-keys/types';
+import { ApiKeyResponse } from '@/app/api/api-keys/types';
 import { Project } from '@/app/api/projects/types';
 import { Modal } from '@/components/Modal/Modal';
 import { SettingsFormGroup } from '@/components/SettingsFormGroup/SettingsFormGroup';
@@ -167,7 +167,7 @@ ApiKeyModal.Regenerate = function RegenerateModal({
   apiKey,
   ...props
 }: {
-  apiKey: ApiKey;
+  apiKey: ApiKeyResponse;
 } & ModalProps) {
   const { openModal } = useModal();
 
@@ -198,7 +198,7 @@ ApiKeyModal.View = function ViewModal({
   apiKey,
   ...props
 }: {
-  apiKey: ApiKey;
+  apiKey: ApiKeyResponse;
 } & ModalProps) {
   return (
     <Modal
@@ -226,7 +226,7 @@ ApiKeyModal.Delete = function DeleteModal({
   apiKey,
   ...props
 }: {
-  apiKey: ApiKey;
+  apiKey: ApiKeyResponse;
 } & ModalProps) {
   const { mutate: deleteApiKey, isPending } = useDeleteApiKey({
     onSuccess: () => props.onRequestClose(),
@@ -267,7 +267,7 @@ function ApiKeyDetail({
   apiKey,
   isSecretVisible,
 }: {
-  apiKey: ApiKey;
+  apiKey: ApiKeyResponse;
   isSecretVisible?: boolean;
 }) {
   const { name, project, secret } = apiKey;

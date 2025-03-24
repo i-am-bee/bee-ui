@@ -16,7 +16,7 @@
 
 import {
   MessageFeedback,
-  MessageFeedbackCategories,
+  MessageFeedbackCategory,
 } from '@/app/api/threads-messages/types';
 import { useToast } from '@/layout/providers/ToastProvider';
 import { Button, IconButton, Tag, TextArea, usePrefix } from '@carbon/react';
@@ -127,7 +127,7 @@ function Item({
   controllerProps,
   children,
 }: PropsWithChildren<{
-  value: MessageFeedbackCategories;
+  value: MessageFeedbackCategory;
   controllerProps: Omit<
     ControllerProps<MessageFeedback, 'categories'>,
     'render'
@@ -177,7 +177,7 @@ function Item({
 }
 
 const CATEGORIES: {
-  id: MessageFeedbackCategories;
+  id: MessageFeedbackCategory;
   label: string;
 }[] = [
   {

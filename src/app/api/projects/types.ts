@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-import { listProjects, updateProject } from '.';
-import { paths } from '../schema';
+import { ApiQuery, ApiRequestBody, ApiResponse } from '@/@types/utils';
 
-export type Project =
-  paths['/v1/organization/projects/{project_id}']['get']['responses']['200']['content']['application/json'];
+export type ProjectsListResponse = ApiResponse<'/v1/organization/projects'>;
 
-export type ProjectCreateBody = NonNullable<
-  paths['/v1/organization/projects']['post']['requestBody']
->['content']['application/json'];
+export type ProjectResponse =
+  ApiResponse<'/v1/organization/projects/{project_id}'>;
 
-export type ProjectUpdateResponse = NonNullable<
-  Awaited<ReturnType<typeof updateProject>>
+export type ProjectUpdateResponse = ApiResponse<
+  '/v1/organization/projects/{project_id}',
+  'post'
 >;
 
-export type ProjectsListQuery = NonNullable<
-  paths['/v1/organization/projects']['get']['parameters']['query']
->;
+export type ProjectCreateBody = ApiRequestBody<'/v1/organization/projects'>;
 
-export type ProjectsListResponse = NonNullable<
-  Awaited<ReturnType<typeof listProjects>>
->;
+export type ProjectsListQuery = ApiQuery<'/v1/organization/projects'>;
+
+export type Project = ProjectResponse;

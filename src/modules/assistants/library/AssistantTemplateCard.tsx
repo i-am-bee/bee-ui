@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { Organization } from '@/app/api/organization/types';
-import { Project } from '@/app/api/projects/types';
 import { ToolReference, ToolsUsage } from '@/app/api/tools/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useVectorStore } from '@/modules/knowledge/api/queries/useVectorStore';
@@ -39,17 +37,9 @@ interface Props {
   template: AssistantTemplate;
   selected?: boolean;
   onClick?: MouseEventHandler;
-  organization: Organization;
-  project: Project;
 }
 
-export function AssistantTemplateCard({
-  template,
-  selected,
-  organization,
-  project,
-  onClick,
-}: Props) {
+export function AssistantTemplateCard({ template, selected, onClick }: Props) {
   const { name, description, tools, tool_resources } = template;
   const vectorStoreId = tool_resources?.file_search?.vector_store_ids?.at(0);
 
@@ -69,26 +59,14 @@ export function AssistantTemplateCard({
       )}
 
       <div className={classes.footer}>
-        <ToolsInfo
-          organization={organization}
-          project={project}
-          tools={tools}
-        />
+        <ToolsInfo tools={tools} />
         {vectorStoreId && <KnowledgeInfo vectorStoreId={vectorStoreId} />}
       </div>
     </CardsListItem>
   );
 }
 
-function ToolsInfo({
-  tools,
-  organization,
-  project,
-}: {
-  tools: ToolsUsage;
-  organization: Organization;
-  project: Project;
-}) {
+function ToolsInfo({ tools }: { tools: ToolsUsage }) {
   const displayedTools = tools.slice(0, 3);
   const remainingToolsCount = tools.length - displayedTools.length;
   const [loadingStates, setLoadingStates] = useState(

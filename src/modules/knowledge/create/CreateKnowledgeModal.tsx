@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { Modal } from '@/components/Modal/Modal';
 import { ModalProps } from '@/layout/providers/ModalProvider';
 import { useToast } from '@/layout/providers/ToastProvider';
@@ -41,7 +41,7 @@ export interface CreateKnowledgeValues {
 }
 
 interface Props {
-  onCreateVectorStore?: (vectorStore: VectorStore) => void;
+  onCreateVectorStore?: (vectorStore: VectorStoreResponse) => void;
   onSuccess?: () => void;
 }
 
@@ -71,7 +71,7 @@ export function CreateKnowledgeModal({
 
 interface ContentProps {
   onSuccess: () => void;
-  onCreateVectorStore?: (vectorStore: VectorStore) => void;
+  onCreateVectorStore?: (vectorStore: VectorStoreResponse) => void;
 }
 
 function CreateKnowledgeModalContent({

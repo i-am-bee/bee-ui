@@ -17,11 +17,11 @@
 import {
   AssistantPlan,
   ResponseToolCall,
-  RunStep,
+  Run,
   RunStepDeltaEventResponse,
+  RunStepResponse,
   StepToolCall,
   SystemToolResult,
-  ThreadRun,
 } from '@/app/api/threads-runs/types';
 import {
   isArXivToolResult,
@@ -128,7 +128,7 @@ function formatToolOutput<T extends object>(
 }
 
 export function updatePlanWithRunStep(
-  runStep: RunStep,
+  runStep: RunStepResponse,
   plan?: AssistantPlan,
 ): AssistantPlan | undefined {
   if (!runStep) return plan;
@@ -237,7 +237,7 @@ export function getToolReferenceFromToolCall(toolCall: StepToolCall) {
       : { type: toolKey, id: toolKey };
 }
 
-export function getToolApproval(toolCall: StepToolCall, run?: ThreadRun) {
+export function getToolApproval(toolCall: StepToolCall, run?: Run) {
   const tool = getToolReferenceFromToolCall(toolCall);
 
   if (

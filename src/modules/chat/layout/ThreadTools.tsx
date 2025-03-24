@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
+import { ToolsUsage } from '@/app/api/tools/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
 import { ToolToggle } from '@/modules/assistants/tools/ToolToggle';
-import { toolsEqual, toolIncluded } from '@/modules/tools/utils';
-import { Assistant } from '@/modules/assistants/types';
+import { toolIncluded, toolsEqual } from '@/modules/tools/utils';
 import { useChat } from '../providers/chat-context';
 import { EmptyList } from './EmptyList';
 import classes from './ThreadTools.module.scss';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props {
-  assistantTools?: Assistant['tools'];
+  assistantTools?: ToolsUsage;
 }
 
 export function ThreadTools({ assistantTools = [] }: Props) {

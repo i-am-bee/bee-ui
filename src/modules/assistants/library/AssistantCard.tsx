@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { AssistantDeleteResult } from '@/app/api/assistants/types';
 import { CardsListItem } from '@/components/CardsList/CardsListItem';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { isNotNull } from '@/utils/helpers';

@@ -18,18 +18,17 @@ import {
   ensureAppBuilderAssistant,
   fetchThread,
   listMessagesWithFiles,
-  MESSAGES_PAGE_SIZE,
 } from '@/app/api/rsc';
+import { MessageResponse } from '@/app/api/threads-messages/types';
 import { ensureDefaultOrganizationId } from '@/app/auth/rsc';
 import { AppBuilder } from '@/modules/apps/builder/AppBuilder';
 import { AppBuilderProvider } from '@/modules/apps/builder/AppBuilderProvider';
 import { extractCodeFromMessageContent } from '@/modules/apps/utils';
+import { MESSAGES_DEFAULT_PARAMS } from '@/modules/chat/api/queries/useListMessagesWithFiles';
+import { getMessagesFromThreadMessages } from '@/modules/chat/utils';
 import { LayoutInitializer } from '@/store/layout/LayouInitializer';
 import { notFound } from 'next/navigation';
-import { getMessagesFromThreadMessages } from '@/modules/chat/utils';
-import { MessageResult } from '@/app/api/threads-messages/types';
 import { getAppBuilderNavbarProps } from '../../../utils';
-import { MESSAGES_DEFAULT_PARAMS } from '@/modules/chat/api/queries/useListMessagesWithFiles';
 
 interface Props {
   params: {
@@ -74,7 +73,7 @@ export default async function AppBuilderPage({
   );
 }
 
-function getLastMessageWithStreamlitCode(messages?: MessageResult[]) {
+function getLastMessageWithStreamlitCode(messages?: MessageResponse[]) {
   if (!messages) return null;
 
   const chatMessages = getMessagesFromThreadMessages(messages);

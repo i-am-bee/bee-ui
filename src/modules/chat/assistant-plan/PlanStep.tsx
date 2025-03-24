@@ -16,8 +16,8 @@
 
 import {
   AssistantPlanStep,
+  Run,
   StepToolCall,
-  ThreadRun,
 } from '@/app/api/threads-runs/types';
 import { Thread } from '@/app/api/threads/types';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
@@ -325,7 +325,7 @@ type ExtendedStepStatus =
 
 const getStepStatus = (
   step: AssistantPlanStep,
-  run?: ThreadRun,
+  run?: Run,
 ): ExtendedStepStatus => {
   if (step.status === 'in_progress' && run?.status === 'expired')
     return 'expired';

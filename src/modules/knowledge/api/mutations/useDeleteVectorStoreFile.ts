@@ -16,20 +16,20 @@
 
 import { deleteVectorStoreFile } from '@/app/api/vector-stores-files';
 import {
-  VectorStoreFile,
-  VectorStoreFilesDeleteResponse,
+  VectorStoreFileDeleteResponse,
+  VectorStoreFileResponse,
   VectorStoreFilesListResponse,
 } from '@/app/api/vector-stores-files/types';
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { TrashCan } from '@carbon/react/icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
-  onSuccess?: (data?: VectorStoreFilesDeleteResponse) => void;
+  onSuccess?: (data?: VectorStoreFileDeleteResponse) => void;
 }
 
 export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
@@ -78,8 +78,8 @@ export function useDeleteVectorStoreFile({ onSuccess }: Props = {}) {
     vectorStoreFile,
     filename,
   }: {
-    vectorStore: VectorStore;
-    vectorStoreFile: VectorStoreFile;
+    vectorStore: VectorStoreResponse;
+    vectorStoreFile: VectorStoreFileResponse;
     filename?: string;
   }) =>
     openConfirmation({

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import { ArtifactDeleteResult } from '@/app/api/artifacts/types';
 import { useRoutes } from '@/routes/useRoutes';
 import { Artifact } from '../types';
 import { AppCard } from './AppCard';
 
 interface Props {
-  artifacts?: NonNullable<Artifact>[];
+  artifacts?: Artifact[];
   isLoading: boolean;
   pageSize?: number;
 }

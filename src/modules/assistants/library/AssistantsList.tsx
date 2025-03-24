@@ -22,7 +22,7 @@ import { Assistant } from '../types';
 import { AssistantCard } from './AssistantCard';
 
 interface Props {
-  assistants?: NonNullable<Assistant>[];
+  assistants?: Assistant[];
   isLoading: boolean;
   pageSize?: number;
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { paths } from '../schema';
+import { ApiRequestBody, ApiResponse } from '@/@types/utils';
 
-export type ChatCompletionResponse =
-  paths['/v1/chat/completions']['post']['responses']['200']['content']['application/json'];
+export type ChatCompletionResponse = ApiResponse<
+  '/v1/chat/completions',
+  'post'
+>;
 
-export type ChatCompletionCreateBody = NonNullable<
-  paths['/v1/chat/completions']['post']['requestBody']
->['content']['application/json'];
+export type ChatCompletionCreateBody = ApiRequestBody<'/v1/chat/completions'>;

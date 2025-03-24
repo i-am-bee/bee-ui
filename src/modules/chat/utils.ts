@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
+import { Run, RunMetadata } from '@/app/api/threads-runs/types';
 import { Thread } from '@/app/api/threads/types';
+import { ToolReference } from '@/app/api/tools/types';
 import { isNotNull } from '@/utils/helpers';
+import { RunSetup } from '../assistants/builder/Builder';
+import { Assistant } from '../assistants/types';
+import { getToolReferenceFromToolUsage } from '../tools/utils';
 import {
   BotChatMessage,
   ChatMessage,
   MessageWithFiles,
   UserChatMessage,
 } from './types';
-import { Assistant } from '../assistants/types';
-import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
-import { RunSetup } from '../assistants/builder/Builder';
-import { getToolReferenceFromToolUsage } from '../tools/utils';
-import { ToolReference } from '@/app/api/tools/types';
 
 export function getMessagesFromThreadMessages(
   messages: MessageWithFiles[],
@@ -109,7 +109,7 @@ export function getRunSetup({
   instructions,
   tools,
   uiMetadata: { resources },
-}: ThreadRun): RunSetup {
+}: Run): RunSetup {
   return {
     instructions,
     tools: tools.map((item) => getToolReferenceFromToolUsage(item)),

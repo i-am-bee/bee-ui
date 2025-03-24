@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { ToolResult } from '@/app/api/tools/types';
+import { ToolResponse } from '@/app/api/tools/types';
 import { useAppContext } from '@/layout/providers/AppProvider';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { UserToolModal } from '@/modules/tools/manage/UserToolModal';
 import { useFormContext } from 'react-hook-form';
 import { AssistantFormValues } from '../builder/AssistantBuilderProvider';
+import { BuilderSectionHeading } from '../builder/BuilderSectionHeading';
 import classes from './BuilderTools.module.scss';
 import { ToolsSelector } from './ToolsSelector';
-import { BuilderSectionHeading } from '../builder/BuilderSectionHeading';
 
 export function BuilderTools() {
   const { openModal } = useModal();
@@ -30,7 +30,7 @@ export function BuilderTools() {
 
   const { setValue, getValues } = useFormContext<AssistantFormValues>();
 
-  const handleUserToolCreateSuccess = (tool: ToolResult) => {
+  const handleUserToolCreateSuccess = (tool: ToolResponse) => {
     const selectedTools = getValues('tools');
 
     setValue('tools', [...selectedTools, { id: tool.id, type: 'user' }], {

@@ -16,18 +16,18 @@
 
 import { deleteArtifact } from '@/app/api/artifacts';
 import {
-  ArtifactDeleteResult,
+  ArtifactDeleteResponse,
   ArtifactsListResponse,
 } from '@/app/api/artifacts/types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useArtifactsQueries } from '..';
 import { Artifact } from '../../types';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
-  onSuccess?: (data?: ArtifactDeleteResult) => void;
+  onSuccess?: (data?: ArtifactDeleteResponse) => void;
 }
 
 export function useDeleteArtifact({ onSuccess }: Props = {}) {

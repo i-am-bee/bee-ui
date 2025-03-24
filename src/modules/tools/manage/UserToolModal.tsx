@@ -16,9 +16,8 @@
 
 import {
   Tool,
-  ToolDeleteResult,
-  ToolResult,
-  ToolsCreateBody,
+  ToolCreateBody,
+  ToolResponse,
   ToolUpdateBody,
 } from '@/app/api/tools/types';
 import { EditableSyntaxHighlighter } from '@/components/EditableSyntaxHighlighter/EditableSyntaxHighlighter';
@@ -41,6 +40,7 @@ import {
   RadioButtonGroup,
   TextInput,
 } from '@carbon/react';
+import { Edit } from '@carbon/react/icons';
 import { useCallback, useId, useLayoutEffect, useState } from 'react';
 import {
   Controller,
@@ -54,8 +54,6 @@ import { useDeleteTool } from '../api/mutations/useDeleteTool';
 import { useSaveTool } from '../api/mutations/useSaveTool';
 import { ToolDescription } from '../ToolCard';
 import classes from './UserToolModal.module.scss';
-import clsx from 'clsx';
-import { Edit } from '@carbon/react/icons';
 
 const EXAMPLE_SOURCE_CODE = `# The following code is just an example
 
@@ -98,7 +96,7 @@ interface FormValues {
 
 interface Props extends ModalProps {
   tool?: Tool;
-  onCreateSuccess?: (tool: ToolResult) => void;
+  onCreateSuccess?: (tool: ToolResponse) => void;
 }
 
 export function UserToolModal({ tool, onCreateSuccess, ...props }: Props) {
@@ -460,7 +458,7 @@ function getCreateToolBody({
   name,
   sourceCode,
   api,
-}: FormValues): ToolsCreateBody {
+}: FormValues): ToolCreateBody {
   return type.key === 'function'
     ? {
         name,

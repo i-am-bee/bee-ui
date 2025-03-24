@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-import { paths } from '../schema';
-import { FetchParamsOrderBy } from '../utils';
-
-export type ApiKeysCreateBody = NonNullable<
-  paths['/v1/organization/projects/{project_id}/api_keys']['post']['requestBody']
->['content']['application/json'];
-
-export type ApiKey = NonNullable<
-  paths['/v1/organization/projects/{project_id}/api_keys/{api_key_id}']['get']['responses']['200']['content']['application/json']
->;
-
-export type ApiKeyDeleteResult = NonNullable<
-  paths['/v1/organization/projects/{project_id}/api_keys/{api_key_id}']['delete']['responses']['200']['content']['application/json']
->;
-
-export type ApiKeysListQuery = NonNullable<
-  paths['/v1/organization/api_keys']['get']['parameters']['query']
->;
-
-export type ApiKeysListOrderBy = FetchParamsOrderBy<ApiKeysListQuery>;
+import { ApiQuery, ApiRequestBody, ApiResponse } from '@/@types/utils';
 
 export type ApiKeysListResponse =
-  paths['/v1/organization/projects/{project_id}/api_keys']['get']['responses']['200']['content']['application/json'];
+  ApiResponse<'/v1/organization/projects/{project_id}/api_keys'>;
 
-export type ApiKeysList = ApiKeysListResponse['data'];
+export type ApiKeyResponse =
+  ApiResponse<'/v1/organization/projects/{project_id}/api_keys/{api_key_id}'>;
+
+export type ApiKeyDeleteResponse = ApiResponse<
+  '/v1/organization/projects/{project_id}/api_keys/{api_key_id}',
+  'delete'
+>;
+
+export type ApiKeyCreateBody =
+  ApiRequestBody<'/v1/organization/projects/{project_id}/api_keys'>;
+
+export type ApiKeysListQuery = ApiQuery<'/v1/organization/api_keys'>;

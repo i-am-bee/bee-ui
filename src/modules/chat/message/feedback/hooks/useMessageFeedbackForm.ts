@@ -15,7 +15,7 @@
  */
 
 import { MessageFeedback } from '@/app/api/threads-messages/types';
-import { RunMetadata, ThreadRun } from '@/app/api/threads-runs/types';
+import { Run, RunMetadata } from '@/app/api/threads-runs/types';
 import { encodeMetadata } from '@/app/api/utils';
 import { useUpdateRun } from '@/modules/chat/api/mutations/useUpdateRun';
 import { useCallback, useEffect } from 'react';
@@ -28,7 +28,7 @@ export const MESSAGE_FEEDBACK_FORM_DEFAULTS = {
 
 interface Props {
   threadId: string | null;
-  run?: ThreadRun;
+  run?: Run;
   onSuccess?: (feedback?: MessageFeedback) => void;
 }
 

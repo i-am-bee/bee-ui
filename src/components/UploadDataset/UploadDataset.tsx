@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { FormItem, FileUploaderDropContainer, usePrefix } from '@carbon/react';
+import { createFile } from '@/app/api/files';
+import { FilePurpose, FileResponse } from '@/app/api/files/types';
+import { useAppContext } from '@/layout/providers/AppProvider';
+import { FileUploaderDropContainer, FormItem, usePrefix } from '@carbon/react';
+import { CloudUpload } from '@carbon/react/icons';
+import mimeType from 'mime-types';
 import { SyntheticEvent, useCallback, useId, useMemo } from 'react';
 import { Control, FieldValues, Path, useController } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import classes from './UploadDataset.module.scss';
-import { FilePurpose, FileEntity } from '@/app/api/files/types';
-import { createFile } from '@/app/api/files';
-import { CloudUpload } from '@carbon/react/icons';
-import mimeType from 'mime-types';
-import { useAppContext } from '@/layout/providers/AppProvider';
 
 interface Props<
   TFieldValues extends FieldValues = FieldValues,
@@ -48,12 +48,12 @@ export interface UploadFileValue {
   id: string;
   file: File;
   invalid: boolean;
-  upload: (options: UploadOptions) => Promise<FileEntity | undefined>;
+  upload: (options: UploadOptions) => Promise<FileResponse | undefined>;
   registerStateChangeListener: (
     listener: (state: UploadFileState) => void,
   ) => void;
   getState: () => UploadFileState;
-  getUploadedFile: () => FileEntity | undefined;
+  getUploadedFile: () => FileResponse | undefined;
 }
 
 export interface UploadFileState {
@@ -96,7 +96,7 @@ export function UploadDataset<
       let state: UploadFileState = {
         status: 'edit',
       };
-      let uploadedFile: FileEntity | undefined;
+      let uploadedFile: FileResponse | undefined;
       const listeners: Array<(state: UploadFileState) => void> = [];
 
       const setState = (newState: UploadFileState) => {
@@ -130,7 +130,7 @@ export function UploadDataset<
         file,
         invalid,
         upload: (() => {
-          let promise: Promise<FileEntity | undefined> | null = null;
+          let promise: Promise<FileResponse | undefined> | null = null;
           return ({ purpose }: UploadOptions) => {
             if (promise == null) {
               setState({ status: 'uploading' });

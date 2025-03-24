@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
+import { FileResponse } from '@/app/api/files/types';
 import { FileUploaderItem } from '@carbon/react';
 import { SyntheticEvent, useEffect, useState } from 'react';
-import classes from './SelectedFilesList.module.scss';
-import { FileEntity } from '@/app/api/files/types';
 import { UploadFileValue } from '../UploadDataset/UploadDataset';
+import classes from './SelectedFilesList.module.scss';
 
 interface Props {
-  existingFiles?: FileEntity[];
+  existingFiles?: FileResponse[];
   uploadFiles: UploadFileValue[];
   disabled?: boolean;
   onRemoveExistingFile?: (id: string) => void;
@@ -37,7 +37,7 @@ export function SelectedFilesList({
 }: Props) {
   return (
     <fieldset className={classes.root} disabled={disabled}>
-      {existingFiles.map((uploadedFile: FileEntity) => {
+      {existingFiles.map((uploadedFile: FileResponse) => {
         return (
           <FileUploaderItem
             name={uploadedFile.filename}

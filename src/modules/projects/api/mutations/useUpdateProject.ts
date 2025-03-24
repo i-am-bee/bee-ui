@@ -21,10 +21,10 @@ import {
   ProjectsListResponse,
   ProjectUpdateResponse,
 } from '@/app/api/projects/types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useProjectsQueries } from '..';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: ProjectUpdateResponse) => void;

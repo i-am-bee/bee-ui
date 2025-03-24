@@ -16,7 +16,7 @@
 
 'use client';
 import { Organization } from '@/app/api/organization/types';
-import { ProjectUser } from '@/app/api/projects-users/types';
+import { ProjectUserRole } from '@/app/api/projects-users/types';
 import { Project } from '@/app/api/projects/types';
 import { encodeEntityWithMetadata } from '@/app/api/utils';
 import { useAssistant } from '@/modules/assistants/api/queries/useAssistant';
@@ -40,7 +40,7 @@ export interface AppContextValue {
   assistant: Assistant | null;
   project: Project;
   organization: Organization;
-  role: ProjectUser['role'] | null;
+  role: ProjectUserRole | null;
   isProjectReadOnly?: boolean;
   featureFlags: Record<FeatureName, boolean>;
   onPageLeaveRef: MutableRefObject<() => void>;

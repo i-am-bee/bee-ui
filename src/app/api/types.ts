@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-import type { components, paths } from './schema';
+import type { components } from './schema';
 
 export type ApiErrorResponse = components['schemas']['ErrorResponse'];
 
 export type ApiErrorCode = ApiErrorResponse['error']['code'];
-
-export type GenerateChatBody = NonNullable<
-  paths['/v1/threads/{thread_id}/runs']['post']['requestBody']
->['content']['application/json'];
-
-export type GenerateParams = Pick<GenerateChatBody, 'tools' | 'assistant_id'>;
-export type AssistantTools = NonNullable<GenerateParams['tools']>;
-
-export type GenerateChatResponse = NonNullable<
-  paths['/v1/threads/{thread_id}/runs']['post']['responses']['200']['content']['text/event-stream']
->;
 
 export type LinkPreview = {
   title: string;

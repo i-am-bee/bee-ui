@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { RunStepsQuery } from '@/app/api/threads-runs/types';
+import { RunStepsListQuery } from '@/app/api/threads-runs/types';
 import { useQuery } from '@tanstack/react-query';
 import { useThreadsQueries } from '..';
 
 interface Props {
   threadId: string | undefined;
   runId: string | undefined;
-  params?: RunStepsQuery;
+  params?: RunStepsListQuery;
   enabled?: boolean;
 }
 

@@ -16,16 +16,16 @@
 
 import { deleteVectorStore } from '@/app/api/vector-stores';
 import {
-  VectorStore,
   VectorStoreDeleteResponse,
+  VectorStoreResponse,
   VectorStoresListResponse,
 } from '@/app/api/vector-stores/types';
+import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 import { useModal } from '@/layout/providers/ModalProvider';
 import { useWorkspace } from '@/layout/providers/WorkspaceProvider';
 import { TrashCan } from '@carbon/react/icons';
 import { useMutation } from '@tanstack/react-query';
 import { useVectorStoresQueries } from '..';
-import { useUpdateDataOnMutation } from '@/hooks/useUpdateDataOnMutation';
 
 interface Props {
   onSuccess?: (data?: VectorStoreDeleteResponse) => void;
@@ -56,7 +56,7 @@ export function useDeleteVectorStore({ onSuccess }: Props = {}) {
     },
   });
 
-  const mutateAsyncWithConfirmation = (vectorStore: VectorStore) =>
+  const mutateAsyncWithConfirmation = (vectorStore: VectorStoreResponse) =>
     openConfirmation({
       title: 'Delete knowledge base?',
       // TODO: add apps info "This knowledge base contains 12 documents and 3 websites, which are used by 2 apps. Are you sure you want to delete it?"

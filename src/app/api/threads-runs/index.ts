@@ -16,7 +16,7 @@
 
 import { client } from '../client';
 import { assertSuccessResponse, getRequestHeaders } from '../utils';
-import { RunsListQuery, RunStepsQuery, RunUpdateBody } from './types';
+import { RunsListQuery, RunStepsListQuery, RunUpdateBody } from './types';
 
 export async function listRuns(
   organizationId: string,
@@ -97,7 +97,7 @@ export async function listRunSteps(
   projectId: string,
   threadId: string,
   runId: string,
-  query?: RunStepsQuery,
+  query?: RunStepsListQuery,
 ) {
   const res = await client.GET('/v1/threads/{thread_id}/runs/{run_id}/steps', {
     params: {

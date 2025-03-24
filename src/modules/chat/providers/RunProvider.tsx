@@ -15,14 +15,14 @@
  */
 
 'use client';
-import { ThreadRun } from '@/app/api/threads-runs/types';
+import { Run } from '@/app/api/threads-runs/types';
 import { createContext, PropsWithChildren, use, useMemo } from 'react';
 import { BotChatMessage } from '../types';
 
 const RunContext = createContext<Props>(null as unknown as Props);
 
 interface Props {
-  run?: ThreadRun;
+  run?: Run;
   message?: BotChatMessage;
 }
 

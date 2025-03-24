@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { VectorStore } from '@/app/api/vector-stores/types';
+import { VectorStoreResponse } from '@/app/api/vector-stores/types';
 import { useAssistants } from '@/modules/assistants/api/queries/useAssistants';
 import { AssistantIcon } from '@/modules/assistants/icons/AssistantIcon';
 import { SkeletonText } from '@carbon/react';
@@ -23,7 +23,7 @@ import { useMemo } from 'react';
 import classes from './KnowledgeAppsInfo.module.scss';
 
 interface Props {
-  vectorStore: VectorStore;
+  vectorStore: VectorStoreResponse;
 }
 
 export function KnowledgeAppsInfo({ vectorStore }: Props) {
